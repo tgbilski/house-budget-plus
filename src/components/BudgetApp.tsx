@@ -1,9 +1,8 @@
 import React, { useState, createContext, useContext } from 'react';
-import { Plus, Globe, Download } from 'lucide-react';
+import { Plus, Globe } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import BudgetCalculator from './BudgetCalculator';
-import { jsPDF } from 'jspdf';
 
 interface Calculator {
   id: string;
@@ -65,93 +64,12 @@ const BudgetApp: React.FC = () => {
     }
   };
 
-  const generatePDF = () => {
-    try {
-      const doc = new jsPDF();
-      const pageWidth = doc.internal.pageSize.getWidth();
-      const margin = 20;
-      let yPosition = margin;
-
-      // Title
-      doc.setFontSize(20);
-      doc.text('House Budget Report', pageWidth / 2, yPosition, { align: 'center' });
-      
-      // Date
-      yPosition += 15;
-      doc.setFontSize(12);
-      doc.text(`Generated on: ${new Date().toLocaleDateString()}`, pageWidth / 2, yPosition, { align: 'center' });
-      
-      // Currency
-      yPosition += 10;
-      doc.text(`Currency: ${currency.name} (${currency.symbol})`, pageWidth / 2, yPosition, { align: 'center' });
-      
-      yPosition += 20;
-
-      // Simple data collection - get basic info from first calculator
-      const calculatorElements = document.querySelectorAll('[data-calculator-id]');
-      
-      calculatorElements.forEach((element, index) => {
-        if (yPosition > 250) {
-          doc.addPage();
-          yPosition = margin;
-        }
-
-        // Calculator title
-        doc.setFontSize(16);
-        const ownerInput = element.querySelector('input[placeholder*="name"]') as HTMLInputElement;
-        const ownerName = ownerInput?.value || `Calculator ${index + 1}`;
-        doc.text(`${ownerName}`, margin, yPosition);
-        yPosition += 15;
-
-        doc.setFontSize(11);
-
-        // Income
-        const incomeInput = element.querySelector('input[placeholder*="income"]') as HTMLInputElement;
-        const income = parseFloat(incomeInput?.value || '0');
-        doc.text(`Monthly Income: ${currency.symbol}${income.toFixed(2)}`, margin, yPosition);
-        yPosition += 10;
-
-        // Basic expense summary
-        const expenseInputs = element.querySelectorAll('input[type="number"]:not([placeholder*="income"])');
-        let totalExpenses = 0;
-        
-        expenseInputs.forEach((input) => {
-          const amount = parseFloat((input as HTMLInputElement).value || '0');
-          totalExpenses += amount;
-        });
-
-        doc.text(`Total Expenses: ${currency.symbol}${totalExpenses.toFixed(2)}`, margin, yPosition);
-        yPosition += 10;
-        
-        const netResult = income - totalExpenses;
-        doc.text(`Net Result: ${currency.symbol}${netResult.toFixed(2)}`, margin, yPosition);
-        yPosition += 20;
-      });
-
-      // Save the PDF
-      doc.save(`budget-report-${new Date().toISOString().split('T')[0]}.pdf`);
-    } catch (error) {
-      console.error('PDF generation failed:', error);
-      alert('PDF generation failed. Please try again.');
-    }
-  };
 
   return (
     <CurrencyContext.Provider value={{ currency, setCurrency }}>
       <div className="min-h-screen bg-background">
         {/* Header */}
-        <header className="text-center py-8 px-4 relative">
-          {/* PDF Download Button */}
-          <Button
-            onClick={generatePDF}
-            variant="outline"
-            size="sm"
-            className="absolute top-4 right-4 flex items-center gap-2"
-          >
-            <Download className="h-4 w-4" />
-            Download PDF
-          </Button>
-
+        <header className="text-center py-8 px-4">
           <h1 className="text-4xl font-bold text-foreground mb-2">
             House Budget Calculator
           </h1>
