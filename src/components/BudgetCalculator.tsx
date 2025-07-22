@@ -1,0 +1,242 @@
+import React, { useState } from 'react';
+import { Plus, Trash2 } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Card, CardContent, CardHeader } from '@/components/ui/card';
+
+interface ExpenseItem {
+  id: string;
+  label: string;
+  amount: number;
+}
+
+interface BudgetCalculatorProps {
+  id: string;
+  onRemove: () => void;
+  showRemove: boolean;
+}
+
+const defaultExpenses: ExpenseItem[] = [
+  { id: 'mortgage', label: 'Mortgage / Rent', amount: 0 },
+  { id: 'electric', label: 'Electric', amount: 0 },
+  { id: 'gas', label: 'Gas', amount: 0 },
+  { id: 'water', label: 'Water', amount: 0 },
+  { id: 'sewage', label: 'Sewage', amount: 0 },
+  { id: 'utilities', label: 'Other Utilities', amount: 0 },
+  { id: 'car-loan', label: 'Car Loan', amount: 0 },
+  { id: 'car-insurance', label: 'Car Insurance', amount: 0 },
+  { id: 'internet', label: 'Internet', amount: 0 },
+  { id: 'phone', label: 'Phone', amount: 0 },
+  { id: 'subscription1', label: 'Subscription #1', amount: 0 },
+  { id: 'subscription2', label: 'Subscription #2', amount: 0 },
+  { id: 'subscription3', label: 'Subscription #3', amount: 0 },
+];
+
+const BudgetCalculator: React.FC<BudgetCalculatorProps> = ({ id, onRemove, showRemove }) => {
+  const [ownerName, setOwnerName] = useState('');
+  const [monthlyIncome, setMonthlyIncome] = useState(0);
+  const [expenses, setExpenses] = useState<ExpenseItem[]>(defaultExpenses);
+  const [additionalExpenses, setAdditionalExpenses] = useState<ExpenseItem[]>([]);
+
+  const addAdditionalExpense = () => {
+    if (additionalExpenses.length < 10) {
+      const newExpense: ExpenseItem = {
+        id: `additional-${Date.now()}`,
+        label: 'Custom Expense',
+        amount: 0,
+      };
+      setAdditionalExpenses([...additionalExpenses, newExpense]);
+    }
+  };
+
+  const removeAdditionalExpense = (expenseId: string) => {
+    setAdditionalExpenses(additionalExpenses.filter(expense => expense.id !== expenseId));
+  };
+
+  const updateExpense = (expenseId: string, amount: number, isAdditional = false) => {
+    if (isAdditional) {
+      setAdditionalExpenses(
+        additionalExpenses.map(expense =>
+          expense.id === expenseId ? { ...expense, amount } : expense
+        )
+      );
+    } else {
+      setExpenses(
+        expenses.map(expense =>
+          expense.id === expenseId ? { ...expense, amount } : expense
+        )
+      );
+    }
+  };
+
+  const updateAdditionalExpenseLabel = (expenseId: string, label: string) => {
+    setAdditionalExpenses(
+      additionalExpenses.map(expense =>
+        expense.id === expenseId ? { ...expense, label } : expense
+      )
+    );
+  };
+
+  const totalExpenses = expenses.reduce((sum, expense) => sum + expense.amount, 0) +
+                       additionalExpenses.reduce((sum, expense) => sum + expense.amount, 0);
+  
+  const netResult = monthlyIncome - totalExpenses;
+
+  const formatCurrency = (amount: number) => {
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD',
+    }).format(amount);
+  };
+
+  return (
+    <Card className="w-full max-w-md mx-auto shadow-lg border border-border">
+      <CardHeader className="pb-4">
+        <div className="flex items-center justify-between">
+          <div className="flex-1">
+            <Label htmlFor={`owner-${id}`} className="text-sm font-medium text-muted-foreground">
+              Owner / Renter
+            </Label>
+            <Input
+              id={`owner-${id}`}
+              placeholder="Enter name..."
+              value={ownerName}
+              onChange={(e) => setOwnerName(e.target.value)}
+              className="mt-1"
+            />
+          </div>
+          {showRemove && (
+            <Button
+              variant="destructive"
+              size="sm"
+              onClick={onRemove}
+              className="ml-4"
+            >
+              <Trash2 className="h-4 w-4" />
+            </Button>
+          )}
+        </div>
+      </CardHeader>
+
+      <CardContent className="space-y-4">
+        {/* Monthly Income */}
+        <div>
+          <Label htmlFor={`income-${id}`} className="text-sm font-semibold text-foreground">
+            Monthly Income
+          </Label>
+          <div className="relative mt-1">
+            <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground">$</span>
+            <Input
+              id={`income-${id}`}
+              type="number"
+              min="0"
+              step="0.01"
+              value={monthlyIncome || ''}
+              onChange={(e) => setMonthlyIncome(parseFloat(e.target.value) || 0)}
+              className="pl-8"
+              placeholder="0.00"
+            />
+          </div>
+        </div>
+
+        {/* Monthly Expenses Header */}
+        <div className="pt-4">
+          <h3 className="text-sm font-semibold text-foreground mb-3">Monthly Expenses</h3>
+          
+          {/* Default Expenses */}
+          <div className="space-y-2">
+            {expenses.map((expense) => (
+              <div key={expense.id} className="flex items-center space-x-2">
+                <Label className="text-xs text-muted-foreground w-32 text-left">
+                  {expense.label}
+                </Label>
+                <div className="relative flex-1">
+                  <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground text-sm">$</span>
+                  <Input
+                    type="number"
+                    min="0"
+                    step="0.01"
+                    value={expense.amount || ''}
+                    onChange={(e) => updateExpense(expense.id, parseFloat(e.target.value) || 0)}
+                    className="pl-8 h-8 text-sm"
+                    placeholder="0.00"
+                  />
+                </div>
+              </div>
+            ))}
+
+            {/* Additional Expenses */}
+            {additionalExpenses.map((expense) => (
+              <div key={expense.id} className="flex items-center space-x-2">
+                <Input
+                  value={expense.label}
+                  onChange={(e) => updateAdditionalExpenseLabel(expense.id, e.target.value)}
+                  className="w-32 h-8 text-xs"
+                  placeholder="Expense name"
+                />
+                <div className="relative flex-1">
+                  <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground text-sm">$</span>
+                  <Input
+                    type="number"
+                    min="0"
+                    step="0.01"
+                    value={expense.amount || ''}
+                    onChange={(e) => updateExpense(expense.id, parseFloat(e.target.value) || 0, true)}
+                    className="pl-8 h-8 text-sm"
+                    placeholder="0.00"
+                  />
+                </div>
+                <Button
+                  variant="destructive"
+                  size="sm"
+                  onClick={() => removeAdditionalExpense(expense.id)}
+                  className="h-8 w-8 p-0"
+                >
+                  <Trash2 className="h-3 w-3" />
+                </Button>
+              </div>
+            ))}
+
+            {/* Add Expense Button */}
+            {additionalExpenses.length < 10 && (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={addAdditionalExpense}
+                className="w-full h-8 text-xs"
+              >
+                <Plus className="h-3 w-3 mr-1" />
+                Add Expense
+              </Button>
+            )}
+          </div>
+        </div>
+
+        {/* Subtotal */}
+        <div className="border-t pt-3">
+          <div className="flex justify-between items-center">
+            <span className="text-sm font-medium text-foreground">Subtotal:</span>
+            <span className="text-sm font-semibold text-foreground">
+              {formatCurrency(totalExpenses)}
+            </span>
+          </div>
+        </div>
+
+        {/* Net Result */}
+        <div className="border-t pt-3">
+          <div className="flex justify-between items-center">
+            <span className="text-base font-semibold text-foreground">Net Result:</span>
+            <span className={`text-base font-bold ${
+              netResult >= 0 ? 'text-success' : 'text-destructive'
+            }`}>
+              {formatCurrency(netResult)}
+            </span>
+          </div>
+        </div>
+      </CardContent>
+    </Card>
+  );
+};
+
+export default BudgetCalculator;
