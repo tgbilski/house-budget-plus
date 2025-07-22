@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
+import { useCurrency } from './BudgetApp';
 
 interface ExpenseItem {
   id: string;
@@ -34,6 +35,7 @@ const defaultExpenses: ExpenseItem[] = [
 ];
 
 const BudgetCalculator: React.FC<BudgetCalculatorProps> = ({ id, onRemove, showRemove }) => {
+  const { currency } = useCurrency();
   const [ownerName, setOwnerName] = useState('');
   const [monthlyIncome, setMonthlyIncome] = useState(0);
   const [expenses, setExpenses] = useState<ExpenseItem[]>(defaultExpenses);
@@ -86,7 +88,7 @@ const BudgetCalculator: React.FC<BudgetCalculatorProps> = ({ id, onRemove, showR
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
-      currency: 'USD',
+      currency: currency.code,
     }).format(amount);
   };
 
@@ -126,7 +128,7 @@ const BudgetCalculator: React.FC<BudgetCalculatorProps> = ({ id, onRemove, showR
             Monthly Income
           </Label>
           <div className="relative mt-1">
-            <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground">$</span>
+            <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground">{currency.symbol}</span>
             <Input
               id={`income-${id}`}
               type="number"
@@ -152,7 +154,7 @@ const BudgetCalculator: React.FC<BudgetCalculatorProps> = ({ id, onRemove, showR
                   {expense.label}
                 </Label>
                 <div className="relative flex-1">
-                  <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground text-sm">$</span>
+                  <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground text-sm">{currency.symbol}</span>
                   <Input
                     type="number"
                     min="0"
@@ -176,7 +178,7 @@ const BudgetCalculator: React.FC<BudgetCalculatorProps> = ({ id, onRemove, showR
                   placeholder="Expense name"
                 />
                 <div className="relative flex-1">
-                  <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground text-sm">$</span>
+                  <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground text-sm">{currency.symbol}</span>
                   <Input
                     type="number"
                     min="0"

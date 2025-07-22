@@ -1,14 +1,57 @@
-import React, { useState } from 'react';
-import { Plus } from 'lucide-react';
+import React, { useState, createContext, useContext } from 'react';
+import { Plus, Globe } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import BudgetCalculator from './BudgetCalculator';
 
 interface Calculator {
   id: string;
 }
 
+interface Currency {
+  code: string;
+  symbol: string;
+  name: string;
+}
+
+interface CurrencyContextType {
+  currency: Currency;
+  setCurrency: (currency: Currency) => void;
+}
+
+const CurrencyContext = createContext<CurrencyContextType | undefined>(undefined);
+
+export const useCurrency = () => {
+  const context = useContext(CurrencyContext);
+  if (!context) {
+    throw new Error('useCurrency must be used within a CurrencyProvider');
+  }
+  return context;
+};
+
+const currencies: Currency[] = [
+  { code: 'USD', symbol: '$', name: 'US Dollar' },
+  { code: 'EUR', symbol: '€', name: 'Euro' },
+  { code: 'GBP', symbol: '£', name: 'British Pound' },
+  { code: 'JPY', symbol: '¥', name: 'Japanese Yen' },
+  { code: 'CAD', symbol: 'C$', name: 'Canadian Dollar' },
+  { code: 'AUD', symbol: 'A$', name: 'Australian Dollar' },
+  { code: 'CHF', symbol: 'CHF', name: 'Swiss Franc' },
+  { code: 'CNY', symbol: '¥', name: 'Chinese Yuan' },
+  { code: 'INR', symbol: '₹', name: 'Indian Rupee' },
+  { code: 'KRW', symbol: '₩', name: 'South Korean Won' },
+  { code: 'MXN', symbol: '$', name: 'Mexican Peso' },
+  { code: 'BRL', symbol: 'R$', name: 'Brazilian Real' },
+  { code: 'ZAR', symbol: 'R', name: 'South African Rand' },
+  { code: 'SEK', symbol: 'kr', name: 'Swedish Krona' },
+  { code: 'NOK', symbol: 'kr', name: 'Norwegian Krone' },
+  { code: 'DKK', symbol: 'kr', name: 'Danish Krone' },
+  { code: 'RUB', symbol: '₽', name: 'Russian Ruble' },
+];
+
 const BudgetApp: React.FC = () => {
   const [calculators, setCalculators] = useState<Calculator[]>([{ id: '1' }]);
+  const [currency, setCurrency] = useState<Currency>(currencies[0]); // Default to USD
 
   const addCalculator = () => {
     const newId = (calculators.length + 1).toString();
@@ -22,16 +65,40 @@ const BudgetApp: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* Header */}
-      <header className="text-center py-8 px-4">
-        <h1 className="text-4xl font-bold text-foreground mb-2">
-          House Budget Calculator
-        </h1>
-        <p className="text-muted-foreground text-lg">
-          Plan your household finances with precision
-        </p>
-      </header>
+    <CurrencyContext.Provider value={{ currency, setCurrency }}>
+      <div className="min-h-screen bg-background">
+        {/* Header */}
+        <header className="text-center py-8 px-4">
+          <h1 className="text-4xl font-bold text-foreground mb-2">
+            House Budget Calculator
+          </h1>
+          <p className="text-muted-foreground text-lg mb-6">
+            Plan your household finances with precision
+          </p>
+          
+          {/* Currency Selector */}
+          <div className="flex items-center justify-center gap-2 mb-4">
+            <Globe className="h-4 w-4 text-muted-foreground" />
+            <Select value={currency.code} onValueChange={(value) => {
+              const selectedCurrency = currencies.find(c => c.code === value);
+              if (selectedCurrency) setCurrency(selectedCurrency);
+            }}>
+              <SelectTrigger className="w-48">
+                <SelectValue placeholder="Select currency" />
+              </SelectTrigger>
+              <SelectContent>
+                {currencies.map((curr) => (
+                  <SelectItem key={curr.code} value={curr.code}>
+                    <span className="flex items-center gap-2">
+                      <span className="font-mono">{curr.symbol}</span>
+                      <span>{curr.name}</span>
+                    </span>
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+        </header>
 
       {/* Main Content */}
       <main className="container mx-auto px-4 pb-8">
@@ -108,6 +175,7 @@ const BudgetApp: React.FC = () => {
         </p>
       </footer>
     </div>
+    </CurrencyContext.Provider>
   );
 };
 
