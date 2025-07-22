@@ -93,7 +93,7 @@ const BudgetCalculator: React.FC<BudgetCalculatorProps> = ({ id, onRemove, showR
   };
 
   return (
-    <Card className="w-full max-w-md mx-auto shadow-lg border border-border">
+    <Card className="w-full max-w-md mx-auto shadow-lg border border-border" data-calculator-id={id}>
       <CardHeader className="pb-4">
         <div className="flex items-center justify-between">
           <div className="flex-1">

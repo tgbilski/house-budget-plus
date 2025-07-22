@@ -1,8 +1,9 @@
 import React, { useState, createContext, useContext } from 'react';
-import { Plus, Globe } from 'lucide-react';
+import { Plus, Globe, Download } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import BudgetCalculator from './BudgetCalculator';
+import jsPDF from 'jspdf';
 
 interface Calculator {
   id: string;
@@ -64,11 +65,127 @@ const BudgetApp: React.FC = () => {
     }
   };
 
+  const generatePDF = () => {
+    const doc = new jsPDF();
+    const pageWidth = doc.internal.pageSize.getWidth();
+    const margin = 20;
+    let yPosition = margin;
+
+    // Title
+    doc.setFontSize(20);
+    doc.setFont('helvetica', 'bold');
+    doc.text('House Budget Report', pageWidth / 2, yPosition, { align: 'center' });
+    
+    // Date
+    yPosition += 15;
+    doc.setFontSize(12);
+    doc.setFont('helvetica', 'normal');
+    doc.text(`Generated on: ${new Date().toLocaleDateString()}`, pageWidth / 2, yPosition, { align: 'center' });
+    
+    // Currency
+    yPosition += 10;
+    doc.text(`Currency: ${currency.name} (${currency.symbol})`, pageWidth / 2, yPosition, { align: 'center' });
+    
+    yPosition += 20;
+
+    // Get data from all calculators
+    const calculatorElements = document.querySelectorAll('[data-calculator-id]');
+    
+    calculatorElements.forEach((element, index) => {
+      if (yPosition > 250) { // Start new page if needed
+        doc.addPage();
+        yPosition = margin;
+      }
+
+      const calculatorId = element.getAttribute('data-calculator-id');
+      
+      // Calculator title
+      doc.setFontSize(16);
+      doc.setFont('helvetica', 'bold');
+      const ownerInput = element.querySelector('input[placeholder="Owner / Renter"]') as HTMLInputElement;
+      const ownerName = ownerInput?.value || `Calculator ${index + 1}`;
+      doc.text(`${ownerName}`, margin, yPosition);
+      yPosition += 15;
+
+      doc.setFontSize(11);
+      doc.setFont('helvetica', 'normal');
+
+      // Income
+      const incomeInput = element.querySelector('input[placeholder="Enter monthly income"]') as HTMLInputElement;
+      const income = parseFloat(incomeInput?.value || '0');
+      doc.text(`Monthly Income: ${new Intl.NumberFormat('en-US', { style: 'currency', currency: currency.code }).format(income)}`, margin, yPosition);
+      yPosition += 8;
+
+      // Expenses
+      doc.text('Monthly Expenses:', margin, yPosition);
+      yPosition += 6;
+
+      const expenseInputs = element.querySelectorAll('input[type="number"]:not([placeholder="Enter monthly income"])');
+      const expenseLabels = [
+        'Mortgage / Rent', 'Electric', 'Gas', 'Water', 'Sewage', 'Other Utilities',
+        'Car Loan', 'Car Insurance', 'Internet', 'Phone', 
+        'Subscription #1', 'Subscription #2', 'Subscription #3'
+      ];
+
+      let totalExpenses = 0;
+      expenseInputs.forEach((input, idx) => {
+        const amount = parseFloat((input as HTMLInputElement).value || '0');
+        if (amount > 0) {
+          totalExpenses += amount;
+          const label = idx < expenseLabels.length ? expenseLabels[idx] : `Additional Expense ${idx - expenseLabels.length + 1}`;
+          doc.text(`  • ${label}: ${new Intl.NumberFormat('en-US', { style: 'currency', currency: currency.code }).format(amount)}`, margin + 5, yPosition);
+          yPosition += 6;
+        }
+      });
+
+      // Additional expenses
+      const additionalExpenseInputs = element.querySelectorAll('input[placeholder="Label"]');
+      additionalExpenseInputs.forEach((labelInput) => {
+        const label = (labelInput as HTMLInputElement).value;
+        const amountInput = labelInput.parentElement?.parentElement?.querySelector('input[type="number"]') as HTMLInputElement;
+        const amount = parseFloat(amountInput?.value || '0');
+        if (label && amount > 0) {
+          totalExpenses += amount;
+          doc.text(`  • ${label}: ${new Intl.NumberFormat('en-US', { style: 'currency', currency: currency.code }).format(amount)}`, margin + 5, yPosition);
+          yPosition += 6;
+        }
+      });
+
+      // Totals
+      yPosition += 5;
+      doc.setFont('helvetica', 'bold');
+      doc.text(`Total Expenses: ${new Intl.NumberFormat('en-US', { style: 'currency', currency: currency.code }).format(totalExpenses)}`, margin, yPosition);
+      yPosition += 8;
+      
+      const netResult = income - totalExpenses;
+      const resultColor = netResult >= 0 ? [0, 128, 0] : [255, 0, 0];
+      doc.setTextColor(resultColor[0], resultColor[1], resultColor[2]);
+      doc.text(`Net Result: ${new Intl.NumberFormat('en-US', { style: 'currency', currency: currency.code }).format(netResult)}`, margin, yPosition);
+      doc.setTextColor(0, 0, 0); // Reset to black
+      
+      yPosition += 20;
+    });
+
+    // Save the PDF
+    doc.save(`house-budget-report-${new Date().toISOString().split('T')[0]}.pdf`);
+  };
+
   return (
     <CurrencyContext.Provider value={{ currency, setCurrency }}>
       <div className="min-h-screen bg-background">
         {/* Header */}
-        <header className="text-center py-8 px-4">
+        <header className="text-center py-8 px-4 relative">
+          {/* PDF Download Button */}
+          <Button
+            onClick={generatePDF}
+            variant="outline"
+            size="sm"
+            className="absolute top-4 right-4 flex items-center gap-2"
+          >
+            <Download className="h-4 w-4" />
+            Download PDF
+          </Button>
+
           <h1 className="text-4xl font-bold text-foreground mb-2">
             House Budget Calculator
           </h1>
