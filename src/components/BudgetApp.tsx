@@ -1,4 +1,5 @@
-import React, { useState, createContext, useContext } from 'react';
+
+import React, { useState, createContext, useContext, useEffect } from 'react';
 import { Plus, Globe } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -50,20 +51,29 @@ const currencies: Currency[] = [
 ];
 
 const BudgetApp: React.FC = () => {
+  console.log('BudgetApp rendering...');
+  
   const [calculators, setCalculators] = useState<Calculator[]>([{ id: '1' }]);
   const [currency, setCurrency] = useState<Currency>(currencies[0]); // Default to USD
 
+  useEffect(() => {
+    console.log('BudgetApp mounted successfully');
+  }, []);
+
   const addCalculator = () => {
+    console.log('Adding calculator...');
     const newId = (calculators.length + 1).toString();
     setCalculators([...calculators, { id: newId }]);
   };
 
   const removeCalculator = (calculatorId: string) => {
+    console.log('Removing calculator:', calculatorId);
     if (calculators.length > 1) {
       setCalculators(calculators.filter(calc => calc.id !== calculatorId));
     }
   };
 
+  console.log('Rendering with calculators:', calculators);
 
   return (
     <CurrencyContext.Provider value={{ currency, setCurrency }}>
@@ -81,6 +91,7 @@ const BudgetApp: React.FC = () => {
           <div className="flex items-center justify-center gap-2 mb-4">
             <Globe className="h-4 w-4 text-muted-foreground" />
             <Select value={currency.code} onValueChange={(value) => {
+              console.log('Currency changing to:', value);
               const selectedCurrency = currencies.find(c => c.code === value);
               if (selectedCurrency) setCurrency(selectedCurrency);
             }}>
@@ -105,15 +116,18 @@ const BudgetApp: React.FC = () => {
       <main className="container mx-auto px-4 pb-8">
         <div className="flex flex-wrap gap-6 justify-center">
           {/* Calculator Containers */}
-          {calculators.map((calculator) => (
-            <div key={calculator.id} className="relative">
-              <BudgetCalculator
-                id={calculator.id}
-                onRemove={() => removeCalculator(calculator.id)}
-                showRemove={calculators.length > 1}
-              />
-            </div>
-          ))}
+          {calculators.map((calculator) => {
+            console.log('Rendering calculator:', calculator.id);
+            return (
+              <div key={calculator.id} className="relative">
+                <BudgetCalculator
+                  id={calculator.id}
+                  onRemove={() => removeCalculator(calculator.id)}
+                  showRemove={calculators.length > 1}
+                />
+              </div>
+            );
+          })}
 
           {/* Add New Calculator Button */}
           <div className="flex items-center justify-center">

@@ -1,7 +1,14 @@
+
 import BudgetApp from '@/components/BudgetApp';
+import ErrorBoundary from '@/components/ErrorBoundary';
 
 const Index = () => {
-  return <BudgetApp />;
+  console.log('Index page rendering...');
+  return (
+    <ErrorBoundary>
+      <BudgetApp />
+    </ErrorBoundary>
+  );
 };
 
 export default Index;
