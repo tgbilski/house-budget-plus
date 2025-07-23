@@ -80,9 +80,13 @@ const BudgetApp: React.FC = () => {
       <div className="min-h-screen bg-background">
         {/* Header */}
         <header className="text-center py-8 px-4">
-          <h1 className="text-4xl font-bold text-foreground mb-2">
-            House Budget Calculator
-          </h1>
+          <div className="flex justify-center mb-4">
+            <img 
+              src="/lovable-uploads/5377daa4-3f84-4748-a91b-081403394030.png" 
+              alt="House Budget Calculator"
+              className="h-24 w-auto"
+            />
+          </div>
           <p className="text-muted-foreground text-lg mb-6">
             Plan your household finances with precision
           </p>
