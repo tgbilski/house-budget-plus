@@ -84,7 +84,7 @@ const BudgetApp: React.FC = () => {
             <img 
               src="/lovable-uploads/5377daa4-3f84-4748-a91b-081403394030.png" 
               alt="House Budget Calculator"
-              className="h-24 w-auto"
+              className="h-36 w-auto"
             />
           </div>
           <p className="text-muted-foreground text-lg mb-6">
