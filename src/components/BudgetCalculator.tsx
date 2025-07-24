@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
-import { Plus, Trash2 } from 'lucide-react';
+import { Plus, Trash2, Download } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { useCurrency } from './BudgetApp';
+import { generateBudgetPDF } from '@/utils/pdfGenerator';
 
 interface ExpenseItem {
   id: string;
@@ -90,6 +91,17 @@ const BudgetCalculator: React.FC<BudgetCalculatorProps> = ({ id, onRemove, showR
       style: 'currency',
       currency: currency.code,
     }).format(amount);
+  };
+
+  const handleDownloadPDF = () => {
+    const budgetData = {
+      ownerName,
+      monthlyIncome,
+      expenses,
+      additionalExpenses,
+      currency: currency.symbol
+    };
+    generateBudgetPDF(budgetData);
   };
 
   return (
@@ -235,6 +247,19 @@ const BudgetCalculator: React.FC<BudgetCalculatorProps> = ({ id, onRemove, showR
               {formatCurrency(netResult)}
             </span>
           </div>
+        </div>
+
+        {/* Download PDF Button */}
+        <div className="pt-3">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={handleDownloadPDF}
+            className="w-full"
+          >
+            <Download className="h-4 w-4 mr-2" />
+            Download PDF Report
+          </Button>
         </div>
       </CardContent>
     </Card>
