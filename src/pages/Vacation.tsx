@@ -439,31 +439,16 @@ const Vacation: React.FC = () => {
           </div>
 
           {/* Add New Option Button */}
-          <div className="flex justify-center">
-            <Button 
+          <div className="flex items-center justify-center">
+            <Button
               onClick={addVacationCard}
-              size="sm"
               variant="outline"
-              className="rounded-full w-10 h-10 p-0"
+              size="lg"
+              className="h-20 w-20 rounded-full border-2 border-dashed border-primary hover:bg-primary/5"
             >
-              <Plus className="h-4 w-4" />
+              <Plus className="h-8 w-8 text-primary" />
             </Button>
           </div>
-
-          {/* Empty State */}
-          {options.length === 0 && !isCreatingProject && (
-            <Card>
-              <CardContent className="text-center py-12">
-                <p className="text-muted-foreground mb-4">
-                  No vacation options added yet for project "{selectedProject}"
-                </p>
-                <Button onClick={addVacationCard}>
-                  <Plus className="h-4 w-4 mr-2" />
-                  Add Your First Vacation Option
-                </Button>
-              </CardContent>
-            </Card>
-          )}
         </div>
       </div>
     </div>
