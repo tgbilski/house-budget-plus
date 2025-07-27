@@ -434,49 +434,18 @@ const CompareVendors: React.FC = () => {
           </p>
           
           {/* Project Management */}
-          <div className="max-w-2xl mx-auto">
-            <Label className="text-left block mb-2 font-medium">
-              Project Management
-            </Label>
-            
-            {isNewProject ? (
-              <div className="space-y-3">
-                <div className="flex gap-3">
-                  <Input
-                    placeholder="Enter new project name (e.g., Kitchen Remodel)"
-                    className="text-center text-lg"
-                    onKeyDown={(e) => {
-                      if (e.key === 'Enter') {
-                        const target = e.target as HTMLInputElement;
-                        saveNewProject(target.value);
-                      }
-                    }}
-                    autoFocus
-                  />
-                  <Button
-                    onClick={(e) => {
-                      const input = e.currentTarget.parentElement?.querySelector('input') as HTMLInputElement;
-                      if (input) saveNewProject(input.value);
-                    }}
-                    variant="default"
-                  >
-                    Create Project
-                  </Button>
-                </div>
-                <p className="text-sm text-muted-foreground text-center">
-                  Enter a project name and click "Create Project" to get started
-                </p>
-              </div>
-            ) : (
-              <div className="flex gap-3 items-center">
-                <Button
-                  onClick={createNewProject}
-                  variant="outline"
-                  className="whitespace-nowrap"
-                >
-                  New Project
-                </Button>
-                
+          <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between max-w-6xl mx-auto">
+            <div className="flex flex-col sm:flex-row gap-2 items-start sm:items-center">
+              <Button
+                onClick={createNewProject}
+                variant="outline"
+                className="whitespace-nowrap"
+              >
+                <Plus className="h-4 w-4 mr-2" />
+                New Project
+              </Button>
+              
+              {!isNewProject && uniqueProjects.length > 1 && (
                 <Select
                   value={selectedProject}
                   onValueChange={(value) => {
@@ -485,8 +454,8 @@ const CompareVendors: React.FC = () => {
                     setIsEditingProjectName(false);
                   }}
                 >
-                  <SelectTrigger className="text-center text-lg flex-1">
-                    <SelectValue placeholder="Select a project" />
+                  <SelectTrigger className="w-[200px]">
+                    <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
                     {uniqueProjects.map((project) => (
@@ -496,23 +465,31 @@ const CompareVendors: React.FC = () => {
                     ))}
                   </SelectContent>
                 </Select>
+              )}
+            </div>
+            
+            {!isNewProject && displayedQuotes.length > 0 && lowestEstimate && (
+              <div className="text-sm text-muted-foreground">
+                Lowest estimate: {currency.symbol}{lowestEstimate.toFixed(2)}
               </div>
             )}
-            
-            {!isNewProject && selectedProject && displayedQuotes.length > 0 && (
-              <div className="mt-4 text-center space-y-2">
-                {isEditingProjectName ? (
+          </div>
+
+          {/* Project Creation */}
+          {isNewProject && (
+            <div className="max-w-6xl mx-auto">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Create New Project</CardTitle>
+                </CardHeader>
+                <CardContent>
                   <div className="flex gap-2">
                     <Input
-                      defaultValue={selectedProject}
-                      className="text-center text-lg font-semibold"
+                      placeholder="Enter project name (e.g., Kitchen Remodel)"
                       onKeyDown={(e) => {
                         if (e.key === 'Enter') {
                           const target = e.target as HTMLInputElement;
-                          updateProjectName(selectedProject, target.value);
-                        }
-                        if (e.key === 'Escape') {
-                          setIsEditingProjectName(false);
+                          saveNewProject(target.value);
                         }
                       }}
                       autoFocus
@@ -520,87 +497,70 @@ const CompareVendors: React.FC = () => {
                     <Button
                       onClick={(e) => {
                         const input = e.currentTarget.parentElement?.querySelector('input') as HTMLInputElement;
-                        if (input) updateProjectName(selectedProject, input.value);
+                        if (input) saveNewProject(input.value);
                       }}
-                      size="sm"
                     >
-                      Save
+                      Create
                     </Button>
-                    <Button
-                      onClick={() => setIsEditingProjectName(false)}
-                      variant="outline"
-                      size="sm"
+                    <Button 
+                      variant="outline" 
+                      onClick={() => setIsNewProject(false)}
                     >
                       Cancel
                     </Button>
                   </div>
-                ) : (
-                  <div className="flex items-center justify-center gap-2">
-                    <h2 className="text-lg font-semibold">{selectedProject}</h2>
-                    <Button
-                      onClick={() => setIsEditingProjectName(true)}
-                      variant="ghost"
-                      size="sm"
-                      className="text-xs"
-                    >
-                      Edit Name
-                    </Button>
-                  </div>
-                )}
-                {lowestEstimate && (
-                  <p className="text-sm text-muted-foreground">
-                    {displayedQuotes.length} quotes • Lowest: {currency.symbol}{lowestEstimate.toFixed(2)}
-                  </p>
-                )}
-              </div>
-            )}
-          </div>
-        </div>
-
-        {/* Vendor Cards */}
-        <div className="flex flex-wrap gap-6 justify-center mb-8">
-          {displayedQuotes.map((quote) => (
-            <VendorCard
-              key={quote.id}
-              quote={quote}
-              onUpdate={updateVendorCard}
-              onRemove={() => removeVendorCard(quote.id)}
-              showRemove={displayedQuotes.length > 1}
-              currency={currency}
-            />
-          ))}
-
-          {/* Add New Vendor Card Button */}
-          {!isNewProject && selectedProject && (
-            <div className="flex items-center justify-center">
-              <Button
-                onClick={() => addVendorCard()}
-                variant="outline"
-                size="lg"
-                className="h-20 w-20 rounded-full border-2 border-dashed border-primary hover:bg-primary/5"
-              >
-                <Plus className="h-8 w-8 text-primary" />
-              </Button>
+                </CardContent>
+              </Card>
             </div>
           )}
         </div>
 
-        {/* Empty States */}
-        {!isNewProject && displayedQuotes.length === 0 && selectedProject && (
-          <div className="text-center py-8">
-            <p className="text-muted-foreground">
-              No vendor quotes for "{selectedProject}" yet. Click the + button to add your first vendor!
-            </p>
+        {/* Vendor Cards */}
+        <div className="max-w-6xl mx-auto">
+          <div className="flex flex-wrap gap-6 justify-center mb-8">
+            {displayedQuotes.map((quote) => (
+              <VendorCard
+                key={quote.id}
+                quote={quote}
+                onUpdate={updateVendorCard}
+                onRemove={() => removeVendorCard(quote.id)}
+                showRemove={displayedQuotes.length > 1}
+                currency={currency}
+              />
+            ))}
+
+            {/* Add New Vendor Card Button */}
+            {!isNewProject && selectedProject && (
+              <div className="flex items-center justify-center">
+                <Button
+                  onClick={() => addVendorCard()}
+                  variant="outline"
+                  size="lg"
+                  className="h-20 w-20 rounded-full border-2 border-dashed border-primary hover:bg-primary/5"
+                >
+                  <Plus className="h-8 w-8 text-primary" />
+                </Button>
+              </div>
+            )}
           </div>
-        )}
-        
-        {!selectedProject && !isNewProject && quotes.length === 0 && (
-          <div className="text-center py-8">
-            <p className="text-muted-foreground">
-              Click "New Project" above to create your first project and start comparing vendors!
-            </p>
-          </div>
-        )}
+
+          {/* Empty States */}
+          {!isNewProject && displayedQuotes.length === 0 && selectedProject && (
+            <div className="text-center py-8">
+              <p className="text-muted-foreground">
+                No vendor quotes for "{selectedProject}" yet. Click the + button to add your first vendor!
+              </p>
+            </div>
+          )}
+          
+          {!selectedProject && !isNewProject && quotes.length === 0 && (
+            <div className="text-center py-8">
+              <p className="text-muted-foreground">
+                Click "New Project" above to create your first project and start comparing vendors!
+              </p>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
