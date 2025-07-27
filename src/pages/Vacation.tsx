@@ -341,12 +341,12 @@ const Vacation: React.FC = () => {
                 New Vacation
               </Button>
               
-              {!isCreatingProject && projects.length > 1 && (
+              {!isCreatingProject && projects.length > 0 && (
                 <Select value={selectedProject} onValueChange={setSelectedProject}>
                   <SelectTrigger className="w-[200px]">
-                    <SelectValue />
+                    <SelectValue placeholder="Select vacation" />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="z-50 bg-background border shadow-lg">
                     {projects.map((project) => (
                       <SelectItem key={project} value={project}>
                         {project}

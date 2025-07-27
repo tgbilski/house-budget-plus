@@ -445,7 +445,7 @@ const CompareVendors: React.FC = () => {
                 New Project
               </Button>
               
-              {!isNewProject && uniqueProjects.length > 1 && (
+              {!isNewProject && uniqueProjects.length > 0 && (
                 <Select
                   value={selectedProject}
                   onValueChange={(value) => {
@@ -455,9 +455,9 @@ const CompareVendors: React.FC = () => {
                   }}
                 >
                   <SelectTrigger className="w-[200px]">
-                    <SelectValue />
+                    <SelectValue placeholder="Select project" />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="z-50 bg-background border shadow-lg">
                     {uniqueProjects.map((project) => (
                       <SelectItem key={project} value={project}>
                         {project}
