@@ -291,18 +291,8 @@ const CompareVendors: React.FC = () => {
   useEffect(() => {
     if (user) {
       loadData();
-    } else {
-      // When no user, ensure we show the interface
-      setIsNewProject(quotes.length === 0);
     }
   }, [user]);
-
-  useEffect(() => {
-    // If no quotes and no selected project, show new project state
-    if (quotes.length === 0 && !selectedProject && !isNewProject) {
-      setIsNewProject(true);
-    }
-  }, [quotes, selectedProject, isNewProject]);
 
   const loadData = async () => {
     if (!user) return;
