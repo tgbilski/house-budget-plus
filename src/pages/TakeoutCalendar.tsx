@@ -5,7 +5,9 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { useAuth } from '@/hooks/useAuth';
 import { useCurrency } from '@/components/BudgetApp';
 import { supabase } from '@/integrations/supabase/client';
@@ -32,10 +34,13 @@ const TakeoutCalendar: React.FC = () => {
   const [selectedAmount, setSelectedAmount] = useState<string>('');
   const [selectedNotes, setSelectedNotes] = useState<string>('');
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [currentYear] = useState(new Date().getFullYear());
+  const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
   const [activeMonth, setActiveMonth] = useState(new Date().getMonth());
   const { user } = useAuth();
   const { currency } = useCurrency();
+
+  // Generate array of available years (current year + past 4 years)
+  const availableYears = Array.from({ length: 5 }, (_, i) => new Date().getFullYear() - i);
 
   useEffect(() => {
     if (user) {
@@ -136,19 +141,19 @@ const TakeoutCalendar: React.FC = () => {
   const getMonthTotal = (month: number) => {
     const monthStr = String(month + 1).padStart(2, '0');
     return spendingData
-      .filter(spending => spending.date.includes(`${currentYear}-${monthStr}`))
+      .filter(spending => spending.date.includes(`${selectedYear}-${monthStr}`))
       .reduce((sum, spending) => sum + spending.amount, 0);
   };
 
   const getYearTotal = () => {
     return spendingData
-      .filter(spending => spending.date.startsWith(currentYear.toString()))
+      .filter(spending => spending.date.startsWith(selectedYear.toString()))
       .reduce((sum, spending) => sum + spending.amount, 0);
   };
 
   const renderCalendarGrid = (month: number) => {
-    const daysInMonth = getDaysInMonth(currentYear, month);
-    const firstDay = getFirstDayOfMonth(currentYear, month);
+    const daysInMonth = getDaysInMonth(selectedYear, month);
+    const firstDay = getFirstDayOfMonth(selectedYear, month);
     const days = [];
 
     // Empty cells for days before the first day of the month
@@ -158,14 +163,14 @@ const TakeoutCalendar: React.FC = () => {
 
     // Days of the month
     for (let day = 1; day <= daysInMonth; day++) {
-      const date = formatDate(currentYear, month, day);
+      const date = formatDate(selectedYear, month, day);
       const spending = getSpendingForDate(date);
       const isToday = date === new Date().toISOString().split('T')[0];
 
       days.push(
         <div
           key={day}
-          onClick={() => handleDayClick(currentYear, month, day)}
+          onClick={() => handleDayClick(selectedYear, month, day)}
           className={`h-24 border border-border cursor-pointer hover:bg-muted/50 transition-colors p-2 relative ${
             isToday ? 'bg-primary/10 border-primary' : ''
           }`}
@@ -196,7 +201,7 @@ const TakeoutCalendar: React.FC = () => {
     <div className="min-h-screen bg-background">
       <div className="container mx-auto px-4 py-8">
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-foreground mb-4">Takeout Calendar {currentYear}</h1>
+          <h1 className="text-3xl font-bold text-foreground mb-4">Takeout Calendar {selectedYear}</h1>
           <p className="text-muted-foreground mb-4">
             Track your daily takeout spending throughout the year
           </p>
@@ -210,14 +215,73 @@ const TakeoutCalendar: React.FC = () => {
                   {currency.symbol}{getYearTotal().toFixed(2)}
                 </p>
                 <p className="text-sm text-muted-foreground">
-                  {spendingData.filter(s => s.date.startsWith(currentYear.toString())).length} days with spending
+                  {spendingData.filter(s => s.date.startsWith(selectedYear.toString())).length} days with spending
                 </p>
               </div>
             </CardContent>
           </Card>
         </div>
 
-        <div className="max-w-6xl mx-auto">
+        <div className="max-w-6xl mx-auto space-y-6">
+          {/* Year Dropdown */}
+          <div className="flex justify-center">
+            <div className="flex items-center gap-4">
+              <Label htmlFor="year-select" className="text-sm font-medium">
+                Select Year:
+              </Label>
+              <Select value={selectedYear.toString()} onValueChange={(value) => setSelectedYear(parseInt(value))}>
+                <SelectTrigger className="w-32">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {availableYears.map((year) => (
+                    <SelectItem key={year} value={year.toString()}>
+                      {year}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+
+          {/* Monthly Spending Chart */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-center">Monthly Spending Overview</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="h-64">
+                <ResponsiveContainer width="100%" height="100%">
+                  <LineChart
+                    data={monthAbbr.map((month, index) => ({
+                      month,
+                      amount: getMonthTotal(index)
+                    }))}
+                    margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+                  >
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="month" />
+                    <YAxis 
+                      tickFormatter={(value) => `${currency.symbol}${value}`}
+                    />
+                    <Tooltip 
+                      formatter={(value) => [`${currency.symbol}${Number(value).toFixed(2)}`, 'Spending']}
+                      labelFormatter={(label) => `${label} ${selectedYear}`}
+                    />
+                    <Line 
+                      type="monotone" 
+                      dataKey="amount" 
+                      stroke="hsl(var(--primary))" 
+                      strokeWidth={3}
+                      dot={{ fill: 'hsl(var(--primary))', strokeWidth: 2, r: 4 }}
+                      activeDot={{ r: 6, fill: 'hsl(var(--primary))' }}
+                    />
+                  </LineChart>
+                </ResponsiveContainer>
+              </div>
+            </CardContent>
+          </Card>
+
           <Tabs value={monthNames[activeMonth]} onValueChange={(value) => {
             const monthIndex = monthNames.indexOf(value);
             setActiveMonth(monthIndex);
@@ -255,7 +319,7 @@ const TakeoutCalendar: React.FC = () => {
                       >
                         <ChevronLeft className="h-4 w-4" />
                       </Button>
-                      <span>{monthName} {currentYear}</span>
+                      <span>{monthName} {selectedYear}</span>
                       <Button
                         variant="ghost"
                         size="sm"
