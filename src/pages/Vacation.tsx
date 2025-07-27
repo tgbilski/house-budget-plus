@@ -427,7 +427,7 @@ const Vacation: React.FC = () => {
           )}
 
           {/* Empty States */}
-          {!isCreatingProject && options.length === 0 && selectedProject && (
+          {!isCreatingProject && options.length === 0 && selectedProject && selectedProject !== 'default' && (
             <div className="text-center py-8">
               <p className="text-muted-foreground">
                 No vacation options for "{selectedProject}" yet. Click the + button to add your first option!
