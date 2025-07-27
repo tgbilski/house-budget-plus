@@ -435,7 +435,7 @@ const Vacation: React.FC = () => {
             </div>
           )}
           
-          {!selectedProject && !isCreatingProject && options.length === 0 && (
+          {((!selectedProject || selectedProject === 'default') && !isCreatingProject && options.length === 0) && (
             <div className="text-center py-8">
               <p className="text-muted-foreground">
                 Click "New Vacation" above to create your first vacation comparison!
