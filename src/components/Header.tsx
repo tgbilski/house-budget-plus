@@ -9,7 +9,7 @@ const Header: React.FC = () => {
 
   const navigation = [
     { name: 'Monthly Budget', href: '/' },
-    { name: 'Compare Prices', href: '/compare-prices' },
+    { name: 'Compare Vendors', href: '/compare-prices' },
     { name: 'Takeout', href: '/takeout' },
     { name: 'Vacation', href: '/vacation' },
   ];

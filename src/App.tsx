@@ -6,7 +6,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/hooks/useAuth";
 import Header from "@/components/Header";
 import MonthlyBudget from "@/pages/MonthlyBudget";
-import ComparePrices from "@/pages/ComparePrices";
+import CompareVendors from "@/pages/CompareVendors";
 import Takeout from "@/pages/Takeout";
 import Vacation from "@/pages/Vacation";
 import Auth from "@/pages/Auth";
@@ -49,7 +49,7 @@ const App = () => {
                 <Header />
                 <Routes>
                   <Route path="/" element={<MonthlyBudget />} />
-                  <Route path="/compare-prices" element={<ComparePrices />} />
+                  <Route path="/compare-prices" element={<CompareVendors />} />
                   <Route path="/takeout" element={<Takeout />} />
                   <Route path="/vacation" element={<Vacation />} />
                   <Route path="/auth" element={<Auth />} />
