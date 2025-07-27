@@ -160,9 +160,23 @@ const CompareVendors: React.FC = () => {
       <div className="container mx-auto px-4 py-8">
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold text-foreground mb-4">Compare Vendors</h1>
-          <p className="text-muted-foreground">
+          <p className="text-muted-foreground mb-6">
             Compare estimates and evaluate vendors for your home projects
           </p>
+          
+          {/* Project Name at top */}
+          <div className="max-w-md mx-auto">
+            <Label htmlFor="topProjectName" className="text-left block mb-2 font-medium">
+              Project Name
+            </Label>
+            <Input
+              id="topProjectName"
+              value={newQuote.projectName}
+              onChange={(e) => setNewQuote({ ...newQuote, projectName: e.target.value })}
+              placeholder="e.g., Kitchen Remodel, Roof Replacement"
+              className="text-center text-lg"
+            />
+          </div>
         </div>
 
         <div className="max-w-6xl mx-auto space-y-6">
@@ -175,15 +189,6 @@ const CompareVendors: React.FC = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {/* Basic Info */}
                 <div className="space-y-4">
-                  <div>
-                    <Label htmlFor="projectName">Project Name</Label>
-                    <Input
-                      id="projectName"
-                      value={newQuote.projectName}
-                      onChange={(e) => setNewQuote({ ...newQuote, projectName: e.target.value })}
-                      placeholder="e.g., Kitchen Remodel, Roof Replacement"
-                    />
-                  </div>
                   <div>
                     <Label htmlFor="vendorName">Vendor/Company Name</Label>
                     <Input
