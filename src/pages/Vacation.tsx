@@ -326,14 +326,12 @@ const Vacation: React.FC = () => {
       <div className="container mx-auto px-4 py-8">
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold text-foreground mb-4">Vacation Planning</h1>
-          <p className="text-muted-foreground">
+          <p className="text-muted-foreground mb-6">
             Compare vacation options and find your perfect getaway
           </p>
-        </div>
-
-        <div className="max-w-6xl mx-auto space-y-6">
+          
           {/* Project Management */}
-          <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
+          <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between max-w-6xl mx-auto">
             <div className="flex flex-col sm:flex-row gap-2 items-start sm:items-center">
               <Button 
                 onClick={() => setIsCreatingProject(true)}
@@ -344,7 +342,7 @@ const Vacation: React.FC = () => {
                 New Vacation
               </Button>
               
-              {projects.length > 1 && (
+              {!isCreatingProject && projects.length > 1 && (
                 <Select value={selectedProject} onValueChange={setSelectedProject}>
                   <SelectTrigger className="w-[200px]">
                     <SelectValue />
@@ -360,7 +358,7 @@ const Vacation: React.FC = () => {
               )}
             </div>
             
-            {options.length > 0 && (
+            {!isCreatingProject && options.length > 0 && (
               <div className="text-sm text-muted-foreground">
                 Lowest estimate: {currency.symbol}{getLowestCost().toFixed(2)}
               </div>
@@ -369,63 +367,39 @@ const Vacation: React.FC = () => {
 
           {/* Project Creation */}
           {isCreatingProject && (
-            <Card>
-              <CardHeader>
-                <CardTitle>Create New Vacation</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="flex gap-2">
-                  <Input
-                    value={newProjectName}
-                    onChange={(e) => setNewProjectName(e.target.value)}
-                    placeholder="Enter vacation name"
-                    onKeyPress={(e) => e.key === 'Enter' && createNewProject()}
-                  />
-                  <Button onClick={createNewProject}>Create</Button>
-                  <Button 
-                    variant="outline" 
-                    onClick={() => {
-                      setIsCreatingProject(false);
-                      setNewProjectName('');
-                    }}
-                  >
-                    Cancel
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
+            <div className="max-w-6xl mx-auto">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Create New Vacation</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="flex gap-2">
+                    <Input
+                      value={newProjectName}
+                      onChange={(e) => setNewProjectName(e.target.value)}
+                      placeholder="Enter vacation name"
+                      onKeyPress={(e) => e.key === 'Enter' && createNewProject()}
+                      autoFocus
+                    />
+                    <Button onClick={createNewProject}>Create</Button>
+                    <Button 
+                      variant="outline" 
+                      onClick={() => {
+                        setIsCreatingProject(false);
+                        setNewProjectName('');
+                      }}
+                    >
+                      Cancel
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
           )}
+        </div>
 
-          {/* Project Name Editing */}
-          {isEditingProjectName && (
-            <Card>
-              <CardHeader>
-                <CardTitle>Edit Project Name</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="flex gap-2">
-                  <Input
-                    value={editProjectName}
-                    onChange={(e) => setEditProjectName(e.target.value)}
-                    placeholder="Enter new project name"
-                    onKeyPress={(e) => e.key === 'Enter' && updateProjectName()}
-                  />
-                  <Button onClick={updateProjectName}>Save</Button>
-                  <Button 
-                    variant="outline" 
-                    onClick={() => {
-                      setIsEditingProjectName(false);
-                      setEditProjectName('');
-                    }}
-                  >
-                    Cancel
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-          )}
-
-          {/* Vacation Options */}
+        {/* Vacation Options */}
+        <div className="max-w-6xl mx-auto">
           <div className="grid gap-6">
             {options.map((option) => (
               <VacationCard
@@ -438,17 +412,36 @@ const Vacation: React.FC = () => {
             ))}
           </div>
 
-          {/* Add New Option Button */}
-          <div className="flex items-center justify-center">
-            <Button
-              onClick={addVacationCard}
-              variant="outline"
-              size="lg"
-              className="h-20 w-20 rounded-full border-2 border-dashed border-primary hover:bg-primary/5"
-            >
-              <Plus className="h-8 w-8 text-primary" />
-            </Button>
-          </div>
+          {/* Add New Option Button - Only show when project is selected and not creating */}
+          {!isCreatingProject && selectedProject && (
+            <div className="flex items-center justify-center mt-6">
+              <Button
+                onClick={addVacationCard}
+                variant="outline"
+                size="lg"
+                className="h-20 w-20 rounded-full border-2 border-dashed border-primary hover:bg-primary/5"
+              >
+                <Plus className="h-8 w-8 text-primary" />
+              </Button>
+            </div>
+          )}
+
+          {/* Empty States */}
+          {!isCreatingProject && options.length === 0 && selectedProject && (
+            <div className="text-center py-8">
+              <p className="text-muted-foreground">
+                No vacation options for "{selectedProject}" yet. Click the + button to add your first option!
+              </p>
+            </div>
+          )}
+          
+          {!selectedProject && !isCreatingProject && options.length === 0 && (
+            <div className="text-center py-8">
+              <p className="text-muted-foreground">
+                Click "New Vacation" above to create your first vacation project and start planning!
+              </p>
+            </div>
+          )}
         </div>
       </div>
     </div>
