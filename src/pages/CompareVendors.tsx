@@ -222,7 +222,8 @@ const VendorCard: React.FC<VendorCardProps> = ({ quote, onUpdate, onRemove, show
 const CompareVendors: React.FC = () => {
   const [quotes, setQuotes] = useState<VendorQuote[]>([]);
   const [selectedProject, setSelectedProject] = useState<string>('');
-  const [isNewProject, setIsNewProject] = useState(true);
+  const [isNewProject, setIsNewProject] = useState(false);
+  const [isEditingProjectName, setIsEditingProjectName] = useState(false);
   const { user } = useAuth();
   const { currency } = useCurrency();
 
@@ -279,11 +280,27 @@ const CompareVendors: React.FC = () => {
     }
   }, [quotes, user]);
 
-  const addVendorCard = () => {
-    const projectName = isNewProject ? 'New Project' : selectedProject;
+  const createNewProject = () => {
+    setIsNewProject(true);
+    setSelectedProject('');
+    setIsEditingProjectName(true);
+  };
+
+  const saveNewProject = (projectName: string) => {
+    if (projectName.trim()) {
+      setSelectedProject(projectName.trim());
+      setIsNewProject(false);
+      setIsEditingProjectName(false);
+      // Add first vendor card for the new project
+      addVendorCard(projectName.trim());
+    }
+  };
+
+  const addVendorCard = (projectName?: string) => {
+    const project = projectName || selectedProject || 'New Project';
     const newQuote: VendorQuote = {
       id: Date.now().toString(),
-      projectName,
+      projectName: project,
       vendorName: '',
       estimateAmount: 0,
       contactInfo: '',
@@ -297,12 +314,6 @@ const CompareVendors: React.FC = () => {
     };
     
     setQuotes([...quotes, newQuote]);
-    
-    // If creating first quote for new project, switch to that project
-    if (isNewProject) {
-      setSelectedProject(projectName);
-      setIsNewProject(false);
-    }
   };
 
   const updateVendorCard = (updatedQuote: VendorQuote) => {
@@ -315,27 +326,32 @@ const CompareVendors: React.FC = () => {
     const filteredQuotes = quotes.filter(quote => quote.id !== quoteId);
     setQuotes(filteredQuotes);
     
-    // If no quotes left for current project, switch to new project mode
+    // If no quotes left for current project, select another project or clear
     const currentProjectQuotes = filteredQuotes.filter(quote => quote.projectName === selectedProject);
     if (currentProjectQuotes.length === 0 && filteredQuotes.length > 0) {
       const remainingProject = filteredQuotes[0].projectName;
       setSelectedProject(remainingProject);
+      setIsNewProject(false);
     } else if (filteredQuotes.length === 0) {
-      setIsNewProject(true);
       setSelectedProject('');
+      setIsNewProject(false);
     }
   };
 
   const updateProjectName = (oldName: string, newName: string) => {
-    setQuotes(quotes.map(quote => 
-      quote.projectName === oldName 
-        ? { ...quote, projectName: newName }
-        : quote
-    ));
-    setSelectedProject(newName);
+    if (newName.trim() && newName !== oldName) {
+      setQuotes(quotes.map(quote => 
+        quote.projectName === oldName 
+          ? { ...quote, projectName: newName.trim() }
+          : quote
+      ));
+      setSelectedProject(newName.trim());
+      setIsEditingProjectName(false);
+    }
   };
 
   const uniqueProjects = [...new Set(quotes.map(quote => quote.projectName))];
+  
   
   const displayedQuotes = selectedProject && !isNewProject 
     ? quotes.filter(quote => quote.projectName === selectedProject)
@@ -357,60 +373,127 @@ const CompareVendors: React.FC = () => {
             Compare estimates and evaluate vendors for your home projects
           </p>
           
-          {/* Project Selector */}
-          <div className="max-w-md mx-auto">
+          {/* Project Management */}
+          <div className="max-w-2xl mx-auto">
             <Label className="text-left block mb-2 font-medium">
-              Select Project
+              Project Management
             </Label>
-            <div className="space-y-3">
-              <Select
-                value={isNewProject ? 'new-project' : selectedProject}
-                onValueChange={(value) => {
-                  if (value === 'new-project') {
-                    setIsNewProject(true);
-                    setSelectedProject('');
-                  } else {
-                    setIsNewProject(false);
-                    setSelectedProject(value);
-                  }
-                }}
-              >
-                <SelectTrigger className="text-center text-lg">
-                  <SelectValue placeholder="Select a project or create new" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="new-project">+ Create New Project</SelectItem>
-                  {uniqueProjects.map((project) => (
-                    <SelectItem key={project} value={project}>
-                      {project}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              
-              {isNewProject && (
-                <div className="text-center">
-                  <p className="text-sm text-muted-foreground">
-                    Add your first vendor card to create a new project
-                  </p>
-                </div>
-              )}
-              
-              {!isNewProject && selectedProject && displayedQuotes.length > 0 && (
-                <div className="text-center">
+            
+            {isNewProject ? (
+              <div className="space-y-3">
+                <div className="flex gap-3">
                   <Input
-                    value={selectedProject}
-                    onChange={(e) => updateProjectName(selectedProject, e.target.value)}
-                    className="text-center text-lg font-semibold"
+                    placeholder="Enter new project name (e.g., Kitchen Remodel)"
+                    className="text-center text-lg"
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') {
+                        const target = e.target as HTMLInputElement;
+                        saveNewProject(target.value);
+                      }
+                    }}
+                    autoFocus
                   />
-                  {lowestEstimate && (
-                    <p className="text-sm text-muted-foreground mt-2">
-                      {displayedQuotes.length} quotes • Lowest: {currency.symbol}{lowestEstimate.toFixed(2)}
-                    </p>
-                  )}
+                  <Button
+                    onClick={(e) => {
+                      const input = e.currentTarget.parentElement?.querySelector('input') as HTMLInputElement;
+                      if (input) saveNewProject(input.value);
+                    }}
+                    variant="default"
+                  >
+                    Create Project
+                  </Button>
                 </div>
-              )}
-            </div>
+                <p className="text-sm text-muted-foreground text-center">
+                  Enter a project name and click "Create Project" to get started
+                </p>
+              </div>
+            ) : (
+              <div className="flex gap-3 items-center">
+                <Button
+                  onClick={createNewProject}
+                  variant="outline"
+                  className="whitespace-nowrap"
+                >
+                  New Project
+                </Button>
+                
+                <Select
+                  value={selectedProject}
+                  onValueChange={(value) => {
+                    setSelectedProject(value);
+                    setIsNewProject(false);
+                    setIsEditingProjectName(false);
+                  }}
+                >
+                  <SelectTrigger className="text-center text-lg flex-1">
+                    <SelectValue placeholder="Select a project" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {uniqueProjects.map((project) => (
+                      <SelectItem key={project} value={project}>
+                        {project}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            )}
+            
+            {!isNewProject && selectedProject && displayedQuotes.length > 0 && (
+              <div className="mt-4 text-center space-y-2">
+                {isEditingProjectName ? (
+                  <div className="flex gap-2">
+                    <Input
+                      defaultValue={selectedProject}
+                      className="text-center text-lg font-semibold"
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') {
+                          const target = e.target as HTMLInputElement;
+                          updateProjectName(selectedProject, target.value);
+                        }
+                        if (e.key === 'Escape') {
+                          setIsEditingProjectName(false);
+                        }
+                      }}
+                      autoFocus
+                    />
+                    <Button
+                      onClick={(e) => {
+                        const input = e.currentTarget.parentElement?.querySelector('input') as HTMLInputElement;
+                        if (input) updateProjectName(selectedProject, input.value);
+                      }}
+                      size="sm"
+                    >
+                      Save
+                    </Button>
+                    <Button
+                      onClick={() => setIsEditingProjectName(false)}
+                      variant="outline"
+                      size="sm"
+                    >
+                      Cancel
+                    </Button>
+                  </div>
+                ) : (
+                  <div className="flex items-center justify-center gap-2">
+                    <h2 className="text-lg font-semibold">{selectedProject}</h2>
+                    <Button
+                      onClick={() => setIsEditingProjectName(true)}
+                      variant="ghost"
+                      size="sm"
+                      className="text-xs"
+                    >
+                      Edit Name
+                    </Button>
+                  </div>
+                )}
+                {lowestEstimate && (
+                  <p className="text-sm text-muted-foreground">
+                    {displayedQuotes.length} quotes • Lowest: {currency.symbol}{lowestEstimate.toFixed(2)}
+                  </p>
+                )}
+              </div>
+            )}
           </div>
         </div>
 
@@ -428,20 +511,22 @@ const CompareVendors: React.FC = () => {
           ))}
 
           {/* Add New Vendor Card Button */}
-          <div className="flex items-center justify-center">
-            <Button
-              onClick={addVendorCard}
-              variant="outline"
-              size="lg"
-              className="h-20 w-20 rounded-full border-2 border-dashed border-primary hover:bg-primary/5"
-            >
-              <Plus className="h-8 w-8 text-primary" />
-            </Button>
-          </div>
+          {!isNewProject && selectedProject && (
+            <div className="flex items-center justify-center">
+              <Button
+                onClick={() => addVendorCard()}
+                variant="outline"
+                size="lg"
+                className="h-20 w-20 rounded-full border-2 border-dashed border-primary hover:bg-primary/5"
+              >
+                <Plus className="h-8 w-8 text-primary" />
+              </Button>
+            </div>
+          )}
         </div>
 
-        {/* Empty State */}
-        {displayedQuotes.length === 0 && !isNewProject && (
+        {/* Empty States */}
+        {!isNewProject && displayedQuotes.length === 0 && selectedProject && (
           <div className="text-center py-8">
             <p className="text-muted-foreground">
               No vendor quotes for "{selectedProject}" yet. Click the + button to add your first vendor!
@@ -449,10 +534,10 @@ const CompareVendors: React.FC = () => {
           </div>
         )}
         
-        {isNewProject && quotes.length === 0 && (
+        {!selectedProject && !isNewProject && quotes.length === 0 && (
           <div className="text-center py-8">
             <p className="text-muted-foreground">
-              Click the + button above to add your first vendor quote and create a project!
+              Click "New Project" above to create your first project and start comparing vendors!
             </p>
           </div>
         )}
