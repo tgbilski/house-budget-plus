@@ -30,8 +30,10 @@
     --muted: 221 15% 95%;
     --muted-foreground: 221 20% 55%;
 
-    --accent: 221 25% 92%;
-    --accent-foreground: 221 47% 24%;
+    /* Your accent color #669c3e = HSL(93, 43%, 43%) */
+    --accent: 93 43% 43%;
+    --accent-foreground: 0 0% 100%;
+    --accent-hover: 93 43% 38%;
 
     /* Status colors that work well with your blue */
     --destructive: 0 84% 60%;

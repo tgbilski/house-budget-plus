@@ -335,8 +335,7 @@ const Vacation: React.FC = () => {
             <div className="flex flex-col sm:flex-row gap-2 items-start sm:items-center">
               <Button 
                 onClick={() => setIsCreatingProject(true)}
-                variant="outline"
-                className="whitespace-nowrap"
+                className="whitespace-nowrap bg-accent hover:bg-accent-hover text-accent-foreground"
               >
                 <Plus className="h-4 w-4 mr-2" />
                 New Vacation
