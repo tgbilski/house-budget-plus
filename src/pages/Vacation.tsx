@@ -1,40 +1,195 @@
-import React, { useState, useEffect } from 'react';
-import { Plus } from 'lucide-react';
+import React, { useState, useEffect, useCallback } from 'react';
+import { Plus, Edit3, Star, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Textarea } from '@/components/ui/textarea';
 import { useAuth } from '@/hooks/useAuth';
 import { useCurrency } from '@/components/BudgetApp';
 import { supabase } from '@/integrations/supabase/client';
 
-interface VacationExpense {
+interface VacationOption {
   id: string;
-  category: string;
-  description: string;
-  amount: number;
-  date: string;
+  destination: string;
+  travelMode: string;
+  estimatedCost: number;
+  notes: string;
+  contact: string;
+  evaluation: {
+    favorableTravel: boolean;
+    destinationSafe: boolean;
+    excitingOption: boolean;
+    everyoneEnjoy: boolean;
+    memorable: boolean;
+  };
 }
 
-const expenseCategories = [
-  'Transportation',
-  'Accommodation',
-  'Food & Dining',
-  'Activities',
-  'Shopping',
-  'Other'
-];
+interface VacationCardProps {
+  option: VacationOption;
+  onUpdate: (option: VacationOption) => void;
+  onRemove: () => void;
+  currency: any;
+}
+
+const VacationCard: React.FC<VacationCardProps> = ({ option, onUpdate, onRemove, currency }) => {
+  const [localOption, setLocalOption] = useState(option);
+
+  const updateField = useCallback((field: keyof VacationOption, value: any) => {
+    const updated = { ...localOption, [field]: value };
+    setLocalOption(updated);
+    onUpdate(updated);
+  }, [localOption, onUpdate]);
+
+  const updateEvaluation = useCallback((field: keyof VacationOption['evaluation'], value: boolean) => {
+    const updated = {
+      ...localOption,
+      evaluation: { ...localOption.evaluation, [field]: value }
+    };
+    setLocalOption(updated);
+    onUpdate(updated);
+  }, [localOption, onUpdate]);
+
+  const getStarCount = () => {
+    const evaluation = localOption.evaluation;
+    return Object.values(evaluation).filter(value => value === true).length;
+  };
+
+  const renderStars = () => {
+    const filledStars = getStarCount();
+    return Array.from({ length: 5 }, (_, index) => (
+      <Star
+        key={index}
+        className={`h-4 w-4 ${
+          index < filledStars ? 'fill-yellow-400 text-yellow-400' : 'text-gray-300'
+        }`}
+      />
+    ));
+  };
+
+  const questions = [
+    { key: 'favorableTravel' as const, label: 'Is the mode of travel favorable?' },
+    { key: 'destinationSafe' as const, label: 'Is the destination safe?' },
+    { key: 'excitingOption' as const, label: 'Does this option excite you?' },
+    { key: 'everyoneEnjoy' as const, label: 'Will everyone enjoy it?' },
+    { key: 'memorable' as const, label: 'Memorable?' }
+  ];
+
+  return (
+    <Card className="relative">
+      <CardHeader>
+        <div className="flex justify-between items-start">
+          <CardTitle className="text-lg">Vacation Option</CardTitle>
+          <div className="flex items-center gap-2">
+            <div className="flex">
+              {renderStars()}
+            </div>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={onRemove}
+              className="text-destructive hover:text-destructive"
+            >
+              <Trash2 className="h-4 w-4" />
+            </Button>
+          </div>
+        </div>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <Label htmlFor={`destination-${option.id}`}>Destination</Label>
+            <Input
+              id={`destination-${option.id}`}
+              value={localOption.destination}
+              onChange={(e) => updateField('destination', e.target.value)}
+              placeholder="Where are you going?"
+            />
+          </div>
+          <div>
+            <Label htmlFor={`travel-mode-${option.id}`}>Travel Mode</Label>
+            <Input
+              id={`travel-mode-${option.id}`}
+              value={localOption.travelMode}
+              onChange={(e) => updateField('travelMode', e.target.value)}
+              placeholder="Flight, drive, cruise, etc."
+            />
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <Label htmlFor={`cost-${option.id}`}>Estimated Cost ({currency.symbol})</Label>
+            <Input
+              id={`cost-${option.id}`}
+              type="number"
+              step="0.01"
+              value={localOption.estimatedCost || ''}
+              onChange={(e) => updateField('estimatedCost', parseFloat(e.target.value) || 0)}
+              placeholder="0.00"
+            />
+          </div>
+          <div>
+            <Label htmlFor={`contact-${option.id}`}>Contact Info</Label>
+            <Input
+              id={`contact-${option.id}`}
+              value={localOption.contact}
+              onChange={(e) => updateField('contact', e.target.value)}
+              placeholder="Travel agent, website, etc."
+            />
+          </div>
+        </div>
+
+        <div>
+          <Label htmlFor={`notes-${option.id}`}>Notes</Label>
+          <Textarea
+            id={`notes-${option.id}`}
+            value={localOption.notes}
+            onChange={(e) => updateField('notes', e.target.value)}
+            placeholder="Additional details about this vacation option..."
+            rows={3}
+          />
+        </div>
+
+        <div className="space-y-3">
+          <h4 className="font-medium text-sm">Evaluation Questions</h4>
+          {questions.map((question) => (
+            <div key={question.key} className="flex items-center justify-between p-3 border border-border rounded-lg">
+              <span className="text-sm">{question.label}</span>
+              <div className="flex gap-2">
+                <Button
+                  variant={localOption.evaluation[question.key] === true ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => updateEvaluation(question.key, true)}
+                >
+                  Yes
+                </Button>
+                <Button
+                  variant={localOption.evaluation[question.key] === false ? "destructive" : "outline"}
+                  size="sm"
+                  onClick={() => updateEvaluation(question.key, false)}
+                >
+                  No
+                </Button>
+              </div>
+            </div>
+          ))}
+        </div>
+      </CardContent>
+    </Card>
+  );
+};
 
 const Vacation: React.FC = () => {
-  const [expenses, setExpenses] = useState<VacationExpense[]>([]);
-  const [budget, setBudget] = useState<number>(0);
-  const [newExpense, setNewExpense] = useState({ 
-    category: '', 
-    description: '', 
-    amount: '', 
-    date: '' 
-  });
+  const [options, setOptions] = useState<VacationOption[]>([]);
+  const [selectedProject, setSelectedProject] = useState<string>('default');
+  const [projects, setProjects] = useState<string[]>(['default']);
+  const [isCreatingProject, setIsCreatingProject] = useState(false);
+  const [newProjectName, setNewProjectName] = useState('');
+  const [isEditingProjectName, setIsEditingProjectName] = useState(false);
+  const [editProjectName, setEditProjectName] = useState('');
+  
   const { user } = useAuth();
   const { currency } = useCurrency();
 
@@ -42,13 +197,16 @@ const Vacation: React.FC = () => {
     if (user) {
       loadData();
     }
-  }, [user]);
+  }, [user, selectedProject]);
 
   useEffect(() => {
-    // Set today's date as default
-    const today = new Date().toISOString().split('T')[0];
-    setNewExpense(prev => ({ ...prev, date: today }));
-  }, []);
+    if (user && options.length > 0) {
+      const timeoutId = setTimeout(() => {
+        saveData();
+      }, 1000);
+      return () => clearTimeout(timeoutId);
+    }
+  }, [options, user]);
 
   const loadData = async () => {
     if (!user) return;
@@ -58,15 +216,29 @@ const Vacation: React.FC = () => {
       .select('*')
       .eq('user_id', user.id)
       .eq('page_type', 'vacation')
+      .eq('calculator_id', selectedProject)
       .order('created_at', { ascending: false });
 
     if (data && data.length > 0) {
       const budgetData = data[0];
-      setBudget(budgetData.income || 0);
-      const expensesData = budgetData.expenses as any;
-      if (expensesData.expenses) {
-        setExpenses(expensesData.expenses);
+      const optionsData = budgetData.expenses as any;
+      if (optionsData.options) {
+        setOptions(optionsData.options);
       }
+    } else {
+      setOptions([]);
+    }
+
+    // Load all projects
+    const { data: allData } = await supabase
+      .from('budget_data')
+      .select('calculator_id')
+      .eq('user_id', user.id)
+      .eq('page_type', 'vacation');
+
+    if (allData) {
+      const uniqueProjects = [...new Set(allData.map(item => item.calculator_id))];
+      setProjects(uniqueProjects.length > 0 ? uniqueProjects : ['default']);
     }
   };
 
@@ -78,9 +250,9 @@ const Vacation: React.FC = () => {
       .upsert({
         user_id: user.id,
         page_type: 'vacation',
-        calculator_id: 'vacation',
-        income: budget,
-        expenses: { expenses } as any
+        calculator_id: selectedProject,
+        income: 0,
+        expenses: { options } as any
       });
 
     if (error) {
@@ -88,242 +260,218 @@ const Vacation: React.FC = () => {
     }
   };
 
-  const addExpense = () => {
-    if (newExpense.category && newExpense.description && newExpense.amount && newExpense.date) {
-      const expense: VacationExpense = {
-        id: Date.now().toString(),
-        category: newExpense.category,
-        description: newExpense.description,
-        amount: parseFloat(newExpense.amount),
-        date: newExpense.date
-      };
-      setExpenses([...expenses, expense]);
-      setNewExpense({ category: '', description: '', amount: '', date: newExpense.date });
+  const addVacationCard = () => {
+    const newOption: VacationOption = {
+      id: Date.now().toString(),
+      destination: '',
+      travelMode: '',
+      estimatedCost: 0,
+      notes: '',
+      contact: '',
+      evaluation: {
+        favorableTravel: false,
+        destinationSafe: false,
+        excitingOption: false,
+        everyoneEnjoy: false,
+        memorable: false
+      }
+    };
+    setOptions([...options, newOption]);
+  };
+
+  const updateVacationCard = (updatedOption: VacationOption) => {
+    setOptions(options.map(option => 
+      option.id === updatedOption.id ? updatedOption : option
+    ));
+  };
+
+  const removeVacationCard = (id: string) => {
+    setOptions(options.filter(option => option.id !== id));
+  };
+
+  const createNewProject = () => {
+    if (newProjectName.trim()) {
+      const newProjects = [...projects, newProjectName.trim()];
+      setProjects(newProjects);
+      setSelectedProject(newProjectName.trim());
+      setNewProjectName('');
+      setIsCreatingProject(false);
+      
+      // Add first vacation card to new project
+      setTimeout(() => {
+        addVacationCard();
+      }, 100);
     }
   };
 
-  const removeExpense = (id: string) => {
-    setExpenses(expenses.filter(expense => expense.id !== id));
+  const updateProjectName = () => {
+    if (editProjectName.trim() && editProjectName.trim() !== selectedProject) {
+      const updatedProjects = projects.map(project => 
+        project === selectedProject ? editProjectName.trim() : project
+      );
+      setProjects(updatedProjects);
+      setSelectedProject(editProjectName.trim());
+    }
+    setIsEditingProjectName(false);
+    setEditProjectName('');
   };
 
-  useEffect(() => {
-    if (user) {
-      saveData();
-    }
-  }, [expenses, budget, user]);
-
-  const totalSpent = expenses.reduce((sum, expense) => sum + expense.amount, 0);
-  const remaining = budget - totalSpent;
-  const budgetPercentage = budget > 0 ? (totalSpent / budget) * 100 : 0;
-
-  const expensesByCategory = expenseCategories.map(category => ({
-    category,
-    amount: expenses
-      .filter(expense => expense.category === category)
-      .reduce((sum, expense) => sum + expense.amount, 0)
-  })).filter(item => item.amount > 0);
+  const getLowestCost = () => {
+    if (options.length === 0) return 0;
+    return Math.min(...options.map(option => option.estimatedCost || Infinity));
+  };
 
   return (
     <div className="min-h-screen bg-background">
       <div className="container mx-auto px-4 py-8">
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-foreground mb-4">Vacation Budget</h1>
+          <h1 className="text-3xl font-bold text-foreground mb-4">Vacation Planning</h1>
           <p className="text-muted-foreground">
-            Plan and track your vacation expenses to stay within budget
+            Compare vacation options and find your perfect getaway
           </p>
         </div>
 
-        <div className="max-w-4xl mx-auto space-y-6">
-          {/* Budget Overview */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Budget Overview</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
-                <div>
-                  <Label htmlFor="budget">Total Budget ({currency.symbol})</Label>
-                  <Input
-                    id="budget"
-                    type="number"
-                    step="0.01"
-                    value={budget || ''}
-                    onChange={(e) => setBudget(parseFloat(e.target.value) || 0)}
-                    placeholder="0.00"
-                  />
-                </div>
-                <div className="text-center">
-                  <h3 className="text-sm font-medium text-muted-foreground">Total Spent</h3>
-                  <p className="text-2xl font-bold text-primary">
-                    {currency.symbol}{totalSpent.toFixed(2)}
-                  </p>
-                </div>
-                <div className="text-center">
-                  <h3 className="text-sm font-medium text-muted-foreground">Remaining</h3>
-                  <p className={`text-2xl font-bold ${remaining >= 0 ? 'text-green-600' : 'text-red-600'}`}>
-                    {currency.symbol}{remaining.toFixed(2)}
-                  </p>
-                </div>
-                <div className="text-center">
-                  <h3 className="text-sm font-medium text-muted-foreground">Budget Used</h3>
-                  <p className={`text-2xl font-bold ${budgetPercentage <= 100 ? 'text-primary' : 'text-red-600'}`}>
-                    {budgetPercentage.toFixed(1)}%
-                  </p>
-                </div>
-              </div>
+        <div className="max-w-6xl mx-auto space-y-6">
+          {/* Project Management */}
+          <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
+            <div className="flex flex-col sm:flex-row gap-2 items-start sm:items-center">
+              <Button 
+                onClick={() => setIsCreatingProject(true)}
+                variant="outline"
+                className="whitespace-nowrap"
+              >
+                <Plus className="h-4 w-4 mr-2" />
+                New Project
+              </Button>
               
-              {budget > 0 && (
-                <div className="w-full bg-gray-200 rounded-full h-3">
-                  <div
-                    className={`h-3 rounded-full transition-all ${
-                      budgetPercentage <= 80 ? 'bg-green-500' :
-                      budgetPercentage <= 100 ? 'bg-yellow-500' : 'bg-red-500'
-                    }`}
-                    style={{ width: `${Math.min(budgetPercentage, 100)}%` }}
-                  ></div>
-                </div>
-              )}
-            </CardContent>
-          </Card>
-
-          {/* Add New Expense */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Add Expense</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
-                <div>
-                  <Label htmlFor="category">Category</Label>
-                  <Select
-                    value={newExpense.category}
-                    onValueChange={(value) => setNewExpense({ ...newExpense, category: value })}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select category" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {expenseCategories.map(category => (
-                        <SelectItem key={category} value={category}>
-                          {category}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div>
-                  <Label htmlFor="description">Description</Label>
-                  <Input
-                    id="description"
-                    value={newExpense.description}
-                    onChange={(e) => setNewExpense({ ...newExpense, description: e.target.value })}
-                    placeholder="What you spent on"
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="amount">Amount ({currency.symbol})</Label>
-                  <Input
-                    id="amount"
-                    type="number"
-                    step="0.01"
-                    value={newExpense.amount}
-                    onChange={(e) => setNewExpense({ ...newExpense, amount: e.target.value })}
-                    placeholder="0.00"
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="date">Date</Label>
-                  <Input
-                    id="date"
-                    type="date"
-                    value={newExpense.date}
-                    onChange={(e) => setNewExpense({ ...newExpense, date: e.target.value })}
-                  />
-                </div>
-                <div className="flex items-end">
-                  <Button onClick={addExpense} className="w-full">
-                    <Plus className="h-4 w-4 mr-2" />
-                    Add
-                  </Button>
-                </div>
+              <div className="flex items-center gap-2">
+                <Select value={selectedProject} onValueChange={setSelectedProject}>
+                  <SelectTrigger className="w-[200px]">
+                    <SelectValue placeholder="Select project" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {projects.map((project) => (
+                      <SelectItem key={project} value={project}>
+                        {project}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => {
+                    setEditProjectName(selectedProject);
+                    setIsEditingProjectName(true);
+                  }}
+                >
+                  <Edit3 className="h-4 w-4" />
+                </Button>
               </div>
-            </CardContent>
-          </Card>
+            </div>
+            
+            {options.length > 0 && (
+              <div className="text-sm text-muted-foreground">
+                Lowest estimate: {currency.symbol}{getLowestCost().toFixed(2)}
+              </div>
+            )}
+          </div>
 
-          {/* Category Breakdown */}
-          {expensesByCategory.length > 0 && (
+          {/* Project Creation */}
+          {isCreatingProject && (
             <Card>
               <CardHeader>
-                <CardTitle>Spending by Category</CardTitle>
+                <CardTitle>Create New Project</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {expensesByCategory.map(item => (
-                    <div key={item.category} className="text-center p-4 border border-border rounded-lg">
-                      <h3 className="font-medium">{item.category}</h3>
-                      <p className="text-2xl font-bold text-primary">
-                        {currency.symbol}{item.amount.toFixed(2)}
-                      </p>
-                      <p className="text-sm text-muted-foreground">
-                        {budget > 0 ? `${((item.amount / budget) * 100).toFixed(1)}% of budget` : ''}
-                      </p>
-                    </div>
-                  ))}
+                <div className="flex gap-2">
+                  <Input
+                    value={newProjectName}
+                    onChange={(e) => setNewProjectName(e.target.value)}
+                    placeholder="Enter project name"
+                    onKeyPress={(e) => e.key === 'Enter' && createNewProject()}
+                  />
+                  <Button onClick={createNewProject}>Create</Button>
+                  <Button 
+                    variant="outline" 
+                    onClick={() => {
+                      setIsCreatingProject(false);
+                      setNewProjectName('');
+                    }}
+                  >
+                    Cancel
+                  </Button>
                 </div>
               </CardContent>
             </Card>
           )}
 
-          {/* Recent Expenses */}
-          {expenses.length > 0 ? (
+          {/* Project Name Editing */}
+          {isEditingProjectName && (
             <Card>
               <CardHeader>
-                <CardTitle>Recent Expenses</CardTitle>
+                <CardTitle>Edit Project Name</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="space-y-3">
-                  {expenses
-                    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
-                    .map(expense => (
-                      <div
-                        key={expense.id}
-                        className="flex flex-col md:flex-row md:items-center justify-between p-4 border border-border rounded-lg"
-                      >
-                        <div className="flex-1">
-                          <div className="flex flex-col md:flex-row md:items-center gap-2">
-                            <span className="inline-block px-2 py-1 text-xs bg-primary/10 text-primary rounded">
-                              {expense.category}
-                            </span>
-                            <span className="text-sm text-muted-foreground">
-                              {new Date(expense.date).toLocaleDateString()}
-                            </span>
-                          </div>
-                          <h3 className="font-semibold mt-1">{expense.description}</h3>
-                        </div>
-                        <div className="flex items-center gap-4 mt-2 md:mt-0">
-                          <span className="font-semibold">
-                            {currency.symbol}{expense.amount.toFixed(2)}
-                          </span>
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => removeExpense(expense.id)}
-                            className="text-destructive hover:text-destructive"
-                          >
-                            Remove
-                          </Button>
-                        </div>
-                      </div>
-                    ))}
+                <div className="flex gap-2">
+                  <Input
+                    value={editProjectName}
+                    onChange={(e) => setEditProjectName(e.target.value)}
+                    placeholder="Enter new project name"
+                    onKeyPress={(e) => e.key === 'Enter' && updateProjectName()}
+                  />
+                  <Button onClick={updateProjectName}>Save</Button>
+                  <Button 
+                    variant="outline" 
+                    onClick={() => {
+                      setIsEditingProjectName(false);
+                      setEditProjectName('');
+                    }}
+                  >
+                    Cancel
+                  </Button>
                 </div>
               </CardContent>
             </Card>
-          ) : (
+          )}
+
+          {/* Vacation Options */}
+          <div className="grid gap-6">
+            {options.map((option) => (
+              <VacationCard
+                key={option.id}
+                option={option}
+                onUpdate={updateVacationCard}
+                onRemove={() => removeVacationCard(option.id)}
+                currency={currency}
+              />
+            ))}
+          </div>
+
+          {/* Add New Option Button */}
+          <div className="flex justify-center">
+            <Button 
+              onClick={addVacationCard}
+              size="lg"
+              className="w-full max-w-md"
+            >
+              <Plus className="h-5 w-5 mr-2" />
+              Add Vacation Option
+            </Button>
+          </div>
+
+          {/* Empty State */}
+          {options.length === 0 && !isCreatingProject && (
             <Card>
-              <CardContent className="text-center py-8">
-                <p className="text-muted-foreground">
-                  No vacation expenses tracked yet. Set your budget and add expenses above!
+              <CardContent className="text-center py-12">
+                <p className="text-muted-foreground mb-4">
+                  No vacation options added yet for project "{selectedProject}"
                 </p>
+                <Button onClick={addVacationCard}>
+                  <Plus className="h-4 w-4 mr-2" />
+                  Add Your First Vacation Option
+                </Button>
               </CardContent>
             </Card>
           )}
