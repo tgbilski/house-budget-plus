@@ -238,7 +238,13 @@ const Vacation: React.FC = () => {
 
     if (allData) {
       const uniqueProjects = [...new Set(allData.map(item => item.calculator_id))];
-      setProjects(uniqueProjects.length > 0 ? uniqueProjects : ['default']);
+      const projectList = uniqueProjects.length > 0 ? uniqueProjects : ['default'];
+      setProjects(projectList);
+      
+      // Set default selected project if none is selected
+      if (!selectedProject && projectList.length > 0) {
+        setSelectedProject(projectList[0]);
+      }
     }
   };
 
