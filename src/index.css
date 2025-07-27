@@ -6,27 +6,34 @@
 
 @layer base {
   :root {
+    /* Base colors - clean whites and grays */
     --background: 0 0% 100%;
-    --foreground: 225 15% 20%;
+    --foreground: 221 47% 24%;
 
     --card: 0 0% 100%;
-    --card-foreground: 225 15% 20%;
+    --card-foreground: 221 47% 24%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 225 15% 20%;
+    --popover-foreground: 221 47% 24%;
 
-    --primary: 214 100% 50%;
+    /* Your logo's primary color #203459 = HSL(221, 47%, 24%) */
+    --primary: 221 47% 24%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 210 17% 96%;
-    --secondary-foreground: 225 15% 20%;
+    /* Lighter version of your primary for hover states */
+    --primary-hover: 221 47% 30%;
 
-    --muted: 210 17% 96%;
-    --muted-foreground: 225 9% 60%;
+    /* Complementary colors for a modern, fun feel */
+    --secondary: 221 20% 96%;
+    --secondary-foreground: 221 47% 24%;
 
-    --accent: 210 17% 96%;
-    --accent-foreground: 225 15% 20%;
+    --muted: 221 15% 95%;
+    --muted-foreground: 221 20% 55%;
 
+    --accent: 221 25% 92%;
+    --accent-foreground: 221 47% 24%;
+
+    /* Status colors that work well with your blue */
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
 
@@ -36,27 +43,30 @@
     --warning: 38 92% 50%;
     --warning-foreground: 0 0% 100%;
 
-    --border: 214 32% 91%;
-    --input: 214 32% 91%;
-    --ring: 214 100% 50%;
+    /* Borders and inputs with subtle blue tint */
+    --border: 221 30% 88%;
+    --input: 221 30% 88%;
+    --ring: 221 47% 24%;
 
-    --radius: 0.5rem;
+    --radius: 0.75rem;
 
+    /* Sidebar colors */
     --sidebar-background: 0 0% 98%;
-
-    --sidebar-foreground: 240 5.3% 26.1%;
-
-    --sidebar-primary: 240 5.9% 10%;
-
+    --sidebar-foreground: 221 47% 24%;
+    --sidebar-primary: 221 47% 24%;
     --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 221 15% 95%;
+    --sidebar-accent-foreground: 221 47% 24%;
+    --sidebar-border: 221 30% 88%;
+    --sidebar-ring: 221 47% 24%;
 
-    --sidebar-accent: 240 4.8% 95.9%;
-
-    --sidebar-accent-foreground: 240 5.9% 10%;
-
-    --sidebar-border: 220 13% 91%;
-
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    /* Fun gradients using your brand color */
+    --gradient-primary: linear-gradient(135deg, hsl(221 47% 24%), hsl(221 47% 35%));
+    --gradient-secondary: linear-gradient(135deg, hsl(221 15% 95%), hsl(0 0% 100%));
+    
+    /* Modern shadows */
+    --shadow-elegant: 0 4px 24px -4px hsl(221 47% 24% / 0.1);
+    --shadow-glow: 0 0 32px hsl(221 47% 24% / 0.15);
   }
 
   .dark {
@@ -104,6 +114,25 @@
   }
 
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground font-sans;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+
+  /* Modern button hover effects */
+  .btn-gradient {
+    @apply bg-gradient-primary text-primary-foreground shadow-elegant;
+  }
+
+  .btn-gradient:hover {
+    @apply shadow-glow;
+  }
+
+  /* Enhanced card styling */
+  .card-modern {
+    @apply bg-card rounded-lg shadow-elegant border border-border/50;
+  }
+
+  .card-modern:hover {
+    @apply shadow-glow;
   }
 }
