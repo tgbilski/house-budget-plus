@@ -442,11 +442,11 @@ const Vacation: React.FC = () => {
           <div className="flex justify-center">
             <Button 
               onClick={addVacationCard}
-              size="lg"
-              className="w-full max-w-md"
+              size="sm"
+              variant="outline"
+              className="rounded-full w-10 h-10 p-0"
             >
-              <Plus className="h-5 w-5 mr-2" />
-              Add Vacation Option
+              <Plus className="h-4 w-4" />
             </Button>
           </div>
 
