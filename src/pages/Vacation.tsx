@@ -438,7 +438,7 @@ const Vacation: React.FC = () => {
           {!selectedProject && !isCreatingProject && options.length === 0 && (
             <div className="text-center py-8">
               <p className="text-muted-foreground">
-                Click "New Vacation" above to create your first vacation project and start planning!
+                Click "New Vacation" above to create your first vacation comparison!
               </p>
             </div>
           )}
