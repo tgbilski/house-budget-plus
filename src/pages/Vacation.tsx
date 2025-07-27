@@ -344,10 +344,10 @@ const Vacation: React.FC = () => {
                 New Project
               </Button>
               
-              <div className="flex items-center gap-2">
+              {projects.length > 1 && (
                 <Select value={selectedProject} onValueChange={setSelectedProject}>
                   <SelectTrigger className="w-[200px]">
-                    <SelectValue placeholder="Select project" />
+                    <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
                     {projects.map((project) => (
@@ -357,18 +357,7 @@ const Vacation: React.FC = () => {
                     ))}
                   </SelectContent>
                 </Select>
-                
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => {
-                    setEditProjectName(selectedProject);
-                    setIsEditingProjectName(true);
-                  }}
-                >
-                  <Edit3 className="h-4 w-4" />
-                </Button>
-              </div>
+              )}
             </div>
             
             {options.length > 0 && (

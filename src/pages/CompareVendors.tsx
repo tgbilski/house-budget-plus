@@ -159,44 +159,104 @@ const VendorCard: React.FC<VendorCardProps> = ({ quote, onUpdate, onRemove, show
           <h3 className="text-sm font-semibold text-foreground mb-3">Vendor Evaluation</h3>
           
           <div className="space-y-3">
-            <div className="flex items-center justify-between">
-              <Label className="text-sm">Did you like the sales rep?</Label>
-              <Switch
-                checked={localQuote.likedSalesRep}
-                onCheckedChange={(checked) => updateField('likedSalesRep', checked)}
-              />
+            <div className="flex items-center justify-between p-3 border border-border rounded-lg">
+              <span className="text-sm">Did you like the sales rep?</span>
+              <div className="flex gap-2">
+                <Button
+                  variant={localQuote.likedSalesRep === true ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => updateField('likedSalesRep', true)}
+                >
+                  Yes
+                </Button>
+                <Button
+                  variant={localQuote.likedSalesRep === false ? "destructive" : "outline"}
+                  size="sm"
+                  onClick={() => updateField('likedSalesRep', false)}
+                >
+                  No
+                </Button>
+              </div>
             </div>
 
-            <div className="flex items-center justify-between">
-              <Label className="text-sm">Do they offer financing?</Label>
-              <Switch
-                checked={localQuote.offersFinancing}
-                onCheckedChange={(checked) => updateField('offersFinancing', checked)}
-              />
+            <div className="flex items-center justify-between p-3 border border-border rounded-lg">
+              <span className="text-sm">Do they offer financing?</span>
+              <div className="flex gap-2">
+                <Button
+                  variant={localQuote.offersFinancing === true ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => updateField('offersFinancing', true)}
+                >
+                  Yes
+                </Button>
+                <Button
+                  variant={localQuote.offersFinancing === false ? "destructive" : "outline"}
+                  size="sm"
+                  onClick={() => updateField('offersFinancing', false)}
+                >
+                  No
+                </Button>
+              </div>
             </div>
 
-            <div className="flex items-center justify-between">
-              <Label className="text-sm">Is timing good?</Label>
-              <Switch
-                checked={localQuote.goodTiming}
-                onCheckedChange={(checked) => updateField('goodTiming', checked)}
-              />
+            <div className="flex items-center justify-between p-3 border border-border rounded-lg">
+              <span className="text-sm">Is timing good?</span>
+              <div className="flex gap-2">
+                <Button
+                  variant={localQuote.goodTiming === true ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => updateField('goodTiming', true)}
+                >
+                  Yes
+                </Button>
+                <Button
+                  variant={localQuote.goodTiming === false ? "destructive" : "outline"}
+                  size="sm"
+                  onClick={() => updateField('goodTiming', false)}
+                >
+                  No
+                </Button>
+              </div>
             </div>
 
-            <div className="flex items-center justify-between">
-              <Label className="text-sm">Are they trustworthy?</Label>
-              <Switch
-                checked={localQuote.trustworthy}
-                onCheckedChange={(checked) => updateField('trustworthy', checked)}
-              />
+            <div className="flex items-center justify-between p-3 border border-border rounded-lg">
+              <span className="text-sm">Are they trustworthy?</span>
+              <div className="flex gap-2">
+                <Button
+                  variant={localQuote.trustworthy === true ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => updateField('trustworthy', true)}
+                >
+                  Yes
+                </Button>
+                <Button
+                  variant={localQuote.trustworthy === false ? "destructive" : "outline"}
+                  size="sm"
+                  onClick={() => updateField('trustworthy', false)}
+                >
+                  No
+                </Button>
+              </div>
             </div>
 
-            <div className="flex items-center justify-between">
-              <Label className="text-sm">Responsive?</Label>
-              <Switch
-                checked={localQuote.responsive}
-                onCheckedChange={(checked) => updateField('responsive', checked)}
-              />
+            <div className="flex items-center justify-between p-3 border border-border rounded-lg">
+              <span className="text-sm">Responsive?</span>
+              <div className="flex gap-2">
+                <Button
+                  variant={localQuote.responsive === true ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => updateField('responsive', true)}
+                >
+                  Yes
+                </Button>
+                <Button
+                  variant={localQuote.responsive === false ? "destructive" : "outline"}
+                  size="sm"
+                  onClick={() => updateField('responsive', false)}
+                >
+                  No
+                </Button>
+              </div>
             </div>
           </div>
         </div>
