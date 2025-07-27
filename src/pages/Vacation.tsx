@@ -371,14 +371,14 @@ const Vacation: React.FC = () => {
           {isCreatingProject && (
             <Card>
               <CardHeader>
-                <CardTitle>Create New Project</CardTitle>
+                <CardTitle>Create New Vacation</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="flex gap-2">
                   <Input
                     value={newProjectName}
                     onChange={(e) => setNewProjectName(e.target.value)}
-                    placeholder="Enter project name"
+                    placeholder="Enter vacation name"
                     onKeyPress={(e) => e.key === 'Enter' && createNewProject()}
                   />
                   <Button onClick={createNewProject}>Create</Button>
