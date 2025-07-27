@@ -2,6 +2,7 @@ import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/hooks/useAuth';
+import ProfileDropdown from './ProfileDropdown';
 
 const Header: React.FC = () => {
   const location = useLocation();
@@ -67,13 +68,7 @@ const Header: React.FC = () => {
         {/* Auth Button */}
         <div className="flex items-center">
           {user ? (
-            <Button
-              onClick={signOut}
-              variant="outline"
-              size="sm"
-            >
-              Sign Out
-            </Button>
+            <ProfileDropdown />
           ) : (
             <Link to="/auth">
               <Button size="sm">
