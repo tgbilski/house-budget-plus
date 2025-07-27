@@ -46,7 +46,7 @@ const TakeoutCalendar: React.FC = () => {
     if (user) {
       loadData();
     }
-  }, [user]);
+  }, [user, selectedYear]);
 
   const loadData = async () => {
     if (!user) return;
@@ -59,9 +59,10 @@ const TakeoutCalendar: React.FC = () => {
       .order('created_at', { ascending: false });
 
     if (data && data.length > 0) {
-      const expenses = data[0].expenses as any;
-      if (expenses.dailySpending) {
-        setSpendingData(expenses.dailySpending);
+      const budgetData = data[0];
+      const expensesData = budgetData.expenses as any;
+      if (expensesData.spendingData) {
+        setSpendingData(expensesData.spendingData);
       }
     }
   };
@@ -74,8 +75,9 @@ const TakeoutCalendar: React.FC = () => {
       .upsert({
         user_id: user.id,
         page_type: 'takeout',
-        calculator_id: 'calendar',
-        expenses: { dailySpending: spendingData } as any
+        calculator_id: 'takeout',
+        income: 0,
+        expenses: { spendingData } as any
       });
 
     if (error) {
@@ -118,23 +120,36 @@ const TakeoutCalendar: React.FC = () => {
   const handleSaveSpending = () => {
     if (selectedDate && selectedAmount) {
       const amount = parseFloat(selectedAmount);
-      if (amount >= 0) {
-        const updatedSpending = spendingData.filter(spending => spending.date !== selectedDate);
-        
-        if (amount > 0) {
-          updatedSpending.push({
-            date: selectedDate,
-            amount,
-            notes: selectedNotes
-          });
+      const existingIndex = spendingData.findIndex(spending => spending.date === selectedDate);
+      
+      if (amount === 0) {
+        // Remove spending entry if amount is 0
+        if (existingIndex >= 0) {
+          const newSpendingData = [...spendingData];
+          newSpendingData.splice(existingIndex, 1);
+          setSpendingData(newSpendingData);
         }
-        
-        setSpendingData(updatedSpending);
-        setIsDialogOpen(false);
-        setSelectedDate('');
-        setSelectedAmount('');
-        setSelectedNotes('');
+      } else {
+        // Add or update spending entry
+        const newSpending: DaySpending = {
+          date: selectedDate,
+          amount: amount,
+          notes: selectedNotes
+        };
+
+        if (existingIndex >= 0) {
+          const newSpendingData = [...spendingData];
+          newSpendingData[existingIndex] = newSpending;
+          setSpendingData(newSpendingData);
+        } else {
+          setSpendingData([...spendingData, newSpending]);
+        }
       }
+      
+      setIsDialogOpen(false);
+      setSelectedDate('');
+      setSelectedAmount('');
+      setSelectedNotes('');
     }
   };
 
@@ -175,26 +190,31 @@ const TakeoutCalendar: React.FC = () => {
             isToday ? 'bg-primary/10 border-primary' : ''
           }`}
         >
-          <div className={`text-sm font-medium ${isToday ? 'text-primary' : 'text-foreground'}`}>
-            {day}
-          </div>
+          <div className="font-semibold text-sm">{day}</div>
           {spending && (
-            <div className="absolute bottom-1 left-1 right-1">
-              <div className="text-xs bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200 px-1 py-0.5 rounded text-center font-medium">
-                {currency.symbol}{spending.amount.toFixed(0)}
-              </div>
-              {spending.notes && (
-                <div className="text-xs text-muted-foreground truncate mt-0.5">
-                  {spending.notes}
-                </div>
-              )}
+            <div className="text-xs text-primary font-medium mt-1">
+              {currency.symbol}{spending.amount.toFixed(2)}
+            </div>
+          )}
+          {spending?.notes && (
+            <div className="text-xs text-muted-foreground truncate mt-1">
+              {spending.notes}
             </div>
           )}
         </div>
       );
     }
 
-    return days;
+    return (
+      <div className="grid grid-cols-7 gap-0 border border-border">
+        {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
+          <div key={day} className="p-2 bg-muted text-center font-semibold text-sm border-b border-border">
+            {day}
+          </div>
+        ))}
+        {days}
+      </div>
+    );
   };
 
   return (
@@ -202,18 +222,22 @@ const TakeoutCalendar: React.FC = () => {
       <div className="container mx-auto px-4 py-8">
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold text-foreground mb-4">Takeout Calendar {selectedYear}</h1>
-          <p className="text-muted-foreground mb-4">
+          <p className="text-muted-foreground">
             Track your daily takeout spending throughout the year
           </p>
-          
-          {/* Year Summary */}
-          <Card className="max-w-md mx-auto">
-            <CardContent className="p-4">
+        </div>
+
+        {/* Year Summary Card */}
+        <div className="max-w-md mx-auto mb-8">
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-center">Year {selectedYear} Summary</CardTitle>
+            </CardHeader>
+            <CardContent>
               <div className="text-center">
-                <h3 className="text-lg font-semibold">Year Total</h3>
-                <p className="text-3xl font-bold text-primary">
+                <div className="text-3xl font-bold text-primary mb-2">
                   {currency.symbol}{getYearTotal().toFixed(2)}
-                </p>
+                </div>
                 <p className="text-sm text-muted-foreground">
                   {spendingData.filter(s => s.date.startsWith(selectedYear.toString())).length} days with spending
                 </p>
@@ -328,24 +352,9 @@ const TakeoutCalendar: React.FC = () => {
                         <ChevronRight className="h-4 w-4" />
                       </Button>
                     </CardTitle>
-                    <div className="text-center text-lg font-semibold text-primary">
-                      Month Total: {currency.symbol}{getMonthTotal(monthIndex).toFixed(2)}
-                    </div>
                   </CardHeader>
                   <CardContent>
-                    {/* Day Headers */}
-                    <div className="grid grid-cols-7 gap-0 mb-2">
-                      {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
-                        <div key={day} className="text-center font-semibold text-sm p-2 text-muted-foreground">
-                          {day}
-                        </div>
-                      ))}
-                    </div>
-                    
-                    {/* Calendar Grid */}
-                    <div className="grid grid-cols-7 gap-0 border border-border rounded-lg overflow-hidden">
-                      {renderCalendarGrid(monthIndex)}
-                    </div>
+                    {renderCalendarGrid(monthIndex)}
                   </CardContent>
                 </Card>
               </TabsContent>
@@ -353,17 +362,12 @@ const TakeoutCalendar: React.FC = () => {
           </Tabs>
         </div>
 
-        {/* Add/Edit Spending Dialog */}
+        {/* Spending Input Dialog */}
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogContent>
             <DialogHeader>
               <DialogTitle>
-                {selectedDate ? `Takeout Spending - ${new Date(selectedDate + 'T00:00:00').toLocaleDateString('en-US', { 
-                  weekday: 'long', 
-                  year: 'numeric', 
-                  month: 'long', 
-                  day: 'numeric' 
-                })}` : 'Add Spending'}
+                {selectedDate ? `Add spending for ${new Date(selectedDate + 'T12:00:00').toLocaleDateString()}` : 'Add Spending'}
               </DialogTitle>
             </DialogHeader>
             <div className="space-y-4">
@@ -376,11 +380,10 @@ const TakeoutCalendar: React.FC = () => {
                   value={selectedAmount}
                   onChange={(e) => setSelectedAmount(e.target.value)}
                   placeholder="0.00"
-                  autoFocus
                 />
               </div>
               <div>
-                <Label htmlFor="notes">Notes (Optional)</Label>
+                <Label htmlFor="notes">Notes (optional)</Label>
                 <Input
                   id="notes"
                   value={selectedNotes}
@@ -388,18 +391,9 @@ const TakeoutCalendar: React.FC = () => {
                   placeholder="What did you order?"
                 />
               </div>
-              <div className="flex gap-2">
-                <Button onClick={handleSaveSpending} className="flex-1">
-                  Save
-                </Button>
-                <Button 
-                  variant="outline" 
-                  onClick={() => setIsDialogOpen(false)}
-                  className="flex-1"
-                >
-                  Cancel
-                </Button>
-              </div>
+              <Button onClick={handleSaveSpending} className="w-full">
+                Save Spending
+              </Button>
               {getSpendingForDate(selectedDate) && (
                 <Button 
                   variant="destructive" 
