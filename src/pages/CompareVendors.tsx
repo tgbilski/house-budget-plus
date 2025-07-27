@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
 import { Textarea } from '@/components/ui/textarea';
 import { useAuth } from '@/hooks/useAuth';
@@ -28,6 +29,8 @@ interface VendorQuote {
 
 const CompareVendors: React.FC = () => {
   const [quotes, setQuotes] = useState<VendorQuote[]>([]);
+  const [selectedProject, setSelectedProject] = useState<string>('');
+  const [isNewProject, setIsNewProject] = useState(true);
   const [newQuote, setNewQuote] = useState<Partial<VendorQuote>>({
     projectName: '',
     vendorName: '',
@@ -55,6 +58,13 @@ const CompareVendors: React.FC = () => {
     const today = new Date().toISOString().split('T')[0];
     setNewQuote(prev => ({ ...prev, dateReceived: today }));
   }, []);
+
+  // Update newQuote projectName when selectedProject changes
+  useEffect(() => {
+    if (!isNewProject && selectedProject) {
+      setNewQuote(prev => ({ ...prev, projectName: selectedProject }));
+    }
+  }, [selectedProject, isNewProject]);
 
   const loadData = async () => {
     if (!user) return;
@@ -92,10 +102,12 @@ const CompareVendors: React.FC = () => {
   };
 
   const addQuote = () => {
-    if (newQuote.projectName && newQuote.vendorName && newQuote.estimateAmount) {
+    const projectName = isNewProject ? newQuote.projectName : selectedProject;
+    
+    if (projectName && newQuote.vendorName && newQuote.estimateAmount) {
       const quote: VendorQuote = {
         id: Date.now().toString(),
-        projectName: newQuote.projectName || '',
+        projectName: projectName || '',
         vendorName: newQuote.vendorName || '',
         estimateAmount: newQuote.estimateAmount || 0,
         contactInfo: newQuote.contactInfo || '',
@@ -108,8 +120,15 @@ const CompareVendors: React.FC = () => {
         dateReceived: newQuote.dateReceived || ''
       };
       setQuotes([...quotes, quote]);
+      
+      // If it's a new project, switch to that project after adding
+      if (isNewProject && projectName) {
+        setSelectedProject(projectName);
+        setIsNewProject(false);
+      }
+      
       setNewQuote({
-        projectName: '',
+        projectName: isNewProject ? '' : projectName,
         vendorName: '',
         estimateAmount: 0,
         contactInfo: '',
@@ -153,7 +172,16 @@ const CompareVendors: React.FC = () => {
     return Math.min(...projectQuotes.map(quote => quote.estimateAmount));
   };
 
-  const uniqueProjects = [...new Set(quotes.map(quote => quote.projectName.toLowerCase()))];
+  const uniqueProjects = [...new Set(quotes.map(quote => quote.projectName))];
+  
+  // Filter quotes based on selected project
+  const displayedQuotes = selectedProject && !isNewProject 
+    ? quotes.filter(quote => quote.projectName === selectedProject)
+    : quotes;
+
+  const displayedUniqueProjects = selectedProject && !isNewProject
+    ? [selectedProject]
+    : uniqueProjects;
 
   return (
     <div className="min-h-screen bg-background">
@@ -164,18 +192,48 @@ const CompareVendors: React.FC = () => {
             Compare estimates and evaluate vendors for your home projects
           </p>
           
-          {/* Project Name at top */}
+          {/* Project Selector */}
           <div className="max-w-md mx-auto">
-            <Label htmlFor="topProjectName" className="text-left block mb-2 font-medium">
-              Project Name
+            <Label className="text-left block mb-2 font-medium">
+              Select Project
             </Label>
-            <Input
-              id="topProjectName"
-              value={newQuote.projectName}
-              onChange={(e) => setNewQuote({ ...newQuote, projectName: e.target.value })}
-              placeholder="e.g., Kitchen Remodel, Roof Replacement"
-              className="text-center text-lg"
-            />
+            <div className="space-y-3">
+              <Select
+                value={isNewProject ? 'new-project' : selectedProject}
+                onValueChange={(value) => {
+                  if (value === 'new-project') {
+                    setIsNewProject(true);
+                    setSelectedProject('');
+                    setNewQuote(prev => ({ ...prev, projectName: '' }));
+                  } else {
+                    setIsNewProject(false);
+                    setSelectedProject(value);
+                    setNewQuote(prev => ({ ...prev, projectName: value }));
+                  }
+                }}
+              >
+                <SelectTrigger className="text-center text-lg">
+                  <SelectValue placeholder="Select a project or create new" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="new-project">+ Create New Project</SelectItem>
+                  {uniqueProjects.map((project) => (
+                    <SelectItem key={project} value={project}>
+                      {project}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              
+              {isNewProject && (
+                <Input
+                  value={newQuote.projectName}
+                  onChange={(e) => setNewQuote({ ...newQuote, projectName: e.target.value })}
+                  placeholder="Enter new project name (e.g., Kitchen Remodel)"
+                  className="text-center text-lg"
+                />
+              )}
+            </div>
           </div>
         </div>
 
@@ -301,16 +359,33 @@ const CompareVendors: React.FC = () => {
           </Card>
 
           {/* Project Comparisons */}
-          {uniqueProjects.length > 0 && uniqueProjects.map(projectName => {
-            const projectQuotes = quotes.filter(quote => 
-              quote.projectName.toLowerCase() === projectName.toLowerCase()
+          {displayedUniqueProjects.length > 0 && displayedUniqueProjects.map(projectName => {
+            const projectQuotes = displayedQuotes.filter(quote => 
+              quote.projectName === projectName
             );
-            const lowestEstimate = getLowestEstimate(projectName);
+            const lowestEstimate = projectQuotes.length > 0 
+              ? Math.min(...projectQuotes.map(quote => quote.estimateAmount))
+              : null;
             
             return (
               <Card key={projectName}>
                 <CardHeader>
-                  <CardTitle className="capitalize">{projectName}</CardTitle>
+              <CardTitle className="flex items-center justify-between">
+                <span>{projectName}</span>
+                {!isNewProject && selectedProject === projectName && (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => {
+                      setIsNewProject(true);
+                      setSelectedProject('');
+                      setNewQuote(prev => ({ ...prev, projectName: '' }));
+                    }}
+                  >
+                    View All Projects
+                  </Button>
+                )}
+              </CardTitle>
                   <p className="text-sm text-muted-foreground">
                     {projectQuotes.length} quotes • Lowest: {currency.symbol}{lowestEstimate?.toFixed(2)}
                   </p>
@@ -397,11 +472,14 @@ const CompareVendors: React.FC = () => {
             );
           })}
 
-          {quotes.length === 0 && (
+          {displayedQuotes.length === 0 && (
             <Card>
               <CardContent className="text-center py-8">
                 <p className="text-muted-foreground">
-                  No vendor quotes yet. Add your first quote above to start comparing vendors!
+                  {isNewProject 
+                    ? "No vendor quotes yet. Enter a project name and add your first quote above!"
+                    : `No quotes for "${selectedProject}" yet. Add your first quote above!`
+                  }
                 </p>
               </CardContent>
             </Card>
