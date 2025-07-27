@@ -34,9 +34,9 @@ export function useProfile() {
     try {
       const { data, error } = await supabase
         .from('profiles')
-        .select('id, user_id, email, first_name, last_name, created_at, updated_at')
+        .select('*')
         .eq('user_id', user.id)
-        .single();
+        .maybeSingle();
 
       if (error) {
         console.error('Error fetching profile:', error);
@@ -63,8 +63,8 @@ export function useProfile() {
         .from('profiles')
         .update(updates)
         .eq('user_id', user.id)
-        .select('id, user_id, email, first_name, last_name, created_at, updated_at')
-        .single();
+        .select('*')
+        .maybeSingle();
 
       if (error) {
         toast({
