@@ -413,7 +413,7 @@ const Vacation: React.FC = () => {
           </div>
 
           {/* Add New Option Button - Only show when project is selected and not creating */}
-          {!isCreatingProject && selectedProject && (
+          {!isCreatingProject && selectedProject && selectedProject !== 'default' && (
             <div className="flex items-center justify-center mt-6">
               <Button
                 onClick={addVacationCard}
