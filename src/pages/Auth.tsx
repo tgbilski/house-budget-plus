@@ -82,6 +82,12 @@ const Auth: React.FC = () => {
             <Button type="submit" className="w-full" disabled={loading}>
               {loading ? 'Please wait...' : (isSignUp ? 'Sign Up' : 'Sign In')}
             </Button>
+            
+            {isSignUp && (
+              <p className="text-sm text-muted-foreground text-center mt-2">
+                To save your data, sign in
+              </p>
+            )}
           </form>
           
           <div className="text-center mt-4">

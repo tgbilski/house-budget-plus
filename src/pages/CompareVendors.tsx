@@ -287,11 +287,22 @@ const CompareVendors: React.FC = () => {
   const { user } = useAuth();
   const { currency } = useCurrency();
 
+  // Initialize with new project state if no data exists
   useEffect(() => {
     if (user) {
       loadData();
+    } else {
+      // When no user, ensure we show the interface
+      setIsNewProject(quotes.length === 0);
     }
   }, [user]);
+
+  useEffect(() => {
+    // If no quotes and no selected project, show new project state
+    if (quotes.length === 0 && !selectedProject && !isNewProject) {
+      setIsNewProject(true);
+    }
+  }, [quotes, selectedProject, isNewProject]);
 
   const loadData = async () => {
     if (!user) return;
