@@ -1,11 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Plus, Trash2, Download } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { useCurrency } from './BudgetApp';
+import { useAuth } from '@/hooks/useAuth';
 import { generateBudgetPDF } from '@/utils/pdfGenerator';
+import { supabase } from '@/integrations/supabase/client';
 
 interface ExpenseItem {
   id: string;
@@ -17,6 +19,7 @@ interface BudgetCalculatorProps {
   id: string;
   onRemove: () => void;
   showRemove: boolean;
+  pageType?: string;
 }
 
 const defaultExpenses: ExpenseItem[] = [
@@ -35,12 +38,96 @@ const defaultExpenses: ExpenseItem[] = [
   { id: 'subscription3', label: 'Subscription #3', amount: 0 },
 ];
 
-const BudgetCalculator: React.FC<BudgetCalculatorProps> = ({ id, onRemove, showRemove }) => {
+const BudgetCalculator: React.FC<BudgetCalculatorProps> = ({ 
+  id, 
+  onRemove, 
+  showRemove, 
+  pageType = 'monthly_budget' 
+}) => {
   const { currency } = useCurrency();
+  const { user } = useAuth();
   const [ownerName, setOwnerName] = useState('');
   const [monthlyIncome, setMonthlyIncome] = useState(0);
   const [expenses, setExpenses] = useState<ExpenseItem[]>(defaultExpenses);
   const [additionalExpenses, setAdditionalExpenses] = useState<ExpenseItem[]>([]);
+
+  useEffect(() => {
+    if (user) {
+      loadData();
+    }
+  }, [user, id, pageType]);
+
+  const loadData = async () => {
+    if (!user) return;
+
+    const { data } = await supabase
+      .from('budget_data')
+      .select('*')
+      .eq('user_id', user.id)
+      .eq('calculator_id', id)
+      .eq('page_type', pageType)
+      .order('created_at', { ascending: false })
+      .limit(1);
+
+    if (data && data.length > 0) {
+      const budgetData = data[0];
+      setMonthlyIncome(budgetData.income || 0);
+      const expensesData = budgetData.expenses as any;
+      if (expensesData) {
+        if (expensesData.fixed) {
+          const updatedExpenses = defaultExpenses.map(expense => ({
+            ...expense,
+            amount: expensesData.fixed[expense.id] || 0
+          }));
+          setExpenses(updatedExpenses);
+        }
+        if (expensesData.custom) {
+          setAdditionalExpenses(expensesData.custom);
+        }
+        if (expensesData.ownerName) {
+          setOwnerName(expensesData.ownerName);
+        }
+      }
+    }
+  };
+
+  const saveData = async () => {
+    if (!user) return;
+
+    const fixedExpensesData: Record<string, number> = {};
+    expenses.forEach(expense => {
+      if (expense.amount > 0) {
+        fixedExpensesData[expense.id] = expense.amount;
+      }
+    });
+
+    const expensesData = {
+      fixed: fixedExpensesData,
+      custom: additionalExpenses,
+      ownerName
+    };
+
+    const { error } = await supabase
+      .from('budget_data')
+      .upsert({
+        user_id: user.id,
+        calculator_id: id,
+        page_type: pageType,
+        income: monthlyIncome,
+        expenses: expensesData as any
+      });
+
+    if (error) {
+      console.error('Error saving budget data:', error);
+    }
+  };
+
+  useEffect(() => {
+    if (user && (monthlyIncome > 0 || expenses.some(e => e.amount > 0) || additionalExpenses.length > 0 || ownerName)) {
+      const saveTimeout = setTimeout(saveData, 500);
+      return () => clearTimeout(saveTimeout);
+    }
+  }, [monthlyIncome, expenses, additionalExpenses, ownerName, user]);
 
   const addAdditionalExpense = () => {
     if (additionalExpenses.length < 10) {

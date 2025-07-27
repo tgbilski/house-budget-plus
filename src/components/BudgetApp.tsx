@@ -1,8 +1,9 @@
-import React, { useState, createContext, useContext, useEffect } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { Plus, Globe } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import BudgetCalculator from './BudgetCalculator';
+import { CurrencyContext } from '@/App';
 
 interface Calculator {
   id: string;
@@ -18,8 +19,6 @@ interface CurrencyContextType {
   currency: Currency;
   setCurrency: (currency: Currency) => void;
 }
-
-const CurrencyContext = createContext<CurrencyContextType | undefined>(undefined);
 
 export const useCurrency = () => {
   const context = useContext(CurrencyContext);
