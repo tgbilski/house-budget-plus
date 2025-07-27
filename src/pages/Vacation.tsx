@@ -341,7 +341,7 @@ const Vacation: React.FC = () => {
                 className="whitespace-nowrap"
               >
                 <Plus className="h-4 w-4 mr-2" />
-                New Project
+                New Vacation
               </Button>
               
               {projects.length > 1 && (
