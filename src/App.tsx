@@ -7,7 +7,7 @@ import { AuthProvider } from "@/hooks/useAuth";
 import Header from "@/components/Header";
 import MonthlyBudget from "@/pages/MonthlyBudget";
 import CompareVendors from "@/pages/CompareVendors";
-import Takeout from "@/pages/Takeout";
+import TakeoutCalendar from "@/pages/TakeoutCalendar";
 import Vacation from "@/pages/Vacation";
 import Auth from "@/pages/Auth";
 import NotFound from "@/pages/NotFound";
@@ -50,7 +50,7 @@ const App = () => {
                 <Routes>
                   <Route path="/" element={<MonthlyBudget />} />
                   <Route path="/compare-prices" element={<CompareVendors />} />
-                  <Route path="/takeout" element={<Takeout />} />
+                  <Route path="/takeout" element={<TakeoutCalendar />} />
                   <Route path="/vacation" element={<Vacation />} />
                   <Route path="/auth" element={<Auth />} />
                   <Route path="*" element={<NotFound />} />
