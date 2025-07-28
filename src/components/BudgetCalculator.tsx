@@ -192,11 +192,11 @@ const BudgetCalculator: React.FC<BudgetCalculatorProps> = ({
   };
 
   return (
-    <Card className="w-full max-w-md mx-auto shadow-lg border border-border" data-calculator-id={id}>
-      <CardHeader className="pb-4">
+    <Card className="w-full max-w-sm sm:max-w-md mx-auto shadow-lg border border-border" data-calculator-id={id}>
+      <CardHeader className="pb-3">
         <div className="flex items-center justify-between">
           <div className="flex-1">
-            <Label htmlFor={`owner-${id}`} className="text-sm font-medium text-muted-foreground">
+            <Label htmlFor={`owner-${id}`} className="text-xs sm:text-sm font-medium text-muted-foreground">
               Owner / Renter
             </Label>
             <Input
@@ -204,7 +204,7 @@ const BudgetCalculator: React.FC<BudgetCalculatorProps> = ({
               placeholder="Enter name..."
               value={ownerName}
               onChange={(e) => setOwnerName(e.target.value)}
-              className="mt-1"
+              className="mt-1 h-8 text-sm"
             />
           </div>
           {showRemove && (
@@ -220,14 +220,14 @@ const BudgetCalculator: React.FC<BudgetCalculatorProps> = ({
         </div>
       </CardHeader>
 
-      <CardContent className="space-y-4">
+      <CardContent className="space-y-3">
         {/* Monthly Income */}
         <div>
-          <Label htmlFor={`income-${id}`} className="text-sm font-semibold text-foreground">
+          <Label htmlFor={`income-${id}`} className="text-xs sm:text-sm font-semibold text-foreground">
             Monthly Income
           </Label>
           <div className="relative mt-1">
-            <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground">{currency.symbol}</span>
+            <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground text-sm">{currency.symbol}</span>
             <Input
               id={`income-${id}`}
               type="number"
@@ -235,32 +235,32 @@ const BudgetCalculator: React.FC<BudgetCalculatorProps> = ({
               step="0.01"
               value={monthlyIncome || ''}
               onChange={(e) => setMonthlyIncome(parseFloat(e.target.value) || 0)}
-              className="pl-8"
+              className="pl-8 h-9 text-sm"
               placeholder="0.00"
             />
           </div>
         </div>
 
         {/* Monthly Expenses Header */}
-        <div className="pt-4">
-          <h3 className="text-sm font-semibold text-foreground mb-3">Monthly Expenses</h3>
+        <div className="pt-3">
+          <h3 className="text-xs sm:text-sm font-semibold text-foreground mb-2">Monthly Expenses</h3>
           
           {/* Default Expenses */}
-          <div className="space-y-2">
+          <div className="space-y-1.5">
             {expenses.map((expense) => (
               <div key={expense.id} className="flex items-center space-x-2">
-                <Label className="text-xs text-muted-foreground w-32 text-left">
+                <Label className="text-xs text-muted-foreground w-28 sm:w-32 text-left">
                   {expense.label}
                 </Label>
                 <div className="relative flex-1">
-                  <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground text-sm">{currency.symbol}</span>
+                  <span className="absolute left-2 top-1/2 transform -translate-y-1/2 text-muted-foreground text-xs">{currency.symbol}</span>
                   <Input
                     type="number"
                     min="0"
                     step="0.01"
                     value={expense.amount || ''}
                     onChange={(e) => updateExpense(expense.id, parseFloat(e.target.value) || 0)}
-                    className="pl-8 h-8 text-sm"
+                    className="pl-6 h-7 text-xs"
                     placeholder="0.00"
                   />
                 </div>
@@ -273,18 +273,18 @@ const BudgetCalculator: React.FC<BudgetCalculatorProps> = ({
                 <Input
                   value={expense.label}
                   onChange={(e) => updateAdditionalExpenseLabel(expense.id, e.target.value)}
-                  className="w-32 h-8 text-xs"
+                  className="w-28 sm:w-32 h-7 text-xs"
                   placeholder="Expense name"
                 />
                 <div className="relative flex-1">
-                  <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground text-sm">{currency.symbol}</span>
+                  <span className="absolute left-2 top-1/2 transform -translate-y-1/2 text-muted-foreground text-xs">{currency.symbol}</span>
                   <Input
                     type="number"
                     min="0"
                     step="0.01"
                     value={expense.amount || ''}
                     onChange={(e) => updateExpense(expense.id, parseFloat(e.target.value) || 0, true)}
-                    className="pl-8 h-8 text-sm"
+                    className="pl-6 h-7 text-xs"
                     placeholder="0.00"
                   />
                 </div>
@@ -292,7 +292,7 @@ const BudgetCalculator: React.FC<BudgetCalculatorProps> = ({
                   variant="destructive"
                   size="sm"
                   onClick={() => removeAdditionalExpense(expense.id)}
-                  className="h-8 w-8 p-0"
+                  className="h-7 w-7 p-0"
                 >
                   <Trash2 className="h-3 w-3" />
                 </Button>
@@ -305,7 +305,7 @@ const BudgetCalculator: React.FC<BudgetCalculatorProps> = ({
                 variant="outline"
                 size="sm"
                 onClick={addAdditionalExpense}
-                className="w-full h-8 text-xs"
+                className="w-full h-7 text-xs"
               >
                 <Plus className="h-3 w-3 mr-1" />
                 Add Expense
@@ -315,20 +315,20 @@ const BudgetCalculator: React.FC<BudgetCalculatorProps> = ({
         </div>
 
         {/* Subtotal */}
-        <div className="border-t pt-3">
+        <div className="border-t pt-2">
           <div className="flex justify-between items-center">
-            <span className="text-sm font-medium text-foreground">Subtotal:</span>
-            <span className="text-sm font-semibold text-foreground">
+            <span className="text-xs sm:text-sm font-medium text-foreground">Subtotal:</span>
+            <span className="text-xs sm:text-sm font-semibold text-foreground">
               {formatCurrency(totalExpenses)}
             </span>
           </div>
         </div>
 
         {/* Net Result */}
-        <div className="border-t pt-3">
+        <div className="border-t pt-2">
           <div className="flex justify-between items-center">
-            <span className="text-base font-semibold text-foreground">Net Result:</span>
-            <span className={`text-base font-bold ${
+            <span className="text-sm sm:text-base font-semibold text-foreground">Net Result:</span>
+            <span className={`text-sm sm:text-base font-bold ${
               netResult >= 0 ? 'text-success' : 'text-destructive'
             }`}>
               {formatCurrency(netResult)}
@@ -337,15 +337,15 @@ const BudgetCalculator: React.FC<BudgetCalculatorProps> = ({
         </div>
 
         {/* Download PDF Button */}
-        <div className="pt-3">
+        <div className="pt-2">
           <Button
             variant="outline"
             size="sm"
             onClick={handleDownloadPDF}
-            className="w-full"
+            className="w-full h-8 text-xs"
           >
-            <Download className="h-4 w-4 mr-2" />
-            Download PDF Report
+            <Download className="h-3 w-3 mr-1" />
+            Download PDF
           </Button>
         </div>
       </CardContent>

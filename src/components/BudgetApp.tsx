@@ -77,27 +77,27 @@ const BudgetApp: React.FC = () => {
     <CurrencyContext.Provider value={{ currency, setCurrency }}>
       <div className="min-h-screen bg-background">
         {/* Header */}
-        <header className="text-center py-8 px-4">
-          <div className="flex justify-center mb-4">
+        <header className="text-center py-4 px-2 sm:py-6 sm:px-4">
+          <div className="flex justify-center mb-3">
             <img 
               src="/lovable-uploads/5377daa4-3f84-4748-a91b-081403394030.png" 
               alt="House Budget Calculator"
-              className="h-36 w-auto"
+              className="h-24 w-auto sm:h-32"
             />
           </div>
-          <p className="text-muted-foreground text-lg mb-6">
+          <p className="text-muted-foreground text-base sm:text-lg mb-4">
             Plan your household finances with precision
           </p>
           
           {/* Currency Selector */}
-          <div className="flex items-center justify-center gap-2 mb-4">
+          <div className="flex items-center justify-center gap-2 mb-3">
             <Globe className="h-4 w-4 text-muted-foreground" />
             <Select value={currency.code} onValueChange={(value) => {
               console.log('Currency changing to:', value);
               const selectedCurrency = currencies.find(c => c.code === value);
               if (selectedCurrency) setCurrency(selectedCurrency);
             }}>
-              <SelectTrigger className="w-48">
+              <SelectTrigger className="w-40 sm:w-48">
                 <SelectValue placeholder="Select currency" />
               </SelectTrigger>
               <SelectContent>
@@ -114,14 +114,14 @@ const BudgetApp: React.FC = () => {
           </div>
 
           {/* Instructional Text */}
-          <p className="text-muted-foreground text-sm max-w-2xl mx-auto mb-6">
+          <p className="text-muted-foreground text-xs sm:text-sm max-w-2xl mx-auto mb-4 px-2">
             Simply add your monthly income, then add monthly expenses to see if you have money left over! Use the plus sign to add a spouse or roommate to split the costs!
           </p>
         </header>
 
         {/* Main Content */}
-        <main className="container mx-auto px-4 pb-8">
-          <div className="flex flex-wrap gap-6 justify-center">
+        <main className="container mx-auto px-2 sm:px-4 pb-6">
+          <div className="flex flex-wrap gap-3 sm:gap-6 justify-center">
             {/* Calculator Containers */}
             {calculators.map((calculator) => {
               console.log('Rendering calculator:', calculator.id);
@@ -142,16 +142,16 @@ const BudgetApp: React.FC = () => {
                 onClick={addCalculator}
                 variant="outline"
                 size="lg"
-                className="h-20 w-20 rounded-full border-2 border-dashed border-primary hover:bg-primary/5"
+                className="h-16 w-16 sm:h-20 sm:w-20 rounded-full border-2 border-dashed border-primary hover:bg-primary/5"
               >
-                <Plus className="h-8 w-8 text-primary" />
+                <Plus className="h-6 w-6 sm:h-8 sm:w-8 text-primary" />
               </Button>
             </div>
           </div>
 
           {/* AdSense Optimization Content */}
-          <section className="mt-16 max-w-4xl mx-auto">
-            <div className="bg-card border border-border rounded-lg p-6">
+          <section className="mt-8 sm:mt-12 max-w-4xl mx-auto">
+            <div className="bg-card border border-border rounded-lg p-4 sm:p-6">
               <h2 className="text-2xl font-semibold text-foreground mb-4">
                 How to Use the House Budget Calculator
               </h2>
