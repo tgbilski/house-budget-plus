@@ -322,6 +322,34 @@ const Vacation: React.FC = () => {
     setEditProjectName('');
   };
 
+  const deleteCurrentProject = async () => {
+    if (!user || projects.length <= 1) return;
+    
+    // Delete all data for this project
+    const { error } = await supabase
+      .from('budget_data')
+      .delete()
+      .eq('user_id', user.id)
+      .eq('page_type', 'vacation')
+      .eq('calculator_id', selectedProject);
+
+    if (error) {
+      console.error('Error deleting project:', error);
+      return;
+    }
+
+    // Update local state
+    const updatedProjects = projects.filter(project => project !== selectedProject);
+    setProjects(updatedProjects);
+    
+    // Select first remaining project or default
+    const newSelectedProject = updatedProjects.length > 0 ? updatedProjects[0] : 'default';
+    setSelectedProject(newSelectedProject);
+    
+    // Clear current options
+    setOptions([]);
+  };
+
   const getLowestCost = () => {
     if (options.length === 0) return 0;
     return Math.min(...options.map(option => option.estimatedCost || Infinity));
@@ -348,18 +376,62 @@ const Vacation: React.FC = () => {
               </Button>
               
               {!isCreatingProject && projects.length > 1 && (
-                <Select value={selectedProject} onValueChange={setSelectedProject}>
-                  <SelectTrigger className="w-[200px]">
-                    <SelectValue placeholder="Select vacation" />
-                  </SelectTrigger>
-                  <SelectContent className="z-50 bg-background border shadow-lg">
-                    {projects.map((project) => (
-                      <SelectItem key={project} value={project}>
-                        {project}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                <div className="flex items-center gap-2">
+                  {isEditingProjectName ? (
+                    <div className="flex items-center gap-2">
+                      <Input
+                        value={editProjectName}
+                        onChange={(e) => setEditProjectName(e.target.value)}
+                        className="w-[200px]"
+                        onKeyPress={(e) => e.key === 'Enter' && updateProjectName()}
+                        autoFocus
+                      />
+                      <Button size="sm" onClick={updateProjectName}>Save</Button>
+                      <Button 
+                        size="sm" 
+                        variant="outline" 
+                        onClick={() => {
+                          setIsEditingProjectName(false);
+                          setEditProjectName('');
+                        }}
+                      >
+                        Cancel
+                      </Button>
+                    </div>
+                  ) : (
+                    <>
+                      <Select value={selectedProject} onValueChange={setSelectedProject}>
+                        <SelectTrigger className="w-[200px]">
+                          <SelectValue placeholder="Select vacation" />
+                        </SelectTrigger>
+                        <SelectContent className="z-50 bg-background border shadow-lg">
+                          {projects.map((project) => (
+                            <SelectItem key={project} value={project}>
+                              {project}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => {
+                          setIsEditingProjectName(true);
+                          setEditProjectName(selectedProject);
+                        }}
+                      >
+                        <Edit3 className="h-4 w-4" />
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="destructive"
+                        onClick={deleteCurrentProject}
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </>
+                  )}
+                </div>
               )}
             </div>
             
