@@ -84,7 +84,7 @@ const MonthlyBudget: React.FC = () => {
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold text-foreground mb-4">Monthly Budget Calculator</h1>
           <p className="text-muted-foreground text-lg mb-6">
-            Plan your household finances with precision
+            Plan your household finances with precision{!user && ' (sign up to save)'}
           </p>
           
           {/* Currency Selector */}

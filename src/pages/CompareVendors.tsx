@@ -456,7 +456,7 @@ const CompareVendors: React.FC = () => {
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold text-foreground mb-4">Compare Vendors</h1>
           <p className="text-muted-foreground mb-6">
-            Compare estimates and evaluate vendors for your home projects
+            Compare estimates and evaluate vendors for your home projects{!user && ' (sign up to save)'}
           </p>
           
           {/* Project Management */}

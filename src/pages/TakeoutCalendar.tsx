@@ -223,7 +223,7 @@ const TakeoutCalendar: React.FC = () => {
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold text-foreground mb-4">Takeout Calendar {selectedYear}</h1>
           <p className="text-muted-foreground">
-            Track your daily takeout spending throughout the year
+            Track your daily takeout spending throughout the year{!user && ' (sign up to save)'}
           </p>
         </div>
 

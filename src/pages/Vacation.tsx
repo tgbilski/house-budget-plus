@@ -380,7 +380,7 @@ const Vacation: React.FC = () => {
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold text-foreground mb-4">Vacation Planning</h1>
           <p className="text-muted-foreground mb-6">
-            Compare vacation options and find your perfect getaway
+            Compare vacation options and find your perfect getaway{!user && ' (sign up to save)'}
           </p>
           
           {/* Project Management */}
