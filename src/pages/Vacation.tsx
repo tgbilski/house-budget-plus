@@ -347,7 +347,7 @@ const Vacation: React.FC = () => {
                 New Vacation
               </Button>
               
-              {!isCreatingProject && projects.length > 0 && (
+              {!isCreatingProject && projects.length > 1 && (
                 <Select value={selectedProject} onValueChange={setSelectedProject}>
                   <SelectTrigger className="w-[200px]">
                     <SelectValue placeholder="Select vacation" />
