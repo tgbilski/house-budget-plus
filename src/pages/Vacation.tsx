@@ -323,7 +323,24 @@ const Vacation: React.FC = () => {
   };
 
   const deleteCurrentProject = async () => {
-    if (!user || projects.length <= 1) return;
+    console.log('Delete button clicked', { user: !!user, projectsLength: projects.length, selectedProject });
+    
+    if (!user) {
+      console.log('No user found');
+      return;
+    }
+    
+    if (projects.length <= 1) {
+      console.log('Cannot delete - only one project remaining');
+      return;
+    }
+    
+    // Confirm deletion
+    if (!confirm(`Are you sure you want to delete the vacation "${selectedProject}"? This action cannot be undone.`)) {
+      return;
+    }
+    
+    console.log('Deleting project:', selectedProject);
     
     // Delete all data for this project
     const { error } = await supabase
@@ -337,6 +354,8 @@ const Vacation: React.FC = () => {
       console.error('Error deleting project:', error);
       return;
     }
+
+    console.log('Project deleted successfully');
 
     // Update local state
     const updatedProjects = projects.filter(project => project !== selectedProject);
