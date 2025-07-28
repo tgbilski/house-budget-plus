@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Plus, Star, Trash2 } from 'lucide-react';
+import { Plus, Star, Trash2, Edit3 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -284,6 +284,7 @@ const CompareVendors: React.FC = () => {
   const [selectedProject, setSelectedProject] = useState<string>('');
   const [isNewProject, setIsNewProject] = useState(false);
   const [isEditingProjectName, setIsEditingProjectName] = useState(false);
+  const [editProjectName, setEditProjectName] = useState('');
   const { user } = useAuth();
   const { currency } = useCurrency();
 
@@ -399,15 +400,39 @@ const CompareVendors: React.FC = () => {
     }
   };
 
-  const updateProjectName = (oldName: string, newName: string) => {
-    if (newName.trim() && newName !== oldName) {
-      setQuotes(quotes.map(quote => 
-        quote.projectName === oldName 
-          ? { ...quote, projectName: newName.trim() }
+  const updateProjectName = () => {
+    if (editProjectName.trim() && editProjectName.trim() !== selectedProject) {
+      const updatedQuotes = quotes.map(quote => 
+        quote.projectName === selectedProject 
+          ? { ...quote, projectName: editProjectName.trim() }
           : quote
-      ));
-      setSelectedProject(newName.trim());
-      setIsEditingProjectName(false);
+      );
+      setQuotes(updatedQuotes);
+      setSelectedProject(editProjectName.trim());
+    }
+    setIsEditingProjectName(false);
+    setEditProjectName('');
+  };
+
+  const deleteCurrentProject = async () => {
+    if (!user || uniqueProjects.length <= 1) return;
+    
+    // Confirm deletion
+    if (!confirm(`Are you sure you want to delete the project "${selectedProject}"? This action cannot be undone.`)) {
+      return;
+    }
+
+    // Remove all quotes for this project
+    const updatedQuotes = quotes.filter(quote => quote.projectName !== selectedProject);
+    setQuotes(updatedQuotes);
+    
+    // Select first remaining project or clear
+    const remainingProjects = [...new Set(updatedQuotes.map(quote => quote.projectName))];
+    if (remainingProjects.length > 0) {
+      setSelectedProject(remainingProjects[0]);
+    } else {
+      setSelectedProject('');
+      setIsNewProject(false);
     }
   };
 
@@ -445,26 +470,70 @@ const CompareVendors: React.FC = () => {
                 New Project
               </Button>
               
-              {!isNewProject && uniqueProjects.length > 0 && (
-                <Select
-                  value={selectedProject}
-                  onValueChange={(value) => {
-                    setSelectedProject(value);
-                    setIsNewProject(false);
-                    setIsEditingProjectName(false);
-                  }}
-                >
-                  <SelectTrigger className="w-[200px]">
-                    <SelectValue placeholder="Select project" />
-                  </SelectTrigger>
-                  <SelectContent className="z-50 bg-background border shadow-lg">
-                    {uniqueProjects.map((project) => (
-                      <SelectItem key={project} value={project}>
-                        {project}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+              {!isNewProject && uniqueProjects.length > 1 && (
+                <div className="flex items-center gap-2">
+                  {isEditingProjectName ? (
+                    <div className="flex items-center gap-2">
+                      <Input
+                        value={editProjectName}
+                        onChange={(e) => setEditProjectName(e.target.value)}
+                        className="w-[200px]"
+                        onKeyPress={(e) => e.key === 'Enter' && updateProjectName()}
+                        autoFocus
+                      />
+                      <Button size="sm" onClick={updateProjectName}>Save</Button>
+                      <Button 
+                        size="sm" 
+                        variant="outline" 
+                        onClick={() => {
+                          setIsEditingProjectName(false);
+                          setEditProjectName('');
+                        }}
+                      >
+                        Cancel
+                      </Button>
+                    </div>
+                  ) : (
+                    <>
+                      <Select
+                        value={selectedProject}
+                        onValueChange={(value) => {
+                          setSelectedProject(value);
+                          setIsNewProject(false);
+                          setIsEditingProjectName(false);
+                        }}
+                      >
+                        <SelectTrigger className="w-[200px]">
+                          <SelectValue placeholder="Select project" />
+                        </SelectTrigger>
+                        <SelectContent className="z-50 bg-background border shadow-lg">
+                          {uniqueProjects.map((project) => (
+                            <SelectItem key={project} value={project}>
+                              {project}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => {
+                          setIsEditingProjectName(true);
+                          setEditProjectName(selectedProject);
+                        }}
+                      >
+                        <Edit3 className="h-4 w-4" />
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="destructive"
+                        onClick={deleteCurrentProject}
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </>
+                  )}
+                </div>
               )}
             </div>
             
