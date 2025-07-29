@@ -8,6 +8,7 @@ import { useCurrency } from './BudgetApp';
 import { useAuth } from '@/hooks/useAuth';
 import { generateBudgetPDF } from '@/utils/pdfGenerator';
 import { supabase } from '@/integrations/supabase/client';
+import { StreamingServiceSelector } from './StreamingServiceSelector';
 
 interface ExpenseItem {
   id: string;
@@ -247,25 +248,42 @@ const BudgetCalculator: React.FC<BudgetCalculatorProps> = ({
           
           {/* Default Expenses */}
           <div className="space-y-1.5">
-            {expenses.map((expense) => (
-              <div key={expense.id} className="flex items-center space-x-2">
-                <Label className="text-xs text-muted-foreground w-28 sm:w-32 text-left">
-                  {expense.label}
-                </Label>
-                <div className="relative flex-1">
-                  <span className="absolute left-2 top-1/2 transform -translate-y-1/2 text-muted-foreground text-xs">{currency.symbol}</span>
-                  <Input
-                    type="number"
-                    min="0"
-                    step="0.01"
-                    value={expense.amount || ''}
-                    onChange={(e) => updateExpense(expense.id, parseFloat(e.target.value) || 0)}
-                    className="pl-6 h-7 text-xs [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                    placeholder="0.00"
-                  />
+            {expenses.map((expense) => {
+              // Use StreamingServiceSelector for subscription fields
+              if (expense.id.startsWith('subscription')) {
+                return (
+                  <div key={expense.id} className="space-y-1">
+                    <StreamingServiceSelector
+                      value={expense.amount}
+                      onChange={(amount) => updateExpense(expense.id, amount)}
+                      label={expense.label}
+                      expenseId={expense.id}
+                    />
+                  </div>
+                );
+              }
+              
+              // Regular input for other expenses
+              return (
+                <div key={expense.id} className="flex items-center space-x-2">
+                  <Label className="text-xs text-muted-foreground w-28 sm:w-32 text-left">
+                    {expense.label}
+                  </Label>
+                  <div className="relative flex-1">
+                    <span className="absolute left-2 top-1/2 transform -translate-y-1/2 text-muted-foreground text-xs">{currency.symbol}</span>
+                    <Input
+                      type="number"
+                      min="0"
+                      step="0.01"
+                      value={expense.amount || ''}
+                      onChange={(e) => updateExpense(expense.id, parseFloat(e.target.value) || 0)}
+                      className="pl-6 h-7 text-xs [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                      placeholder="0.00"
+                    />
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
 
             {/* Additional Expenses */}
             {additionalExpenses.map((expense) => (
