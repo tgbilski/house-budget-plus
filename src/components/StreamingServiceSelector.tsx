@@ -111,8 +111,6 @@ export function StreamingServiceSelector({ value, onChange, label, expenseId }: 
   const { currency } = useCurrency();
   
   const handleServiceSelect = (serviceAndTier: string) => {
-    console.log(`[${expenseId}] Selecting:`, serviceAndTier, 'Current value:', value);
-    
     if (serviceAndTier === 'custom') {
       // Keep current value for custom input
       return;
@@ -121,16 +119,20 @@ export function StreamingServiceSelector({ value, onChange, label, expenseId }: 
     const [serviceId, tierIndex] = serviceAndTier.split('-');
     const service = streamingServices.find(s => s.id === serviceId);
     if (service && service.tiers[parseInt(tierIndex)]) {
-      const newAmount = service.tiers[parseInt(tierIndex)].price;
-      console.log(`[${expenseId}] Updating to:`, newAmount);
-      onChange(newAmount);
+      onChange(service.tiers[parseInt(tierIndex)].price);
     }
   };
 
   const getCurrentSelection = () => {
+    // Don't try to match if value is 0 or undefined
+    if (!value || value === 0) {
+      return 'custom';
+    }
+    
     for (const service of streamingServices) {
       for (let i = 0; i < service.tiers.length; i++) {
-        if (Math.abs(service.tiers[i].price - value) < 0.01) {
+        // Use a tighter tolerance for price matching and ensure exact match
+        if (Math.abs(service.tiers[i].price - value) < 0.001) {
           return `${service.id}-${i}`;
         }
       }
