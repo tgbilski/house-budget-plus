@@ -278,63 +278,43 @@ const BudgetCalculator: React.FC<BudgetCalculatorProps> = ({
           {/* Default Expenses */}
           <div className="space-y-1.5">
             {expenses.map((expense) => {
-              // Use StreamingServiceSelector for subscription fields
-              if (expense.id.startsWith('subscription')) {
+              // Render non-subscription expenses first
+              if (!expense.id.startsWith('subscription')) {
                 return (
-                  <div key={expense.id} className="space-y-1">
-                    <StreamingServiceSelector
-                      value={expense.amount}
-                      onChange={(amount) => updateExpense(expense.id, amount)}
-                      label={expense.label}
-                      expenseId={expense.id}
-                    />
+                  <div key={expense.id} className="flex items-center space-x-2">
+                    <Label className="text-xs text-muted-foreground w-28 sm:w-32 text-left">
+                      {expense.label}
+                    </Label>
+                    <div className="relative flex-1">
+                      <span className="absolute left-2 top-1/2 transform -translate-y-1/2 text-muted-foreground text-xs">{currency.symbol}</span>
+                      <Input
+                        type="number"
+                        min="0"
+                        step="0.01"
+                        value={expense.amount || ''}
+                        onChange={(e) => updateExpense(expense.id, parseFloat(e.target.value) || 0)}
+                        className="pl-6 h-7 text-xs [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                        placeholder="0.00"
+                      />
+                    </div>
                   </div>
                 );
               }
-              
-              // Regular input for other expenses
-              return (
-                <div key={expense.id} className="flex items-center space-x-2">
-                  <Label className="text-xs text-muted-foreground w-28 sm:w-32 text-left">
-                    {expense.label}
-                  </Label>
-                  <div className="relative flex-1">
-                    <span className="absolute left-2 top-1/2 transform -translate-y-1/2 text-muted-foreground text-xs">{currency.symbol}</span>
-                    <Input
-                      type="number"
-                      min="0"
-                      step="0.01"
-                      value={expense.amount || ''}
-                      onChange={(e) => updateExpense(expense.id, parseFloat(e.target.value) || 0)}
-                      className="pl-6 h-7 text-xs [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                      placeholder="0.00"
-                    />
-                  </div>
-                </div>
-              );
+              return null;
             })}
 
-            {/* Additional Subscriptions */}
-            {additionalSubscriptions.map((subscription) => (
-              <div key={subscription.id} className="space-y-1">
-                <div className="flex items-center space-x-2">
-                  <StreamingServiceSelector
-                    value={subscription.amount}
-                    onChange={(amount) => updateAdditionalSubscription(subscription.id, amount)}
-                    label={subscription.label}
-                    expenseId={subscription.id}
-                  />
-                  <Button
-                    variant="destructive"
-                    size="sm"
-                    onClick={() => removeAdditionalSubscription(subscription.id)}
-                    className="h-7 w-7 p-0"
-                  >
-                    <Trash2 className="h-3 w-3" />
-                  </Button>
-                </div>
-              </div>
-            ))}
+            {/* Add Expense Button */}
+            {additionalExpenses.length < 10 && (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={addAdditionalExpense}
+                className="w-full h-7 text-xs"
+              >
+                <Plus className="h-3 w-3 mr-1" />
+                Add Expense
+              </Button>
+            )}
 
             {/* Additional Expenses */}
             {additionalExpenses.map((expense) => (
@@ -368,6 +348,46 @@ const BudgetCalculator: React.FC<BudgetCalculatorProps> = ({
               </div>
             ))}
 
+            {/* Default Subscription Expenses */}
+            {expenses.map((expense) => {
+              // Use StreamingServiceSelector for subscription fields
+              if (expense.id.startsWith('subscription')) {
+                return (
+                  <div key={expense.id} className="space-y-1">
+                    <StreamingServiceSelector
+                      value={expense.amount}
+                      onChange={(amount) => updateExpense(expense.id, amount)}
+                      label={expense.label}
+                      expenseId={expense.id}
+                    />
+                  </div>
+                );
+              }
+              return null;
+            })}
+
+            {/* Additional Subscriptions */}
+            {additionalSubscriptions.map((subscription) => (
+              <div key={subscription.id} className="space-y-1">
+                <div className="flex items-center space-x-2">
+                  <StreamingServiceSelector
+                    value={subscription.amount}
+                    onChange={(amount) => updateAdditionalSubscription(subscription.id, amount)}
+                    label={subscription.label}
+                    expenseId={subscription.id}
+                  />
+                  <Button
+                    variant="destructive"
+                    size="sm"
+                    onClick={() => removeAdditionalSubscription(subscription.id)}
+                    className="h-7 w-7 p-0"
+                  >
+                    <Trash2 className="h-3 w-3" />
+                  </Button>
+                </div>
+              </div>
+            ))}
+
             {/* Add Subscription Button */}
             {additionalSubscriptions.length < 10 && (
               <Button
@@ -378,19 +398,6 @@ const BudgetCalculator: React.FC<BudgetCalculatorProps> = ({
               >
                 <Plus className="h-3 w-3 mr-1" />
                 Subscription
-              </Button>
-            )}
-
-            {/* Add Expense Button */}
-            {additionalExpenses.length < 10 && (
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={addAdditionalExpense}
-                className="w-full h-7 text-xs"
-              >
-                <Plus className="h-3 w-3 mr-1" />
-                Add Expense
               </Button>
             )}
           </div>
