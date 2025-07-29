@@ -43,25 +43,23 @@ serve(async (req) => {
       .eq("user_id", user.id)
       .single();
 
-    // Check monthly usage for free users
+    // Check total usage for free users (lifetime limit, not monthly)
     if (!subscriber?.subscribed) {
-      const currentMonth = new Date().toISOString().slice(0, 7); // YYYY-MM format
-      const { data: monthlyUsage, error: usageError } = await supabaseClient
+      const { data: totalUsage, error: usageError } = await supabaseClient
         .from("pdf_processing_logs")
         .select("id")
         .eq("user_id", user.id)
-        .gte("created_at", `${currentMonth}-01`)
-        .lt("created_at", `${currentMonth}-32`);
+        .eq("processing_status", "completed");
 
       if (usageError) {
         logStep("Error checking usage", { error: usageError.message });
         throw new Error("Failed to check usage limits");
       }
 
-      if (monthlyUsage && monthlyUsage.length >= 1) {
-        logStep("Free user exceeded monthly limit", { count: monthlyUsage.length });
+      if (totalUsage && totalUsage.length >= 1) {
+        logStep("Free user exceeded lifetime limit", { count: totalUsage.length });
         return new Response(JSON.stringify({ 
-          error: "Monthly limit reached. Upgrade to Premium for unlimited PDF processing.",
+          error: "You've used your free PDF. Upgrade to Premium for unlimited PDF processing.",
           requiresUpgrade: true
         }), {
           headers: { ...corsHeaders, "Content-Type": "application/json" },

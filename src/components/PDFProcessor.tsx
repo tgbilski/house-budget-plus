@@ -84,7 +84,7 @@ export function PDFProcessor() {
           PDF Expense Processor
           {!subscribed && (
             <span className="text-xs bg-amber-100 text-amber-800 px-2 py-1 rounded dark:bg-amber-900 dark:text-amber-200">
-              1/month free
+              1 free PDF
             </span>
           )}
         </CardTitle>
@@ -132,7 +132,7 @@ export function PDFProcessor() {
         {!subscribed && (
           <div className="p-3 bg-amber-50 border border-amber-200 rounded-lg dark:bg-amber-950/20 dark:border-amber-800">
             <p className="text-sm text-amber-800 dark:text-amber-200">
-              Free users can process 1 PDF per month. 
+              You get 1 free PDF. After that, 
               <Button variant="link" className="h-auto p-0 ml-1 text-amber-800 dark:text-amber-200" onClick={createCheckout}>
                 Upgrade to Premium
               </Button> for unlimited processing with AI categorization.
