@@ -271,7 +271,7 @@ const TakeoutCalendar: React.FC = () => {
           {/* Monthly Spending Chart */}
           <Card>
             <CardHeader>
-              <CardTitle className="text-center">Monthly Spending Overview</CardTitle>
+              <CardTitle className="text-center text-lg">Monthly Spending Overview</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="h-64">
@@ -284,9 +284,13 @@ const TakeoutCalendar: React.FC = () => {
                     margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
                   >
                     <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="month" />
+                    <XAxis 
+                      dataKey="month" 
+                      tick={{ fontSize: 10 }}
+                    />
                     <YAxis 
                       tickFormatter={(value) => `${currency.symbol}${value}`}
+                      tick={{ fontSize: 10 }}
                     />
                     <Tooltip 
                       formatter={(value) => [`${currency.symbol}${Number(value).toFixed(2)}`, 'Spending']}
