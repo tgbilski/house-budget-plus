@@ -26,6 +26,9 @@ serve(async (req) => {
   try {
     logStep("Function started");
 
+    const { plan = 'monthly' } = await req.json();
+    logStep("Plan selected", { plan });
+
     const authHeader = req.headers.get("Authorization")!;
     const token = authHeader.replace("Bearer ", "");
     const { data } = await supabaseClient.auth.getUser(token);
@@ -41,6 +44,23 @@ serve(async (req) => {
     }
     logStep("Customer lookup complete", { customerId: customerId || "new customer" });
 
+    // Define pricing based on plan
+    const pricingConfig = {
+      monthly: {
+        unit_amount: 499, // $4.99/month
+        interval: "month" as const,
+        name: "Premium PDF Processing - Monthly"
+      },
+      annual: {
+        unit_amount: 4790, // $47.90/year (20% discount from $59.88)
+        interval: "year" as const,
+        name: "Premium PDF Processing - Annual (20% off)"
+      }
+    };
+
+    const selectedPlan = pricingConfig[plan as keyof typeof pricingConfig] || pricingConfig.monthly;
+    logStep("Pricing configuration", selectedPlan);
+
     const session = await stripe.checkout.sessions.create({
       customer: customerId,
       customer_email: customerId ? undefined : user.email,
@@ -48,9 +68,9 @@ serve(async (req) => {
         {
           price_data: {
             currency: "usd",
-            product_data: { name: "Premium PDF Processing Subscription" },
-            unit_amount: 499, // $4.99/month
-            recurring: { interval: "month" },
+            product_data: { name: selectedPlan.name },
+            unit_amount: selectedPlan.unit_amount,
+            recurring: { interval: selectedPlan.interval },
           },
           quantity: 1,
         },

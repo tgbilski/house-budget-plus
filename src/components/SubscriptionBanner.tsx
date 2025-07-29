@@ -2,6 +2,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Crown, FileText, Zap } from 'lucide-react';
 import { useSubscription } from '@/hooks/useSubscription';
+import { PricingCards } from './PricingCards';
 
 export function SubscriptionBanner() {
   const { subscribed, subscriptionTier, createCheckout, openCustomerPortal } = useSubscription();
@@ -28,33 +29,22 @@ export function SubscriptionBanner() {
   }
 
   return (
-    <Card className="border-amber-200 bg-gradient-to-r from-amber-50 to-orange-50 dark:border-amber-800 dark:from-amber-950/20 dark:to-orange-950/20">
-      <CardContent className="p-6">
-        <div className="flex items-start justify-between">
-          <div className="flex-1">
-            <div className="flex items-center gap-2 mb-2">
+    <div className="space-y-6">
+      <Card className="border-amber-200 bg-gradient-to-r from-amber-50 to-orange-50 dark:border-amber-800 dark:from-amber-950/20 dark:to-orange-950/20">
+        <CardContent className="p-6">
+          <div className="text-center mb-6">
+            <div className="flex items-center justify-center gap-2 mb-2">
               <Zap className="h-5 w-5 text-amber-600" />
-              <h3 className="font-semibold text-foreground">Upgrade to Premium</h3>
+              <h3 className="font-semibold text-foreground">Choose Your Plan</h3>
             </div>
-            <p className="text-sm text-muted-foreground mb-4">
-              Get unlimited PDF processing with AI-powered expense categorization for just $4.99/month
+            <p className="text-sm text-muted-foreground">
+              Get unlimited PDF processing with AI-powered expense categorization
             </p>
-            <div className="flex items-center gap-4 text-sm">
-              <div className="flex items-center gap-2">
-                <FileText className="h-4 w-4 text-amber-600" />
-                <span>Unlimited PDFs</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <Crown className="h-4 w-4 text-amber-600" />
-                <span>AI Categorization</span>
-              </div>
-            </div>
           </div>
-          <Button onClick={createCheckout} className="ml-4">
-            Upgrade Now
-          </Button>
-        </div>
-      </CardContent>
-    </Card>
+        </CardContent>
+      </Card>
+      
+      <PricingCards />
+    </div>
   );
 }

@@ -9,7 +9,7 @@ interface SubscriptionContextType {
   subscriptionEnd: string | null;
   loading: boolean;
   checkSubscription: () => Promise<void>;
-  createCheckout: () => Promise<void>;
+  createCheckout: (plan?: 'monthly' | 'annual') => Promise<void>;
   openCustomerPortal: () => Promise<void>;
 }
 
@@ -54,7 +54,7 @@ export function SubscriptionProvider({ children }: { children: ReactNode }) {
     }
   };
 
-  const createCheckout = async () => {
+  const createCheckout = async (plan: 'monthly' | 'annual' = 'monthly') => {
     if (!user || !session) {
       toast({
         title: "Authentication Required",
@@ -66,8 +66,10 @@ export function SubscriptionProvider({ children }: { children: ReactNode }) {
 
     try {
       const { data, error } = await supabase.functions.invoke('create-checkout', {
+        body: { plan },
         headers: {
           Authorization: `Bearer ${session.access_token}`,
+          'Content-Type': 'application/json',
         },
       });
 

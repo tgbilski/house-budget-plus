@@ -133,7 +133,7 @@ export function PDFProcessor() {
           <div className="p-3 bg-amber-50 border border-amber-200 rounded-lg dark:bg-amber-950/20 dark:border-amber-800">
             <p className="text-sm text-amber-800 dark:text-amber-200">
               You get 1 free PDF. After that, 
-              <Button variant="link" className="h-auto p-0 ml-1 text-amber-800 dark:text-amber-200" onClick={createCheckout}>
+              <Button variant="link" className="h-auto p-0 ml-1 text-amber-800 dark:text-amber-200" onClick={() => createCheckout('monthly')}>
                 Upgrade to Premium
               </Button> for unlimited processing with AI categorization.
             </p>
