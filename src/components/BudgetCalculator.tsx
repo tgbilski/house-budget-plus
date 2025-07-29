@@ -51,6 +51,7 @@ const BudgetCalculator: React.FC<BudgetCalculatorProps> = ({
   const [monthlyIncome, setMonthlyIncome] = useState(0);
   const [expenses, setExpenses] = useState<ExpenseItem[]>(defaultExpenses);
   const [additionalExpenses, setAdditionalExpenses] = useState<ExpenseItem[]>([]);
+  const [additionalSubscriptions, setAdditionalSubscriptions] = useState<ExpenseItem[]>([]);
 
   useEffect(() => {
     if (user) {
@@ -85,6 +86,9 @@ const BudgetCalculator: React.FC<BudgetCalculatorProps> = ({
         if (expensesData.custom) {
           setAdditionalExpenses(expensesData.custom);
         }
+        if (expensesData.additionalSubscriptions) {
+          setAdditionalSubscriptions(expensesData.additionalSubscriptions);
+        }
         if (expensesData.ownerName) {
           setOwnerName(expensesData.ownerName);
         }
@@ -105,6 +109,7 @@ const BudgetCalculator: React.FC<BudgetCalculatorProps> = ({
     const expensesData = {
       fixed: fixedExpensesData,
       custom: additionalExpenses,
+      additionalSubscriptions,
       ownerName
     };
 
@@ -124,11 +129,11 @@ const BudgetCalculator: React.FC<BudgetCalculatorProps> = ({
   };
 
   useEffect(() => {
-    if (user && (monthlyIncome > 0 || expenses.some(e => e.amount > 0) || additionalExpenses.length > 0 || ownerName)) {
+    if (user && (monthlyIncome > 0 || expenses.some(e => e.amount > 0) || additionalExpenses.length > 0 || additionalSubscriptions.length > 0 || ownerName)) {
       const saveTimeout = setTimeout(saveData, 500);
       return () => clearTimeout(saveTimeout);
     }
-  }, [monthlyIncome, expenses, additionalExpenses, ownerName, user]);
+  }, [monthlyIncome, expenses, additionalExpenses, additionalSubscriptions, ownerName, user]);
 
   const addAdditionalExpense = () => {
     if (additionalExpenses.length < 10) {
@@ -139,6 +144,21 @@ const BudgetCalculator: React.FC<BudgetCalculatorProps> = ({
       };
       setAdditionalExpenses([...additionalExpenses, newExpense]);
     }
+  };
+
+  const addAdditionalSubscription = () => {
+    if (additionalSubscriptions.length < 10) {
+      const newSubscription: ExpenseItem = {
+        id: `subscription-${Date.now()}`,
+        label: `Subscription #${4 + additionalSubscriptions.length}`,
+        amount: 0,
+      };
+      setAdditionalSubscriptions([...additionalSubscriptions, newSubscription]);
+    }
+  };
+
+  const removeAdditionalSubscription = (subscriptionId: string) => {
+    setAdditionalSubscriptions(additionalSubscriptions.filter(sub => sub.id !== subscriptionId));
   };
 
   const removeAdditionalExpense = (expenseId: string) => {
@@ -161,6 +181,14 @@ const BudgetCalculator: React.FC<BudgetCalculatorProps> = ({
     }
   };
 
+  const updateAdditionalSubscription = (subscriptionId: string, amount: number) => {
+    setAdditionalSubscriptions(
+      additionalSubscriptions.map(subscription =>
+        subscription.id === subscriptionId ? { ...subscription, amount } : subscription
+      )
+    );
+  };
+
   const updateAdditionalExpenseLabel = (expenseId: string, label: string) => {
     setAdditionalExpenses(
       additionalExpenses.map(expense =>
@@ -170,7 +198,8 @@ const BudgetCalculator: React.FC<BudgetCalculatorProps> = ({
   };
 
   const totalExpenses = expenses.reduce((sum, expense) => sum + expense.amount, 0) +
-                       additionalExpenses.reduce((sum, expense) => sum + expense.amount, 0);
+                       additionalExpenses.reduce((sum, expense) => sum + expense.amount, 0) +
+                       additionalSubscriptions.reduce((sum, expense) => sum + expense.amount, 0);
   
   const netResult = monthlyIncome - totalExpenses;
 
@@ -285,6 +314,28 @@ const BudgetCalculator: React.FC<BudgetCalculatorProps> = ({
               );
             })}
 
+            {/* Additional Subscriptions */}
+            {additionalSubscriptions.map((subscription) => (
+              <div key={subscription.id} className="space-y-1">
+                <div className="flex items-center space-x-2">
+                  <StreamingServiceSelector
+                    value={subscription.amount}
+                    onChange={(amount) => updateAdditionalSubscription(subscription.id, amount)}
+                    label={subscription.label}
+                    expenseId={subscription.id}
+                  />
+                  <Button
+                    variant="destructive"
+                    size="sm"
+                    onClick={() => removeAdditionalSubscription(subscription.id)}
+                    className="h-7 w-7 p-0"
+                  >
+                    <Trash2 className="h-3 w-3" />
+                  </Button>
+                </div>
+              </div>
+            ))}
+
             {/* Additional Expenses */}
             {additionalExpenses.map((expense) => (
               <div key={expense.id} className="flex items-center space-x-2">
@@ -316,6 +367,19 @@ const BudgetCalculator: React.FC<BudgetCalculatorProps> = ({
                 </Button>
               </div>
             ))}
+
+            {/* Add Subscription Button */}
+            {additionalSubscriptions.length < 10 && (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={addAdditionalSubscription}
+                className="w-full h-7 text-xs"
+              >
+                <Plus className="h-3 w-3 mr-1" />
+                Subscription
+              </Button>
+            )}
 
             {/* Add Expense Button */}
             {additionalExpenses.length < 10 && (
