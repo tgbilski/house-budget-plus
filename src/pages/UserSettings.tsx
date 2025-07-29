@@ -6,6 +6,9 @@ import { Settings, Crown, CreditCard, Calendar, AlertTriangle } from 'lucide-rea
 import { useSubscription } from '@/hooks/useSubscription';
 import { useAuth } from '@/hooks/useAuth';
 import { useProfile } from '@/hooks/useProfile';
+import { PricingCards } from '@/components/PricingCards';
+import { supabase } from '@/integrations/supabase/client';
+import { useState, useEffect } from 'react';
 
 export default function UserSettings() {
   const { user, signOut } = useAuth();
@@ -17,6 +20,28 @@ export default function UserSettings() {
     openCustomerPortal,
     loading 
   } = useSubscription();
+  const [pdfCount, setPdfCount] = useState<number>(0);
+
+  useEffect(() => {
+    const fetchPdfCount = async () => {
+      if (!user) return;
+      
+      try {
+        const { data, error } = await supabase
+          .from('pdf_processing_logs')
+          .select('id')
+          .eq('user_id', user.id);
+        
+        if (!error) {
+          setPdfCount(data?.length || 0);
+        }
+      } catch (error) {
+        console.error('Error fetching PDF count:', error);
+      }
+    };
+
+    fetchPdfCount();
+  }, [user]);
 
   if (!user) {
     return (
@@ -124,10 +149,17 @@ export default function UserSettings() {
                 </div>
               </div>
             ) : (
-              <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg dark:bg-blue-950/20 dark:border-blue-800">
-                <p className="text-sm text-blue-800 dark:text-blue-200">
-                  📝 You have processed your free PDF. Upgrade to Premium for unlimited processing.
-                </p>
+              <div className="space-y-4">
+                <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg dark:bg-blue-950/20 dark:border-blue-800">
+                  <p className="text-sm text-blue-800 dark:text-blue-200">
+                    📝 You have processed {pdfCount} of 1 free PDF{pdfCount >= 1 ? '. Upgrade to Premium for unlimited processing.' : '. Try it out!'}
+                  </p>
+                </div>
+                
+                <div className="space-y-4">
+                  <h3 className="font-medium">Choose Your Plan</h3>
+                  <PricingCards />
+                </div>
               </div>
             )}
           </CardContent>
