@@ -303,19 +303,6 @@ const BudgetCalculator: React.FC<BudgetCalculatorProps> = ({
               return null;
             })}
 
-            {/* Add Expense Button */}
-            {additionalExpenses.length < 10 && (
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={addAdditionalExpense}
-                className="w-full h-7 text-xs"
-              >
-                <Plus className="h-3 w-3 mr-1" />
-                Add Expense
-              </Button>
-            )}
-
             {/* Additional Expenses */}
             {additionalExpenses.map((expense) => (
               <div key={expense.id} className="flex items-center space-x-2">
@@ -347,6 +334,19 @@ const BudgetCalculator: React.FC<BudgetCalculatorProps> = ({
                 </Button>
               </div>
             ))}
+
+            {/* Add Expense Button */}
+            {additionalExpenses.length < 10 && (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={addAdditionalExpense}
+                className="w-full h-7 text-xs"
+              >
+                <Plus className="h-3 w-3 mr-1" />
+                Add Expense
+              </Button>
+            )}
 
             {/* Default Subscription Expenses */}
             {expenses.map((expense) => {
