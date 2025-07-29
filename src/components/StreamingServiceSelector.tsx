@@ -147,24 +147,22 @@ export function StreamingServiceSelector({ value, onChange, label, expenseId }: 
           <SelectValue placeholder="Choose service..." />
         </SelectTrigger>
         <SelectContent className="max-h-60">
-          {streamingServices.map((service) => (
-            <React.Fragment key={service.id}>
-              {service.tiers.map((tier, index) => (
-                <SelectItem 
-                  key={`${service.id}-${index}`} 
-                  value={`${service.id}-${index}`}
-                  className="text-xs"
-                >
-                  <div className="flex justify-between items-center w-full">
-                    <span>{service.name} - {tier.name}</span>
-                    <span className="ml-2 font-mono text-muted-foreground">
-                      {currency.symbol}{tier.price}
-                    </span>
-                  </div>
-                </SelectItem>
-              ))}
-            </React.Fragment>
-          ))}
+          {streamingServices.map((service) => 
+            service.tiers.map((tier, index) => (
+              <SelectItem 
+                key={`${service.id}-${index}`} 
+                value={`${service.id}-${index}`}
+                className="text-xs"
+              >
+                <div className="flex justify-between items-center w-full">
+                  <span>{service.name} - {tier.name}</span>
+                  <span className="ml-2 font-mono text-muted-foreground">
+                    {currency.symbol}{tier.price}
+                  </span>
+                </div>
+              </SelectItem>
+            ))
+          )}
           <SelectItem value="custom" className="text-xs font-medium border-t">
             Custom Amount
           </SelectItem>
