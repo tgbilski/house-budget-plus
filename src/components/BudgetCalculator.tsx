@@ -235,7 +235,7 @@ const BudgetCalculator: React.FC<BudgetCalculatorProps> = ({
               step="0.01"
               value={monthlyIncome || ''}
               onChange={(e) => setMonthlyIncome(parseFloat(e.target.value) || 0)}
-              className="pl-8 h-9 text-sm"
+              className="pl-8 h-9 text-sm [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
               placeholder="0.00"
             />
           </div>
@@ -260,7 +260,7 @@ const BudgetCalculator: React.FC<BudgetCalculatorProps> = ({
                     step="0.01"
                     value={expense.amount || ''}
                     onChange={(e) => updateExpense(expense.id, parseFloat(e.target.value) || 0)}
-                    className="pl-6 h-7 text-xs"
+                    className="pl-6 h-7 text-xs [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                     placeholder="0.00"
                   />
                 </div>
@@ -284,7 +284,7 @@ const BudgetCalculator: React.FC<BudgetCalculatorProps> = ({
                     step="0.01"
                     value={expense.amount || ''}
                     onChange={(e) => updateExpense(expense.id, parseFloat(e.target.value) || 0, true)}
-                    className="pl-6 h-7 text-xs"
+                    className="pl-6 h-7 text-xs [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                     placeholder="0.00"
                   />
                 </div>
