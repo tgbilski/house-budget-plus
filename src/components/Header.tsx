@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
+import { User } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import ProfileDropdown from './ProfileDropdown';
 
@@ -71,8 +72,11 @@ const Header: React.FC = () => {
             <ProfileDropdown />
           ) : (
             <Link to="/auth">
-              <Button size="sm">
-                Sign Up
+              <Button size="sm" className="flex items-center">
+                {/* Show icon only on mobile */}
+                <User className="h-4 w-4 md:hidden" />
+                {/* Show text only on desktop */}
+                <span className="hidden md:block">Sign In</span>
               </Button>
             </Link>
           )}
