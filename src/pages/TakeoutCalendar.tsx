@@ -251,13 +251,6 @@ const TakeoutCalendar: React.FC = () => {
         <div className="max-w-6xl mx-auto space-y-6">
           {/* Subscription Banner */}
           {user && <SubscriptionBanner />}
-          
-          {/* PDF Processor */}
-          {user && (
-            <div className="max-w-2xl mx-auto">
-              <PDFProcessor />
-            </div>
-          )}
 
           {/* Year Dropdown */}
           <div className="flex justify-center">
@@ -376,6 +369,17 @@ const TakeoutCalendar: React.FC = () => {
               </TabsContent>
             ))}
           </Tabs>
+          
+          {/* PDF Processor - After manual entry experience */}
+          {user && (
+            <div className="max-w-2xl mx-auto mt-12">
+              <div className="text-center mb-6">
+                <h2 className="text-xl font-semibold mb-2">Tired of Manual Entry?</h2>
+                <p className="text-muted-foreground">Upload your receipts and let AI do the work</p>
+              </div>
+              <PDFProcessor />
+            </div>
+          )}
         </div>
 
         {/* Spending Input Dialog */}
