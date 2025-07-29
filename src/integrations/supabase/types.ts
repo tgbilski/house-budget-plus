@@ -47,6 +47,45 @@ export type Database = {
         }
         Relationships: []
       }
+      pdf_processing_logs: {
+        Row: {
+          ai_categorization: Json | null
+          created_at: string
+          extracted_text: string | null
+          file_name: string
+          file_size: number | null
+          id: string
+          processed_at: string | null
+          processing_error: string | null
+          processing_status: string
+          user_id: string | null
+        }
+        Insert: {
+          ai_categorization?: Json | null
+          created_at?: string
+          extracted_text?: string | null
+          file_name: string
+          file_size?: number | null
+          id?: string
+          processed_at?: string | null
+          processing_error?: string | null
+          processing_status?: string
+          user_id?: string | null
+        }
+        Update: {
+          ai_categorization?: Json | null
+          created_at?: string
+          extracted_text?: string | null
+          file_name?: string
+          file_size?: number | null
+          id?: string
+          processed_at?: string | null
+          processing_error?: string | null
+          processing_status?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           created_at: string
@@ -74,6 +113,42 @@ export type Database = {
           last_name?: string | null
           updated_at?: string
           user_id?: string
+        }
+        Relationships: []
+      }
+      subscribers: {
+        Row: {
+          created_at: string
+          email: string
+          id: string
+          stripe_customer_id: string | null
+          subscribed: boolean
+          subscription_end: string | null
+          subscription_tier: string | null
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          id?: string
+          stripe_customer_id?: string | null
+          subscribed?: boolean
+          subscription_end?: string | null
+          subscription_tier?: string | null
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          id?: string
+          stripe_customer_id?: string | null
+          subscribed?: boolean
+          subscription_end?: string | null
+          subscription_tier?: string | null
+          updated_at?: string
+          user_id?: string | null
         }
         Relationships: []
       }

@@ -11,6 +11,8 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContai
 import { useAuth } from '@/hooks/useAuth';
 import { useCurrency } from '@/components/BudgetApp';
 import { supabase } from '@/integrations/supabase/client';
+import { SubscriptionBanner } from '@/components/SubscriptionBanner';
+import { PDFProcessor } from '@/components/PDFProcessor';
 
 interface DaySpending {
   date: string;
@@ -247,6 +249,16 @@ const TakeoutCalendar: React.FC = () => {
         </div>
 
         <div className="max-w-6xl mx-auto space-y-6">
+          {/* Subscription Banner */}
+          {user && <SubscriptionBanner />}
+          
+          {/* PDF Processor */}
+          {user && (
+            <div className="max-w-2xl mx-auto">
+              <PDFProcessor />
+            </div>
+          )}
+
           {/* Year Dropdown */}
           <div className="flex justify-center">
             <div className="flex items-center gap-4">

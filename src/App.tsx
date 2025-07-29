@@ -4,6 +4,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/hooks/useAuth";
+import { SubscriptionProvider } from "@/hooks/useSubscription";
 import Header from "@/components/Header";
 import MonthlyBudget from "@/pages/MonthlyBudget";
 import CompareVendors from "@/pages/CompareVendors";
@@ -11,6 +12,7 @@ import TakeoutCalendar from "@/pages/TakeoutCalendar";
 import Vacation from "@/pages/Vacation";
 import Auth from "@/pages/Auth";
 import NotFound from "@/pages/NotFound";
+import SubscriptionSuccess from "@/pages/SubscriptionSuccess";
 import { useState, createContext } from "react";
 
 interface Currency {
@@ -43,8 +45,9 @@ const App = () => {
         <Toaster />
         <Sonner />
         <AuthProvider>
-          <CurrencyContext.Provider value={{ currency, setCurrency }}>
-            <BrowserRouter>
+          <SubscriptionProvider>
+            <CurrencyContext.Provider value={{ currency, setCurrency }}>
+              <BrowserRouter>
               <div className="min-h-screen">
                 <Header />
                 <Routes>
@@ -54,11 +57,13 @@ const App = () => {
                   <Route path="/takeout" element={<TakeoutCalendar />} />
                   <Route path="/vacation" element={<Vacation />} />
                   <Route path="/auth" element={<Auth />} />
+                  <Route path="/subscription-success" element={<SubscriptionSuccess />} />
                   <Route path="*" element={<NotFound />} />
                 </Routes>
               </div>
-            </BrowserRouter>
-          </CurrencyContext.Provider>
+              </BrowserRouter>
+            </CurrencyContext.Provider>
+          </SubscriptionProvider>
         </AuthProvider>
       </TooltipProvider>
     </QueryClientProvider>
