@@ -249,9 +249,6 @@ const TakeoutCalendar: React.FC = () => {
         </div>
 
         <div className="max-w-6xl mx-auto space-y-6">
-          {/* Subscription Banner */}
-          {user && <SubscriptionBanner />}
-
           {/* Year Dropdown */}
           <div className="flex justify-center">
             <div className="flex items-center gap-4">
@@ -378,6 +375,13 @@ const TakeoutCalendar: React.FC = () => {
                 <p className="text-muted-foreground">Upload your receipts and let AI do the work</p>
               </div>
               <PDFProcessor />
+            </div>
+          )}
+          
+          {/* Subscription Banner - After showing the solution */}
+          {user && (
+            <div className="mt-12">
+              <SubscriptionBanner />
             </div>
           )}
         </div>
