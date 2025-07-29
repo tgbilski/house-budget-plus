@@ -45,7 +45,7 @@ const App = () => {
         <AuthProvider>
           <CurrencyContext.Provider value={{ currency, setCurrency }}>
             <BrowserRouter>
-              <div className="min-h-screen bg-background">
+              <div className="min-h-screen">
                 <Header />
                 <Routes>
                   <Route path="/" element={<MonthlyBudget />} />
