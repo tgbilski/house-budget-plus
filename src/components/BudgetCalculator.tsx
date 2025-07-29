@@ -166,6 +166,7 @@ const BudgetCalculator: React.FC<BudgetCalculatorProps> = ({
   };
 
   const updateExpense = (expenseId: string, amount: number, isAdditional = false) => {
+    console.log(`updateExpense called: ${expenseId}, amount: ${amount}, isAdditional: ${isAdditional}`);
     if (isAdditional) {
       setAdditionalExpenses(
         additionalExpenses.map(expense =>
