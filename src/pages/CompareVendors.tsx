@@ -284,6 +284,7 @@ const VendorCard: React.FC<VendorCardProps> = ({ quote, onUpdate, onRemove, show
 const CompareVendors: React.FC = () => {
   const [quotes, setQuotes] = useState<VendorQuote[]>([]);
   const [selectedProject, setSelectedProject] = useState<string>('');
+  const [allProjects, setAllProjects] = useState<string[]>([]);
   const [isNewProject, setIsNewProject] = useState(false);
   const [isEditingProjectName, setIsEditingProjectName] = useState(false);
   const [editProjectName, setEditProjectName] = useState('');
@@ -296,41 +297,61 @@ const CompareVendors: React.FC = () => {
     if (user) {
       loadData();
     }
-  }, [user]);
+  }, [user, selectedProject]);
 
   const loadData = async () => {
     if (!user) return;
 
-    const { data } = await supabase
+    // First, get all projects for this user
+    const { data: allData } = await supabase
       .from('budget_data')
-      .select('*')
+      .select('calculator_id')
       .eq('user_id', user.id)
-      .eq('page_type', 'compare_prices')
-      .order('created_at', { ascending: false });
+      .eq('page_type', 'compare_prices');
 
-    if (data && data.length > 0) {
-      const expenses = data[0].expenses as any;
-      if (expenses.quotes) {
-        setQuotes(expenses.quotes);
-        // Set first project as selected if we have quotes
-        if (expenses.quotes.length > 0 && !selectedProject) {
-          const firstProject = expenses.quotes[0].projectName;
-          setSelectedProject(firstProject);
-          setIsNewProject(false);
+    const projects = allData ? [...new Set(allData.map(item => item.calculator_id))] : [];
+    setAllProjects(projects);
+    
+    // If we have a selected project, load its data
+    if (selectedProject && projects.includes(selectedProject)) {
+      const { data } = await supabase
+        .from('budget_data')
+        .select('*')
+        .eq('user_id', user.id)
+        .eq('page_type', 'compare_prices')
+        .eq('calculator_id', selectedProject)
+        .order('created_at', { ascending: false });
+
+      if (data && data.length > 0) {
+        const expenses = data[0].expenses as any;
+        if (expenses.quotes) {
+          setQuotes(expenses.quotes);
+        } else {
+          setQuotes([]);
         }
+      } else {
+        setQuotes([]);
       }
+    } else if (projects.length > 0 && !selectedProject) {
+      // If no project selected but projects exist, select the first one
+      setSelectedProject(projects[0]);
+      return; // Return here to let the next useEffect call load the data
+    } else if (!selectedProject) {
+      // No projects exist
+      setQuotes([]);
+      setIsNewProject(false);
     }
   };
 
   const saveData = async () => {
-    if (!user) return;
+    if (!user || !selectedProject) return;
 
     const { error } = await supabase
       .from('budget_data')
       .upsert({
         user_id: user.id,
         page_type: 'compare_prices',
-        calculator_id: 'vendors',
+        calculator_id: selectedProject,
         expenses: { quotes } as any
       });
 
@@ -340,10 +361,10 @@ const CompareVendors: React.FC = () => {
   };
 
   useEffect(() => {
-    if (user && quotes.length > 0) {
+    if (user && quotes.length > 0 && selectedProject) {
       saveData();
     }
-  }, [quotes, user]);
+  }, [quotes, user, selectedProject]);
 
   const createNewProject = () => {
     setIsNewProject(true);
@@ -351,21 +372,56 @@ const CompareVendors: React.FC = () => {
     setIsEditingProjectName(true);
   };
 
-  const saveNewProject = (projectName: string) => {
+  const saveNewProject = async (projectName: string) => {
     if (projectName.trim()) {
+      // Add to projects list
+      const newProjects = [...allProjects, projectName.trim()];
+      setAllProjects(newProjects);
+      
       setSelectedProject(projectName.trim());
       setIsNewProject(false);
       setIsEditingProjectName(false);
-      // Add first vendor card for the new project
-      addVendorCard(projectName.trim());
+      
+      // Create a new vendor card for the new project
+      const newQuote: VendorQuote = {
+        id: Date.now().toString(),
+        projectName: projectName.trim(),
+        vendorName: '',
+        estimateAmount: 0,
+        contactInfo: '',
+        notes: '',
+        likedSalesRep: false,
+        offersFinancing: false,
+        goodTiming: false,
+        trustworthy: false,
+        responsive: false,
+        dateReceived: new Date().toISOString().split('T')[0]
+      };
+      
+      setQuotes([newQuote]);
+      
+      // Save to database immediately if user is logged in
+      if (user) {
+        const { error } = await supabase
+          .from('budget_data')
+          .upsert({
+            user_id: user.id,
+            page_type: 'compare_prices',
+            calculator_id: projectName.trim(),
+            expenses: { quotes: [newQuote] } as any
+          });
+
+        if (error) {
+          console.error('Error saving new project:', error);
+        }
+      }
     }
   };
 
-  const addVendorCard = (projectName?: string) => {
-    const project = projectName || selectedProject || 'New Project';
+  const addVendorCard = () => {
     const newQuote: VendorQuote = {
       id: Date.now().toString(),
-      projectName: project,
+      projectName: selectedProject,
       vendorName: '',
       estimateAmount: 0,
       contactInfo: '',
@@ -473,14 +529,16 @@ const CompareVendors: React.FC = () => {
       return;
     }
 
-    // Remove all quotes for this project locally
-    const updatedQuotes = quotes.filter(quote => quote.projectName !== selectedProject);
-    setQuotes(updatedQuotes);
+    // Update local projects list
+    const updatedProjects = allProjects.filter(project => project !== selectedProject);
+    setAllProjects(updatedProjects);
+    
+    // Clear current quotes
+    setQuotes([]);
     
     // Select first remaining project or clear
-    const remainingProjects = [...new Set(updatedQuotes.map(quote => quote.projectName))];
-    if (remainingProjects.length > 0) {
-      setSelectedProject(remainingProjects[0]);
+    if (updatedProjects.length > 0) {
+      setSelectedProject(updatedProjects[0]);
     } else {
       setSelectedProject('');
       setIsNewProject(false);
@@ -534,7 +592,7 @@ const CompareVendors: React.FC = () => {
                 New Project
               </Button>
               
-              {!isNewProject && uniqueProjects.length > 0 && (
+              {!isNewProject && allProjects.length > 0 && (
                 <div className="flex items-center gap-2">
                   {isEditingProjectName ? (
                     <div className="flex items-center gap-2">
@@ -573,7 +631,7 @@ const CompareVendors: React.FC = () => {
                            </SelectValue>
                          </SelectTrigger>
                          <SelectContent className="z-50 bg-background border shadow-lg">
-                           {uniqueProjects.map((project) => (
+                           {allProjects.map((project) => (
                              <SelectItem key={project} value={project}>
                                {project}
                              </SelectItem>
