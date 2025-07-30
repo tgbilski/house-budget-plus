@@ -36,36 +36,47 @@ serve(async (req) => {
     if (!user?.email) throw new Error("User not authenticated");
     logStep("User authenticated", { userId: user.id, email: user.email });
 
-    // Check subscription status
-    const { data: subscriber } = await supabaseClient
-      .from("subscribers")
-      .select("*")
-      .eq("user_id", user.id)
-      .single();
+    // Check subscription status (bypass for super user)
+    const isSuperUser = user.email === "tgbilski@gmail.com";
+    logStep("User subscription check", { 
+      userId: user.id, 
+      email: user.email,
+      isSuperUser: isSuperUser 
+    });
 
-    // Check total usage for free users (lifetime limit, not monthly)
-    if (!subscriber?.subscribed) {
-      const { data: totalUsage, error: usageError } = await supabaseClient
-        .from("pdf_processing_logs")
-        .select("id")
+    if (!isSuperUser) {
+      const { data: subscriber } = await supabaseClient
+        .from("subscribers")
+        .select("*")
         .eq("user_id", user.id)
-        .eq("processing_status", "completed");
+        .single();
 
-      if (usageError) {
-        logStep("Error checking usage", { error: usageError.message });
-        throw new Error("Failed to check usage limits");
-      }
+      // Check total usage for free users (lifetime limit, not monthly)
+      if (!subscriber?.subscribed) {
+        const { data: totalUsage, error: usageError } = await supabaseClient
+          .from("pdf_processing_logs")
+          .select("id")
+          .eq("user_id", user.id)
+          .eq("processing_status", "completed");
 
-      if (totalUsage && totalUsage.length >= 1) {
-        logStep("Free user exceeded lifetime limit", { count: totalUsage.length });
-        return new Response(JSON.stringify({ 
-          error: "You've used your free PDF. Upgrade to Premium for unlimited PDF processing.",
-          requiresUpgrade: true
-        }), {
-          headers: { ...corsHeaders, "Content-Type": "application/json" },
-          status: 403,
-        });
+        if (usageError) {
+          logStep("Error checking usage", { error: usageError.message });
+          throw new Error("Failed to check usage limits");
+        }
+
+        if (totalUsage && totalUsage.length >= 1) {
+          logStep("Free user exceeded lifetime limit", { count: totalUsage.length });
+          return new Response(JSON.stringify({ 
+            error: "You've used your free PDF. Upgrade to Premium for unlimited PDF processing.",
+            requiresUpgrade: true
+          }), {
+            headers: { ...corsHeaders, "Content-Type": "application/json" },
+            status: 403,
+          });
+        }
       }
+    } else {
+      logStep("Super user bypass - unlimited PDF processing allowed");
     }
 
     const formData = await req.formData();
