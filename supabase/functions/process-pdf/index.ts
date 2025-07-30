@@ -401,32 +401,46 @@ async function extractAndSaveAllExpenses(text: string, userId: string, supabaseC
             role: 'system',
             content: `You are an AI specialized in extracting ALL expenses and transactions from corrupted or garbled text that may come from poorly parsed PDFs, bank statements, credit card statements, or receipts.
 
-CRITICAL DATE EXTRACTION INSTRUCTIONS:
-1. Look for column headers like: "Transaction Date", "Charge Date", "Date", "Trans Date", "Post Date", "Posted Date"
-2. Extract dates from these columns and match them to transactions in the same row
-3. Date formats to look for: MM/DD, MM/DD/YY, MM/DD/YYYY, MM-DD, MM-DD-YY, MM-DD-YYYY, YYYY-MM-DD
-4. If you find dates with only month/day (no year), use ${new Date().getFullYear()} as the year
-5. Pay attention to tabular structure - dates in one column should correspond to merchants/amounts in adjacent columns
-6. Look for statement periods (e.g., "July 2025", "07/01/25 - 07/31/25") to understand the timeframe
-7. If you can't find specific transaction dates, distribute transactions across the statement period
+CRITICAL EXTRACTION INSTRUCTIONS:
+
+DATE COLUMNS - Look for headers like:
+- "Transaction Date", "Charge Date", "Date", "Trans Date", "Post Date", "Posted Date"
+- Extract dates from these columns and match them to transactions in the same row
+- Date formats: MM/DD, MM/DD/YY, MM/DD/YYYY, MM-DD, MM-DD-YY, MM-DD-YYYY, YYYY-MM-DD
+- If dates have only month/day (no year), use ${new Date().getFullYear()} as the year
+
+AMOUNT COLUMNS - Look for headers like:
+- "Amount", "Charge Amount", "Transaction Amount", "Cost", "Total", "Debit", "Credit", "Price"
+- Extract dollar amounts from these columns (look for $XX.XX, XX.XX, negative amounts with -)
+- Match amounts to transactions in the same row as the date
+- Remove dollar signs and convert to positive numbers
+
+MERCHANT COLUMNS - Look for headers like:
+- "Description", "Merchant", "Vendor", "Payee", "Transaction Description", "Details"
+- Extract merchant names from these columns and match to the same row
+
+TABULAR STRUCTURE:
+- Pay attention to rows and columns - data should align horizontally
+- Match date + amount + merchant from the same row
+- Look for statement periods to understand timeframe context
 
 The text may be very messy with:
 - Random characters mixed in
 - Words broken up with spaces or symbols
-- Amounts that might be fragmented
 - Column data scattered across lines
+- Amounts that might be fragmented
 
 Your task is to find ANY expense/transaction even if the text is corrupted. Look for:
-- ANY merchant or vendor names (restaurants, stores, gas stations, online services, utilities, etc.)
-- ANY dollar amounts that might be near merchant text
+- ANY merchant or vendor names from description columns
+- ANY dollar amounts from amount columns  
 - ANY dates from transaction date columns
 - Categories like: Food & Dining, Transportation, Shopping, Entertainment, Bills & Utilities, Healthcare, Gas, Groceries, etc.
 
 Be very liberal in interpretation. If you see fragments that could possibly be expenses, include them.
 For each possible transaction, provide your best guess at:
 - date (YYYY-MM-DD format, extract from transaction date columns when possible)
-- amount (extract any dollar amounts you see, even if fragmented)
-- merchant (piece together from fragments if needed)
+- amount (extract from amount columns, convert to positive number)
+- merchant (extract from merchant/description columns)
 - description (your interpretation of what it might be)
 - category (best guess: Food & Dining, Transportation, Shopping, Entertainment, Bills & Utilities, Healthcare, Other)
 
