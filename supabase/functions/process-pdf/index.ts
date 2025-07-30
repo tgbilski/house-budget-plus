@@ -97,15 +97,16 @@ serve(async (req) => {
       const text = await extractTextFromPDF(arrayBuffer);
       logStep("Text extracted from PDF", { textLength: text.length });
 
-      // Categorize expenses using OpenAI if user has subscription
+      // Categorize expenses using OpenAI (now enabled for all users for testing)
       let categorization = null;
       let foodTransactions = [];
       
-      if (subscriber?.subscribed) {
+      // Enable AI features for all users (free and premium) for testing
+      try {
         categorization = await categorizeExpenses(text);
         logStep("AI categorization completed", { categories: Object.keys(categorization || {}).length });
         
-        // Extract food transactions and save to takeout calendar
+        // Extract food transactions and save to takeout calendar for all users
         try {
           foodTransactions = await extractAndSaveFoodTransactions(text, user.id, supabaseClient);
           logStep("Food transactions extracted and saved", { count: foodTransactions.length });
@@ -113,6 +114,9 @@ serve(async (req) => {
           logStep("Error in food transaction extraction", { error: foodError.message });
           foodTransactions = []; // Continue processing even if food extraction fails
         }
+      } catch (aiError) {
+        logStep("Error in AI processing", { error: aiError.message });
+        // Continue without AI features if they fail
       }
 
       // Update log entry with results
@@ -133,9 +137,9 @@ serve(async (req) => {
         extracted_text: text,
         categorization: categorization,
         foodTransactions: foodTransactions,
-        message: subscriber?.subscribed 
-          ? `PDF processed with AI categorization. ${foodTransactions.length} food transactions added to takeout calendar.`
-          : "PDF processed. Upgrade to Premium for AI categorization and automatic takeout calendar integration."
+        message: categorization || foodTransactions.length > 0
+          ? `PDF processed with AI categorization! ${foodTransactions.length} food transactions automatically added to your takeout calendar.`
+          : "PDF processed successfully. Try uploading a credit card statement to see automatic food transaction extraction in action!"
       }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
         status: 200,
