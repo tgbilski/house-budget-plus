@@ -419,7 +419,7 @@ const CompareVendors: React.FC = () => {
           .from('budget_data')
           .update({ calculator_id: editProjectName.trim() })
           .eq('user_id', user.id)
-          .eq('page_type', 'compare_vendors')
+          .eq('page_type', 'compare_prices')
           .eq('calculator_id', selectedProject);
           
         if (error) {
@@ -460,7 +460,7 @@ const CompareVendors: React.FC = () => {
       .from('budget_data')
       .delete()
       .eq('user_id', user.id)
-      .eq('page_type', 'compare_vendors')
+      .eq('page_type', 'compare_prices')
       .eq('calculator_id', selectedProject);
 
     if (error) {
