@@ -469,6 +469,13 @@ const CompareVendors: React.FC = () => {
           
           {/* Project Management */}
           <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between max-w-6xl mx-auto">
+            {/* Current Project Display */}
+            {!isNewProject && selectedProject && (
+              <div className="text-lg font-semibold text-foreground mb-2 sm:mb-0">
+                Project: {selectedProject}
+              </div>
+            )}
+            
             <div className="flex flex-col sm:flex-row gap-2 items-start sm:items-center">
               <Button
                 onClick={createNewProject}
@@ -478,7 +485,7 @@ const CompareVendors: React.FC = () => {
                 New Project
               </Button>
               
-              {!isNewProject && uniqueProjects.length > 1 && (
+              {!isNewProject && uniqueProjects.length > 0 && (
                 <div className="flex items-center gap-2">
                   {isEditingProjectName ? (
                     <div className="flex items-center gap-2">
@@ -503,25 +510,27 @@ const CompareVendors: React.FC = () => {
                     </div>
                   ) : (
                     <>
-                      <Select
-                        value={selectedProject}
-                        onValueChange={(value) => {
-                          setSelectedProject(value);
-                          setIsNewProject(false);
-                          setIsEditingProjectName(false);
-                        }}
-                      >
-                        <SelectTrigger className="w-[200px]">
-                          <SelectValue placeholder="Select project" />
-                        </SelectTrigger>
-                        <SelectContent className="z-50 bg-background border shadow-lg">
-                          {uniqueProjects.map((project) => (
-                            <SelectItem key={project} value={project}>
-                              {project}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
+                       <Select
+                         value={selectedProject}
+                         onValueChange={(value) => {
+                           setSelectedProject(value);
+                           setIsNewProject(false);
+                           setIsEditingProjectName(false);
+                         }}
+                       >
+                         <SelectTrigger className="w-[200px]">
+                           <SelectValue placeholder="Select project">
+                             {selectedProject || "Select project"}
+                           </SelectValue>
+                         </SelectTrigger>
+                         <SelectContent className="z-50 bg-background border shadow-lg">
+                           {uniqueProjects.map((project) => (
+                             <SelectItem key={project} value={project}>
+                               {project}
+                             </SelectItem>
+                           ))}
+                         </SelectContent>
+                       </Select>
                       <Button
                         size="sm"
                         variant="outline"
