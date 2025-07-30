@@ -14,6 +14,8 @@ interface StreamingServiceSelectorProps {
   onChange: (amount: number) => void;
   label: string;
   expenseId: string;
+  selectedService?: string;
+  onServiceChange?: (serviceId: string) => void;
 }
 
 const streamingServices: StreamingService[] = [
@@ -30,14 +32,19 @@ const streamingServices: StreamingService[] = [
   { id: 'custom', name: 'Custom Service' }
 ];
 
-export function StreamingServiceSelector({ value, onChange, label, expenseId }: StreamingServiceSelectorProps) {
+export function StreamingServiceSelector({ 
+  value, 
+  onChange, 
+  label, 
+  expenseId, 
+  selectedService = 'custom', 
+  onServiceChange 
+}: StreamingServiceSelectorProps) {
   const { currency } = useCurrency();
-  const [selectedService, setSelectedService] = useState('custom');
   
   const handleServiceSelect = (serviceId: string) => {
     console.log(`[${expenseId}] Service selected:`, serviceId);
-    setSelectedService(serviceId);
-    // Don't change the amount when selecting a service - let user input their own amount
+    onServiceChange?.(serviceId);
   };
 
   return (

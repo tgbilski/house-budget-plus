@@ -14,6 +14,7 @@ interface ExpenseItem {
   id: string;
   label: string;
   amount: number;
+  selectedService?: string;
 }
 
 interface BudgetCalculatorProps {
@@ -52,6 +53,7 @@ const BudgetCalculator: React.FC<BudgetCalculatorProps> = ({
   const [expenses, setExpenses] = useState<ExpenseItem[]>(defaultExpenses);
   const [additionalExpenses, setAdditionalExpenses] = useState<ExpenseItem[]>([]);
   const [additionalSubscriptions, setAdditionalSubscriptions] = useState<ExpenseItem[]>([]);
+  const [subscriptionServices, setSubscriptionServices] = useState<Record<string, string>>({});
 
   useEffect(() => {
     if (user) {
@@ -89,6 +91,9 @@ const BudgetCalculator: React.FC<BudgetCalculatorProps> = ({
         if (expensesData.additionalSubscriptions) {
           setAdditionalSubscriptions(expensesData.additionalSubscriptions);
         }
+        if (expensesData.subscriptionServices) {
+          setSubscriptionServices(expensesData.subscriptionServices);
+        }
         if (expensesData.ownerName) {
           setOwnerName(expensesData.ownerName);
         }
@@ -110,6 +115,7 @@ const BudgetCalculator: React.FC<BudgetCalculatorProps> = ({
       fixed: fixedExpensesData,
       custom: additionalExpenses,
       additionalSubscriptions,
+      subscriptionServices,
       ownerName
     };
 
@@ -129,11 +135,11 @@ const BudgetCalculator: React.FC<BudgetCalculatorProps> = ({
   };
 
   useEffect(() => {
-    if (user && (monthlyIncome > 0 || expenses.some(e => e.amount > 0) || additionalExpenses.length > 0 || additionalSubscriptions.length > 0 || ownerName)) {
+    if (user && (monthlyIncome > 0 || expenses.some(e => e.amount > 0) || additionalExpenses.length > 0 || additionalSubscriptions.length > 0 || ownerName || Object.keys(subscriptionServices).length > 0)) {
       const saveTimeout = setTimeout(saveData, 500);
       return () => clearTimeout(saveTimeout);
     }
-  }, [monthlyIncome, expenses, additionalExpenses, additionalSubscriptions, ownerName, user]);
+  }, [monthlyIncome, expenses, additionalExpenses, additionalSubscriptions, subscriptionServices, ownerName, user]);
 
   const addAdditionalExpense = () => {
     if (additionalExpenses.length < 10) {
@@ -187,6 +193,13 @@ const BudgetCalculator: React.FC<BudgetCalculatorProps> = ({
         subscription.id === subscriptionId ? { ...subscription, amount } : subscription
       )
     );
+  };
+
+  const updateSubscriptionService = (expenseId: string, serviceId: string) => {
+    setSubscriptionServices(prev => ({
+      ...prev,
+      [expenseId]: serviceId
+    }));
   };
 
   const updateAdditionalExpenseLabel = (expenseId: string, label: string) => {
@@ -359,6 +372,8 @@ const BudgetCalculator: React.FC<BudgetCalculatorProps> = ({
                       onChange={(amount) => updateExpense(expense.id, amount)}
                       label={expense.label}
                       expenseId={expense.id}
+                      selectedService={subscriptionServices[expense.id] || 'custom'}
+                      onServiceChange={(serviceId) => updateSubscriptionService(expense.id, serviceId)}
                     />
                   </div>
                 );
@@ -375,6 +390,8 @@ const BudgetCalculator: React.FC<BudgetCalculatorProps> = ({
                     onChange={(amount) => updateAdditionalSubscription(subscription.id, amount)}
                     label={subscription.label}
                     expenseId={subscription.id}
+                    selectedService={subscriptionServices[subscription.id] || 'custom'}
+                    onServiceChange={(serviceId) => updateSubscriptionService(subscription.id, serviceId)}
                   />
                   <Button
                     variant="destructive"
