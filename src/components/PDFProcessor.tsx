@@ -67,8 +67,13 @@ export function PDFProcessor() {
       setResult(data);
       toast({
         title: "Success!",
-        description: data.message || "PDF processed successfully",
+        description: data.message || "PDF processed successfully. Refresh the page to see your calendar updated!",
       });
+      
+      // Trigger page refresh after 2 seconds to show updated calendar
+      setTimeout(() => {
+        window.location.reload();
+      }, 2000);
     } catch (error) {
       console.error('Error processing PDF:', error);
       toast({
