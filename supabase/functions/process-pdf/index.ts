@@ -117,13 +117,13 @@ serve(async (req) => {
         categorization = await categorizeExpenses(text);
         logStep("AI categorization completed", { categories: Object.keys(categorization || {}).length });
         
-        // Extract food transactions and save to takeout calendar for all users
+        // Extract all expenses and save to daily expense calendar for all users
         try {
-          foodTransactions = await extractAndSaveFoodTransactions(text, user.id, supabaseClient, file.name);
-          logStep("Food transactions extracted and saved", { count: foodTransactions.length });
+          foodTransactions = await extractAndSaveAllExpenses(text, user.id, supabaseClient, file.name);
+          logStep("All expenses extracted and saved", { count: foodTransactions.length });
         } catch (foodError) {
-          logStep("Error in food transaction extraction", { error: foodError.message });
-          foodTransactions = []; // Continue processing even if food extraction fails
+          logStep("Error in expense extraction", { error: foodError.message });
+          foodTransactions = []; // Continue processing even if expense extraction fails
         }
       } catch (aiError) {
         logStep("Error in AI processing", { error: aiError.message });
@@ -149,8 +149,8 @@ serve(async (req) => {
         categorization: categorization,
         foodTransactions: foodTransactions,
         message: categorization || foodTransactions.length > 0
-          ? `PDF processed with AI categorization! ${foodTransactions.length} food transactions automatically added to your takeout calendar.`
-          : "PDF processed successfully. Try uploading a credit card statement to see automatic food transaction extraction in action!"
+          ? `PDF processed with AI categorization! ${foodTransactions.length} expenses automatically added to your daily calendar.`
+          : "PDF processed successfully. Try uploading a bank statement or receipt to see automatic expense extraction in action!"
       }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
         status: 200,
@@ -378,16 +378,16 @@ async function categorizeExpenses(text: string): Promise<any> {
   }
 }
 
-async function extractAndSaveFoodTransactions(text: string, userId: string, supabaseClient: any, fileName: string): Promise<any[]> {
+async function extractAndSaveAllExpenses(text: string, userId: string, supabaseClient: any, fileName: string): Promise<any[]> {
   try {
     const openAIKey = Deno.env.get("OPENAI_API_KEY");
     if (!openAIKey) {
-      logStep("OpenAI API key not configured for food extraction - skipping");
+      logStep("OpenAI API key not configured for expense extraction - skipping");
       return [];
     }
-    logStep("OpenAI API key found, proceeding with food transaction extraction");
+    logStep("OpenAI API key found, proceeding with all expense extraction");
 
-    // Enhanced prompt for difficult-to-read text
+    // Enhanced prompt for extracting ALL expenses from difficult-to-read text
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
       headers: {
@@ -399,7 +399,7 @@ async function extractAndSaveFoodTransactions(text: string, userId: string, supa
         messages: [
           {
             role: 'system',
-            content: `You are an AI specialized in extracting food and dining transactions from corrupted or garbled text that may come from poorly parsed PDFs.
+            content: `You are an AI specialized in extracting ALL expenses and transactions from corrupted or garbled text that may come from poorly parsed PDFs, bank statements, credit card statements, or receipts.
 
 The text may be very messy with:
 - Random characters mixed in
@@ -407,27 +407,28 @@ The text may be very messy with:
 - Amounts that might be fragmented
 - Dates that are scattered
 
-Your task is to find ANY food/dining related transactions even if the text is corrupted. Look for:
-- Restaurant names (even partial): McDonald, Burger, Pizza, Starbucks, Subway, KFC, Taco, Domino, Wendy, Chipotle, etc.
-- Food delivery: DoorDash, UberEats, Grubhub, Postmates
-- Any dollar amounts that might be near food-related text
-- Any dates that might be associated with transactions
+Your task is to find ANY expense/transaction even if the text is corrupted. Look for:
+- ANY merchant or vendor names (restaurants, stores, gas stations, online services, utilities, etc.)
+- ANY dollar amounts that might be near merchant text
+- ANY dates that might be associated with transactions
+- Categories like: Food & Dining, Transportation, Shopping, Entertainment, Bills & Utilities, Healthcare, Gas, Groceries, etc.
 
-Be very liberal in interpretation. If you see fragments that could possibly be food transactions, include them.
+Be very liberal in interpretation. If you see fragments that could possibly be expenses, include them.
 For each possible transaction, provide your best guess at:
 - date (YYYY-MM-DD format, use 2024 if year unclear)
 - amount (extract any dollar amounts you see, even if fragmented)
 - merchant (piece together from fragments if needed)
 - description (your interpretation of what it might be)
+- category (best guess: Food & Dining, Transportation, Shopping, Entertainment, Bills & Utilities, Healthcare, Other)
 
-Return ONLY a JSON array. If you find any possible food transactions, include them even if uncertain.
-Example: [{"date": "2024-01-15", "amount": 12.50, "merchant": "McDonald's", "description": "Fast food"}]
+Return ONLY a JSON array. If you find any possible expenses, include them even if uncertain.
+Example: [{"date": "2024-01-15", "amount": 12.50, "merchant": "Target", "description": "Shopping", "category": "Shopping"}]
 
 If the text is too corrupted to extract anything meaningful, return an empty array: []`
           },
           {
             role: 'user',
-            content: `Extract any possible food/dining transactions from this garbled text: ${text.substring(0, 3000)}`
+            content: `Extract any possible expenses/transactions from this garbled text: ${text.substring(0, 3000)}`
           }
         ],
         temperature: 0.3,
@@ -443,11 +444,11 @@ If the text is too corrupted to extract anything meaningful, return an empty arr
     const result = data.choices[0]?.message?.content;
     
     if (!result) {
-      logStep("No response from OpenAI for food extraction");
+      logStep("No response from OpenAI for expense extraction");
       return [];
     }
 
-    logStep("Raw OpenAI response for food extraction", { result: result.substring(0, 500) });
+    logStep("Raw OpenAI response for expense extraction", { result: result.substring(0, 500) });
 
     let transactions: any[];
     try {
@@ -455,22 +456,23 @@ If the text is too corrupted to extract anything meaningful, return an empty arr
       const cleanedResult = result.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
       transactions = JSON.parse(cleanedResult);
     } catch (parseError) {
-      logStep("Failed to parse food transactions JSON", { error: parseError.message, result });
+      logStep("Failed to parse expense transactions JSON", { error: parseError.message, result });
       // Try to extract any patterns that look like transactions from the text response
       const fallbackTransactions = [];
       
       // Look for date patterns in the response
       const dateMatches = result.match(/\d{4}-\d{2}-\d{2}/g);
       const amountMatches = result.match(/\d+\.\d{2}/g);
-      const merchantMatches = result.match(/(?:McDonald|Burger|Pizza|Starbuck|Subway|KFC|Taco|Domino)[^,]*/gi);
+      const merchantMatches = result.match(/[A-Z][a-zA-Z\s]+/g);
       
       if (dateMatches && amountMatches) {
         for (let i = 0; i < Math.min(dateMatches.length, amountMatches.length); i++) {
           fallbackTransactions.push({
             date: dateMatches[i],
             amount: parseFloat(amountMatches[i]),
-            merchant: merchantMatches?.[i] || "Unknown Food Merchant",
-            description: "Extracted from corrupted PDF"
+            merchant: merchantMatches?.[i] || "Unknown Merchant",
+            description: "Extracted from corrupted PDF",
+            category: "Other"
           });
         }
       }
@@ -479,7 +481,7 @@ If the text is too corrupted to extract anything meaningful, return an empty arr
     }
 
     if (!Array.isArray(transactions)) {
-      logStep("Food transactions result is not an array", { result });
+      logStep("Expense transactions result is not an array", { result });
       return [];
     }
 
@@ -492,12 +494,13 @@ If the text is too corrupted to extract anything meaningful, return an empty arr
       return hasValidAmount && hasValidDate && hasMerchant;
     }).map(t => ({
       ...t,
-      amount: typeof t.amount === 'number' ? t.amount : parseFloat(t.amount)
+      amount: typeof t.amount === 'number' ? t.amount : parseFloat(t.amount),
+      category: t.category || 'Other'
     }));
 
-    logStep("Valid food transactions found", { count: validTransactions.length, transactions: validTransactions });
+    logStep("Valid expense transactions found", { count: validTransactions.length, transactions: validTransactions });
 
-    // Save transactions to the dedicated takeout_transactions table
+    // Save transactions to the takeout_transactions table (now used for all expenses)
     const savedTransactions = [];
     for (const transaction of validTransactions) {
       try {
@@ -525,29 +528,29 @@ If the text is too corrupted to extract anything meaningful, return an empty arr
               amount: transaction.amount,
               merchant: transaction.merchant,
               description: transaction.description || "Extracted from PDF",
-              category: 'Food & Dining',
+              category: transaction.category,
               pdf_source: fileName
             });
           
           if (insertError) {
-            logStep("Error saving food transaction", { error: insertError.message });
+            logStep("Error saving expense transaction", { error: insertError.message });
           } else {
             savedTransactions.push(transaction);
-            logStep("Saved food transaction", { transaction });
+            logStep("Saved expense transaction", { transaction });
           }
         } else {
           logStep("Duplicate transaction skipped", { merchant: transaction.merchant });
         }
       } catch (saveError) {
-        logStep("Error processing food transaction", { error: saveError.message });
+        logStep("Error processing expense transaction", { error: saveError.message });
       }
     }
 
-    logStep("Food transactions saved to dedicated table", { savedCount: savedTransactions.length, totalFound: validTransactions.length });
+    logStep("Expense transactions saved to database", { savedCount: savedTransactions.length, totalFound: validTransactions.length });
     return savedTransactions;
     
   } catch (error) {
-    logStep("Error extracting food transactions", { error: error.message });
+    logStep("Error extracting all expenses", { error: error.message });
     return [];
   }
 }

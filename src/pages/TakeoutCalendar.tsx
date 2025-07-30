@@ -53,7 +53,7 @@ const TakeoutCalendar: React.FC = () => {
   const loadData = async () => {
     if (!user) return;
 
-    // Load from the new dedicated takeout_transactions table
+    // Load from the daily expenses table
     const { data, error } = await supabase
       .from('takeout_transactions')
       .select('*')
@@ -61,12 +61,12 @@ const TakeoutCalendar: React.FC = () => {
       .order('date', { ascending: false });
 
     if (error) {
-      console.error('Error loading takeout transactions:', error);
+      console.error('Error loading daily expenses:', error);
       return;
     }
 
     if (data && data.length > 0) {
-      // Convert from takeout_transactions format to DaySpending format
+      // Convert from transactions format to DaySpending format
       const transformedData: DaySpending[] = data.map(transaction => ({
         date: transaction.date,
         amount: Number(transaction.amount),
@@ -82,7 +82,7 @@ const TakeoutCalendar: React.FC = () => {
 
     try {
       if (isDelete) {
-        // Delete the transaction from the database
+        // Delete the expense from the database
         const { error } = await supabase
           .from('takeout_transactions')
           .delete()
@@ -90,10 +90,10 @@ const TakeoutCalendar: React.FC = () => {
           .eq('date', transaction.date);
 
         if (error) {
-          console.error('Error deleting transaction:', error);
+          console.error('Error deleting expense:', error);
         }
       } else {
-        // Check if transaction already exists
+        // Check if expense already exists
         const { data: existing } = await supabase
           .from('takeout_transactions')
           .select('id')
@@ -102,22 +102,22 @@ const TakeoutCalendar: React.FC = () => {
           .single();
 
         if (existing) {
-          // Update existing transaction
+          // Update existing expense
           const { error } = await supabase
             .from('takeout_transactions')
             .update({
               amount: transaction.amount,
               merchant: 'Manual Entry',
               description: transaction.notes || '',
-              category: 'Food & Dining'
+              category: 'General'
             })
             .eq('id', existing.id);
 
           if (error) {
-            console.error('Error updating transaction:', error);
+            console.error('Error updating expense:', error);
           }
         } else {
-          // Insert new transaction
+          // Insert new expense
           const { error } = await supabase
             .from('takeout_transactions')
             .insert({
@@ -126,16 +126,16 @@ const TakeoutCalendar: React.FC = () => {
               amount: transaction.amount,
               merchant: 'Manual Entry',
               description: transaction.notes || '',
-              category: 'Food & Dining'
+              category: 'General'
             });
 
           if (error) {
-            console.error('Error inserting transaction:', error);
+            console.error('Error inserting expense:', error);
           }
         }
       }
     } catch (error) {
-      console.error('Error saving transaction:', error);
+      console.error('Error saving expense:', error);
     }
   };
 
@@ -284,10 +284,10 @@ const TakeoutCalendar: React.FC = () => {
               alt="Calculator mascot" 
               className="w-16 h-16 object-contain"
             />
-            <h1 className="text-3xl font-bold text-foreground">Takeout Calendar {selectedYear}</h1>
+            <h1 className="text-3xl font-bold text-foreground">Daily Expenses {selectedYear}</h1>
           </div>
           <p className="text-muted-foreground">
-            Track your daily takeout spending throughout the year{!user && ' (sign up to save)'}
+            Track your daily expenses throughout the year{!user && ' (sign up to save)'}
           </p>
         </div>
 
@@ -434,7 +434,7 @@ const TakeoutCalendar: React.FC = () => {
             <div className="max-w-2xl mx-auto mt-12">
               <div className="text-center mb-6">
                 <h2 className="text-xl font-semibold mb-2">Tired of Manual Entry?</h2>
-                <p className="text-muted-foreground">Upload your receipts and let AI do the work</p>
+                <p className="text-muted-foreground">Upload your receipts and let AI extract all expenses</p>
               </div>
               <PDFProcessor />
             </div>
