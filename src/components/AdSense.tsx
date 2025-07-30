@@ -34,7 +34,7 @@ export const AdSense: React.FC<AdSenseProps> = ({
       <ins
         className="adsbygoogle"
         style={style}
-        data-ad-client="ca-pub-XXXXXXXXXXXXXXXX" // Replace with your actual publisher ID
+        data-ad-client="ca-pub-5656855326953521"
         data-ad-slot={adSlot}
         data-ad-format={responsive ? 'auto' : adFormat}
         data-full-width-responsive={responsive ? 'true' : 'false'}
