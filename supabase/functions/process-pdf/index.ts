@@ -376,6 +376,7 @@ async function extractAndSaveFoodTransactions(text: string, userId: string, supa
     }
     logStep("OpenAI API key found, proceeding with food transaction extraction");
 
+    // Enhanced prompt for difficult-to-read text
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
       headers: {
@@ -387,31 +388,38 @@ async function extractAndSaveFoodTransactions(text: string, userId: string, supa
         messages: [
           {
             role: 'system',
-            content: `You are an AI that extracts food and dining transactions from credit card statements or bank statements.
-            
-            Focus on:
-            - Restaurants (fast food, casual dining, fine dining)
-            - Food delivery services (DoorDash, Uber Eats, Grubhub, etc.)
-            - Coffee shops and cafes
-            - Grocery stores and food markets
-            - Bars and breweries
-            - Food trucks and street vendors
-            
-            For each food transaction, extract:
-            - date (in YYYY-MM-DD format)
-            - amount (as a positive number)
-            - merchant name
-            - transaction type/description
-            
-            Return a JSON array of transactions. Only include transactions that are clearly food-related.
-            Format: [{"date": "2024-01-15", "amount": 12.50, "merchant": "McDonald's", "description": "Fast food - lunch"}]`
+            content: `You are an AI specialized in extracting food and dining transactions from corrupted or garbled text that may come from poorly parsed PDFs.
+
+The text may be very messy with:
+- Random characters mixed in
+- Words broken up with spaces or symbols
+- Amounts that might be fragmented
+- Dates that are scattered
+
+Your task is to find ANY food/dining related transactions even if the text is corrupted. Look for:
+- Restaurant names (even partial): McDonald, Burger, Pizza, Starbucks, Subway, KFC, Taco, Domino, Wendy, Chipotle, etc.
+- Food delivery: DoorDash, UberEats, Grubhub, Postmates
+- Any dollar amounts that might be near food-related text
+- Any dates that might be associated with transactions
+
+Be very liberal in interpretation. If you see fragments that could possibly be food transactions, include them.
+For each possible transaction, provide your best guess at:
+- date (YYYY-MM-DD format, use 2024 if year unclear)
+- amount (extract any dollar amounts you see, even if fragmented)
+- merchant (piece together from fragments if needed)
+- description (your interpretation of what it might be)
+
+Return ONLY a JSON array. If you find any possible food transactions, include them even if uncertain.
+Example: [{"date": "2024-01-15", "amount": 12.50, "merchant": "McDonald's", "description": "Fast food"}]
+
+If the text is too corrupted to extract anything meaningful, return an empty array: []`
           },
           {
             role: 'user',
-            content: `Extract food and dining transactions from this credit card/bank statement: ${text}`
+            content: `Extract any possible food/dining transactions from this garbled text: ${text.substring(0, 3000)}`
           }
         ],
-        temperature: 0.1,
+        temperature: 0.3,
         max_tokens: 1500,
       }),
     });
@@ -428,6 +436,8 @@ async function extractAndSaveFoodTransactions(text: string, userId: string, supa
       return [];
     }
 
+    logStep("Raw OpenAI response for food extraction", { result: result.substring(0, 500) });
+
     let transactions: any[];
     try {
       // Clean up the result to remove any markdown formatting
@@ -435,7 +445,26 @@ async function extractAndSaveFoodTransactions(text: string, userId: string, supa
       transactions = JSON.parse(cleanedResult);
     } catch (parseError) {
       logStep("Failed to parse food transactions JSON", { error: parseError.message, result });
-      return [];
+      // Try to extract any patterns that look like transactions from the text response
+      const fallbackTransactions = [];
+      
+      // Look for date patterns in the response
+      const dateMatches = result.match(/\d{4}-\d{2}-\d{2}/g);
+      const amountMatches = result.match(/\d+\.\d{2}/g);
+      const merchantMatches = result.match(/(?:McDonald|Burger|Pizza|Starbuck|Subway|KFC|Taco|Domino)[^,]*/gi);
+      
+      if (dateMatches && amountMatches) {
+        for (let i = 0; i < Math.min(dateMatches.length, amountMatches.length); i++) {
+          fallbackTransactions.push({
+            date: dateMatches[i],
+            amount: parseFloat(amountMatches[i]),
+            merchant: merchantMatches?.[i] || "Unknown Food Merchant",
+            description: "Extracted from corrupted PDF"
+          });
+        }
+      }
+      
+      transactions = fallbackTransactions;
     }
 
     if (!Array.isArray(transactions)) {
@@ -443,16 +472,21 @@ async function extractAndSaveFoodTransactions(text: string, userId: string, supa
       return [];
     }
 
-    // Filter and validate transactions
-    const validTransactions = transactions.filter(t => 
-      t.date && t.amount && t.merchant && 
-      typeof t.amount === 'number' && t.amount > 0 &&
-      /^\d{4}-\d{2}-\d{2}$/.test(t.date)
-    );
+    // More lenient validation for corrupted data
+    const validTransactions = transactions.filter(t => {
+      const hasValidAmount = t.amount && (typeof t.amount === 'number' || !isNaN(parseFloat(t.amount))) && parseFloat(t.amount) > 0;
+      const hasValidDate = t.date && /\d{4}-\d{2}-\d{2}/.test(t.date);
+      const hasMerchant = t.merchant && t.merchant.length > 0;
+      
+      return hasValidAmount && hasValidDate && hasMerchant;
+    }).map(t => ({
+      ...t,
+      amount: typeof t.amount === 'number' ? t.amount : parseFloat(t.amount)
+    }));
 
-    logStep("Valid food transactions found", { count: validTransactions.length });
+    logStep("Valid food transactions found", { count: validTransactions.length, transactions: validTransactions });
 
-    // Save transactions to the new dedicated takeout_transactions table
+    // Save transactions to the dedicated takeout_transactions table
     const savedTransactions = [];
     for (const transaction of validTransactions) {
       try {
@@ -479,7 +513,7 @@ async function extractAndSaveFoodTransactions(text: string, userId: string, supa
               date: transaction.date,
               amount: transaction.amount,
               merchant: transaction.merchant,
-              description: transaction.description,
+              description: transaction.description || "Extracted from PDF",
               category: 'Food & Dining',
               pdf_source: fileName
             });
