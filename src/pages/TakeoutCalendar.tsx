@@ -113,8 +113,13 @@ const TakeoutCalendar: React.FC = () => {
   };
 
   useEffect(() => {
-    if (user && spendingData.length > 0) {
-      saveData();
+    // Save whenever spendingData changes (including when it becomes empty)
+    if (user) {
+      const saveTimeout = setTimeout(() => {
+        saveData();
+      }, 500); // Debounce saves to avoid conflicts
+      
+      return () => clearTimeout(saveTimeout);
     }
   }, [spendingData, user]);
 
