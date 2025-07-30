@@ -451,8 +451,29 @@ const CompareVendors: React.FC = () => {
     if (!confirm(`Are you sure you want to delete the project "${selectedProject}"? This action cannot be undone.`)) {
       return;
     }
+    
+    // Store project name for toast
+    const deletedProjectName = selectedProject;
+    
+    // Delete all data for this project from database
+    const { error } = await supabase
+      .from('budget_data')
+      .delete()
+      .eq('user_id', user.id)
+      .eq('page_type', 'compare_vendors')
+      .eq('calculator_id', selectedProject);
 
-    // Remove all quotes for this project
+    if (error) {
+      console.error('Error deleting project:', error);
+      toast({
+        title: "Error",
+        description: "Failed to delete project. Please try again.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Remove all quotes for this project locally
     const updatedQuotes = quotes.filter(quote => quote.projectName !== selectedProject);
     setQuotes(updatedQuotes);
     
@@ -468,7 +489,7 @@ const CompareVendors: React.FC = () => {
     // Show success toast
     toast({
       title: "Project deleted",
-      description: `"${selectedProject}" has been successfully deleted.`,
+      description: `"${deletedProjectName}" has been successfully deleted.`,
     });
   };
 
