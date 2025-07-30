@@ -113,11 +113,12 @@ const TakeoutCalendar: React.FC = () => {
   };
 
   useEffect(() => {
-    // Save whenever spendingData changes (including when it becomes empty)
-    if (user) {
+    // Only auto-save if we have user, and avoid saving immediately after loading
+    // This prevents overwriting PDF-processed data
+    if (user && spendingData.length > 0) {
       const saveTimeout = setTimeout(() => {
         saveData();
-      }, 500); // Debounce saves to avoid conflicts
+      }, 1000); // Longer delay to avoid conflicts with PDF processing
       
       return () => clearTimeout(saveTimeout);
     }
