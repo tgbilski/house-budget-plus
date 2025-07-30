@@ -11,8 +11,6 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContai
 import { useAuth } from '@/hooks/useAuth';
 import { useCurrency } from '@/components/BudgetApp';
 import { supabase } from '@/integrations/supabase/client';
-import { SubscriptionBanner } from '@/components/SubscriptionBanner';
-import { PDFProcessor } from '@/components/PDFProcessor';
 
 interface DaySpending {
   date: string;
@@ -310,6 +308,20 @@ const TakeoutCalendar: React.FC = () => {
           </Card>
         </div>
 
+        {/* AdSense Banner */}
+        <div className="max-w-6xl mx-auto mt-8 flex justify-center">
+          <div className="w-full max-w-2xl">
+            <div className="text-center text-xs text-muted-foreground mb-2">Advertisement</div>
+            <div className="border border-border rounded-lg p-4 bg-muted/20 min-h-[120px] flex items-center justify-center">
+              <div className="text-muted-foreground text-sm">
+                Google AdSense Ad Space
+                <br />
+                <span className="text-xs">(Replace with actual AdSense component)</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <div className="max-w-6xl mx-auto space-y-6">
           {/* Year Dropdown */}
           <div className="flex justify-center">
@@ -428,24 +440,6 @@ const TakeoutCalendar: React.FC = () => {
               </TabsContent>
             ))}
           </Tabs>
-          
-          {/* PDF Processor - After manual entry experience */}
-          {user && (
-            <div className="max-w-2xl mx-auto mt-12">
-              <div className="text-center mb-6">
-                <h2 className="text-xl font-semibold mb-2">Tired of Manual Entry?</h2>
-                <p className="text-muted-foreground">Upload your receipts and let AI extract all expenses</p>
-              </div>
-              <PDFProcessor />
-            </div>
-          )}
-          
-          {/* Subscription Banner - After showing the solution */}
-          {user && (
-            <div className="mt-12">
-              <SubscriptionBanner />
-            </div>
-          )}
         </div>
 
         {/* Spending Input Dialog */}
