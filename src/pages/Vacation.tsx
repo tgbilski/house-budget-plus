@@ -393,6 +393,13 @@ const Vacation: React.FC = () => {
           
           {/* Project Management */}
           <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between max-w-6xl mx-auto">
+            {/* Current Project Display */}
+            {!isCreatingProject && selectedProject && selectedProject !== 'default' && (
+              <div className="text-lg font-semibold text-foreground mb-2 sm:mb-0">
+                Vacation: {selectedProject}
+              </div>
+            )}
+            
             <div className="flex flex-col sm:flex-row gap-2 items-start sm:items-center">
               <Button 
                 onClick={() => setIsCreatingProject(true)}
@@ -402,7 +409,7 @@ const Vacation: React.FC = () => {
                 New Vacation
               </Button>
               
-              {!isCreatingProject && projects.length > 1 && (
+              {!isCreatingProject && projects.length > 0 && (
                 <div className="flex items-center gap-2">
                   {isEditingProjectName ? (
                     <div className="flex items-center gap-2">
@@ -427,18 +434,20 @@ const Vacation: React.FC = () => {
                     </div>
                   ) : (
                     <>
-                      <Select value={selectedProject} onValueChange={setSelectedProject}>
-                        <SelectTrigger className="w-[200px]">
-                          <SelectValue placeholder="Select vacation" />
-                        </SelectTrigger>
-                        <SelectContent className="z-50 bg-background border shadow-lg">
-                          {projects.map((project) => (
-                            <SelectItem key={project} value={project}>
-                              {project}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
+                       <Select value={selectedProject} onValueChange={setSelectedProject}>
+                         <SelectTrigger className="w-[200px]">
+                           <SelectValue placeholder="Select vacation">
+                             {selectedProject && selectedProject !== 'default' ? selectedProject : "Select vacation"}
+                           </SelectValue>
+                         </SelectTrigger>
+                         <SelectContent className="z-50 bg-background border shadow-lg">
+                           {projects.map((project) => (
+                             <SelectItem key={project} value={project}>
+                               {project}
+                             </SelectItem>
+                           ))}
+                         </SelectContent>
+                       </Select>
                       <Button
                         size="sm"
                         variant="outline"
