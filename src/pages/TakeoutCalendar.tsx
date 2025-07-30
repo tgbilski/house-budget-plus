@@ -223,7 +223,14 @@ const TakeoutCalendar: React.FC = () => {
     <div className="min-h-screen">
       <div className="container mx-auto px-4 py-8">
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-foreground mb-4">Takeout Calendar {selectedYear}</h1>
+          <div className="flex items-center justify-center gap-4 mb-4">
+            <img 
+              src="/lovable-uploads/ed809955-ef71-4d81-b072-945082f4380a.png" 
+              alt="Calculator mascot" 
+              className="w-16 h-16 object-contain"
+            />
+            <h1 className="text-3xl font-bold text-foreground">Takeout Calendar {selectedYear}</h1>
+          </div>
           <p className="text-muted-foreground">
             Track your daily takeout spending throughout the year{!user && ' (sign up to save)'}
           </p>
