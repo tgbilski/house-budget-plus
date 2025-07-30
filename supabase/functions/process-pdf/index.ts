@@ -389,10 +389,17 @@ async function extractAndSaveFoodTransactions(text: string, userId: string, supa
       if (newEntries.length > 0) {
         const updatedSpendingData = [...currentSpendingData, ...newEntries];
 
-        // Save to database
+        // Delete all existing takeout records first to avoid conflicts
         await supabaseClient
           .from('budget_data')
-          .upsert({
+          .delete()
+          .eq('user_id', userId)
+          .eq('page_type', 'takeout');
+
+        // Insert new record with updated data
+        await supabaseClient
+          .from('budget_data')
+          .insert({
             user_id: userId,
             page_type: 'takeout',
             calculator_id: 'takeout',
@@ -400,7 +407,9 @@ async function extractAndSaveFoodTransactions(text: string, userId: string, supa
             expenses: { spendingData: updatedSpendingData }
           });
 
-        logStep("Food transactions saved to takeout calendar", { newEntries: newEntries.length });
+        logStep("Food transactions saved to takeout calendar", { newEntries: newEntries.length, totalTransactions: updatedSpendingData.length });
+      } else {
+        logStep("No new food transactions to save - all were duplicates");
       }
     }
 
