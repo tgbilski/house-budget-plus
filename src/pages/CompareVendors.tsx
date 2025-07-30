@@ -10,6 +10,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { useAuth } from '@/hooks/useAuth';
 import { useCurrency } from '@/components/BudgetApp';
 import { supabase } from '@/integrations/supabase/client';
+import { AdSense } from '@/components/AdSense';
 
 interface VendorQuote {
   id: string;
@@ -636,6 +637,20 @@ const CompareVendors: React.FC = () => {
               </p>
             </div>
           )}
+        </div>
+
+        {/* AdSense Banner */}
+        <div className="max-w-6xl mx-auto mt-8 flex justify-center">
+          <div className="w-full max-w-2xl">
+            <div className="text-center text-xs text-muted-foreground mb-2">Advertisement</div>
+            <div className="border border-border rounded-lg p-4 bg-muted/20 min-h-[120px] flex items-center justify-center">
+              <div className="text-muted-foreground text-sm">
+                Google AdSense Ad Space
+                <br />
+                <span className="text-xs">(Replace with actual AdSense component)</span>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>

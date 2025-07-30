@@ -6,6 +6,7 @@ import BudgetCalculator from '@/components/BudgetCalculator';
 import { useCurrency } from '@/components/BudgetApp';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
+import { AdSense } from '@/components/AdSense';
 
 interface Calculator {
   id: string;
@@ -147,6 +148,20 @@ const MonthlyBudget: React.FC = () => {
             >
               <Plus className="h-8 w-8 text-primary" />
             </Button>
+          </div>
+        </div>
+
+        {/* AdSense Banner */}
+        <div className="max-w-6xl mx-auto mt-8 flex justify-center">
+          <div className="w-full max-w-2xl">
+            <div className="text-center text-xs text-muted-foreground mb-2">Advertisement</div>
+            <div className="border border-border rounded-lg p-4 bg-muted/20 min-h-[120px] flex items-center justify-center">
+              <div className="text-muted-foreground text-sm">
+                Google AdSense Ad Space
+                <br />
+                <span className="text-xs">(Replace with actual AdSense component)</span>
+              </div>
+            </div>
           </div>
         </div>
 
