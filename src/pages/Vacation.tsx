@@ -464,7 +464,7 @@ const Vacation: React.FC = () => {
                 New Vacation
               </Button>
               
-              {!isCreatingProject && projects.length > 0 && (
+              {!isCreatingProject && projects.filter(p => p !== 'default').length > 0 && (
                 <div className="flex items-center gap-2">
                   {isEditingProjectName ? (
                     <div className="flex items-center gap-2">
@@ -496,7 +496,7 @@ const Vacation: React.FC = () => {
                            </SelectValue>
                          </SelectTrigger>
                          <SelectContent className="z-50 bg-background border shadow-lg">
-                           {projects.map((project) => (
+                           {projects.filter(project => project !== 'default').map((project) => (
                              <SelectItem key={project} value={project}>
                                {project}
                              </SelectItem>
