@@ -176,40 +176,64 @@ async function extractTextFromPDF(arrayBuffer: ArrayBuffer): Promise<string> {
   
   let extractedText = '';
   
-  // Method 1: Look for text between parentheses in PDF content streams
+  // Method 1: Look for text between parentheses - improved to handle encoded text
   const parenthesesMatches = text.match(/\([^)]+\)/g);
   if (parenthesesMatches) {
     logStep("Found parentheses text matches", { count: parenthesesMatches.length });
-    extractedText = parenthesesMatches
-      .map(match => match.replace(/[()]/g, ''))
-      .filter(text => text.length > 2 && /[a-zA-Z]/.test(text))
+    const cleanText = parenthesesMatches
+      .map(match => {
+        let cleaned = match.replace(/[()]/g, '');
+        // Handle common PDF encoding issues
+        cleaned = cleaned.replace(/\\(\d{3})/g, (match, oct) => String.fromCharCode(parseInt(oct, 8)));
+        cleaned = cleaned.replace(/\\([nrtbf\\()])/g, (match, char) => {
+          const replacements = { 'n': '\n', 'r': '\r', 't': '\t', 'b': '\b', 'f': '\f', '\\': '\\', '(': '(', ')': ')' };
+          return replacements[char] || char;
+        });
+        return cleaned;
+      })
+      .filter(text => text.length > 1 && /[a-zA-Z0-9]/.test(text))
       .join(' ');
+    extractedText = cleanText;
   }
   
-  // Method 2: Look for text between square brackets (alternative PDF text format)
+  // Method 2: Look for stream content between stream/endstream markers
   if (!extractedText || extractedText.length < 50) {
-    logStep("Trying square bracket extraction");
-    const bracketMatches = text.match(/\[[^\]]+\]/g);
-    if (bracketMatches) {
-      const bracketText = bracketMatches
-        .map(match => match.replace(/[\[\]]/g, ''))
-        .filter(text => text.length > 2 && /[a-zA-Z]/.test(text))
-        .join(' ');
-      extractedText = extractedText + ' ' + bracketText;
+    logStep("Trying stream content extraction");
+    const streamMatches = text.match(/stream\s+([\s\S]*?)\s+endstream/g);
+    if (streamMatches) {
+      let streamText = '';
+      streamMatches.forEach(stream => {
+        const content = stream.replace(/stream\s+|\s+endstream/g, '');
+        // Look for readable patterns in stream content
+        const readableMatches = content.match(/[A-Za-z][A-Za-z0-9\s\$\.\,\-\(\)\/\:]{3,}/g);
+        if (readableMatches) {
+          streamText += readableMatches.join(' ') + ' ';
+        }
+      });
+      if (streamText.length > extractedText.length) {
+        extractedText = streamText;
+      }
     }
   }
   
-  // Method 3: Look for readable text patterns with improved regex
+  // Method 3: Advanced text pattern extraction for financial documents
   if (!extractedText || extractedText.length < 50) {
-    logStep("Trying improved pattern matching");
-    // Look for sequences that look like readable text (words, dates, amounts, etc.)
+    logStep("Trying financial document pattern extraction");
     const patterns = [
-      /[A-Za-z]{2,}\s+[A-Za-z]{2,}[\s\w\$\.\,\-\(\)\/\:]{5,}/g,  // Multi-word sequences
-      /\$[\d\.\,]+/g,  // Dollar amounts
-      /\d{1,2}\/\d{1,2}\/\d{2,4}/g,  // Dates
-      /\d{2,4}-\d{2}-\d{2}/g,  // ISO dates
-      /[A-Z][a-z]+\s+[A-Z][a-z]+/g,  // Proper names
-      /[A-Za-z]+\s*\*+\s*\d+/g,  // Masked card numbers
+      // Look for merchant names (common restaurant/food patterns)
+      /(?:MCDONALD|BURGER|PIZZA|STARBUCKS|SUBWAY|KFC|TACO|DOMINO|WENDY|CHIPOTLE|PANERA|DUNKIN)[A-Z0-9\s#]{0,20}/gi,
+      // Food delivery services
+      /(?:DOORDASH|UBEREATS|GRUBHUB|POSTMATES|DELIVEROO)[A-Z0-9\s#]{0,20}/gi,
+      // Payment amounts with context
+      /\$\s*\d{1,4}[\.\,]\d{2}(?:\s|$)/g,
+      // Dates in various formats
+      /\d{1,2}[\/\-]\d{1,2}[\/\-]\d{2,4}/g,
+      // Transaction descriptions
+      /(?:PURCHASE|PAYMENT|DEBIT|CREDIT)\s+[A-Z0-9\s]{5,30}/gi,
+      // General merchant patterns with context
+      /[A-Z]{3,}(?:\s+[A-Z]{2,}){0,2}\s+\$?\d+[\.\,]\d{2}/g,
+      // Look for any text that might be merchant names followed by amounts
+      /[A-Z][A-Za-z\s]{4,20}\s+\$?\d{1,4}[\.\,]\d{2}/g
     ];
     
     let patternText = '';
@@ -225,30 +249,58 @@ async function extractTextFromPDF(arrayBuffer: ArrayBuffer): Promise<string> {
     }
   }
   
-  // Method 4: Extract from Tj and TJ operators (PDF text showing operators)
+  // Method 4: Look for BT/ET text objects with better handling
   if (!extractedText || extractedText.length < 50) {
-    logStep("Trying Tj/TJ operator extraction");
-    const tjMatches = text.match(/\((.*?)\)\s*Tj/g);
-    if (tjMatches) {
-      const tjText = tjMatches
-        .map(match => match.replace(/\((.*?)\)\s*Tj/, '$1'))
-        .filter(text => text.length > 1 && /[a-zA-Z0-9]/.test(text))
+    logStep("Trying BT/ET text object extraction");
+    const btEtMatches = text.match(/BT\s+([\s\S]*?)\s+ET/g);
+    if (btEtMatches) {
+      const btEtText = btEtMatches
+        .map(match => {
+          let content = match.replace(/BT\s+|\s+ET/g, '');
+          // Remove PDF operators and keep readable content
+          content = content.replace(/\b(?:Tf|Td|TD|Tm|TL|Tc|Tw|Tz|TZ|Tr|Ts)\b\s*[^\s]*/g, '');
+          content = content.replace(/\b\d+(?:\.\d+)?\s+\d+(?:\.\d+)?\s+(?:m|l|c|v|y|h|re|S|s|f|F|B|b|W|w)\b/g, '');
+          return content;
+        })
+        .filter(text => text.length > 2 && /[a-zA-Z]/.test(text))
         .join(' ');
-      extractedText = extractedText + ' ' + tjText;
+      
+      if (btEtText.length > extractedText.length) {
+        extractedText = btEtText;
+      }
     }
   }
   
-  // Clean and limit the result
+  // Method 5: Last resort - try to find any recognizable patterns in the raw text
+  if (!extractedText || extractedText.length < 50) {
+    logStep("Trying last resort text extraction");
+    // Look for any sequences that might be readable
+    const fallbackMatches = text.match(/[A-Za-z]{4,}(?:\s+[A-Za-z0-9\$\.\,\-]{1,15}){0,5}/g);
+    if (fallbackMatches) {
+      const fallbackText = fallbackMatches
+        .filter(match => match.length > 5 && /[A-Za-z]/.test(match))
+        .slice(0, 50) // Limit to prevent too much noise
+        .join(' ');
+      if (fallbackText.length > extractedText.length) {
+        extractedText = fallbackText;
+      }
+    }
+  }
+  
+  // Clean and normalize the result
   extractedText = extractedText
     .replace(/\s+/g, ' ')
-    .replace(/[^\w\s\$\.\,\-\(\)\/\:]/g, ' ')
+    .replace(/[^\w\s\$\.\,\-\(\)\/\:\#]/g, ' ')
+    .replace(/\b[A-Z]{1}\b/g, '') // Remove single capital letters
+    .replace(/\b\d{10,}\b/g, '') // Remove very long numbers (likely not amounts)
     .trim()
     .substring(0, 5000);
   
   logStep("PDF text extraction completed", { 
     extractedLength: extractedText.length, 
     preview: extractedText.substring(0, 200),
-    hasReadableContent: /[a-zA-Z]{3,}/.test(extractedText)
+    hasReadableContent: /[a-zA-Z]{3,}/.test(extractedText),
+    containsFinancialTerms: /(?:MCDONALD|BURGER|PIZZA|STARBUCKS|\$\d+|\d{1,2}\/\d{1,2}\/\d{2,4})/i.test(extractedText)
   });
   
   return extractedText;
