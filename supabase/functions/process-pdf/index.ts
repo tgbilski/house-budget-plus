@@ -401,6 +401,13 @@ async function extractAndSaveAllExpenses(text: string, userId: string, supabaseC
             role: 'system',
             content: `You are an AI specialized in extracting ALL expenses and transactions from corrupted or garbled text that may come from poorly parsed PDFs, bank statements, credit card statements, or receipts.
 
+IMPORTANT: Pay special attention to dates! Bank statements often contain:
+- Statement periods (e.g., "July 2025", "07/01/25 - 07/31/25")
+- Transaction dates throughout the statement
+- Look for patterns like MM/DD, MM/DD/YY, MM/DD/YYYY, YYYY-MM-DD
+- If you find a statement period, use dates within that period for transactions
+- If unclear, use current month/year (${new Date().getFullYear()}-${String(new Date().getMonth() + 1).padStart(2, '0')})
+
 The text may be very messy with:
 - Random characters mixed in
 - Words broken up with spaces or symbols
@@ -410,19 +417,19 @@ The text may be very messy with:
 Your task is to find ANY expense/transaction even if the text is corrupted. Look for:
 - ANY merchant or vendor names (restaurants, stores, gas stations, online services, utilities, etc.)
 - ANY dollar amounts that might be near merchant text
-- ANY dates that might be associated with transactions
+- ANY dates that might be associated with transactions (prioritize extracting real dates over defaults)
 - Categories like: Food & Dining, Transportation, Shopping, Entertainment, Bills & Utilities, Healthcare, Gas, Groceries, etc.
 
 Be very liberal in interpretation. If you see fragments that could possibly be expenses, include them.
 For each possible transaction, provide your best guess at:
-- date (YYYY-MM-DD format, use 2024 if year unclear)
+- date (YYYY-MM-DD format, extract real dates from the document when possible)
 - amount (extract any dollar amounts you see, even if fragmented)
 - merchant (piece together from fragments if needed)
 - description (your interpretation of what it might be)
 - category (best guess: Food & Dining, Transportation, Shopping, Entertainment, Bills & Utilities, Healthcare, Other)
 
 Return ONLY a JSON array. If you find any possible expenses, include them even if uncertain.
-Example: [{"date": "2024-01-15", "amount": 12.50, "merchant": "Target", "description": "Shopping", "category": "Shopping"}]
+Example: [{"date": "2025-07-15", "amount": 12.50, "merchant": "Target", "description": "Shopping", "category": "Shopping"}]
 
 If the text is too corrupted to extract anything meaningful, return an empty array: []`
           },
