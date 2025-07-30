@@ -434,9 +434,8 @@ const TakeoutCalendar: React.FC = () => {
                     if (existingIndex >= 0) {
                       const newSpendingData = [...spendingData];
                       newSpendingData.splice(existingIndex, 1);
-                      setSpendingData(newSpendingData);
                       
-                      // Explicitly save the changes immediately
+                      // Save immediately to prevent race conditions
                       if (user) {
                         const { error } = await supabase
                           .from('budget_data')
@@ -450,6 +449,9 @@ const TakeoutCalendar: React.FC = () => {
                         
                         if (error) {
                           console.error('Error saving cleared data:', error);
+                        } else {
+                          // Only update local state after successful save
+                          setSpendingData(newSpendingData);
                         }
                       }
                     }
