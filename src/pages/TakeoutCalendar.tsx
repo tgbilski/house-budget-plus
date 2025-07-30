@@ -89,9 +89,17 @@ const TakeoutCalendar: React.FC = () => {
   const saveData = async () => {
     if (!user) return;
 
+    // First, delete all existing takeout records for this user to avoid duplicates
+    await supabase
+      .from('budget_data')
+      .delete()
+      .eq('user_id', user.id)
+      .eq('page_type', 'takeout');
+
+    // Then insert the current data as a single record
     const { error } = await supabase
       .from('budget_data')
-      .upsert({
+      .insert({
         user_id: user.id,
         page_type: 'takeout',
         calculator_id: 'takeout',
@@ -452,11 +460,19 @@ const TakeoutCalendar: React.FC = () => {
                       const newSpendingData = [...spendingData];
                       newSpendingData.splice(existingIndex, 1);
                       
-                      // Save immediately to prevent race conditions
+                      // Use the new save method that cleans up duplicates
                       if (user) {
+                        // Delete all existing records first
+                        await supabase
+                          .from('budget_data')
+                          .delete()
+                          .eq('user_id', user.id)
+                          .eq('page_type', 'takeout');
+
+                        // Insert new record with updated data
                         const { error } = await supabase
                           .from('budget_data')
-                          .upsert({
+                          .insert({
                             user_id: user.id,
                             page_type: 'takeout',
                             calculator_id: 'takeout',
