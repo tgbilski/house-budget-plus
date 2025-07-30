@@ -106,8 +106,13 @@ serve(async (req) => {
         logStep("AI categorization completed", { categories: Object.keys(categorization || {}).length });
         
         // Extract food transactions and save to takeout calendar
-        foodTransactions = await extractAndSaveFoodTransactions(text, user.id, supabaseClient);
-        logStep("Food transactions extracted and saved", { count: foodTransactions.length });
+        try {
+          foodTransactions = await extractAndSaveFoodTransactions(text, user.id, supabaseClient);
+          logStep("Food transactions extracted and saved", { count: foodTransactions.length });
+        } catch (foodError) {
+          logStep("Error in food transaction extraction", { error: foodError.message });
+          foodTransactions = []; // Continue processing even if food extraction fails
+        }
       }
 
       // Update log entry with results
