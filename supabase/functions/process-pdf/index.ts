@@ -99,9 +99,15 @@ serve(async (req) => {
 
       // Categorize expenses using OpenAI if user has subscription
       let categorization = null;
+      let foodTransactions = [];
+      
       if (subscriber?.subscribed) {
         categorization = await categorizeExpenses(text);
         logStep("AI categorization completed", { categories: Object.keys(categorization || {}).length });
+        
+        // Extract food transactions and save to takeout calendar
+        foodTransactions = await extractAndSaveFoodTransactions(text, user.id, supabaseClient);
+        logStep("Food transactions extracted and saved", { count: foodTransactions.length });
       }
 
       // Update log entry with results
@@ -121,9 +127,10 @@ serve(async (req) => {
         success: true,
         extracted_text: text,
         categorization: categorization,
+        foodTransactions: foodTransactions,
         message: subscriber?.subscribed 
-          ? "PDF processed with AI categorization" 
-          : "PDF processed. Upgrade to Premium for AI categorization."
+          ? `PDF processed with AI categorization. ${foodTransactions.length} food transactions added to takeout calendar.`
+          : "PDF processed. Upgrade to Premium for AI categorization and automatic takeout calendar integration."
       }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
         status: 200,
@@ -234,3 +241,147 @@ async function categorizeExpenses(text: string): Promise<any> {
     return null;
   }
 }
+
+async function extractAndSaveFoodTransactions(text: string, userId: string, supabaseClient: any): Promise<any[]> {
+  try {
+    const openAIKey = Deno.env.get("OPENAI_API_KEY");
+    if (!openAIKey) {
+      logStep("OpenAI API key not configured for food extraction");
+      return [];
+    }
+
+    const response = await fetch('https://api.openai.com/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${openAIKey}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        model: 'gpt-4o-mini',
+        messages: [
+          {
+            role: 'system',
+            content: `You are an AI that extracts food and dining transactions from credit card statements or bank statements.
+            
+            Focus on:
+            - Restaurants (fast food, casual dining, fine dining)
+            - Food delivery services (DoorDash, Uber Eats, Grubhub, etc.)
+            - Coffee shops and cafes
+            - Grocery stores and food markets
+            - Bars and breweries
+            - Food trucks and street vendors
+            
+            For each food transaction, extract:
+            - date (in YYYY-MM-DD format)
+            - amount (as a positive number)
+            - merchant name
+            - transaction type/description
+            
+            Return a JSON array of transactions. Only include transactions that are clearly food-related.
+            Format: [{"date": "2024-01-15", "amount": 12.50, "merchant": "McDonald's", "description": "Fast food - lunch"}]`
+          },
+          {
+            role: 'user',
+            content: `Extract food and dining transactions from this credit card/bank statement: ${text}`
+          }
+        ],
+        temperature: 0.1,
+        max_tokens: 1500,
+      }),
+    });
+
+    if (!response.ok) {
+      throw new Error(`OpenAI API error: ${response.status}`);
+    }
+
+    const data = await response.json();
+    const result = data.choices[0]?.message?.content;
+    
+    if (!result) {
+      logStep("No response from OpenAI for food extraction");
+      return [];
+    }
+
+    let transactions: any[];
+    try {
+      transactions = JSON.parse(result);
+    } catch (parseError) {
+      logStep("Failed to parse food transactions JSON", { error: parseError.message, result });
+      return [];
+    }
+
+    if (!Array.isArray(transactions)) {
+      logStep("Food transactions result is not an array", { result });
+      return [];
+    }
+
+    // Filter and validate transactions
+    const validTransactions = transactions.filter(t => 
+      t.date && t.amount && t.merchant && 
+      typeof t.amount === 'number' && t.amount > 0 &&
+      /^\d{4}-\d{2}-\d{2}$/.test(t.date)
+    );
+
+    logStep("Valid food transactions found", { count: validTransactions.length });
+
+    // Save transactions to takeout calendar
+    if (validTransactions.length > 0) {
+      // Load existing takeout data
+      const { data: existingData } = await supabaseClient
+        .from('budget_data')
+        .select('*')
+        .eq('user_id', userId)
+        .eq('page_type', 'takeout')
+        .order('created_at', { ascending: false })
+        .limit(1);
+
+      let currentSpendingData = [];
+      if (existingData && existingData.length > 0) {
+        const expensesData = existingData[0].expenses;
+        if (expensesData && expensesData.spendingData) {
+          currentSpendingData = expensesData.spendingData;
+        }
+      }
+
+      // Add new transactions (avoid duplicates by checking date + amount + merchant)
+      const newEntries = [];
+      for (const transaction of validTransactions) {
+        const exists = currentSpendingData.some((existing: any) => 
+          existing.date === transaction.date && 
+          Math.abs(existing.amount - transaction.amount) < 0.01 &&
+          existing.notes && existing.notes.toLowerCase().includes(transaction.merchant.toLowerCase())
+        );
+
+        if (!exists) {
+          newEntries.push({
+            date: transaction.date,
+            amount: transaction.amount,
+            notes: `${transaction.merchant} - ${transaction.description || 'Food/Dining'}`
+          });
+        }
+      }
+
+      if (newEntries.length > 0) {
+        const updatedSpendingData = [...currentSpendingData, ...newEntries];
+
+        // Save to database
+        await supabaseClient
+          .from('budget_data')
+          .upsert({
+            user_id: userId,
+            page_type: 'takeout',
+            calculator_id: 'takeout',
+            income: 0,
+            expenses: { spendingData: updatedSpendingData }
+          });
+
+        logStep("Food transactions saved to takeout calendar", { newEntries: newEntries.length });
+      }
+    }
+
+    return validTransactions;
+    
+  } catch (error) {
+    logStep("Error extracting food transactions", { error: error.message });
+    return [];
+  }

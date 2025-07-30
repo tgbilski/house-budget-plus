@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { Upload, FileText, Loader2, CheckCircle, XCircle } from 'lucide-react';
+import { Upload, FileText, Loader2, CheckCircle, XCircle, CalendarDays } from 'lucide-react';
 import { useSubscription } from '@/hooks/useSubscription';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
@@ -146,6 +146,29 @@ export function PDFProcessor() {
               <CheckCircle className="h-4 w-4" />
               <span className="font-medium">Processing Complete</span>
             </div>
+
+            {result.foodTransactions && result.foodTransactions.length > 0 && (
+              <div className="p-3 bg-green-50 border border-green-200 rounded-lg dark:bg-green-950/20 dark:border-green-800">
+                <div className="flex items-center gap-2 text-green-700 dark:text-green-300 mb-2">
+                  <CalendarDays className="h-4 w-4" />
+                  <span className="font-medium">
+                    {result.foodTransactions.length} food transaction{result.foodTransactions.length !== 1 ? 's' : ''} added to takeout calendar
+                  </span>
+                </div>
+                <div className="space-y-1">
+                  {result.foodTransactions.slice(0, 3).map((transaction: any, index: number) => (
+                    <div key={index} className="text-sm text-green-600 dark:text-green-400">
+                      {transaction.date}: ${transaction.amount.toFixed(2)} at {transaction.merchant}
+                    </div>
+                  ))}
+                  {result.foodTransactions.length > 3 && (
+                    <div className="text-sm text-green-600 dark:text-green-400">
+                      ...and {result.foodTransactions.length - 3} more
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
 
             <div>
               <Label htmlFor="extracted-text">Extracted Text</Label>
