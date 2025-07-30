@@ -48,10 +48,15 @@ export function PDFProcessor() {
       });
 
       if (error) {
-        if (error.message?.includes('Monthly limit reached')) {
+        // Check for various limit-related error messages
+        if (error.message?.includes('Monthly limit reached') || 
+            error.message?.includes('free PDF') || 
+            error.message?.includes('Upgrade to Premium') ||
+            error.message?.includes('limit') ||
+            error.status === 403) {
           toast({
-            title: "Monthly Limit Reached",
-            description: "Upgrade to Premium for unlimited PDF processing",
+            title: "PDF Processing Limit Reached",
+            description: "You've used your free PDF processing. Upgrade to Premium for unlimited PDF processing with AI categorization and automatic takeout calendar integration.",
             variant: "destructive",
           });
           return;

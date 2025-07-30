@@ -429,12 +429,21 @@ const TakeoutCalendar: React.FC = () => {
                 <Button 
                   variant="destructive" 
                   onClick={() => {
-                    setSelectedAmount('0');
-                    handleSaveSpending();
+                    // Clear the spending entry completely
+                    const existingIndex = spendingData.findIndex(spending => spending.date === selectedDate);
+                    if (existingIndex >= 0) {
+                      const newSpendingData = [...spendingData];
+                      newSpendingData.splice(existingIndex, 1);
+                      setSpendingData(newSpendingData);
+                    }
+                    setIsDialogOpen(false);
+                    setSelectedDate('');
+                    setSelectedAmount('');
+                    setSelectedNotes('');
                   }}
                   className="w-full"
                 >
-                  Remove Spending
+                  Clear Spending
                 </Button>
               )}
             </div>
