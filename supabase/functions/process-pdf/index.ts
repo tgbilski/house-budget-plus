@@ -174,35 +174,84 @@ async function extractTextFromPDF(arrayBuffer: ArrayBuffer): Promise<string> {
   const uint8Array = new Uint8Array(arrayBuffer);
   const text = new TextDecoder().decode(uint8Array);
   
-  // Try multiple extraction methods
   let extractedText = '';
   
-  // Method 1: Look for text between BT/ET markers (PDF text objects)
-  const btEtMatches = text.match(/BT\s+(.*?)\s+ET/gs);
-  if (btEtMatches) {
-    logStep("Found BT/ET text objects", { count: btEtMatches.length });
-    extractedText = btEtMatches.map(match => 
-      match.replace(/BT\s+|\s+ET/g, '')
-           .replace(/[^\w\s\$\.\,\-\(\)\/\:]/g, ' ')
-           .replace(/\s+/g, ' ')
-           .trim()
-    ).join(' ');
+  // Method 1: Look for text between parentheses in PDF content streams
+  const parenthesesMatches = text.match(/\([^)]+\)/g);
+  if (parenthesesMatches) {
+    logStep("Found parentheses text matches", { count: parenthesesMatches.length });
+    extractedText = parenthesesMatches
+      .map(match => match.replace(/[()]/g, ''))
+      .filter(text => text.length > 2 && /[a-zA-Z]/.test(text))
+      .join(' ');
   }
   
-  // Method 2: Look for readable text patterns (more aggressive)
+  // Method 2: Look for text between square brackets (alternative PDF text format)
   if (!extractedText || extractedText.length < 50) {
-    logStep("BT/ET extraction insufficient, trying pattern matching");
-    const readableText = text.match(/[A-Za-z]{3,}[A-Za-z0-9\s\$\.\,\-\(\)\/\:]{10,}/g);
-    if (readableText) {
-      extractedText = readableText.join(' ').replace(/\s+/g, ' ').trim();
+    logStep("Trying square bracket extraction");
+    const bracketMatches = text.match(/\[[^\]]+\]/g);
+    if (bracketMatches) {
+      const bracketText = bracketMatches
+        .map(match => match.replace(/[\[\]]/g, ''))
+        .filter(text => text.length > 2 && /[a-zA-Z]/.test(text))
+        .join(' ');
+      extractedText = extractedText + ' ' + bracketText;
     }
   }
   
-  // Limit and clean the result
-  const finalText = extractedText.substring(0, 5000);
-  logStep("PDF text extraction completed", { extractedLength: finalText.length, preview: finalText.substring(0, 200) });
+  // Method 3: Look for readable text patterns with improved regex
+  if (!extractedText || extractedText.length < 50) {
+    logStep("Trying improved pattern matching");
+    // Look for sequences that look like readable text (words, dates, amounts, etc.)
+    const patterns = [
+      /[A-Za-z]{2,}\s+[A-Za-z]{2,}[\s\w\$\.\,\-\(\)\/\:]{5,}/g,  // Multi-word sequences
+      /\$[\d\.\,]+/g,  // Dollar amounts
+      /\d{1,2}\/\d{1,2}\/\d{2,4}/g,  // Dates
+      /\d{2,4}-\d{2}-\d{2}/g,  // ISO dates
+      /[A-Z][a-z]+\s+[A-Z][a-z]+/g,  // Proper names
+      /[A-Za-z]+\s*\*+\s*\d+/g,  // Masked card numbers
+    ];
+    
+    let patternText = '';
+    patterns.forEach(pattern => {
+      const matches = text.match(pattern);
+      if (matches) {
+        patternText += matches.join(' ') + ' ';
+      }
+    });
+    
+    if (patternText.length > extractedText.length) {
+      extractedText = patternText;
+    }
+  }
   
-  return finalText;
+  // Method 4: Extract from Tj and TJ operators (PDF text showing operators)
+  if (!extractedText || extractedText.length < 50) {
+    logStep("Trying Tj/TJ operator extraction");
+    const tjMatches = text.match(/\((.*?)\)\s*Tj/g);
+    if (tjMatches) {
+      const tjText = tjMatches
+        .map(match => match.replace(/\((.*?)\)\s*Tj/, '$1'))
+        .filter(text => text.length > 1 && /[a-zA-Z0-9]/.test(text))
+        .join(' ');
+      extractedText = extractedText + ' ' + tjText;
+    }
+  }
+  
+  // Clean and limit the result
+  extractedText = extractedText
+    .replace(/\s+/g, ' ')
+    .replace(/[^\w\s\$\.\,\-\(\)\/\:]/g, ' ')
+    .trim()
+    .substring(0, 5000);
+  
+  logStep("PDF text extraction completed", { 
+    extractedLength: extractedText.length, 
+    preview: extractedText.substring(0, 200),
+    hasReadableContent: /[a-zA-Z]{3,}/.test(extractedText)
+  });
+  
+  return extractedText;
 }
 
 async function categorizeExpenses(text: string): Promise<any> {
