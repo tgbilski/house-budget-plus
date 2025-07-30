@@ -428,13 +428,30 @@ const TakeoutCalendar: React.FC = () => {
               {getSpendingForDate(selectedDate) && (
                 <Button 
                   variant="destructive" 
-                  onClick={() => {
+                  onClick={async () => {
                     // Clear the spending entry completely
                     const existingIndex = spendingData.findIndex(spending => spending.date === selectedDate);
                     if (existingIndex >= 0) {
                       const newSpendingData = [...spendingData];
                       newSpendingData.splice(existingIndex, 1);
                       setSpendingData(newSpendingData);
+                      
+                      // Explicitly save the changes immediately
+                      if (user) {
+                        const { error } = await supabase
+                          .from('budget_data')
+                          .upsert({
+                            user_id: user.id,
+                            page_type: 'takeout',
+                            calculator_id: 'takeout',
+                            income: 0,
+                            expenses: { spendingData: newSpendingData } as any
+                          });
+                        
+                        if (error) {
+                          console.error('Error saving cleared data:', error);
+                        }
+                      }
                     }
                     setIsDialogOpen(false);
                     setSelectedDate('');
