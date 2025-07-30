@@ -419,3 +419,4 @@ async function extractAndSaveFoodTransactions(text: string, userId: string, supa
     logStep("Error extracting food transactions", { error: error.message });
     return [];
   }
+}
