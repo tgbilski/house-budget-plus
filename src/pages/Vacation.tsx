@@ -298,7 +298,7 @@ const Vacation: React.FC = () => {
     setOptions(options.filter(option => option.id !== id));
   };
 
-  const createNewProject = () => {
+  const createNewProject = async () => {
     if (newProjectName.trim()) {
       const newProjects = [...projects, newProjectName.trim()];
       setProjects(newProjects);
@@ -306,10 +306,41 @@ const Vacation: React.FC = () => {
       setNewProjectName('');
       setIsCreatingProject(false);
       
-      // Add first vacation card to new project
-      setTimeout(() => {
-        addVacationCard();
-      }, 100);
+      // Create a new vacation option for the new project
+      const newOption: VacationOption = {
+        id: Date.now().toString(),
+        destination: '',
+        travelMode: '',
+        estimatedCost: 0,
+        notes: '',
+        contact: '',
+        evaluation: {
+          favorableTravel: false,
+          destinationSafe: false,
+          excitingOption: false,
+          everyoneEnjoy: false,
+          memorable: false
+        }
+      };
+      
+      setOptions([newOption]);
+      
+      // Save to database immediately if user is logged in
+      if (user) {
+        const { error } = await supabase
+          .from('budget_data')
+          .upsert({
+            user_id: user.id,
+            page_type: 'vacation',
+            calculator_id: newProjectName.trim(),
+            income: 0,
+            expenses: { options: [newOption] } as any
+          });
+
+        if (error) {
+          console.error('Error saving new vacation project:', error);
+        }
+      }
     }
   };
 
