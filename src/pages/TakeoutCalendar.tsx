@@ -61,11 +61,28 @@ const TakeoutCalendar: React.FC = () => {
       .order('created_at', { ascending: false });
 
     if (data && data.length > 0) {
-      const budgetData = data[0];
-      const expensesData = budgetData.expenses as any;
-      if (expensesData.spendingData) {
-        setSpendingData(expensesData.spendingData);
-      }
+      // Merge all spending data from all records to get complete picture
+      const allSpendingData: DaySpending[] = [];
+      
+      data.forEach(record => {
+        const expensesData = record.expenses as any;
+        if (expensesData?.spendingData && Array.isArray(expensesData.spendingData)) {
+          expensesData.spendingData.forEach((spending: DaySpending) => {
+            // Avoid duplicates by checking if date already exists
+            const existingIndex = allSpendingData.findIndex(s => s.date === spending.date);
+            if (existingIndex >= 0) {
+              // If same date exists, keep the one with higher amount or more recent
+              if (spending.amount > allSpendingData[existingIndex].amount) {
+                allSpendingData[existingIndex] = spending;
+              }
+            } else {
+              allSpendingData.push(spending);
+            }
+          });
+        }
+      });
+      
+      setSpendingData(allSpendingData);
     }
   };
 
