@@ -169,35 +169,50 @@ serve(async (req) => {
 });
 
 async function extractTextFromPDF(arrayBuffer: ArrayBuffer): Promise<string> {
-  // Simple PDF text extraction - in a real implementation, you'd use a proper PDF parsing library
+  logStep("Starting PDF text extraction", { bufferSize: arrayBuffer.byteLength });
+  
   const uint8Array = new Uint8Array(arrayBuffer);
   const text = new TextDecoder().decode(uint8Array);
   
-  // Extract readable text between stream objects (very basic approach)
-  const matches = text.match(/BT\s+(.*?)\s+ET/gs);
-  if (matches) {
-    return matches.map(match => 
+  // Try multiple extraction methods
+  let extractedText = '';
+  
+  // Method 1: Look for text between BT/ET markers (PDF text objects)
+  const btEtMatches = text.match(/BT\s+(.*?)\s+ET/gs);
+  if (btEtMatches) {
+    logStep("Found BT/ET text objects", { count: btEtMatches.length });
+    extractedText = btEtMatches.map(match => 
       match.replace(/BT\s+|\s+ET/g, '')
-           .replace(/[^\w\s\$\.\,\-\(\)]/g, ' ')
+           .replace(/[^\w\s\$\.\,\-\(\)\/\:]/g, ' ')
            .replace(/\s+/g, ' ')
            .trim()
-    ).join(' ').substring(0, 5000); // Limit to first 5000 characters
+    ).join(' ');
   }
   
-  // Fallback: extract any readable text
-  return text.replace(/[^\w\s\$\.\,\-\(\)]/g, ' ')
-             .replace(/\s+/g, ' ')
-             .trim()
-             .substring(0, 5000);
+  // Method 2: Look for readable text patterns (more aggressive)
+  if (!extractedText || extractedText.length < 50) {
+    logStep("BT/ET extraction insufficient, trying pattern matching");
+    const readableText = text.match(/[A-Za-z]{3,}[A-Za-z0-9\s\$\.\,\-\(\)\/\:]{10,}/g);
+    if (readableText) {
+      extractedText = readableText.join(' ').replace(/\s+/g, ' ').trim();
+    }
+  }
+  
+  // Limit and clean the result
+  const finalText = extractedText.substring(0, 5000);
+  logStep("PDF text extraction completed", { extractedLength: finalText.length, preview: finalText.substring(0, 200) });
+  
+  return finalText;
 }
 
 async function categorizeExpenses(text: string): Promise<any> {
   try {
     const openAIKey = Deno.env.get("OPENAI_API_KEY");
     if (!openAIKey) {
-      logStep("OpenAI API key not configured");
+      logStep("OpenAI API key not configured - categorization disabled");
       return null;
     }
+    logStep("OpenAI API key found, proceeding with categorization");
 
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
@@ -255,9 +270,10 @@ async function extractAndSaveFoodTransactions(text: string, userId: string, supa
   try {
     const openAIKey = Deno.env.get("OPENAI_API_KEY");
     if (!openAIKey) {
-      logStep("OpenAI API key not configured for food extraction");
+      logStep("OpenAI API key not configured for food extraction - skipping");
       return [];
     }
+    logStep("OpenAI API key found, proceeding with food transaction extraction");
 
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
