@@ -10,6 +10,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { useCurrency } from '@/components/BudgetApp';
 import { supabase } from '@/integrations/supabase/client';
 import { AdSense } from '@/components/AdSense';
+import { useToast } from '@/hooks/use-toast';
 
 interface VacationOption {
   id: string;
@@ -193,6 +194,7 @@ const Vacation: React.FC = () => {
   
   const { user } = useAuth();
   const { currency } = useCurrency();
+  const { toast } = useToast();
 
   useEffect(() => {
     if (user) {
@@ -324,15 +326,7 @@ const Vacation: React.FC = () => {
   };
 
   const deleteCurrentProject = async () => {
-    console.log('Delete button clicked', { user: !!user, projectsLength: projects.length, selectedProject });
-    
     if (!user) {
-      console.log('No user found');
-      return;
-    }
-    
-    if (projects.length <= 1) {
-      console.log('Cannot delete - only one project remaining');
       return;
     }
     
@@ -341,7 +335,8 @@ const Vacation: React.FC = () => {
       return;
     }
     
-    console.log('Deleting project:', selectedProject);
+    // Store project name for toast
+    const deletedProjectName = selectedProject;
     
     // Delete all data for this project
     const { error } = await supabase
@@ -353,10 +348,13 @@ const Vacation: React.FC = () => {
 
     if (error) {
       console.error('Error deleting project:', error);
+      toast({
+        title: "Error",
+        description: "Failed to delete vacation project. Please try again.",
+        variant: "destructive",
+      });
       return;
     }
-
-    console.log('Project deleted successfully');
 
     // Update local state
     const updatedProjects = projects.filter(project => project !== selectedProject);
@@ -368,6 +366,12 @@ const Vacation: React.FC = () => {
     
     // Clear current options
     setOptions([]);
+
+    // Show success toast
+    toast({
+      title: "Vacation deleted",
+      description: `"${deletedProjectName}" has been successfully deleted.`,
+    });
   };
 
   const getLowestCost = () => {
@@ -392,14 +396,7 @@ const Vacation: React.FC = () => {
           </p>
           
           {/* Project Management */}
-          <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between max-w-6xl mx-auto">
-            {/* Current Project Display */}
-            {!isCreatingProject && selectedProject && selectedProject !== 'default' && (
-              <div className="text-lg font-semibold text-foreground mb-2 sm:mb-0">
-                Vacation: {selectedProject}
-              </div>
-            )}
-            
+          <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between max-w-6xl mx-auto">            
             <div className="flex flex-col sm:flex-row gap-2 items-start sm:items-center">
               <Button 
                 onClick={() => setIsCreatingProject(true)}

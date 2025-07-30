@@ -11,6 +11,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { useCurrency } from '@/components/BudgetApp';
 import { supabase } from '@/integrations/supabase/client';
 import { AdSense } from '@/components/AdSense';
+import { useToast } from '@/hooks/use-toast';
 
 interface VendorQuote {
   id: string;
@@ -288,6 +289,7 @@ const CompareVendors: React.FC = () => {
   const [editProjectName, setEditProjectName] = useState('');
   const { user } = useAuth();
   const { currency } = useCurrency();
+  const { toast } = useToast();
 
   // Initialize with new project state if no data exists
   useEffect(() => {
@@ -416,7 +418,7 @@ const CompareVendors: React.FC = () => {
   };
 
   const deleteCurrentProject = async () => {
-    if (!user || uniqueProjects.length <= 1) return;
+    if (!user) return;
     
     // Confirm deletion
     if (!confirm(`Are you sure you want to delete the project "${selectedProject}"? This action cannot be undone.`)) {
@@ -435,6 +437,12 @@ const CompareVendors: React.FC = () => {
       setSelectedProject('');
       setIsNewProject(false);
     }
+
+    // Show success toast
+    toast({
+      title: "Project deleted",
+      description: `"${selectedProject}" has been successfully deleted.`,
+    });
   };
 
   const uniqueProjects = [...new Set(quotes.map(quote => quote.projectName))];
@@ -468,14 +476,7 @@ const CompareVendors: React.FC = () => {
           </p>
           
           {/* Project Management */}
-          <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between max-w-6xl mx-auto">
-            {/* Current Project Display */}
-            {!isNewProject && selectedProject && (
-              <div className="text-lg font-semibold text-foreground mb-2 sm:mb-0">
-                Project: {selectedProject}
-              </div>
-            )}
-            
+          <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between max-w-6xl mx-auto">            
             <div className="flex flex-col sm:flex-row gap-2 items-start sm:items-center">
               <Button
                 onClick={createNewProject}
