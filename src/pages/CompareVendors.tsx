@@ -403,15 +403,42 @@ const CompareVendors: React.FC = () => {
     }
   };
 
-  const updateProjectName = () => {
+  const updateProjectName = async () => {
     if (editProjectName.trim() && editProjectName.trim() !== selectedProject) {
+      // Update quotes locally
       const updatedQuotes = quotes.map(quote => 
         quote.projectName === selectedProject 
           ? { ...quote, projectName: editProjectName.trim() }
           : quote
       );
       setQuotes(updatedQuotes);
+      
+      // Update database if user is logged in
+      if (user) {
+        const { error } = await supabase
+          .from('budget_data')
+          .update({ calculator_id: editProjectName.trim() })
+          .eq('user_id', user.id)
+          .eq('page_type', 'compare_vendors')
+          .eq('calculator_id', selectedProject);
+          
+        if (error) {
+          console.error('Error updating project name:', error);
+          toast({
+            title: "Error",
+            description: "Failed to update project name. Please try again.",
+            variant: "destructive",
+          });
+          return;
+        }
+      }
+      
       setSelectedProject(editProjectName.trim());
+      
+      toast({
+        title: "Project renamed",
+        description: `Project renamed to "${editProjectName.trim()}" successfully.`,
+      });
     }
     setIsEditingProjectName(false);
     setEditProjectName('');

@@ -313,13 +313,40 @@ const Vacation: React.FC = () => {
     }
   };
 
-  const updateProjectName = () => {
+  const updateProjectName = async () => {
     if (editProjectName.trim() && editProjectName.trim() !== selectedProject) {
+      // Update projects locally
       const updatedProjects = projects.map(project => 
         project === selectedProject ? editProjectName.trim() : project
       );
       setProjects(updatedProjects);
+      
+      // Update database if user is logged in
+      if (user) {
+        const { error } = await supabase
+          .from('budget_data')
+          .update({ calculator_id: editProjectName.trim() })
+          .eq('user_id', user.id)
+          .eq('page_type', 'vacation')
+          .eq('calculator_id', selectedProject);
+          
+        if (error) {
+          console.error('Error updating vacation name:', error);
+          toast({
+            title: "Error",
+            description: "Failed to update vacation name. Please try again.",
+            variant: "destructive",
+          });
+          return;
+        }
+      }
+      
       setSelectedProject(editProjectName.trim());
+      
+      toast({
+        title: "Vacation renamed",
+        description: `Vacation renamed to "${editProjectName.trim()}" successfully.`,
+      });
     }
     setIsEditingProjectName(false);
     setEditProjectName('');
