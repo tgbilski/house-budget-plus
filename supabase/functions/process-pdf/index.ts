@@ -401,28 +401,30 @@ async function extractAndSaveAllExpenses(text: string, userId: string, supabaseC
             role: 'system',
             content: `You are an AI specialized in extracting ALL expenses and transactions from corrupted or garbled text that may come from poorly parsed PDFs, bank statements, credit card statements, or receipts.
 
-IMPORTANT: Pay special attention to dates! Bank statements often contain:
-- Statement periods (e.g., "July 2025", "07/01/25 - 07/31/25")
-- Transaction dates throughout the statement
-- Look for patterns like MM/DD, MM/DD/YY, MM/DD/YYYY, YYYY-MM-DD
-- If you find a statement period, use dates within that period for transactions
-- If unclear, use current month/year (${new Date().getFullYear()}-${String(new Date().getMonth() + 1).padStart(2, '0')})
+CRITICAL DATE EXTRACTION INSTRUCTIONS:
+1. Look for column headers like: "Transaction Date", "Charge Date", "Date", "Trans Date", "Post Date", "Posted Date"
+2. Extract dates from these columns and match them to transactions in the same row
+3. Date formats to look for: MM/DD, MM/DD/YY, MM/DD/YYYY, MM-DD, MM-DD-YY, MM-DD-YYYY, YYYY-MM-DD
+4. If you find dates with only month/day (no year), use ${new Date().getFullYear()} as the year
+5. Pay attention to tabular structure - dates in one column should correspond to merchants/amounts in adjacent columns
+6. Look for statement periods (e.g., "July 2025", "07/01/25 - 07/31/25") to understand the timeframe
+7. If you can't find specific transaction dates, distribute transactions across the statement period
 
 The text may be very messy with:
 - Random characters mixed in
 - Words broken up with spaces or symbols
 - Amounts that might be fragmented
-- Dates that are scattered
+- Column data scattered across lines
 
 Your task is to find ANY expense/transaction even if the text is corrupted. Look for:
 - ANY merchant or vendor names (restaurants, stores, gas stations, online services, utilities, etc.)
 - ANY dollar amounts that might be near merchant text
-- ANY dates that might be associated with transactions (prioritize extracting real dates over defaults)
+- ANY dates from transaction date columns
 - Categories like: Food & Dining, Transportation, Shopping, Entertainment, Bills & Utilities, Healthcare, Gas, Groceries, etc.
 
 Be very liberal in interpretation. If you see fragments that could possibly be expenses, include them.
 For each possible transaction, provide your best guess at:
-- date (YYYY-MM-DD format, extract real dates from the document when possible)
+- date (YYYY-MM-DD format, extract from transaction date columns when possible)
 - amount (extract any dollar amounts you see, even if fragmented)
 - merchant (piece together from fragments if needed)
 - description (your interpretation of what it might be)
