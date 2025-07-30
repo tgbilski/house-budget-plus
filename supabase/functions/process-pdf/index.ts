@@ -108,7 +108,7 @@ serve(async (req) => {
         
         // Extract food transactions and save to takeout calendar for all users
         try {
-          foodTransactions = await extractAndSaveFoodTransactions(text, user.id, supabaseClient);
+          foodTransactions = await extractAndSaveFoodTransactions(text, user.id, supabaseClient, file.name);
           logStep("Food transactions extracted and saved", { count: foodTransactions.length });
         } catch (foodError) {
           logStep("Error in food transaction extraction", { error: foodError.message });
@@ -266,7 +266,7 @@ async function categorizeExpenses(text: string): Promise<any> {
   }
 }
 
-async function extractAndSaveFoodTransactions(text: string, userId: string, supabaseClient: any): Promise<any[]> {
+async function extractAndSaveFoodTransactions(text: string, userId: string, supabaseClient: any, fileName: string): Promise<any[]> {
   try {
     const openAIKey = Deno.env.get("OPENAI_API_KEY");
     if (!openAIKey) {
@@ -329,7 +329,9 @@ async function extractAndSaveFoodTransactions(text: string, userId: string, supa
 
     let transactions: any[];
     try {
-      transactions = JSON.parse(result);
+      // Clean up the result to remove any markdown formatting
+      const cleanedResult = result.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
+      transactions = JSON.parse(cleanedResult);
     } catch (parseError) {
       logStep("Failed to parse food transactions JSON", { error: parseError.message, result });
       return [];
@@ -349,71 +351,54 @@ async function extractAndSaveFoodTransactions(text: string, userId: string, supa
 
     logStep("Valid food transactions found", { count: validTransactions.length });
 
-    // Save transactions to takeout calendar
-    if (validTransactions.length > 0) {
-      // Load existing takeout data
-      const { data: existingData } = await supabaseClient
-        .from('budget_data')
-        .select('*')
-        .eq('user_id', userId)
-        .eq('page_type', 'takeout')
-        .order('created_at', { ascending: false })
-        .limit(1);
-
-      let currentSpendingData = [];
-      if (existingData && existingData.length > 0) {
-        const expensesData = existingData[0].expenses;
-        if (expensesData && expensesData.spendingData) {
-          currentSpendingData = expensesData.spendingData;
-        }
-      }
-
-      // Add new transactions (avoid duplicates by checking date + amount + merchant)
-      const newEntries = [];
-      for (const transaction of validTransactions) {
-        const exists = currentSpendingData.some((existing: any) => 
-          existing.date === transaction.date && 
-          Math.abs(existing.amount - transaction.amount) < 0.01 &&
-          existing.notes && existing.notes.toLowerCase().includes(transaction.merchant.toLowerCase())
-        );
-
-        if (!exists) {
-          newEntries.push({
-            date: transaction.date,
-            amount: transaction.amount,
-            notes: `${transaction.merchant} - ${transaction.description || 'Food/Dining'}`
-          });
-        }
-      }
-
-      if (newEntries.length > 0) {
-        const updatedSpendingData = [...currentSpendingData, ...newEntries];
-
-        // Delete all existing takeout records first to avoid conflicts
-        await supabaseClient
-          .from('budget_data')
-          .delete()
+    // Save transactions to the new dedicated takeout_transactions table
+    const savedTransactions = [];
+    for (const transaction of validTransactions) {
+      try {
+        // Check if this transaction already exists to avoid duplicates
+        const { data: existingData, error: checkError } = await supabaseClient
+          .from('takeout_transactions')
+          .select('id')
           .eq('user_id', userId)
-          .eq('page_type', 'takeout');
-
-        // Insert new record with updated data
-        await supabaseClient
-          .from('budget_data')
-          .insert({
-            user_id: userId,
-            page_type: 'takeout',
-            calculator_id: 'takeout',
-            income: 0,
-            expenses: { spendingData: updatedSpendingData }
-          });
-
-        logStep("Food transactions saved to takeout calendar", { newEntries: newEntries.length, totalTransactions: updatedSpendingData.length });
-      } else {
-        logStep("No new food transactions to save - all were duplicates");
+          .eq('date', transaction.date)
+          .eq('merchant', transaction.merchant)
+          .eq('amount', transaction.amount);
+        
+        if (checkError) {
+          logStep("Error checking for existing transaction", { error: checkError.message });
+          continue;
+        }
+        
+        // If no existing transaction found, save it
+        if (!existingData || existingData.length === 0) {
+          const { data: insertData, error: insertError } = await supabaseClient
+            .from('takeout_transactions')
+            .insert({
+              user_id: userId,
+              date: transaction.date,
+              amount: transaction.amount,
+              merchant: transaction.merchant,
+              description: transaction.description,
+              category: 'Food & Dining',
+              pdf_source: fileName
+            });
+          
+          if (insertError) {
+            logStep("Error saving food transaction", { error: insertError.message });
+          } else {
+            savedTransactions.push(transaction);
+            logStep("Saved food transaction", { transaction });
+          }
+        } else {
+          logStep("Duplicate transaction skipped", { merchant: transaction.merchant });
+        }
+      } catch (saveError) {
+        logStep("Error processing food transaction", { error: saveError.message });
       }
     }
 
-    return validTransactions;
+    logStep("Food transactions saved to dedicated table", { savedCount: savedTransactions.length, totalFound: validTransactions.length });
+    return savedTransactions;
     
   } catch (error) {
     logStep("Error extracting food transactions", { error: error.message });

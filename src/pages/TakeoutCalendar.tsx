@@ -53,76 +53,93 @@ const TakeoutCalendar: React.FC = () => {
   const loadData = async () => {
     if (!user) return;
 
-    const { data } = await supabase
-      .from('budget_data')
+    // Load from the new dedicated takeout_transactions table
+    const { data, error } = await supabase
+      .from('takeout_transactions')
       .select('*')
       .eq('user_id', user.id)
-      .eq('page_type', 'takeout')
-      .order('created_at', { ascending: false });
-
-    if (data && data.length > 0) {
-      // Merge all spending data from all records to get complete picture
-      const allSpendingData: DaySpending[] = [];
-      
-      data.forEach(record => {
-        const expensesData = record.expenses as any;
-        if (expensesData?.spendingData && Array.isArray(expensesData.spendingData)) {
-          expensesData.spendingData.forEach((spending: DaySpending) => {
-            // Avoid duplicates by checking if date already exists
-            const existingIndex = allSpendingData.findIndex(s => s.date === spending.date);
-            if (existingIndex >= 0) {
-              // If same date exists, keep the one with higher amount or more recent
-              if (spending.amount > allSpendingData[existingIndex].amount) {
-                allSpendingData[existingIndex] = spending;
-              }
-            } else {
-              allSpendingData.push(spending);
-            }
-          });
-        }
-      });
-      
-      setSpendingData(allSpendingData);
-    }
-  };
-
-  const saveData = async () => {
-    if (!user) return;
-
-    // First, delete all existing takeout records for this user to avoid duplicates
-    await supabase
-      .from('budget_data')
-      .delete()
-      .eq('user_id', user.id)
-      .eq('page_type', 'takeout');
-
-    // Then insert the current data as a single record
-    const { error } = await supabase
-      .from('budget_data')
-      .insert({
-        user_id: user.id,
-        page_type: 'takeout',
-        calculator_id: 'takeout',
-        income: 0,
-        expenses: { spendingData } as any
-      });
+      .order('date', { ascending: false });
 
     if (error) {
-      console.error('Error saving data:', error);
+      console.error('Error loading takeout transactions:', error);
+      return;
+    }
+
+    if (data && data.length > 0) {
+      // Convert from takeout_transactions format to DaySpending format
+      const transformedData: DaySpending[] = data.map(transaction => ({
+        date: transaction.date,
+        amount: Number(transaction.amount),
+        notes: transaction.description ? `${transaction.merchant} - ${transaction.description}` : transaction.merchant
+      }));
+      
+      setSpendingData(transformedData);
     }
   };
 
-  useEffect(() => {
-    // Only auto-save if we have user, and avoid saving immediately after loading
-    // This prevents overwriting PDF-processed data
-    if (user && spendingData.length > 0) {
-      const saveTimeout = setTimeout(() => {
-        saveData();
-      }, 1000); // Longer delay to avoid conflicts with PDF processing
-      
-      return () => clearTimeout(saveTimeout);
+  const saveTransactionToDatabase = async (transaction: DaySpending, isDelete = false) => {
+    if (!user) return;
+
+    try {
+      if (isDelete) {
+        // Delete the transaction from the database
+        const { error } = await supabase
+          .from('takeout_transactions')
+          .delete()
+          .eq('user_id', user.id)
+          .eq('date', transaction.date);
+
+        if (error) {
+          console.error('Error deleting transaction:', error);
+        }
+      } else {
+        // Check if transaction already exists
+        const { data: existing } = await supabase
+          .from('takeout_transactions')
+          .select('id')
+          .eq('user_id', user.id)
+          .eq('date', transaction.date)
+          .single();
+
+        if (existing) {
+          // Update existing transaction
+          const { error } = await supabase
+            .from('takeout_transactions')
+            .update({
+              amount: transaction.amount,
+              merchant: 'Manual Entry',
+              description: transaction.notes || '',
+              category: 'Food & Dining'
+            })
+            .eq('id', existing.id);
+
+          if (error) {
+            console.error('Error updating transaction:', error);
+          }
+        } else {
+          // Insert new transaction
+          const { error } = await supabase
+            .from('takeout_transactions')
+            .insert({
+              user_id: user.id,
+              date: transaction.date,
+              amount: transaction.amount,
+              merchant: 'Manual Entry',
+              description: transaction.notes || '',
+              category: 'Food & Dining'
+            });
+
+          if (error) {
+            console.error('Error inserting transaction:', error);
+          }
+        }
+      }
+    } catch (error) {
+      console.error('Error saving transaction:', error);
     }
-  }, [spendingData, user]);
+  };
+
+  // Remove the auto-save useEffect since we now save individual transactions to the database immediately
 
   const getDaysInMonth = (year: number, month: number) => {
     return new Date(year, month + 1, 0).getDate();
@@ -150,7 +167,7 @@ const TakeoutCalendar: React.FC = () => {
     setIsDialogOpen(true);
   };
 
-  const handleSaveSpending = () => {
+  const handleSaveSpending = async () => {
     if (selectedDate && selectedAmount) {
       const amount = parseFloat(selectedAmount);
       const existingIndex = spendingData.findIndex(spending => spending.date === selectedDate);
@@ -158,6 +175,9 @@ const TakeoutCalendar: React.FC = () => {
       if (amount === 0) {
         // Remove spending entry if amount is 0
         if (existingIndex >= 0) {
+          const transaction = spendingData[existingIndex];
+          await saveTransactionToDatabase(transaction, true); // Delete from database
+          
           const newSpendingData = [...spendingData];
           newSpendingData.splice(existingIndex, 1);
           setSpendingData(newSpendingData);
@@ -170,6 +190,10 @@ const TakeoutCalendar: React.FC = () => {
           notes: selectedNotes
         };
 
+        // Save to database first
+        await saveTransactionToDatabase(newSpending);
+
+        // Then update local state
         if (existingIndex >= 0) {
           const newSpendingData = [...spendingData];
           newSpendingData[existingIndex] = newSpending;
@@ -463,36 +487,15 @@ const TakeoutCalendar: React.FC = () => {
                     // Clear the spending entry completely
                     const existingIndex = spendingData.findIndex(spending => spending.date === selectedDate);
                     if (existingIndex >= 0) {
+                      const transaction = spendingData[existingIndex];
+                      
+                      // Delete from database
+                      await saveTransactionToDatabase(transaction, true);
+                      
+                      // Update local state
                       const newSpendingData = [...spendingData];
                       newSpendingData.splice(existingIndex, 1);
-                      
-                      // Use the new save method that cleans up duplicates
-                      if (user) {
-                        // Delete all existing records first
-                        await supabase
-                          .from('budget_data')
-                          .delete()
-                          .eq('user_id', user.id)
-                          .eq('page_type', 'takeout');
-
-                        // Insert new record with updated data
-                        const { error } = await supabase
-                          .from('budget_data')
-                          .insert({
-                            user_id: user.id,
-                            page_type: 'takeout',
-                            calculator_id: 'takeout',
-                            income: 0,
-                            expenses: { spendingData: newSpendingData } as any
-                          });
-                        
-                        if (error) {
-                          console.error('Error saving cleared data:', error);
-                        } else {
-                          // Only update local state after successful save
-                          setSpendingData(newSpendingData);
-                        }
-                      }
+                      setSpendingData(newSpendingData);
                     }
                     setIsDialogOpen(false);
                     setSelectedDate('');
