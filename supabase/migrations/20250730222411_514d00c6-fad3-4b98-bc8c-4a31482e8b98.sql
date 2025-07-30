@@ -1,0 +1,1 @@
+DELETE FROM pdf_processing_logs;
