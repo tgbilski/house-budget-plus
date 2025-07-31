@@ -16,7 +16,7 @@ import NotFound from "@/pages/NotFound";
 import SubscriptionSuccess from "@/pages/SubscriptionSuccess";
 import UserSettings from "@/pages/UserSettings";
 
-import FinancialResources from "@/pages/FinancialResources";
+import AIInsights from "@/pages/AIInsights";
 import { useState, createContext } from "react";
 
 interface Currency {
@@ -64,7 +64,7 @@ const App = () => {
                   <Route path="/auth" element={<Auth />} />
                   <Route path="/settings" element={<UserSettings />} />
                   
-                  <Route path="/resources" element={<FinancialResources />} />
+                  <Route path="/resources" element={<AIInsights />} />
                   <Route path="/subscription-success" element={<SubscriptionSuccess />} />
                   <Route path="*" element={<NotFound />} />
                 </Routes>
