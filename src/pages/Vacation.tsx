@@ -11,6 +11,8 @@ import { useCurrency } from '@/components/BudgetApp';
 import { supabase } from '@/integrations/supabase/client';
 import { AdSense } from '@/components/AdSense';
 import { useToast } from '@/hooks/use-toast';
+import { SEO } from '@/components/SEO';
+import { seoData } from '@/utils/seoData';
 
 interface VacationOption {
   id: string;
@@ -439,6 +441,7 @@ const Vacation: React.FC = () => {
 
   return (
     <div className="min-h-screen">
+      <SEO {...seoData.vacation} />
       <div className="container mx-auto px-4 py-8">
         <div className="text-center mb-8">
           <div className="flex items-center justify-center gap-4 mb-4">

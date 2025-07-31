@@ -3,6 +3,7 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { HelmetProvider } from 'react-helmet-async';
 import { AuthProvider } from "@/hooks/useAuth";
 import { SubscriptionProvider } from "@/hooks/useSubscription";
 import Header from "@/components/Header";
@@ -41,7 +42,8 @@ const App = () => {
   const [currency, setCurrency] = useState(currencies[0]);
 
   return (
-    <QueryClientProvider client={queryClient}>
+    <HelmetProvider>
+      <QueryClientProvider client={queryClient}>
       <TooltipProvider>
         <Toaster />
         <Sonner />
@@ -69,6 +71,7 @@ const App = () => {
         </AuthProvider>
       </TooltipProvider>
     </QueryClientProvider>
+    </HelmetProvider>
   );
 };
 

@@ -12,6 +12,8 @@ import { useAuth } from '@/hooks/useAuth';
 import { useCurrency } from '@/components/BudgetApp';
 import { supabase } from '@/integrations/supabase/client';
 import { AdSense } from '@/components/AdSense';
+import { SEO } from '@/components/SEO';
+import { seoData } from '@/utils/seoData';
 
 interface DaySpending {
   date: string;
@@ -275,6 +277,7 @@ const TakeoutCalendar: React.FC = () => {
 
   return (
     <div className="min-h-screen">
+      <SEO {...seoData.takeoutCalendar} />
       <div className="container mx-auto px-4 py-8">
         <div className="text-center mb-8">
           <div className="flex items-center justify-center gap-4 mb-4">
@@ -309,16 +312,6 @@ const TakeoutCalendar: React.FC = () => {
           </Card>
         </div>
 
-        {/* AdSense Banner */}
-        <div className="max-w-6xl mx-auto mt-8 flex justify-center">
-          <div className="w-full max-w-2xl">
-            <div className="text-center text-xs text-muted-foreground mb-2">Advertisement</div>
-            <AdSense 
-              adSlot="2345678901"
-              style={{ display: 'block', minHeight: '120px' }}
-            />
-          </div>
-        </div>
 
         <div className="max-w-6xl mx-auto space-y-6">
           {/* Year Dropdown */}

@@ -7,6 +7,8 @@ import { useCurrency } from '@/components/BudgetApp';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { AdSense } from '@/components/AdSense';
+import { SEO } from '@/components/SEO';
+import { seoData } from '@/utils/seoData';
 
 interface Calculator {
   id: string;
@@ -81,6 +83,7 @@ const MonthlyBudget: React.FC = () => {
 
   return (
     <div className="min-h-screen">
+      <SEO {...seoData.home} />
       <div className="container mx-auto px-4 py-8">
         <div className="text-center mb-8">
           <div className="flex items-center justify-center gap-4 mb-4">
@@ -166,11 +169,11 @@ const MonthlyBudget: React.FC = () => {
         <section className="mt-16 max-w-4xl mx-auto">
           <div className="bg-card border border-border rounded-lg p-6">
             <h2 className="text-2xl font-semibold text-foreground mb-4">
-              How to Use the House Budget Calculator
+              How to Use the Monthly Budget Calculator
             </h2>
             <div className="prose prose-sm text-muted-foreground space-y-4">
               <p>
-                Our House Budget Calculator helps you track and manage your household expenses effectively. 
+                Our free Monthly Budget Calculator helps you track and manage your household expenses effectively. 
                 Simply enter your monthly income and all your regular expenses to see your financial picture at a glance.
               </p>
               
@@ -181,22 +184,40 @@ const MonthlyBudget: React.FC = () => {
                 <li>Add up to 10 custom expense categories per person</li>
                 <li>Real-time calculation of your net budget result</li>
                 <li>Easy-to-use interface with clear visual feedback</li>
+                <li>Support for multiple currencies (USD, EUR, GBP, and more)</li>
+                <li>Save your budgets when you create an account</li>
               </ul>
+
+              <h3 className="text-lg font-medium text-foreground">Why Use a Budget Calculator?</h3>
+              <p>
+                A monthly budget calculator is essential for financial health. It helps you understand where your money goes, 
+                identify unnecessary expenses, and plan for future goals. Whether you're saving for a house, paying off debt, 
+                or just trying to make ends meet, having a clear budget is the first step.
+              </p>
 
               <h3 className="text-lg font-medium text-foreground">Tips for Better Budgeting:</h3>
               <ul className="list-disc list-inside space-y-2">
-                <li>Be accurate with your income - include all sources of monthly income</li>
-                <li>Don't forget small recurring expenses like subscriptions</li>
-                <li>Review and update your budget monthly</li>
-                <li>Aim for a positive net result to build savings</li>
-                <li>Use separate calculators for different household members or scenarios</li>
+                <li><strong>Be accurate with income:</strong> Include all sources of monthly income including salary, freelance work, and passive income</li>
+                <li><strong>Track every expense:</strong> Don't forget small recurring expenses like subscriptions, apps, and services</li>
+                <li><strong>Review monthly:</strong> Update your budget regularly as your circumstances change</li>
+                <li><strong>Aim for surplus:</strong> Try to have a positive net result to build emergency savings</li>
+                <li><strong>Use multiple calculators:</strong> Separate budgets for different scenarios or household members</li>
+                <li><strong>Plan for irregular expenses:</strong> Include annual or quarterly expenses divided by 12</li>
               </ul>
 
+              <h3 className="text-lg font-medium text-foreground">Who Should Use This Calculator?</h3>
               <p>
                 This calculator is perfect for individuals, couples, families, and roommates who want to 
                 understand their shared or individual financial responsibilities. Whether you're planning 
-                to buy a home, save for a vacation, or simply want better control over your finances, 
-                this tool provides the clarity you need.
+                to buy a home, save for a vacation, start a family, or simply want better control over your finances, 
+                this tool provides the clarity you need to make informed financial decisions.
+              </p>
+
+              <h3 className="text-lg font-medium text-foreground">Start Building Better Financial Habits Today</h3>
+              <p>
+                Financial planning doesn't have to be complicated. With our intuitive budget calculator, you can 
+                start taking control of your finances in minutes. Create multiple budget scenarios, track different 
+                household members, and see exactly where you stand financially each month.
               </p>
             </div>
           </div>
