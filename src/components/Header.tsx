@@ -10,11 +10,11 @@ const Header: React.FC = () => {
   const { user, signOut } = useAuth();
 
   const navigation = [
-    { name: 'Monthly Budget', href: '/' },
+    { name: 'Home', href: '/' },
+    { name: 'Monthly Budget', href: '/budget' },
     { name: 'Compare Vendors', href: '/compare-prices' },
     { name: 'Takeout', href: '/takeout' },
     { name: 'Vacation', href: '/vacation' },
-    
     { name: 'AI Insights', href: '/resources' },
   ];
 
