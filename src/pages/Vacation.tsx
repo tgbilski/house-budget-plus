@@ -617,7 +617,7 @@ const Vacation: React.FC = () => {
           <div className="w-full max-w-2xl">
             <div className="text-center text-xs text-muted-foreground mb-2">Advertisement</div>
             <AdSense 
-              adSlot="4567890123"
+              adSlot="9361321362"
               style={{ display: 'block', minHeight: '120px' }}
             />
           </div>
