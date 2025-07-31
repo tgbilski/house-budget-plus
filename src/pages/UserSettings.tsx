@@ -118,9 +118,17 @@ export default function UserSettings() {
             {subscribed ? (
               <div className="space-y-3">
                 <div className="p-3 bg-green-50 border border-green-200 rounded-lg dark:bg-green-950/20 dark:border-green-800">
-                  <p className="text-sm text-green-800 dark:text-green-200">
-                    ✅ Unlimited PDF processing with AI categorization
-                  </p>
+                  <div className="space-y-2">
+                    <p className="text-sm text-green-800 dark:text-green-200">
+                      ✅ Unlimited AI Budget Insights
+                    </p>
+                    <p className="text-sm text-green-800 dark:text-green-200">
+                      ✅ Personalized financial recommendations
+                    </p>
+                    <p className="text-sm text-green-800 dark:text-green-200">
+                      ✅ Smart spending analysis
+                    </p>
+                  </div>
                 </div>
                 
                 <div className="flex gap-2">
@@ -139,10 +147,10 @@ export default function UserSettings() {
                     <AlertTriangle className="h-4 w-4 text-amber-600 mt-0.5" />
                     <div className="text-sm">
                       <p className="font-medium text-amber-800 dark:text-amber-200">
-                        Cancel Subscription
+                        Need to Cancel?
                       </p>
                       <p className="text-amber-700 dark:text-amber-300 mt-1">
-                        Use "Manage Subscription" above to cancel your plan. You'll retain access until your billing period ends.
+                        Click "Manage Subscription" above to cancel or modify your plan. You'll keep access until your current billing period ends.
                       </p>
                     </div>
                   </div>
@@ -152,7 +160,7 @@ export default function UserSettings() {
               <div className="space-y-4">
                 <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg dark:bg-blue-950/20 dark:border-blue-800">
                   <p className="text-sm text-blue-800 dark:text-blue-200">
-                    📝 You have processed {pdfCount} of 1 free PDF{pdfCount >= 1 ? '. Upgrade to Premium for unlimited processing.' : '. Try it out!'}
+                    🤖 Upgrade to Premium for unlimited AI Budget Insights and personalized financial recommendations!
                   </p>
                 </div>
                 

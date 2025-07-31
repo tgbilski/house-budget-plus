@@ -10,14 +10,17 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
-import { Settings, LogOut } from 'lucide-react';
+import { Settings, LogOut, Crown } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { useProfile } from '@/hooks/useProfile';
+import { useSubscription } from '@/hooks/useSubscription';
+import { Badge } from '@/components/ui/badge';
 import ProfileSettings from './ProfileSettings';
 
 const ProfileDropdown: React.FC = () => {
   const { signOut } = useAuth();
   const { profile, getInitials, truncateEmail } = useProfile();
+  const { subscribed, subscriptionTier } = useSubscription();
   const [settingsOpen, setSettingsOpen] = useState(false);
 
   const displayEmail = profile?.email || '';
@@ -34,9 +37,9 @@ const ProfileDropdown: React.FC = () => {
             </Avatar>
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent className="w-56" align="end" forceMount>
+        <DropdownMenuContent className="w-60" align="end" forceMount>
           <DropdownMenuLabel className="font-normal">
-            <div className="flex flex-col space-y-1">
+            <div className="flex flex-col space-y-2">
               <p className="text-sm font-medium leading-none">
                 {profile?.first_name && profile?.last_name 
                   ? `${profile.first_name} ${profile.last_name}`
@@ -46,6 +49,19 @@ const ProfileDropdown: React.FC = () => {
               <p className="text-xs leading-none text-muted-foreground">
                 {truncateEmail(displayEmail)}
               </p>
+              {/* Subscription Status Badge */}
+              <div className="flex items-center gap-1">
+                {subscribed ? (
+                  <Badge variant="default" className="text-xs">
+                    <Crown className="h-3 w-3 mr-1" />
+                    {subscriptionTier || 'Premium'}
+                  </Badge>
+                ) : (
+                  <Badge variant="secondary" className="text-xs">
+                    Free Plan
+                  </Badge>
+                )}
+              </div>
             </div>
           </DropdownMenuLabel>
           <DropdownMenuSeparator />
