@@ -88,7 +88,13 @@ const MonthlyBudget: React.FC = () => {
 
   return (
     <div className="min-h-screen">
-      <SEO {...seoData.home} />
+      <SEO 
+        title={seoData.monthlyBudget.title}
+        description={seoData.monthlyBudget.description}
+        keywords={seoData.monthlyBudget.keywords}
+        structuredData={seoData.monthlyBudget.structuredData}
+        canonical="https://www.housebudgetcalculator.com/budget"
+      />
       <Breadcrumbs />
       <div className="container mx-auto px-4 py-8">
         <div className="text-center mb-8">

@@ -7,6 +7,7 @@ import { HelmetProvider } from 'react-helmet-async';
 import { AuthProvider } from "@/hooks/useAuth";
 import { SubscriptionProvider } from "@/hooks/useSubscription";
 import Header from "@/components/Header";
+import Home from "@/pages/Home";
 import MonthlyBudget from "@/pages/MonthlyBudget";
 import CompareVendors from "@/pages/CompareVendors";
 import TakeoutCalendar from "@/pages/TakeoutCalendar";
@@ -55,8 +56,9 @@ const App = () => {
               <div className="min-h-screen">
                 <Header />
                 <Routes>
-                  <Route path="/" element={<MonthlyBudget />} />
-                  <Route path="/home" element={<MonthlyBudget />} />
+                  <Route path="/" element={<Home />} />
+                  <Route path="/budget" element={<MonthlyBudget />} />
+                  <Route path="/home" element={<Home />} />
                   <Route path="/compare-prices" element={<CompareVendors />} />
                   <Route path="/takeout" element={<TakeoutCalendar />} />
                   <Route path="/vacation" element={<Vacation />} />

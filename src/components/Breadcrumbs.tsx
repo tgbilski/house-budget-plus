@@ -10,15 +10,13 @@ interface BreadcrumbData {
 
 const routeMap: Record<string, string> = {
   '/': 'Home',
-  '/home': 'Monthly Budget',
+  '/budget': 'Monthly Budget',
   '/compare-prices': 'Compare Vendors',
   '/takeout': 'Takeout Calendar',
   '/vacation': 'Vacation Planner',
+  '/resources': 'AI Insights',
   '/settings': 'Settings',
-  '/auth': 'Sign In',
-  '/resources': 'Financial Resources',
-  '/templates': 'Budget Templates',
-  '/contact': 'Contact Us'
+  '/auth': 'Sign In'
 };
 
 export const Breadcrumbs: React.FC = () => {

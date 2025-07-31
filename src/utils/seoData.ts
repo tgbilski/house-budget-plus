@@ -7,6 +7,33 @@ export interface SEOData {
 
 export const seoData: Record<string, SEOData> = {
   home: {
+    title: "House Budget Calculator - Free Financial Planning Tools Suite",
+    description: "Comprehensive suite of free financial tools including budget calculator, vendor comparison, expense tracking, vacation planning, and AI insights. Master your household finances today.",
+    keywords: "house budget calculator, financial planning tools, budget tracker, expense calculator, vendor comparison, financial management, household budget",
+    structuredData: {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "House Budget Calculator",
+      "description": "Complete suite of financial planning tools for household budget management",
+      "applicationCategory": "FinanceApplication",
+      "operatingSystem": "All",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      },
+      "featureList": [
+        "Monthly budget calculator",
+        "Vendor quote comparison",
+        "Takeout expense tracking",
+        "Vacation planning tools",
+        "AI financial insights",
+        "PDF export functionality"
+      ]
+    }
+  },
+
+  monthlyBudget: {
     title: "Free Monthly Budget Calculator - Track Income & Expenses Online",
     description: "Plan your household finances with our free monthly budget calculator. Track income, expenses, and calculate net budget for individuals, families, and roommates. Save money and build better financial habits.",
     keywords: "budget calculator, monthly budget, expense tracker, household finances, financial planning, money management, income calculator",
