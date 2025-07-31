@@ -6,7 +6,6 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
 import { Mail, Send } from 'lucide-react';
-import { supabase } from '@/integrations/supabase/client';
 import { SEO } from '@/components/SEO';
 import { Breadcrumbs } from '@/components/Breadcrumbs';
 
@@ -17,7 +16,7 @@ const Contact = () => {
     subject: '',
     message: ''
   });
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSubmitting] = useState(false);
   const { toast } = useToast();
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -28,39 +27,26 @@ const Contact = () => {
     }));
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    setIsSubmitting(true);
-
-    try {
-      const { data, error } = await supabase.functions.invoke('send-contact-email', {
-        body: formData
-      });
-
-      if (error) throw error;
-
-      toast({
-        title: "Message sent successfully!",
-        description: "We'll get back to you as soon as possible.",
-      });
-
-      // Reset form
-      setFormData({
-        name: '',
-        email: '',
-        subject: '',
-        message: ''
-      });
-    } catch (error) {
-      console.error('Error sending message:', error);
-      toast({
-        title: "Error sending message",
-        description: "Please try again or contact us directly at homebudgetcalculator@gmail.com",
-        variant: "destructive",
-      });
-    } finally {
-      setIsSubmitting(false);
-    }
+    
+    // Create mailto link with form data
+    const subject = encodeURIComponent(formData.subject);
+    const body = encodeURIComponent(
+      `Name: ${formData.name}\n` +
+      `Email: ${formData.email}\n\n` +
+      `Message:\n${formData.message}`
+    );
+    
+    const mailtoLink = `mailto:homebudgetcalculator@gmail.com?subject=${subject}&body=${body}`;
+    
+    // Open user's email client
+    window.location.href = mailtoLink;
+    
+    toast({
+      title: "Opening your email client...",
+      description: "Your email client should open with the message pre-filled.",
+    });
   };
 
 
@@ -91,9 +77,9 @@ const Contact = () => {
           <Card>
             <CardHeader>
               <CardTitle>Send us a message</CardTitle>
-              <CardDescription>
-                Fill out the form below and we'll get back to you as soon as possible.
-              </CardDescription>
+            <CardDescription>
+              Fill out the form below and we'll open your email client with the message pre-filled.
+            </CardDescription>
             </CardHeader>
             <CardContent>
               <form onSubmit={handleSubmit} className="space-y-4">
@@ -155,14 +141,8 @@ const Contact = () => {
                   className="w-full"
                   disabled={isSubmitting}
                 >
-                  {isSubmitting ? (
-                    <>Sending...</>
-                  ) : (
-                    <>
-                      <Send className="h-4 w-4 mr-2" />
-                      Send Message
-                    </>
-                  )}
+                  <Send className="h-4 w-4 mr-2" />
+                  Open Email Client
                 </Button>
               </form>
             </CardContent>
