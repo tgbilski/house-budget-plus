@@ -9,6 +9,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { generateBudgetPDF } from '@/utils/pdfGenerator';
 import { supabase } from '@/integrations/supabase/client';
 import { StreamingServiceSelector } from './StreamingServiceSelector';
+import { getTemplateData } from '@/utils/budgetTemplates';
 
 interface ExpenseItem {
   id: string;
@@ -22,6 +23,7 @@ interface BudgetCalculatorProps {
   onRemove: () => void;
   showRemove: boolean;
   pageType?: string;
+  templateId?: string;
 }
 
 const defaultExpenses: ExpenseItem[] = [
@@ -44,7 +46,8 @@ const BudgetCalculator: React.FC<BudgetCalculatorProps> = ({
   id, 
   onRemove, 
   showRemove, 
-  pageType = 'monthly_budget' 
+  pageType = 'monthly_budget',
+  templateId
 }) => {
   const { currency } = useCurrency();
   const { user } = useAuth();
@@ -58,8 +61,34 @@ const BudgetCalculator: React.FC<BudgetCalculatorProps> = ({
   useEffect(() => {
     if (user) {
       loadData();
+    } else if (templateId) {
+      // Apply template data when not logged in
+      applyTemplate(templateId);
     }
-  }, [user, id, pageType]);
+  }, [user, id, pageType, templateId]);
+
+  const applyTemplate = (templateId: string) => {
+    const templateData = getTemplateData(templateId);
+    if (!templateData) return;
+
+    // Set income
+    setMonthlyIncome(templateData.defaultIncome);
+
+    // Update fixed expenses
+    const updatedExpenses = defaultExpenses.map(expense => ({
+      ...expense,
+      amount: templateData.fixedExpenses[expense.id] || 0
+    }));
+    setExpenses(updatedExpenses);
+
+    // Add template-specific expenses
+    const templateExpenses = templateData.additionalExpenses.map((expense, index) => ({
+      id: `template-${templateId}-${index}`,
+      label: expense.label,
+      amount: expense.amount
+    }));
+    setAdditionalExpenses(templateExpenses);
+  };
 
   const loadData = async () => {
     if (!user) return;
@@ -98,6 +127,9 @@ const BudgetCalculator: React.FC<BudgetCalculatorProps> = ({
           setOwnerName(expensesData.ownerName);
         }
       }
+    } else if (templateId) {
+      // Apply template if no saved data exists
+      applyTemplate(templateId);
     }
   };
 

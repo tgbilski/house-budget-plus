@@ -203,7 +203,7 @@ const BudgetTemplates: React.FC = () => {
                   </div>
                   
                   <Button asChild className="w-full">
-                    <Link to="/">
+                    <Link to={`/?template=${template.id}`}>
                       Use This Template
                     </Link>
                   </Button>
