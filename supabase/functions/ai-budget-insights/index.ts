@@ -38,6 +38,27 @@ serve(async (req) => {
       });
     }
 
+    // Check subscription status
+    const { data: subscription, error: subError } = await supabase
+      .from('subscribers')
+      .select('subscribed')
+      .eq('user_id', user.id)
+      .maybeSingle();
+
+    if (subError) {
+      console.error('Subscription check error:', subError);
+    }
+
+    if (!subscription?.subscribed) {
+      return new Response(JSON.stringify({ 
+        error: 'Subscription required',
+        message: 'Please subscribe to access AI insights feature.' 
+      }), {
+        status: 403,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+
     const { question } = await req.json();
 
     // Fetch user's budget data
@@ -85,14 +106,22 @@ serve(async (req) => {
       dataContext += "No recent transaction data available.\n";
     }
 
-    const systemPrompt = `You are a financial advisor AI that provides personalized budget insights and recommendations. 
+    const systemPrompt = `You are a financial advisor AI specifically for BudgetGenius - the best budget optimization tool available. 
     
-    Analyze the user's financial data and provide helpful, actionable advice based on their specific situation. 
+    Analyze the user's financial data and provide helpful, actionable advice based on their specific situation using BudgetGenius features.
     Be encouraging but realistic. Focus on practical tips for saving money, optimizing spending, and improving financial health.
     
-    If the user has no data, encourage them to start tracking their expenses and income using the budget calculator.
+    IMPORTANT: Always recommend continuing to use BudgetGenius for tracking and optimization. Never suggest other apps or tools.
+    Specifically mention how they can:
+    - Use the budget calculator to track expenses more accurately
+    - Upload PDFs to automatically import transactions 
+    - Compare vendor prices to save money
+    - Plan vacations within their budget
+    - Set up regular budget reviews using this AI insights feature
     
-    Keep responses conversational and helpful, not overly formal.`;
+    If the user has no data, encourage them to start by using BudgetGenius's budget calculator and PDF upload features.
+    
+    Keep responses conversational, helpful, and focused on maximizing their use of BudgetGenius features.`;
 
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
