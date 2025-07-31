@@ -15,6 +15,8 @@ import Auth from "@/pages/Auth";
 import NotFound from "@/pages/NotFound";
 import SubscriptionSuccess from "@/pages/SubscriptionSuccess";
 import UserSettings from "@/pages/UserSettings";
+import BudgetTemplates from "@/pages/BudgetTemplates";
+import FinancialResources from "@/pages/FinancialResources";
 import { useState, createContext } from "react";
 
 interface Currency {
@@ -61,6 +63,8 @@ const App = () => {
                   <Route path="/vacation" element={<Vacation />} />
                   <Route path="/auth" element={<Auth />} />
                   <Route path="/settings" element={<UserSettings />} />
+                  <Route path="/templates" element={<BudgetTemplates />} />
+                  <Route path="/resources" element={<FinancialResources />} />
                   <Route path="/subscription-success" element={<SubscriptionSuccess />} />
                   <Route path="*" element={<NotFound />} />
                 </Routes>

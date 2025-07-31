@@ -14,6 +14,8 @@ const Header: React.FC = () => {
     { name: 'Compare Vendors', href: '/compare-prices' },
     { name: 'Takeout', href: '/takeout' },
     { name: 'Vacation', href: '/vacation' },
+    { name: 'Templates', href: '/templates' },
+    { name: 'Resources', href: '/resources' },
   ];
 
   const isActive = (href: string) => {

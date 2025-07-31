@@ -9,6 +9,11 @@ import { supabase } from '@/integrations/supabase/client';
 import { AdSense } from '@/components/AdSense';
 import { SEO } from '@/components/SEO';
 import { seoData } from '@/utils/seoData';
+import { Breadcrumbs } from '@/components/Breadcrumbs';
+import { InternalLinks } from '@/components/InternalLinks';
+import { SocialShare } from '@/components/SocialShare';
+import { FAQ } from '@/components/FAQ';
+import { budgetCalculatorFAQs } from '@/utils/faqData';
 
 interface Calculator {
   id: string;
@@ -84,6 +89,7 @@ const MonthlyBudget: React.FC = () => {
   return (
     <div className="min-h-screen">
       <SEO {...seoData.home} />
+      <Breadcrumbs />
       <div className="container mx-auto px-4 py-8">
         <div className="text-center mb-8">
           <div className="flex items-center justify-center gap-4 mb-4">
@@ -97,6 +103,12 @@ const MonthlyBudget: React.FC = () => {
           <p className="text-muted-foreground text-lg mb-6">
             Plan your household finances with precision{!user && ' (sign up to save)'}
           </p>
+          <div className="flex justify-center mb-4">
+            <SocialShare 
+              title="Free Monthly Budget Calculator"
+              description="Track your income and expenses with our free budget calculator. Perfect for individuals, families, and roommates."
+            />
+          </div>
           
           {/* Currency Selector */}
           <div className="flex items-center justify-center gap-2 mb-4">
@@ -222,6 +234,9 @@ const MonthlyBudget: React.FC = () => {
             </div>
           </div>
         </section>
+
+        <FAQ faqs={budgetCalculatorFAQs} />
+        <InternalLinks currentPage="/" category="budgeting" />
       </div>
     </div>
   );

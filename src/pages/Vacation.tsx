@@ -13,6 +13,11 @@ import { AdSense } from '@/components/AdSense';
 import { useToast } from '@/hooks/use-toast';
 import { SEO } from '@/components/SEO';
 import { seoData } from '@/utils/seoData';
+import { Breadcrumbs } from '@/components/Breadcrumbs';
+import { InternalLinks } from '@/components/InternalLinks';
+import { SocialShare } from '@/components/SocialShare';
+import { FAQ } from '@/components/FAQ';
+import { vacationPlanningFAQs } from '@/utils/faqData';
 
 interface VacationOption {
   id: string;
@@ -442,6 +447,7 @@ const Vacation: React.FC = () => {
   return (
     <div className="min-h-screen">
       <SEO {...seoData.vacation} />
+      <Breadcrumbs />
       <div className="container mx-auto px-4 py-8">
         <div className="text-center mb-8">
           <div className="flex items-center justify-center gap-4 mb-4">
@@ -452,9 +458,15 @@ const Vacation: React.FC = () => {
             />
             <h1 className="text-3xl font-bold text-foreground">Vacation Planning</h1>
           </div>
-          <p className="text-muted-foreground mb-6">
-            Compare vacation options and find your perfect getaway{!user && ' (sign up to save)'}
+          <p className="text-muted-foreground text-lg mb-4">
+            Plan and compare vacation options within your budget
           </p>
+          <div className="flex justify-center mb-6">
+            <SocialShare 
+              title="Vacation Planning & Budget Tool"
+              description="Compare vacation destinations and costs. Plan your perfect trip within budget with our comparison tool."
+            />
+          </div>
           
           {/* Project Management */}
           <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between max-w-6xl mx-auto">            
@@ -625,6 +637,9 @@ const Vacation: React.FC = () => {
             />
           </div>
         </div>
+
+        <FAQ faqs={vacationPlanningFAQs} />
+        <InternalLinks currentPage="/vacation" category="planning" />
       </div>
     </div>
   );

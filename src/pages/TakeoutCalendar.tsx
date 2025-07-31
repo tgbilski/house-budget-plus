@@ -14,6 +14,11 @@ import { supabase } from '@/integrations/supabase/client';
 import { AdSense } from '@/components/AdSense';
 import { SEO } from '@/components/SEO';
 import { seoData } from '@/utils/seoData';
+import { Breadcrumbs } from '@/components/Breadcrumbs';
+import { InternalLinks } from '@/components/InternalLinks';
+import { SocialShare } from '@/components/SocialShare';
+import { FAQ } from '@/components/FAQ';
+import { takeoutCalendarFAQs } from '@/utils/faqData';
 
 interface DaySpending {
   date: string;
@@ -278,6 +283,7 @@ const TakeoutCalendar: React.FC = () => {
   return (
     <div className="min-h-screen">
       <SEO {...seoData.takeoutCalendar} />
+      <Breadcrumbs />
       <div className="container mx-auto px-4 py-8">
         <div className="text-center mb-8">
           <div className="flex items-center justify-center gap-4 mb-4">
@@ -506,6 +512,9 @@ const TakeoutCalendar: React.FC = () => {
             />
           </div>
         </div>
+
+        <FAQ faqs={takeoutCalendarFAQs} />
+        <InternalLinks currentPage="/takeout" category="tracking" />
       </div>
     </div>
   );
