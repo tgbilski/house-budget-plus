@@ -47,14 +47,14 @@ serve(async (req) => {
     // Define pricing based on plan
     const pricingConfig = {
       monthly: {
-        unit_amount: 499, // $4.99/month
+        unit_amount: 199, // $1.99/month
         interval: "month" as const,
-        name: "Premium PDF Processing - Monthly"
+        name: "AI Budget Insights - Monthly"
       },
       annual: {
-        unit_amount: 4790, // $47.90/year (20% discount from $59.88)
+        unit_amount: 1999, // $19.99/year 
         interval: "year" as const,
-        name: "Premium PDF Processing - Annual (20% off)"
+        name: "AI Budget Insights - Annual"
       }
     };
 

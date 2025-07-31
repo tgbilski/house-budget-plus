@@ -168,8 +168,8 @@ const AIInsights = () => {
                       <Star className="h-6 w-6 text-primary mr-2" />
                       <CardTitle>Monthly Plan</CardTitle>
                     </div>
-                    <div className="text-3xl font-bold">$4.99<span className="text-lg font-normal text-muted-foreground">/month</span></div>
-                    <CardDescription>Perfect for regular budget optimization</CardDescription>
+                    <div className="text-3xl font-bold">$1.99<span className="text-lg font-normal text-muted-foreground">/month</span></div>
+                    <CardDescription>Affordable AI-powered budget optimization</CardDescription>
                   </CardHeader>
                   <CardContent className="space-y-4">
                     <ul className="space-y-2">
@@ -197,8 +197,8 @@ const AIInsights = () => {
                       <Crown className="h-6 w-6 text-yellow-500 mr-2" />
                       <CardTitle>Annual Plan</CardTitle>
                     </div>
-                    <div className="text-3xl font-bold">$49.99<span className="text-lg font-normal text-muted-foreground">/year</span></div>
-                    <CardDescription className="text-green-600 font-medium">Save $9.89 per year!</CardDescription>
+                    <div className="text-3xl font-bold">$19.99<span className="text-lg font-normal text-muted-foreground">/year</span></div>
+                    <CardDescription className="text-green-600 font-medium">Save $3.89 per year!</CardDescription>
                   </CardHeader>
                   <CardContent className="space-y-4">
                     <ul className="space-y-2">
