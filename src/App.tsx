@@ -15,7 +15,6 @@ import Auth from "@/pages/Auth";
 import NotFound from "@/pages/NotFound";
 import SubscriptionSuccess from "@/pages/SubscriptionSuccess";
 import UserSettings from "@/pages/UserSettings";
-import Contact from "@/pages/Contact";
 import AIInsights from "@/pages/AIInsights";
 import { useState, createContext } from "react";
 
@@ -63,7 +62,6 @@ const App = () => {
                   <Route path="/vacation" element={<Vacation />} />
                   <Route path="/auth" element={<Auth />} />
                   <Route path="/settings" element={<UserSettings />} />
-                  <Route path="/contact" element={<Contact />} />
                   
                   <Route path="/resources" element={<AIInsights />} />
                   <Route path="/subscription-success" element={<SubscriptionSuccess />} />

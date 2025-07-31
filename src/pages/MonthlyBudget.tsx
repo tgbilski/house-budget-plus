@@ -245,8 +245,13 @@ const MonthlyBudget: React.FC = () => {
             <p className="text-muted-foreground mb-6">
               We're here to help you succeed with your budgeting journey. Get in touch with questions, suggestions, or feedback.
             </p>
-            <Button asChild variant="outline" size="lg">
-              <a href="/contact">Contact Us</a>
+            <Button 
+              asChild 
+              variant="outline" 
+              size="lg"
+              onClick={() => window.location.href = 'mailto:homebudgetcalculator@gmail.com?subject=Budget Calculator Feedback'}
+            >
+              <span>Contact Us</span>
             </Button>
           </div>
         </section>
