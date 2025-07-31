@@ -60,7 +60,14 @@ const Home = () => {
         {/* Hero Section */}
         <section className="relative py-20 px-4 bg-gradient-to-br from-primary/5 via-background to-secondary/5">
           <div className="max-w-6xl mx-auto text-center">
-            <h1 className="text-4xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
+            <div className="flex justify-center mb-6">
+              <img 
+                src="/lovable-uploads/ed809955-ef71-4d81-b072-945082f4380a.png" 
+                alt="Budget Calculator mascot" 
+                className="w-24 h-24 object-contain"
+              />
+            </div>
+            <h1 className="text-3xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
               House Budget Calculator
             </h1>
             <p className="text-xl md:text-2xl text-muted-foreground mb-8 max-w-3xl mx-auto">
