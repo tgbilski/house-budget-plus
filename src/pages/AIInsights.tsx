@@ -9,6 +9,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { Bot, Send, Brain, Crown, Star, Check } from 'lucide-react';
 import { SEO } from '@/components/SEO';
 import { Badge } from '@/components/ui/badge';
+import { AdSense } from '@/components/AdSense';
 
 const AIInsights = () => {
   const { user } = useAuth();
@@ -145,6 +146,13 @@ const AIInsights = () => {
                 </div>
               </CardContent>
             </Card>
+          )}
+
+          {/* AdSense for non-subscribers */}
+          {!subscribed && (
+            <div className="mb-8">
+              <AdSense adSlot="1234567890" />
+            </div>
           )}
 
           {user && !subscribed && !subLoading && (
@@ -329,6 +337,11 @@ const AIInsights = () => {
               </Card>
             </div>
           )}
+
+          {/* AdSense after AI interaction */}
+          <div className="mt-8 mb-8">
+            <AdSense adSlot="0987654321" />
+          </div>
 
           <Card className="mt-8">
             <CardHeader>
