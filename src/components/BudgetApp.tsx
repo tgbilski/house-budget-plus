@@ -1,5 +1,4 @@
 import React, { useState, useContext, useEffect } from 'react';
-import { useSearchParams } from 'react-router-dom';
 import { Plus, Globe } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -51,9 +50,6 @@ const currencies: Currency[] = [
 
 const BudgetApp: React.FC = () => {
   console.log('BudgetApp rendering...');
-  
-  const [searchParams] = useSearchParams();
-  const templateId = searchParams.get('template');
   
   const [calculators, setCalculators] = useState<Calculator[]>([{ id: '1' }]);
   const [currency, setCurrency] = useState<Currency>(currencies[0]); // Default to USD
@@ -135,7 +131,6 @@ const BudgetApp: React.FC = () => {
                     id={calculator.id}
                     onRemove={() => removeCalculator(calculator.id)}
                     showRemove={calculators.length > 1}
-                    templateId={templateId || undefined}
                   />
                 </div>
               );
