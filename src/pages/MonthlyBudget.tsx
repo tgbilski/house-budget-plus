@@ -237,6 +237,19 @@ const MonthlyBudget: React.FC = () => {
 
         <FAQ faqs={budgetCalculatorFAQs} />
         <InternalLinks currentPage="/" category="budgeting" />
+        
+        {/* Contact Us Section */}
+        <section className="mt-12 py-8">
+          <div className="text-center">
+            <h3 className="text-xl font-semibold text-foreground mb-4">Need Help or Have Feedback?</h3>
+            <p className="text-muted-foreground mb-6">
+              We're here to help you succeed with your budgeting journey. Get in touch with questions, suggestions, or feedback.
+            </p>
+            <Button asChild variant="outline" size="lg">
+              <a href="/contact">Contact Us</a>
+            </Button>
+          </div>
+        </section>
       </div>
     </div>
   );

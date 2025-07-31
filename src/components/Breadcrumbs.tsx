@@ -17,7 +17,8 @@ const routeMap: Record<string, string> = {
   '/settings': 'Settings',
   '/auth': 'Sign In',
   '/resources': 'Financial Resources',
-  '/templates': 'Budget Templates'
+  '/templates': 'Budget Templates',
+  '/contact': 'Contact Us'
 };
 
 export const Breadcrumbs: React.FC = () => {
