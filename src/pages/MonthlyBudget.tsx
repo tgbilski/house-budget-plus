@@ -3,7 +3,7 @@ import { Plus, Globe } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import BudgetCalculator from '@/components/BudgetCalculator';
-import { useCurrency } from '@/components/BudgetApp';
+import { useCurrency } from '@/hooks/useCurrency';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { AdSense } from '@/components/AdSense';

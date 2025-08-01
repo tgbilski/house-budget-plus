@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
-import { useCurrency } from './BudgetApp';
+import { useCurrency } from '@/hooks/useCurrency';
 import { useAuth } from '@/hooks/useAuth';
 import { generateBudgetPDF } from '@/utils/pdfGenerator';
 import { supabase } from '@/integrations/supabase/client';

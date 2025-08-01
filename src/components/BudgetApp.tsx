@@ -15,18 +15,6 @@ interface Currency {
   name: string;
 }
 
-interface CurrencyContextType {
-  currency: Currency;
-  setCurrency: (currency: Currency) => void;
-}
-
-export const useCurrency = () => {
-  const context = useContext(CurrencyContext);
-  if (!context) {
-    throw new Error('useCurrency must be used within a CurrencyProvider');
-  }
-  return context;
-};
 
 const currencies: Currency[] = [
   { code: 'USD', symbol: '$', name: 'US Dollar' },

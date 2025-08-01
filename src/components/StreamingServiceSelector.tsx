@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { useCurrency } from './BudgetApp';
+import { useCurrency } from '@/hooks/useCurrency';
 
 interface StreamingService {
   id: string;
