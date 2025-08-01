@@ -169,12 +169,9 @@ const Home = () => {
               </div>
             </div>
           </div>
-        </section>
-
-        {/* AdSense Section */}
-        <section className="py-8 bg-muted/30">
-          <div className="max-w-4xl mx-auto text-center">
-            <p className="text-sm text-muted-foreground mb-4">Advertisement</p>
+          
+          {/* Integrated AdSense within content */}
+          <div className="max-w-4xl mx-auto mt-12 text-center">
             <AdSense adSlot="1234567890" />
           </div>
         </section>
