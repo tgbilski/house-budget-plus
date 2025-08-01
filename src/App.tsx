@@ -65,7 +65,7 @@ const App = () => {
                   <Route path="/auth" element={<Auth />} />
                   <Route path="/settings" element={<UserSettings />} />
                   
-                  <Route path="/resources" element={<AIInsights />} />
+                  <Route path="/ai-insights" element={<AIInsights />} />
                   <Route path="/subscription-success" element={<SubscriptionSuccess />} />
                   <Route path="*" element={<NotFound />} />
                 </Routes>
