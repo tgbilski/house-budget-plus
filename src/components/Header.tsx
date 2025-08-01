@@ -1,13 +1,16 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { User } from 'lucide-react';
+import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
+import { User, Menu } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
+import { useIsMobile } from '@/hooks/use-mobile';
 import ProfileDropdown from './ProfileDropdown';
 
 const Header: React.FC = () => {
   const location = useLocation();
   const { user, signOut } = useAuth();
+  const isMobile = useIsMobile();
 
   const navigation = [
     { name: 'Home', href: '/' },
@@ -51,38 +54,60 @@ const Header: React.FC = () => {
           ))}
         </nav>
 
-        {/* Mobile Navigation */}
-        <nav className="md:hidden flex items-center space-x-4">
-          {navigation.map((item) => (
-            <Link
-              key={item.name}
-              to={item.href}
-              className={`text-xs font-medium transition-colors hover:text-primary ${
-                isActive(item.href)
-                  ? 'text-primary'
-                  : 'text-muted-foreground'
-              }`}
-            >
-              {item.name.split(' ')[0]}
-            </Link>
-          ))}
-        </nav>
+        {/* Mobile Navigation - Hamburger Menu */}
+        {isMobile && (
+          <div className="flex items-center space-x-2">
+            {user ? (
+              <ProfileDropdown />
+            ) : (
+              <Link to="/auth">
+                <Button size="sm" className="flex items-center">
+                  <User className="h-4 w-4" />
+                </Button>
+              </Link>
+            )}
+            
+            <Sheet>
+              <SheetTrigger asChild>
+                <Button variant="ghost" size="sm">
+                  <Menu className="h-5 w-5" />
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="right" className="w-64 bg-background">
+                <nav className="flex flex-col space-y-4 mt-8">
+                  {navigation.map((item) => (
+                    <Link
+                      key={item.name}
+                      to={item.href}
+                      className={`text-base font-medium transition-colors hover:text-primary p-2 rounded-md ${
+                        isActive(item.href)
+                          ? 'text-primary bg-muted'
+                          : 'text-foreground hover:bg-muted'
+                      }`}
+                    >
+                      {item.name}
+                    </Link>
+                  ))}
+                </nav>
+              </SheetContent>
+            </Sheet>
+          </div>
+        )}
 
-        {/* Auth Button */}
-        <div className="flex items-center">
-          {user ? (
-            <ProfileDropdown />
-          ) : (
-            <Link to="/auth">
-              <Button size="sm" className="flex items-center">
-                {/* Show icon only on mobile */}
-                <User className="h-4 w-4 md:hidden" />
-                {/* Show text only on desktop */}
-                <span className="hidden md:block">Sign In</span>
-              </Button>
-            </Link>
-          )}
-        </div>
+        {/* Desktop Auth Button */}
+        {!isMobile && (
+          <div className="flex items-center">
+            {user ? (
+              <ProfileDropdown />
+            ) : (
+              <Link to="/auth">
+                <Button size="sm" className="flex items-center">
+                  <span>Sign In</span>
+                </Button>
+              </Link>
+            )}
+          </div>
+        )}
       </div>
     </header>
   );
