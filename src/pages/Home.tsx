@@ -5,6 +5,7 @@ import { Calculator, Scale, Calendar, Plane, Brain, ArrowRight } from "lucide-re
 import { Link } from "react-router-dom";
 import { SEO } from "@/components/SEO";
 import { seoData } from "@/utils/seoData";
+import { AdSense } from "@/components/AdSense";
 
 const Home = () => {
   const tools = [
@@ -167,6 +168,13 @@ const Home = () => {
                 </p>
               </div>
             </div>
+          </div>
+        </section>
+
+        {/* AdSense Section */}
+        <section className="py-8">
+          <div className="max-w-4xl mx-auto text-center">
+            <AdSense adSlot="1234567890" />
           </div>
         </section>
 
