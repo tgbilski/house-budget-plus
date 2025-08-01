@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ChevronLeft, ChevronRight, Plus } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Plus, CalendarIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -7,9 +7,14 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Calendar } from '@/components/ui/calendar';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { format } from 'date-fns';
+import { cn } from '@/lib/utils';
 import { useAuth } from '@/hooks/useAuth';
 import { useCurrency } from '@/hooks/useCurrency';
+import { useIsMobile } from '@/hooks/use-mobile';
 import { supabase } from '@/integrations/supabase/client';
 import { AdSense } from '@/components/AdSense';
 import { SEO } from '@/components/SEO';
@@ -46,6 +51,7 @@ const TakeoutCalendar: React.FC = () => {
   const [activeMonth, setActiveMonth] = useState(new Date().getMonth());
   const { user } = useAuth();
   const { currency } = useCurrency();
+  const isMobile = useIsMobile();
 
   // Generate array of available years (current year + past 4 years)
   const availableYears = Array.from({ length: 5 }, (_, i) => new Date().getFullYear() - i);
@@ -383,60 +389,156 @@ const TakeoutCalendar: React.FC = () => {
             </CardContent>
           </Card>
 
-          <Tabs value={monthNames[activeMonth]} onValueChange={(value) => {
-            const monthIndex = monthNames.indexOf(value);
-            setActiveMonth(monthIndex);
-          }}>
-            {/* Month Tabs */}
-            <div className="mb-6 overflow-x-auto">
-              <TabsList className="grid w-full grid-cols-12 h-auto">
-                {monthAbbr.map((month, index) => (
-                  <TabsTrigger 
-                    key={month} 
-                    value={monthNames[index]}
-                    className="text-xs p-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+          {/* Mobile Interface */}
+          {isMobile && (
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-center">Quick Add Expense</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="space-y-2">
+                  <Label>Select Date</Label>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <Button
+                        variant="outline"
+                        className={cn(
+                          "w-full justify-start text-left font-normal",
+                          !selectedDate && "text-muted-foreground"
+                        )}
+                      >
+                        <CalendarIcon className="mr-2 h-4 w-4" />
+                        {selectedDate ? format(new Date(selectedDate + 'T12:00:00'), "PPP") : <span>Pick a date</span>}
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0" align="start">
+                      <Calendar
+                        mode="single"
+                        selected={selectedDate ? new Date(selectedDate + 'T12:00:00') : undefined}
+                        onSelect={(date) => {
+                          if (date) {
+                            const formattedDate = format(date, 'yyyy-MM-dd');
+                            setSelectedDate(formattedDate);
+                            const existingSpending = getSpendingForDate(formattedDate);
+                            setSelectedAmount(existingSpending?.amount.toString() || '');
+                            setSelectedNotes(existingSpending?.notes || '');
+                          }
+                        }}
+                        initialFocus
+                        className="pointer-events-auto"
+                      />
+                    </PopoverContent>
+                  </Popover>
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="mobile-amount">Amount ({currency.symbol})</Label>
+                  <Input
+                    id="mobile-amount"
+                    type="number"
+                    step="0.01"
+                    value={selectedAmount}
+                    onChange={(e) => setSelectedAmount(e.target.value)}
+                    placeholder="0.00"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="mobile-notes">Notes (optional)</Label>
+                  <Input
+                    id="mobile-notes"
+                    value={selectedNotes}
+                    onChange={(e) => setSelectedNotes(e.target.value)}
+                    placeholder="What did you order?"
+                  />
+                </div>
+                <Button 
+                  onClick={handleSaveSpending} 
+                  className="w-full"
+                  disabled={!selectedDate || !selectedAmount}
+                >
+                  Save Expense
+                </Button>
+                {getSpendingForDate(selectedDate) && (
+                  <Button 
+                    variant="destructive" 
+                    onClick={async () => {
+                      const existingIndex = spendingData.findIndex(spending => spending.date === selectedDate);
+                      if (existingIndex >= 0) {
+                        const transaction = spendingData[existingIndex];
+                        await saveTransactionToDatabase(transaction, true);
+                        const newSpendingData = [...spendingData];
+                        newSpendingData.splice(existingIndex, 1);
+                        setSpendingData(newSpendingData);
+                      }
+                      setSelectedDate('');
+                      setSelectedAmount('');
+                      setSelectedNotes('');
+                    }}
+                    className="w-full"
                   >
-                    <div className="text-center">
-                      <div>{month}</div>
-                      <div className="text-xs font-normal">
-                        {currency.symbol}{getMonthTotal(index).toFixed(0)}
-                      </div>
-                    </div>
-                  </TabsTrigger>
-                ))}
-              </TabsList>
-            </div>
+                    Clear This Entry
+                  </Button>
+                )}
+              </CardContent>
+            </Card>
+          )}
 
-            {/* Calendar Grids */}
-            {monthNames.map((monthName, monthIndex) => (
-              <TabsContent key={monthName} value={monthName}>
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="text-center flex items-center justify-between">
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => setActiveMonth(monthIndex > 0 ? monthIndex - 1 : 11)}
-                      >
-                        <ChevronLeft className="h-4 w-4" />
-                      </Button>
-                      <span>{monthName} {selectedYear}</span>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => setActiveMonth(monthIndex < 11 ? monthIndex + 1 : 0)}
-                      >
-                        <ChevronRight className="h-4 w-4" />
-                      </Button>
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    {renderCalendarGrid(monthIndex)}
-                  </CardContent>
-                </Card>
-              </TabsContent>
-            ))}
-          </Tabs>
+          {/* Desktop Calendar Interface */}
+          {!isMobile && (
+            <Tabs value={monthNames[activeMonth]} onValueChange={(value) => {
+              const monthIndex = monthNames.indexOf(value);
+              setActiveMonth(monthIndex);
+            }}>
+              {/* Month Tabs */}
+              <div className="mb-6 overflow-x-auto">
+                <TabsList className="grid w-full grid-cols-12 h-auto">
+                  {monthAbbr.map((month, index) => (
+                    <TabsTrigger 
+                      key={month} 
+                      value={monthNames[index]}
+                      className="text-xs p-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+                    >
+                      <div className="text-center">
+                        <div>{month}</div>
+                        <div className="text-xs font-normal">
+                          {currency.symbol}{getMonthTotal(index).toFixed(0)}
+                        </div>
+                      </div>
+                    </TabsTrigger>
+                  ))}
+                </TabsList>
+              </div>
+
+              {/* Calendar Grids */}
+              {monthNames.map((monthName, monthIndex) => (
+                <TabsContent key={monthName} value={monthName}>
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="text-center flex items-center justify-between">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => setActiveMonth(monthIndex > 0 ? monthIndex - 1 : 11)}
+                        >
+                          <ChevronLeft className="h-4 w-4" />
+                        </Button>
+                        <span>{monthName} {selectedYear}</span>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => setActiveMonth(monthIndex < 11 ? monthIndex + 1 : 0)}
+                        >
+                          <ChevronRight className="h-4 w-4" />
+                        </Button>
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      {renderCalendarGrid(monthIndex)}
+                    </CardContent>
+                  </Card>
+                </TabsContent>
+              ))}
+            </Tabs>
+          )}
         </div>
 
         {/* Spending Input Dialog */}
