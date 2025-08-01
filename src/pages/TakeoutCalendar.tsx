@@ -350,30 +350,51 @@ const TakeoutCalendar: React.FC = () => {
           {/* Monthly Spending Chart */}
           <Card>
             <CardHeader>
-              <CardTitle className="text-center text-lg">Monthly Spending Overview</CardTitle>
+              <CardTitle className="text-center text-lg">
+                {isMobile ? 'Last 3 Months Spending' : 'Monthly Spending Overview'}
+              </CardTitle>
             </CardHeader>
             <CardContent>
               <div className="h-64">
                 <ResponsiveContainer width="100%" height="100%">
                   <LineChart
-                    data={monthAbbr.map((month, index) => ({
-                      month,
-                      amount: getMonthTotal(index)
-                    }))}
+                    data={(() => {
+                      const currentMonth = new Date().getMonth();
+                      const months = isMobile ? 
+                        // Show last 3 months for mobile
+                        Array.from({ length: 3 }, (_, i) => {
+                          const monthIndex = (currentMonth - 2 + i + 12) % 12;
+                          return {
+                            month: monthAbbr[monthIndex],
+                            amount: getMonthTotal(monthIndex),
+                            fullMonth: monthNames[monthIndex]
+                          };
+                        }) :
+                        // Show all 12 months for desktop
+                        monthAbbr.map((month, index) => ({
+                          month,
+                          amount: getMonthTotal(index),
+                          fullMonth: monthNames[index]
+                        }));
+                      return months;
+                    })()}
                     margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
                   >
                     <CartesianGrid strokeDasharray="3 3" />
                     <XAxis 
                       dataKey="month" 
-                      tick={{ fontSize: 10 }}
+                      tick={{ fontSize: isMobile ? 12 : 10 }}
                     />
                     <YAxis 
                       tickFormatter={(value) => `${currency.symbol}${value}`}
-                      tick={{ fontSize: 10 }}
+                      tick={{ fontSize: isMobile ? 12 : 10 }}
                     />
                     <Tooltip 
                       formatter={(value) => [`${currency.symbol}${Number(value).toFixed(2)}`, 'Spending']}
-                      labelFormatter={(label) => `${label} ${selectedYear}`}
+                      labelFormatter={(label, payload) => {
+                        const dataPoint = payload?.[0]?.payload;
+                        return dataPoint ? `${dataPoint.fullMonth} ${selectedYear}` : `${label} ${selectedYear}`;
+                      }}
                     />
                     <Line 
                       type="monotone" 
