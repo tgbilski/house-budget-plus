@@ -51,7 +51,7 @@ const allTools: RelatedTool[] = [
   {
     title: "Financial Resources",
     description: "Guides, tips, and resources for better financial planning",
-    href: "/resources",
+    href: "/ai-insights",
     icon: BookOpen,
     category: "education"
   }

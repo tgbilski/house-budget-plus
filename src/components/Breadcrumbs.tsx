@@ -14,7 +14,7 @@ const routeMap: Record<string, string> = {
   '/compare-prices': 'Compare Vendors',
   '/takeout': 'Takeout Calendar',
   '/vacation': 'Vacation Planner',
-  '/resources': 'AI Insights',
+  '/ai-insights': 'AI Insights',
   '/settings': 'Settings',
   '/auth': 'Sign In'
 };

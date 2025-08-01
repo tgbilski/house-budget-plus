@@ -42,7 +42,7 @@ const Home = () => {
       title: "AI Financial Insights",
       description: "Get personalized financial advice and insights powered by artificial intelligence to improve your budgeting strategy.",
       icon: Brain,
-      href: "/resources",
+      href: "/ai-insights",
       color: "bg-orange-500/10 text-orange-600"
     }
   ];
@@ -81,7 +81,7 @@ const Home = () => {
                 </Link>
               </Button>
               <Button asChild variant="outline" size="lg" className="text-lg px-8">
-                <Link to="/resources">
+                <Link to="/ai-insights">
                   Get AI Insights
                 </Link>
               </Button>
