@@ -114,7 +114,7 @@ export default function UserSettings() {
             </div>
             {!subscribed && !loading && (
               <div className="mt-2">
-                <PricingCards />
+                <PricingCards priceId="price_1RriH0ChqC8M6G2balUOl9O8" />
               </div>
             )}
           </CardContent>
