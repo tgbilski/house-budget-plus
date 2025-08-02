@@ -99,7 +99,7 @@ export default function App() {
                     <div className="flex-1 bg-blue-50 rounded-xl p-6 shadow-md border-2 border-transparent hover:border-blue-500 transition-all duration-300">
                         <h2 className="text-2xl font-bold text-blue-800">Monthly Plan</h2>
                         <div className="mt-2 mb-4">
-                            <span className="text-4xl font-extrabold text-blue-700">$9.99</span>
+                            <span className="text-4xl font-extrabold text-blue-700">$1.99</span>
                             <span className="text-gray-500 font-medium"> / month</span>
                         </div>
                         <p className="text-sm text-gray-500">
@@ -118,7 +118,7 @@ export default function App() {
                     <div className="flex-1 bg-green-50 rounded-xl p-6 shadow-md border-2 border-transparent hover:border-green-500 transition-all duration-300">
                         <h2 className="text-2xl font-bold text-green-800">Annual Plan</h2>
                         <div className="mt-2 mb-4">
-                            <span className="text-4xl font-extrabold text-green-700">$99.99</span>
+                            <span className="text-4xl font-extrabold text-green-700">$19.99</span>
                             <span className="text-gray-500 font-medium"> / year</span>
                         </div>
                         <p className="text-sm text-gray-500">
