@@ -1,4 +1,3 @@
-import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import Stripe from "https://esm.sh/stripe@14.21.0";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
@@ -27,13 +26,16 @@ serve(async (req) => {
     logStep("Function started");
 
     let plan = 'monthly';
+    let priceId = 'price_1RriH0ChqC8M6G2balUOl9O8'; // <-- updated to your desired price ID
     try {
       const body = await req.json();
       plan = body.plan || 'monthly';
+      // If frontend sends priceId, use it; otherwise default as above
+      priceId = body.priceId || priceId;
     } catch (jsonError) {
-      logStep("No JSON body provided, using default plan", { defaultPlan: plan });
+      logStep("No JSON body provided, using default plan and priceId", { defaultPlan: plan, priceId });
     }
-    logStep("Plan selected", { plan });
+    logStep("Plan and priceId selected", { plan, priceId });
 
     const authHeader = req.headers.get("Authorization");
     if (!authHeader) throw new Error("Authorization header missing");
@@ -51,8 +53,7 @@ serve(async (req) => {
     }
     logStep("Customer lookup complete", { customerId: customerId || "new customer" });
 
-    // Use monthly price ID for $2.99
-    const priceId = 'price_1RrhWkBrWYpRfa7qG8SWbtWY';
+    // Use your price ID for Stripe checkout
     logStep("Using specific price ID", { priceId, plan });
 
     const session = await stripe.checkout.sessions.create({
