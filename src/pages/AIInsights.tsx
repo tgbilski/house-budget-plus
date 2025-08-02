@@ -1,95 +1,68 @@
-import React, { useState } from 'react';
-import { useAuth } from '@/hooks/useAuth';
-import { useSubscription } from '@/hooks/useSubscription';
-import { Button } from '@/components/ui/button';
-import { Textarea } from '@/components/ui/textarea';
-import { useToast } from '@/hooks/use-toast';
-import { supabase } from '@/integrations/supabase/client';
-import { Bot, Send, Brain, Crown } from 'lucide-react';
-import { SEO } from '@/components/SEO';
-import { Breadcrumbs } from '@/components/Breadcrumbs';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { AdSense } from '@/components/AdSense';
-import { PricingCards } from '@/components/PricingCards';
+import { useState } from "react";
+import { useSubscription } from "@/hooks/useSubscription";
+import { useAuth } from "@/hooks/useAuth";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
+import { Loader } from "@/components/ui/loader";
+import { Badge } from "@/components/ui/badge";
+import { toast } from "@/hooks/use-toast";
+import { SEO } from "@/components/SEO";
+import { Breadcrumbs } from "@/components/Breadcrumbs";
+import { Brain, Crown } from "lucide-react";
 
-const AIInsights = () => {
+export default function AIInsights() {
   const { user } = useAuth();
   const {
-    subscribed = false,
+    subscribed,
     subscriptionTier,
     subscriptionEnd,
-    loading: subLoading = false,
-    openCustomerPortal
-  } = useSubscription() || {};
-  const { toast } = useToast();
-  const [question, setQuestion] = useState('');
-  const [insight, setInsight] = useState('');
+    openCustomerPortal,
+    loading: subLoading,
+  } = useSubscription();
+
+  const [question, setQuestion] = useState("");
+  const [answer, setAnswer] = useState("");
   const [loading, setLoading] = useState(false);
-  const [errorMsg, setErrorMsg] = useState('');
+  const [errorMsg, setErrorMsg] = useState("");
 
-  const suggestedQuestions = [
-    "How can I optimize my budget using BudgetGenius?",
-    "Where am I spending too much money?",
-    "What's a realistic savings goal for me?",
-    "How can I reduce my monthly expenses?",
-    "Am I on track financially?",
-  ];
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setErrorMsg('');
+  const handleAsk = async () => {
     if (!question.trim()) return;
-
-    if (!user) {
-      setErrorMsg('Please sign in to get AI insights.');
-      toast({
-        title: "Authentication Required",
-        description: "Please sign in to get AI insights",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    if (!subscribed) {
-      setErrorMsg('Please subscribe to access AI insights.');
-      toast({
-        title: "Subscription Required",
-        description: "Please subscribe to access AI insights",
-        variant: "destructive",
-      });
-      return;
-    }
-
     setLoading(true);
+    setAnswer("");
+    setErrorMsg("");
     try {
-      const { data, error } = await supabase.functions.invoke('ai-budget-insights', {
-        body: { question },
+      const res = await fetch("/api/ai-budget-insights", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${user?.access_token}`,
+        },
+        body: JSON.stringify({ question }),
       });
-
-      if (error) {
-        setErrorMsg(error.message || 'Failed to get AI insights. Please try again.');
+      if (!res.ok) {
+        const error = await res.json();
         toast({
-          title: "Error",
-          description: error.message || "Failed to get AI insights. Please try again.",
+          title: "AI Insights Error",
+          description: error.message || "Failed to get AI insights.",
           variant: "destructive",
         });
+        setErrorMsg(error.message || "Failed to get AI insights.");
+        setLoading(false);
         return;
       }
-      setInsight(data?.insight ?? '');
-    } catch (error: any) {
-      setErrorMsg(error.message || 'Failed to get AI insights. Please try again.');
+      const data = await res.json();
+      setAnswer(data.answer || "No answer returned.");
+    } catch (error) {
       toast({
-        title: "Error",
-        description: error.message || "Failed to get AI insights. Please try again.",
+        title: "AI Insights Error",
+        description: "Failed to get AI insights.",
         variant: "destructive",
       });
+      setErrorMsg("Failed to get AI insights.");
     } finally {
       setLoading(false);
     }
-  };
-
-  const handleSuggestedQuestion = (suggestedQ: string) => {
-    setQuestion(suggestedQ);
   };
 
   const handleManageSubscription = async () => {
@@ -104,10 +77,6 @@ const AIInsights = () => {
     }
   };
 
-  // --- DEBUG: Show auth/sub state for troubleshooting ---
-  const debugState = { user, subscribed, subLoading, subscriptionTier, subscriptionEnd };
-
-  // Defensive: Always render formatted UI, never just debug output
   return (
     <div className="min-h-screen bg-gradient-to-br from-background to-muted">
       <SEO
@@ -118,10 +87,7 @@ const AIInsights = () => {
       <Breadcrumbs />
       <div className="container mx-auto px-3 sm:px-4 py-4 sm:py-8">
         <div className="max-w-6xl mx-auto">
-          {/* DEBUG info */}
-          <pre style={{ fontSize: '0.7em', background: '#eee', padding: 8, marginBottom: 10 }}>
-            {JSON.stringify(debugState, null, 2)}
-          </pre>
+          {/* The debugState <pre> block has been removed */}
 
           <div className="text-center mb-6 sm:mb-8">
             <div className="flex items-center justify-center mb-3 sm:mb-4">
@@ -134,7 +100,6 @@ const AIInsights = () => {
             </p>
           </div>
 
-          {/* Defensive loading/fallback state */}
           {subLoading && (
             <div className="flex justify-center items-center h-40">
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
@@ -142,189 +107,84 @@ const AIInsights = () => {
             </div>
           )}
 
-          {/* Error message */}
           {errorMsg && (
             <div className="text-center text-red-700 mb-4">{errorMsg}</div>
           )}
 
-          {/* Fallback for when subscription status is not yet checked */}
           {typeof subscribed === "undefined" && !subLoading && (
             <div className="text-center text-muted-foreground mb-4">
               Unable to determine your subscription status. Please refresh or try again.
             </div>
           )}
 
-          {/* Not signed in */}
           {!user && !subLoading && (
-            <Card className="mb-8 border-primary/20 bg-primary/5 mx-3 sm:mx-0">
-              <CardContent className="pt-4 sm:pt-6 px-4 sm:px-6">
-                <div className="text-center">
-                  <Crown className="h-10 w-10 sm:h-12 sm:w-12 text-primary mx-auto mb-3 sm:mb-4" />
-                  <h3 className="text-lg sm:text-xl font-semibold mb-2">Sign In & Subscribe to Leverage AI Insights!</h3>
-                  <p className="text-sm sm:text-base text-muted-foreground mb-4 px-2">
-                    Unlock powerful AI-driven financial insights using your personal budget data
-                  </p>
-                  <Button asChild size="lg" className="w-full sm:w-auto">
-                    <a href="/auth">Sign In to Get Started</a>
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
+            <div className="min-h-screen flex items-center justify-center">
+              <Card className="w-full max-w-md">
+                <CardContent className="p-6 text-center">
+                  <p>Please sign in to access AI Insights</p>
+                </CardContent>
+              </Card>
+            </div>
           )}
 
-          {/* Not subscribed */}
           {user && !subscribed && !subLoading && (
-            <>
-              <div className="mb-8"><AdSense adSlot="1234567890" /></div>
-              <div className="mb-6 sm:mb-8 space-y-4 sm:space-y-6 px-3 sm:px-0">
-                <PricingCards priceId="price_1RriH0ChqC8M6G2balUOl9O8" />
-              </div>
-            </>
+            <div className="min-h-screen flex items-center justify-center">
+              <Card className="w-full max-w-md">
+                <CardHeader>
+                  <CardTitle>AI Insights</CardTitle>
+                </CardHeader>
+                <CardContent className="p-6 text-center">
+                  <Badge variant="warning" className="mb-4">
+                    Subscription Required
+                  </Badge>
+                  <p>
+                    The AI Insights feature is available for premium subscribers.
+                  </p>
+                  <Button className="mt-6" onClick={handleManageSubscription}>
+                    Manage Subscription
+                  </Button>
+                </CardContent>
+              </Card>
+            </div>
           )}
 
-          {/* Subscribed UI */}
           {user && subscribed && !subLoading && (
-            <div>
-              <div className="mb-4 sm:mb-6 mx-3 sm:mx-0">
-                <Card className="border-green-500 bg-green-50">
-                  <CardContent className="pt-4 sm:pt-6 px-4 sm:px-6">
-                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-0">
-                      <div className="flex items-center">
-                        <Crown className="h-5 w-5 sm:h-6 sm:w-6 text-green-600 mr-2 flex-shrink-0" />
-                        <div>
-                          <h3 className="font-semibold text-green-800 text-sm sm:text-base">Premium Subscriber</h3>
-                          <p className="text-xs sm:text-sm text-green-600">
-                            Tier: {subscriptionTier}
-                            {subscriptionEnd &&
-                              ` • Expires: ${new Date(subscriptionEnd).toLocaleDateString()}`
-                            }
-                          </p>
-                        </div>
-                      </div>
-                      <Button variant="outline" onClick={handleManageSubscription} size="sm" className="w-full sm:w-auto">
-                        Manage Subscription
-                      </Button>
-                    </div>
-                  </CardContent>
-                </Card>
-              </div>
-
-              <div className="grid gap-4 sm:gap-6 lg:gap-8 grid-cols-1 xl:grid-cols-2 px-3 sm:px-0">
-                <Card>
-                  <CardHeader className="pb-4">
-                    <CardTitle className="flex items-center text-lg sm:text-xl">
-                      <Send className="h-4 w-4 sm:h-5 sm:w-5 mr-2" />
-                      Ask Your Question
-                    </CardTitle>
-                    <CardDescription className="text-sm sm:text-base">
-                      Ask anything about your budget, spending habits, or financial goals
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent className="px-4 sm:px-6">
-                    <form onSubmit={handleSubmit} className="space-y-3 sm:space-y-4">
-                      <Textarea
-                        placeholder="e.g., How can I save more money each month using BudgetGenius?"
-                        value={question}
-                        onChange={(e) => setQuestion(e.target.value)}
-                        className="min-h-[80px] sm:min-h-[100px] text-sm sm:text-base"
-                      />
-                      <Button
-                        type="submit"
-                        disabled={loading || !question.trim()}
-                        className="w-full h-12"
-                        size="lg"
-                      >
-                        {loading ? 'Getting Insights...' : 'Get AI Insights'}
-                      </Button>
-                    </form>
-                    <div className="mt-4 sm:mt-6">
-                      <h3 className="font-semibold mb-2 sm:mb-3 text-sm sm:text-base">Suggested Questions:</h3>
-                      <div className="space-y-1.5 sm:space-y-2">
-                        {suggestedQuestions.map((q, index) => (
-                          <Button
-                            key={index}
-                            variant="outline"
-                            size="sm"
-                            onClick={() => handleSuggestedQuestion(q)}
-                            className="w-full text-left justify-start text-xs sm:text-sm h-auto py-2 sm:py-3 px-3"
-                          >
-                            {q}
-                          </Button>
-                        ))}
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-
-                <Card>
-                  <CardHeader className="pb-4">
-                    <CardTitle className="flex items-center text-lg sm:text-xl">
-                      <Bot className="h-4 w-4 sm:h-5 sm:w-5 mr-2" />
-                      AI Response
-                    </CardTitle>
-                    <CardDescription className="text-sm sm:text-base">
-                      Personalized insights based on your financial data
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent className="px-4 sm:px-6">
-                    {loading ? (
-                      <div className="flex items-center justify-center py-6 sm:py-8">
-                        <div className="animate-spin rounded-full h-6 w-6 sm:h-8 sm:w-8 border-b-2 border-primary"></div>
-                      </div>
-                    ) : insight ? (
-                      <div className="prose prose-sm max-w-none">
-                        <div className="bg-muted/50 p-3 sm:p-4 rounded-lg text-sm sm:text-base">
-                          {insight.split('\n').map((paragraph, index) => (
-                            <p key={index} className="mb-3 last:mb-0">{paragraph}</p>
-                          ))}
-                        </div>
-                      </div>
-                    ) : (
-                      <div className="text-center py-6 sm:py-8 text-muted-foreground text-sm sm:text-base">
-                        Ask a question to get started with AI insights
-                      </div>
-                    )}
-                  </CardContent>
-                </Card>
-              </div>
-
-              {/* AdSense after AI interaction */}
-              <div className="mt-8 mb-8"><AdSense adSlot="0987654321" /></div>
-
-              <Card className="mt-6 sm:mt-8 mx-3 sm:mx-0">
-                <CardHeader className="pb-4">
-                  <CardTitle className="text-lg sm:text-xl">How AI Insights Works</CardTitle>
+            <div className="max-w-2xl mx-auto space-y-8">
+              <Card>
+                <CardHeader>
+                  <CardTitle>AI Insights</CardTitle>
                 </CardHeader>
-                <CardContent className="px-4 sm:px-6">
-                  <div className="grid gap-4 sm:gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
-                    <div className="text-center p-3 sm:p-4">
-                      <div className="bg-primary/10 rounded-full w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center mx-auto mb-2 sm:mb-3">
-                        <span className="text-primary font-bold text-sm sm:text-base">1</span>
-                      </div>
-                      <h3 className="font-semibold mb-1 sm:mb-2 text-sm sm:text-base">Analyze Your Data</h3>
-                      <p className="text-xs sm:text-sm text-muted-foreground">
-                        AI reviews your BudgetGenius data including budgets, expenses, and transactions
-                      </p>
-                    </div>
-                    <div className="text-center p-3 sm:p-4">
-                      <div className="bg-primary/10 rounded-full w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center mx-auto mb-2 sm:mb-3">
-                        <span className="text-primary font-bold text-sm sm:text-base">2</span>
-                      </div>
-                      <h3 className="font-semibold mb-1 sm:mb-2 text-sm sm:text-base">Ask Questions</h3>
-                      <p className="text-xs sm:text-sm text-muted-foreground">
-                        Get answers about spending patterns, savings, and optimization strategies
-                      </p>
-                    </div>
-                    <div className="text-center p-3 sm:p-4">
-                      <div className="bg-primary/10 rounded-full w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center mx-auto mb-2 sm:mb-3">
-                        <span className="text-primary font-bold text-sm sm:text-base">3</span>
-                      </div>
-                      <h3 className="font-semibold mb-1 sm:mb-2 text-sm sm:text-base">Get Insights</h3>
-                      <p className="text-xs sm:text-sm text-muted-foreground">
-                        Receive actionable advice tailored to your specific financial situation
-                      </p>
-                    </div>
+                <CardContent>
+                  <div className="mb-4">
+                    <Badge variant="success">
+                      Active: {subscriptionTier}
+                    </Badge>
+                    {subscriptionEnd && (
+                      <span className="ml-2 text-muted-foreground text-sm">
+                        until {new Date(subscriptionEnd).toLocaleDateString()}
+                      </span>
+                    )}
                   </div>
+                  <Textarea
+                    rows={3}
+                    value={question}
+                    onChange={(e) => setQuestion(e.target.value)}
+                    placeholder="Ask an AI-powered budget question..."
+                    disabled={loading}
+                  />
+                  <Button
+                    className="mt-4"
+                    onClick={handleAsk}
+                    disabled={loading || !question.trim()}
+                  >
+                    {loading ? "Thinking..." : "Ask AI"}
+                  </Button>
+                  {answer && (
+                    <div className="mt-6 p-4 bg-muted rounded">
+                      <div className="font-bold mb-2">AI Answer:</div>
+                      <div>{answer}</div>
+                    </div>
+                  )}
                 </CardContent>
               </Card>
             </div>
@@ -333,6 +193,4 @@ const AIInsights = () => {
       </div>
     </div>
   );
-};
-
-export default AIInsights;
+}
