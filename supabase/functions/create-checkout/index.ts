@@ -50,34 +50,38 @@ serve(async (req) => {
     }
     logStep("Customer lookup complete", { customerId: customerId || "new customer" });
 
-    // Define pricing based on plan
-    const pricingConfig = {
-      monthly: {
-        unit_amount: 199, // $1.99/month
-        interval: "month" as const,
-        name: "AI Budget Insights - Monthly"
-      },
-      annual: {
-        unit_amount: 1999, // $19.99/year 
-        interval: "year" as const,
-        name: "AI Budget Insights - Annual"
-      }
-    };
+    // Get the default price for each product
+    const products = await stripe.products.list({
+      ids: plan === 'annual' ? ['prod_SnI7QAdTjqDN3a'] : ['prod_SnI6fPTh9cCJ8B'],
+      expand: ['data.default_price']
+    });
 
-    const selectedPlan = pricingConfig[plan as keyof typeof pricingConfig] || pricingConfig.monthly;
-    logStep("Pricing configuration", selectedPlan);
+    if (products.data.length === 0) {
+      throw new Error(`Product not found for plan: ${plan}`);
+    }
+
+    const product = products.data[0];
+    const priceId = typeof product.default_price === 'string' 
+      ? product.default_price 
+      : product.default_price?.id;
+
+    if (!priceId) {
+      throw new Error(`No default price found for product: ${product.id}`);
+    }
+
+    logStep("Using Stripe product", { 
+      productId: product.id, 
+      priceId, 
+      plan,
+      productName: product.name 
+    });
 
     const session = await stripe.checkout.sessions.create({
       customer: customerId,
       customer_email: customerId ? undefined : user.email,
       line_items: [
         {
-          price_data: {
-            currency: "usd",
-            product_data: { name: selectedPlan.name },
-            unit_amount: selectedPlan.unit_amount,
-            recurring: { interval: selectedPlan.interval },
-          },
+          price: priceId,
           quantity: 1,
         },
       ],
