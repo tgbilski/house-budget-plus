@@ -50,32 +50,9 @@ serve(async (req) => {
     }
     logStep("Customer lookup complete", { customerId: customerId || "new customer" });
 
-    // Get the specific product and all its prices
-    const productId = plan === 'annual' ? 'prod_SnI7QAdTjqDN3a' : 'prod_SnI6fPTh9cCJ8B';
-    logStep("Selected product", { productId, plan });
-    
-    const product = await stripe.products.retrieve(productId);
-    const prices = await stripe.prices.list({ product: productId, active: true });
-    
-    logStep("Product and prices retrieved", { 
-      productId: product.id,
-      productName: product.name,
-      pricesCount: prices.data.length,
-      prices: prices.data.map(p => ({
-        id: p.id,
-        unit_amount: p.unit_amount,
-        currency: p.currency,
-        recurring: p.recurring
-      }))
-    });
-
-    if (prices.data.length === 0) {
-      throw new Error(`No active prices found for product: ${productId}`);
-    }
-
-    // Use the first active price (you might want to add logic to select the correct one)
-    const priceId = prices.data[0].id;
-    logStep("Using price", { priceId, unit_amount: prices.data[0].unit_amount });
+    // Use specific price IDs
+    const priceId = plan === 'annual' ? 'price_1RrhqKBrWYpRfa7qNu0fEsf0' : 'price_1RrhWkBrWYpRfa7qG8SWbtWY';
+    logStep("Using specific price ID", { priceId, plan });
 
     const session = await stripe.checkout.sessions.create({
       customer: customerId,
