@@ -8,7 +8,7 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
-const logStep = (step: string, details?: any) => {
+const logStep = (step, details) => {
   const detailsStr = details ? ` - ${JSON.stringify(details)}` : '';
   console.log(`[CREATE-CHECKOUT] ${step}${detailsStr}`);
 };
@@ -35,7 +35,8 @@ serve(async (req) => {
     }
     logStep("Plan selected", { plan });
 
-    const authHeader = req.headers.get("Authorization")!;
+    const authHeader = req.headers.get("Authorization");
+    if (!authHeader) throw new Error("Authorization header missing");
     const token = authHeader.replace("Bearer ", "");
     const { data } = await supabaseClient.auth.getUser(token);
     const user = data.user;
@@ -50,8 +51,8 @@ serve(async (req) => {
     }
     logStep("Customer lookup complete", { customerId: customerId || "new customer" });
 
-    // Use specific price IDs
-    const priceId = plan === 'annual' ? 'price_1RrhqKBrWYpRfa7qNu0fEsf0' : 'price_1RrhWkBrWYpRfa7qG8SWbtWY';
+    // Correctly use the monthly and annual price IDs
+    const priceId = plan === 'annual' ? 'price_1RriHoChqC8M6G2bmBH4fuAg' : 'price_1RriH0ChqC8M6G2balUOl9O8';
     logStep("Using specific price ID", { priceId, plan });
 
     const session = await stripe.checkout.sessions.create({
