@@ -14,6 +14,7 @@ import { InternalLinks } from '@/components/InternalLinks';
 import { SocialShare } from '@/components/SocialShare';
 import { FAQ } from '@/components/FAQ';
 import { budgetCalculatorFAQs } from '@/utils/faqData';
+import { AIChatbot } from '@/components/AIChatbot';
 
 interface Calculator {
   id: string;
@@ -261,6 +262,12 @@ const MonthlyBudget: React.FC = () => {
             </Button>
           </div>
         </section>
+
+        {/* AI Chatbot */}
+        <AIChatbot 
+          pageContext="This is the Monthly Budget Calculator page where users can input their monthly income and expenses to calculate their net budget. Users can add multiple calculators for different household members or scenarios, select different currencies, and save their data if logged in. The page includes pre-configured expense categories and the ability to add custom expenses."
+          pageName="Monthly Budget Calculator"
+        />
       </div>
     </div>
   );

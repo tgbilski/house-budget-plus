@@ -15,6 +15,7 @@ import { cn } from '@/lib/utils';
 import { useAuth } from '@/hooks/useAuth';
 import { useCurrency } from '@/hooks/useCurrency';
 import { useIsMobile } from '@/hooks/use-mobile';
+import { AIChatbot } from '@/components/AIChatbot';
 import { supabase } from '@/integrations/supabase/client';
 import { AdSense } from '@/components/AdSense';
 import { SEO } from '@/components/SEO';
@@ -638,6 +639,12 @@ const TakeoutCalendar: React.FC = () => {
 
         <FAQ faqs={takeoutCalendarFAQs} />
         <InternalLinks currentPage="/takeout" category="tracking" />
+
+        {/* AI Chatbot */}
+        <AIChatbot 
+          pageContext="This is the Takeout Calendar page where users can track their takeout and delivery spending by date. Users can add entries with restaurant names, amounts spent, and dates. The page shows a calendar view, spending chart, and total expenses. On mobile, it uses a date picker instead of the full calendar."
+          pageName="Takeout Calendar"
+        />
       </div>
     </div>
   );
