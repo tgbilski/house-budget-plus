@@ -28,15 +28,14 @@ export function AIChatbot({ pageContext, pageName }: AIChatbotProps) {
   const { user } = useAuth();
   const { subscribed } = useSubscription();
   const { toast } = useToast();
-  
+
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
 
-  // Check access permissions - super user or subscriber only
+  // Access control
   const hasAccess = user?.email === 'Tgbilski@gmail.com' || subscribed;
 
   useEffect(() => {
     if (isOpen && messages.length === 0) {
-      // Add welcome message
       const welcomeMessage: Message = {
         id: Date.now().toString(),
         content: `Hi! I'm your AI assistant for the ${pageName} page. I can help guide you through filling out the forms and using the features here. You can type your questions or use voice input!`,
@@ -47,7 +46,6 @@ export function AIChatbot({ pageContext, pageName }: AIChatbotProps) {
     }
   }, [isOpen, pageName, messages.length]);
 
-  // Scroll to bottom whenever messages change
   useEffect(() => {
     if (messagesEndRef.current) {
       messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
@@ -64,7 +62,7 @@ export function AIChatbot({ pageContext, pageName }: AIChatbotProps) {
       timestamp: new Date(),
     };
 
-    setMessages(prev => [...prev, userMessage]);
+    setMessages((prev) => [...prev, userMessage]);
     setInput('');
     setIsLoading(true);
 
@@ -74,7 +72,7 @@ export function AIChatbot({ pageContext, pageName }: AIChatbotProps) {
           message: content,
           pageContext,
           pageName,
-          conversationHistory: messages.slice(-5), // Last 5 messages for context
+          conversationHistory: messages.slice(-5),
         }
       });
 
@@ -87,17 +85,15 @@ export function AIChatbot({ pageContext, pageName }: AIChatbotProps) {
         timestamp: new Date(),
       };
 
-      setMessages(prev => [...prev, assistantMessage]);
+      setMessages((prev) => [...prev, assistantMessage]);
 
-      // Handle autofill if present
       if (data.autofill) {
         await handleAutofill(data.autofill);
       }
 
-      // Convert response to speech
       await speakText(data.response);
     } catch (error) {
-      toast({ title: "Error", description: error.message });
+      toast({ title: "Error", description: (error as Error).message });
     } finally {
       setIsLoading(false);
     }
@@ -139,11 +135,16 @@ export function AIChatbot({ pageContext, pageName }: AIChatbotProps) {
           onClick={() => setIsOpen(true)}
         >
           <img
-            src="/assets/mascot.png"
-            alt="Mascot Icon"
-            height={64}
-            width={64}
-            style={{ borderRadius: '50%', boxShadow: '0 2px 6px rgba(0,0,0,0.15)' }}
+            src="/lovable-uploads/ed809955-ef71-4d81-b072-945082f4380a.png"
+            alt="Chatbot mascot"
+            width={56}
+            height={56}
+            style={{
+              borderRadius: '50%',
+              boxShadow: '0 2px 8px rgba(0,0,0,0.18)',
+              objectFit: 'contain',
+              background: '#fff',
+            }}
           />
         </button>
       )}
@@ -163,7 +164,7 @@ export function AIChatbot({ pageContext, pageName }: AIChatbotProps) {
             <CardTitle style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                 <img
-                  src="/assets/mascot.png"
+                  src="/lovable-uploads/ed809955-ef71-4d81-b072-945082f4380a.png"
                   alt="Mascot Icon"
                   height={32}
                   width={32}
@@ -177,7 +178,6 @@ export function AIChatbot({ pageContext, pageName }: AIChatbotProps) {
             </CardTitle>
           </CardHeader>
           <CardContent style={{ display: 'flex', flexDirection: 'column', height: 400 }}>
-            {/* SCROLLABLE MESSAGE AREA */}
             <div style={{ flex: 1, overflowY: 'auto', padding: '0 8px', marginBottom: 8 }}>
               {messages.map((msg) => (
                 <div
@@ -197,7 +197,6 @@ export function AIChatbot({ pageContext, pageName }: AIChatbotProps) {
               ))}
               <div ref={messagesEndRef} />
             </div>
-            {/* INPUT AREA */}
             <div style={{ display: 'flex', gap: 8 }}>
               <Input
                 value={input}
