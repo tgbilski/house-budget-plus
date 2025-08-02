@@ -149,10 +149,10 @@ const AIInsights = () => {
             </div>
           )}
 
-          {/* Subscription UI - uses shared PricingCards component */}
+          {/* Subscription UI - uses shared PricingCards component, with priceId */}
           {user && !subscribed && !subLoading && (
             <div className="mb-6 sm:mb-8 space-y-4 sm:space-y-6 px-3 sm:px-0">
-              <PricingCards />
+              <PricingCards priceId="price_1RriH0ChqC8M6G2balUOl9O8" />
             </div>
           )}
 
