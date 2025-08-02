@@ -37,8 +37,7 @@ export function AIChatbot({ pageContext, pageName }: AIChatbotProps) {
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
   // Check access permissions - super user or subscriber only
-  // TODO: Replace with your actual email address
-  const hasAccess = user?.email === 'homebudgetcalculator@gmail.com' || subscribed;
+  const hasAccess = user?.email === 'Tgbilski@gmail.com' || subscribed;
 
   useEffect(() => {
     if (isOpen && messages.length === 0) {
@@ -88,6 +87,11 @@ export function AIChatbot({ pageContext, pageName }: AIChatbotProps) {
 
       setMessages(prev => [...prev, assistantMessage]);
 
+      // Handle autofill if present
+      if (data.autofill) {
+        await handleAutofill(data.autofill);
+      }
+
       // Convert response to speech
       await speakText(data.response);
     } catch (error) {
@@ -100,6 +104,96 @@ export function AIChatbot({ pageContext, pageName }: AIChatbotProps) {
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handleAutofill = async (autofillData: any) => {
+    try {
+      if (autofillData.action === 'fill_form' && autofillData.entries) {
+        const entries = autofillData.entries;
+        
+        // Handle different page types
+        if (pageName === 'Takeout Calendar') {
+          await fillTakeoutCalendar(entries);
+        } else if (pageName === 'Monthly Budget Calculator') {
+          await fillBudgetCalculator(entries);
+        }
+        
+        toast({
+          title: "Form Filled",
+          description: `Added ${entries.length} entries to the form`,
+        });
+      }
+    } catch (error) {
+      console.error('Error handling autofill:', error);
+      toast({
+        title: "Autofill Error",
+        description: "Could not fill form automatically",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const fillTakeoutCalendar = async (entries: any[]) => {
+    for (const entry of entries) {
+      // Find the add entry button and click it
+      const addButton = document.querySelector('[data-testid="add-entry-btn"]') as HTMLButtonElement;
+      if (!addButton) {
+        // Try alternative selectors
+        const alternativeBtn = document.querySelector('button:has(svg)') as HTMLButtonElement;
+        if (alternativeBtn && alternativeBtn.textContent?.includes('Add')) {
+          alternativeBtn.click();
+        }
+      } else {
+        addButton.click();
+      }
+      
+      // Wait a bit for the form to appear
+      await new Promise(resolve => setTimeout(resolve, 100));
+      
+      // Fill in the restaurant name
+      const restaurantInput = document.querySelector('input[placeholder*="restaurant"], input[placeholder*="Restaurant"]') as HTMLInputElement;
+      if (restaurantInput) {
+        restaurantInput.value = entry.restaurant || 'Takeout';
+        restaurantInput.dispatchEvent(new Event('input', { bubbles: true }));
+        restaurantInput.dispatchEvent(new Event('change', { bubbles: true }));
+      }
+      
+      // Fill in the amount
+      const amountInput = document.querySelector('input[type="number"], input[placeholder*="amount"], input[placeholder*="Amount"]') as HTMLInputElement;
+      if (amountInput) {
+        amountInput.value = entry.amount.toString();
+        amountInput.dispatchEvent(new Event('input', { bubbles: true }));
+        amountInput.dispatchEvent(new Event('change', { bubbles: true }));
+      }
+      
+      // Set the date if needed (this would depend on the specific implementation)
+      if (entry.date) {
+        const dateInput = document.querySelector('input[type="date"]') as HTMLInputElement;
+        if (dateInput) {
+          dateInput.value = entry.date;
+          dateInput.dispatchEvent(new Event('input', { bubbles: true }));
+          dateInput.dispatchEvent(new Event('change', { bubbles: true }));
+        }
+      }
+      
+      // Submit the entry
+      const submitButton = document.querySelector('button[type="submit"], button:has-text("Add"), button:has-text("Save")') as HTMLButtonElement;
+      if (submitButton) {
+        submitButton.click();
+      }
+      
+      // Wait before processing next entry
+      await new Promise(resolve => setTimeout(resolve, 200));
+    }
+  };
+
+  const fillBudgetCalculator = async (entries: any[]) => {
+    // For budget calculator, we'd need to add custom expense entries
+    // This would be more complex and depend on the specific form structure
+    toast({
+      title: "Feature Coming Soon",
+      description: "Budget calculator autofill is being developed",
+    });
   };
 
   const speakText = async (text: string) => {
