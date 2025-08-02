@@ -51,8 +51,8 @@ serve(async (req) => {
     }
     logStep("Customer lookup complete", { customerId: customerId || "new customer" });
 
-    // Correctly use the monthly and annual price IDs
-    const priceId = plan === 'annual' ? 'price_1RriHoChqC8M6G2bmBH4fuAg' : 'price_1RriH0ChqC8M6G2balUOl9O8';
+    // Use monthly price ID for $2.99
+    const priceId = 'price_1RrhWkBrWYpRfa7qG8SWbtWY';
     logStep("Using specific price ID", { priceId, plan });
 
     const session = await stripe.checkout.sessions.create({
