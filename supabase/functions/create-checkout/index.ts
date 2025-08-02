@@ -26,7 +26,13 @@ serve(async (req) => {
   try {
     logStep("Function started");
 
-    const { plan = 'monthly' } = await req.json();
+    let plan = 'monthly';
+    try {
+      const body = await req.json();
+      plan = body.plan || 'monthly';
+    } catch (jsonError) {
+      logStep("No JSON body provided, using default plan", { defaultPlan: plan });
+    }
     logStep("Plan selected", { plan });
 
     const authHeader = req.headers.get("Authorization")!;
