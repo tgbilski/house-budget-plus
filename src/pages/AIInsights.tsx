@@ -15,12 +15,12 @@ import { PricingCards } from '@/components/PricingCards';
 const AIInsights = () => {
   const { user } = useAuth();
   const {
-    subscribed,
+    subscribed = false,
     subscriptionTier,
     subscriptionEnd,
-    loading: subLoading,
+    loading: subLoading = false,
     openCustomerPortal
-  } = useSubscription();
+  } = useSubscription() || {};
   const { toast } = useToast();
   const [question, setQuestion] = useState('');
   const [insight, setInsight] = useState('');
@@ -107,6 +107,7 @@ const AIInsights = () => {
   // --- DEBUG: Show auth/sub state for troubleshooting ---
   const debugState = { user, subscribed, subLoading, subscriptionTier, subscriptionEnd };
 
+  // Defensive: Always render formatted UI, never just debug output
   return (
     <div className="min-h-screen bg-gradient-to-br from-background to-muted">
       <SEO
@@ -133,7 +134,7 @@ const AIInsights = () => {
             </p>
           </div>
 
-          {/* Loading overlay for subscription state */}
+          {/* Defensive loading/fallback state */}
           {subLoading && (
             <div className="flex justify-center items-center h-40">
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
@@ -144,6 +145,13 @@ const AIInsights = () => {
           {/* Error message */}
           {errorMsg && (
             <div className="text-center text-red-700 mb-4">{errorMsg}</div>
+          )}
+
+          {/* Fallback for when subscription status is not yet checked */}
+          {typeof subscribed === "undefined" && !subLoading && (
+            <div className="text-center text-muted-foreground mb-4">
+              Unable to determine your subscription status. Please refresh or try again.
+            </div>
           )}
 
           {/* Not signed in */}
