@@ -8,7 +8,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { Bot, Send, Brain, Crown } from 'lucide-react';
 import { SEO } from '@/components/SEO';
 import { Breadcrumbs } from '@/components/Breadcrumbs';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { AdSense } from '@/components/AdSense';
 import { PricingCards } from '@/components/PricingCards';
 
@@ -25,6 +25,7 @@ const AIInsights = () => {
   const [question, setQuestion] = useState('');
   const [insight, setInsight] = useState('');
   const [loading, setLoading] = useState(false);
+  const [errorMsg, setErrorMsg] = useState('');
 
   const suggestedQuestions = [
     "How can I optimize my budget using BudgetGenius?",
@@ -36,9 +37,11 @@ const AIInsights = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setErrorMsg('');
     if (!question.trim()) return;
 
     if (!user) {
+      setErrorMsg('Please sign in to get AI insights.');
       toast({
         title: "Authentication Required",
         description: "Please sign in to get AI insights",
@@ -48,6 +51,7 @@ const AIInsights = () => {
     }
 
     if (!subscribed) {
+      setErrorMsg('Please subscribe to access AI insights.');
       toast({
         title: "Subscription Required",
         description: "Please subscribe to access AI insights",
@@ -63,23 +67,20 @@ const AIInsights = () => {
       });
 
       if (error) {
-        if (error.message?.includes('Subscription required')) {
-          toast({
-            title: "Subscription Required",
-            description: "Please subscribe to access AI insights",
-            variant: "destructive",
-          });
-          return;
-        }
-        throw error;
+        setErrorMsg(error.message || 'Failed to get AI insights. Please try again.');
+        toast({
+          title: "Error",
+          description: error.message || "Failed to get AI insights. Please try again.",
+          variant: "destructive",
+        });
+        return;
       }
-
-      setInsight(data.insight);
-    } catch (error) {
-      console.error('Error getting AI insights:', error);
+      setInsight(data?.insight ?? '');
+    } catch (error: any) {
+      setErrorMsg(error.message || 'Failed to get AI insights. Please try again.');
       toast({
         title: "Error",
-        description: "Failed to get AI insights. Please try again.",
+        description: error.message || "Failed to get AI insights. Please try again.",
         variant: "destructive",
       });
     } finally {
@@ -94,15 +95,17 @@ const AIInsights = () => {
   const handleManageSubscription = async () => {
     try {
       await openCustomerPortal();
-    } catch (error) {
-      console.error('Error opening customer portal:', error);
+    } catch (error: any) {
       toast({
         title: "Error",
-        description: "Failed to open subscription management",
+        description: error.message || "Failed to open subscription management",
         variant: "destructive",
       });
     }
   };
+
+  // --- DEBUG: Show auth/sub state for troubleshooting ---
+  const debugState = { user, subscribed, subLoading, subscriptionTier, subscriptionEnd };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background to-muted">
@@ -112,9 +115,13 @@ const AIInsights = () => {
         keywords="AI financial advisor, budget insights, personal finance, money management, financial optimization"
       />
       <Breadcrumbs />
-
       <div className="container mx-auto px-3 sm:px-4 py-4 sm:py-8">
         <div className="max-w-6xl mx-auto">
+          {/* DEBUG info */}
+          <pre style={{ fontSize: '0.7em', background: '#eee', padding: 8, marginBottom: 10 }}>
+            {JSON.stringify(debugState, null, 2)}
+          </pre>
+
           <div className="text-center mb-6 sm:mb-8">
             <div className="flex items-center justify-center mb-3 sm:mb-4">
               <Brain className="h-8 w-8 sm:h-12 sm:w-12 text-primary mr-2 sm:mr-3" />
@@ -126,8 +133,22 @@ const AIInsights = () => {
             </p>
           </div>
 
-          {!user && (
-            <Card className="mb-6 sm:mb-8 border-primary/20 bg-primary/5 mx-3 sm:mx-0">
+          {/* Loading overlay for subscription state */}
+          {subLoading && (
+            <div className="flex justify-center items-center h-40">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+              <span className="ml-3 text-muted-foreground">Loading your subscription…</span>
+            </div>
+          )}
+
+          {/* Error message */}
+          {errorMsg && (
+            <div className="text-center text-red-700 mb-4">{errorMsg}</div>
+          )}
+
+          {/* Not signed in */}
+          {!user && !subLoading && (
+            <Card className="mb-8 border-primary/20 bg-primary/5 mx-3 sm:mx-0">
               <CardContent className="pt-4 sm:pt-6 px-4 sm:px-6">
                 <div className="text-center">
                   <Crown className="h-10 w-10 sm:h-12 sm:w-12 text-primary mx-auto mb-3 sm:mb-4" />
@@ -143,171 +164,163 @@ const AIInsights = () => {
             </Card>
           )}
 
-          {!subscribed && (
-            <div className="mb-8">
-              <AdSense adSlot="1234567890" />
-            </div>
-          )}
-
-          {/* Subscription UI - uses shared PricingCards component, with priceId */}
+          {/* Not subscribed */}
           {user && !subscribed && !subLoading && (
-            <div className="mb-6 sm:mb-8 space-y-4 sm:space-y-6 px-3 sm:px-0">
-              <PricingCards priceId="price_1RriH0ChqC8M6G2balUOl9O8" />
-            </div>
+            <>
+              <div className="mb-8"><AdSense adSlot="1234567890" /></div>
+              <div className="mb-6 sm:mb-8 space-y-4 sm:space-y-6 px-3 sm:px-0">
+                <PricingCards priceId="price_1RriH0ChqC8M6G2balUOl9O8" />
+              </div>
+            </>
           )}
 
-          {/* Subscription management for active subscribers */}
-          {user && subscribed && (
-            <div className="mb-4 sm:mb-6 mx-3 sm:mx-0">
-              <Card className="border-green-500 bg-green-50">
-                <CardContent className="pt-4 sm:pt-6 px-4 sm:px-6">
-                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-0">
-                    <div className="flex items-center">
-                      <Crown className="h-5 w-5 sm:h-6 sm:w-6 text-green-600 mr-2 flex-shrink-0" />
-                      <div>
-                        <h3 className="font-semibold text-green-800 text-sm sm:text-base">Premium Subscriber</h3>
-                        <p className="text-xs sm:text-sm text-green-600">
-                          Tier: {subscriptionTier}
-                          {subscriptionEnd &&
-                            ` • Expires: ${new Date(subscriptionEnd).toLocaleDateString()}`
-                          }
-                        </p>
-                      </div>
-                    </div>
-                    <Button variant="outline" onClick={handleManageSubscription} size="sm" className="w-full sm:w-auto">
-                      Manage Subscription
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-          )}
-
-          {user && subscribed && (
-            <div className="grid gap-4 sm:gap-6 lg:gap-8 grid-cols-1 xl:grid-cols-2 px-3 sm:px-0">
-              <Card>
-                <CardHeader className="pb-4">
-                  <CardTitle className="flex items-center text-lg sm:text-xl">
-                    <Send className="h-4 w-4 sm:h-5 sm:w-5 mr-2" />
-                    Ask Your Question
-                  </CardTitle>
-                  <CardDescription className="text-sm sm:text-base">
-                    Ask anything about your budget, spending habits, or financial goals
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="px-4 sm:px-6">
-                  <form onSubmit={handleSubmit} className="space-y-3 sm:space-y-4">
-                    <Textarea
-                      placeholder="e.g., How can I save more money each month using BudgetGenius?"
-                      value={question}
-                      onChange={(e) => setQuestion(e.target.value)}
-                      className="min-h-[80px] sm:min-h-[100px] text-sm sm:text-base"
-                    />
-                    <Button
-                      type="submit"
-                      disabled={loading || !question.trim()}
-                      className="w-full h-12"
-                      size="lg"
-                    >
-                      {loading ? 'Getting Insights...' : 'Get AI Insights'}
-                    </Button>
-                  </form>
-
-                  <div className="mt-4 sm:mt-6">
-                    <h3 className="font-semibold mb-2 sm:mb-3 text-sm sm:text-base">Suggested Questions:</h3>
-                    <div className="space-y-1.5 sm:space-y-2">
-                      {suggestedQuestions.map((q, index) => (
-                        <Button
-                          key={index}
-                          variant="outline"
-                          size="sm"
-                          onClick={() => handleSuggestedQuestion(q)}
-                          className="w-full text-left justify-start text-xs sm:text-sm h-auto py-2 sm:py-3 px-3"
-                        >
-                          {q}
-                        </Button>
-                      ))}
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader className="pb-4">
-                  <CardTitle className="flex items-center text-lg sm:text-xl">
-                    <Bot className="h-4 w-4 sm:h-5 sm:w-5 mr-2" />
-                    AI Response
-                  </CardTitle>
-                  <CardDescription className="text-sm sm:text-base">
-                    Personalized insights based on your financial data
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="px-4 sm:px-6">
-                  {loading ? (
-                    <div className="flex items-center justify-center py-6 sm:py-8">
-                      <div className="animate-spin rounded-full h-6 w-6 sm:h-8 sm:w-8 border-b-2 border-primary"></div>
-                    </div>
-                  ) : insight ? (
-                    <div className="prose prose-sm max-w-none">
-                      <div className="bg-muted/50 p-3 sm:p-4 rounded-lg text-sm sm:text-base">
-                        {insight.split('\n').map((paragraph, index) => (
-                          <p key={index} className="mb-3 last:mb-0">
-                            {paragraph}
+          {/* Subscribed UI */}
+          {user && subscribed && !subLoading && (
+            <div>
+              <div className="mb-4 sm:mb-6 mx-3 sm:mx-0">
+                <Card className="border-green-500 bg-green-50">
+                  <CardContent className="pt-4 sm:pt-6 px-4 sm:px-6">
+                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-0">
+                      <div className="flex items-center">
+                        <Crown className="h-5 w-5 sm:h-6 sm:w-6 text-green-600 mr-2 flex-shrink-0" />
+                        <div>
+                          <h3 className="font-semibold text-green-800 text-sm sm:text-base">Premium Subscriber</h3>
+                          <p className="text-xs sm:text-sm text-green-600">
+                            Tier: {subscriptionTier}
+                            {subscriptionEnd &&
+                              ` • Expires: ${new Date(subscriptionEnd).toLocaleDateString()}`
+                            }
                           </p>
+                        </div>
+                      </div>
+                      <Button variant="outline" onClick={handleManageSubscription} size="sm" className="w-full sm:w-auto">
+                        Manage Subscription
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+
+              <div className="grid gap-4 sm:gap-6 lg:gap-8 grid-cols-1 xl:grid-cols-2 px-3 sm:px-0">
+                <Card>
+                  <CardHeader className="pb-4">
+                    <CardTitle className="flex items-center text-lg sm:text-xl">
+                      <Send className="h-4 w-4 sm:h-5 sm:w-5 mr-2" />
+                      Ask Your Question
+                    </CardTitle>
+                    <CardDescription className="text-sm sm:text-base">
+                      Ask anything about your budget, spending habits, or financial goals
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent className="px-4 sm:px-6">
+                    <form onSubmit={handleSubmit} className="space-y-3 sm:space-y-4">
+                      <Textarea
+                        placeholder="e.g., How can I save more money each month using BudgetGenius?"
+                        value={question}
+                        onChange={(e) => setQuestion(e.target.value)}
+                        className="min-h-[80px] sm:min-h-[100px] text-sm sm:text-base"
+                      />
+                      <Button
+                        type="submit"
+                        disabled={loading || !question.trim()}
+                        className="w-full h-12"
+                        size="lg"
+                      >
+                        {loading ? 'Getting Insights...' : 'Get AI Insights'}
+                      </Button>
+                    </form>
+                    <div className="mt-4 sm:mt-6">
+                      <h3 className="font-semibold mb-2 sm:mb-3 text-sm sm:text-base">Suggested Questions:</h3>
+                      <div className="space-y-1.5 sm:space-y-2">
+                        {suggestedQuestions.map((q, index) => (
+                          <Button
+                            key={index}
+                            variant="outline"
+                            size="sm"
+                            onClick={() => handleSuggestedQuestion(q)}
+                            className="w-full text-left justify-start text-xs sm:text-sm h-auto py-2 sm:py-3 px-3"
+                          >
+                            {q}
+                          </Button>
                         ))}
                       </div>
                     </div>
-                  ) : (
-                    <div className="text-center py-6 sm:py-8 text-muted-foreground text-sm sm:text-base">
-                      Ask a question to get started with AI insights
+                  </CardContent>
+                </Card>
+
+                <Card>
+                  <CardHeader className="pb-4">
+                    <CardTitle className="flex items-center text-lg sm:text-xl">
+                      <Bot className="h-4 w-4 sm:h-5 sm:w-5 mr-2" />
+                      AI Response
+                    </CardTitle>
+                    <CardDescription className="text-sm sm:text-base">
+                      Personalized insights based on your financial data
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent className="px-4 sm:px-6">
+                    {loading ? (
+                      <div className="flex items-center justify-center py-6 sm:py-8">
+                        <div className="animate-spin rounded-full h-6 w-6 sm:h-8 sm:w-8 border-b-2 border-primary"></div>
+                      </div>
+                    ) : insight ? (
+                      <div className="prose prose-sm max-w-none">
+                        <div className="bg-muted/50 p-3 sm:p-4 rounded-lg text-sm sm:text-base">
+                          {insight.split('\n').map((paragraph, index) => (
+                            <p key={index} className="mb-3 last:mb-0">{paragraph}</p>
+                          ))}
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="text-center py-6 sm:py-8 text-muted-foreground text-sm sm:text-base">
+                        Ask a question to get started with AI insights
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
+              </div>
+
+              {/* AdSense after AI interaction */}
+              <div className="mt-8 mb-8"><AdSense adSlot="0987654321" /></div>
+
+              <Card className="mt-6 sm:mt-8 mx-3 sm:mx-0">
+                <CardHeader className="pb-4">
+                  <CardTitle className="text-lg sm:text-xl">How AI Insights Works</CardTitle>
+                </CardHeader>
+                <CardContent className="px-4 sm:px-6">
+                  <div className="grid gap-4 sm:gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+                    <div className="text-center p-3 sm:p-4">
+                      <div className="bg-primary/10 rounded-full w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center mx-auto mb-2 sm:mb-3">
+                        <span className="text-primary font-bold text-sm sm:text-base">1</span>
+                      </div>
+                      <h3 className="font-semibold mb-1 sm:mb-2 text-sm sm:text-base">Analyze Your Data</h3>
+                      <p className="text-xs sm:text-sm text-muted-foreground">
+                        AI reviews your BudgetGenius data including budgets, expenses, and transactions
+                      </p>
                     </div>
-                  )}
+                    <div className="text-center p-3 sm:p-4">
+                      <div className="bg-primary/10 rounded-full w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center mx-auto mb-2 sm:mb-3">
+                        <span className="text-primary font-bold text-sm sm:text-base">2</span>
+                      </div>
+                      <h3 className="font-semibold mb-1 sm:mb-2 text-sm sm:text-base">Ask Questions</h3>
+                      <p className="text-xs sm:text-sm text-muted-foreground">
+                        Get answers about spending patterns, savings, and optimization strategies
+                      </p>
+                    </div>
+                    <div className="text-center p-3 sm:p-4">
+                      <div className="bg-primary/10 rounded-full w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center mx-auto mb-2 sm:mb-3">
+                        <span className="text-primary font-bold text-sm sm:text-base">3</span>
+                      </div>
+                      <h3 className="font-semibold mb-1 sm:mb-2 text-sm sm:text-base">Get Insights</h3>
+                      <p className="text-xs sm:text-sm text-muted-foreground">
+                        Receive actionable advice tailored to your specific financial situation
+                      </p>
+                    </div>
+                  </div>
                 </CardContent>
               </Card>
             </div>
           )}
-
-          {/* AdSense after AI interaction */}
-          <div className="mt-8 mb-8">
-            <AdSense adSlot="0987654321" />
-          </div>
-
-          <Card className="mt-6 sm:mt-8 mx-3 sm:mx-0">
-            <CardHeader className="pb-4">
-              <CardTitle className="text-lg sm:text-xl">How AI Insights Works</CardTitle>
-            </CardHeader>
-            <CardContent className="px-4 sm:px-6">
-              <div className="grid gap-4 sm:gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
-                <div className="text-center p-3 sm:p-4">
-                  <div className="bg-primary/10 rounded-full w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center mx-auto mb-2 sm:mb-3">
-                    <span className="text-primary font-bold text-sm sm:text-base">1</span>
-                  </div>
-                  <h3 className="font-semibold mb-1 sm:mb-2 text-sm sm:text-base">Analyze Your Data</h3>
-                  <p className="text-xs sm:text-sm text-muted-foreground">
-                    AI reviews your BudgetGenius data including budgets, expenses, and transactions
-                  </p>
-                </div>
-                <div className="text-center p-3 sm:p-4">
-                  <div className="bg-primary/10 rounded-full w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center mx-auto mb-2 sm:mb-3">
-                    <span className="text-primary font-bold text-sm sm:text-base">2</span>
-                  </div>
-                  <h3 className="font-semibold mb-1 sm:mb-2 text-sm sm:text-base">Ask Questions</h3>
-                  <p className="text-xs sm:text-sm text-muted-foreground">
-                    Get answers about spending patterns, savings, and optimization strategies
-                  </p>
-                </div>
-                <div className="text-center p-3 sm:p-4">
-                  <div className="bg-primary/10 rounded-full w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center mx-auto mb-2 sm:mb-3">
-                    <span className="text-primary font-bold text-sm sm:text-base">3</span>
-                  </div>
-                  <h3 className="font-semibold mb-1 sm:mb-2 text-sm sm:text-base">Get Insights</h3>
-                  <p className="text-xs sm:text-sm text-muted-foreground">
-                    Receive actionable advice tailored to your specific financial situation
-                  </p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
         </div>
       </div>
     </div>
