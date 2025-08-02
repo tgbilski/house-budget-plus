@@ -1,331 +1,143 @@
-export type Json =
-  | string
-  | number
-  | boolean
-  | null
-  | { [key: string]: Json | undefined }
-  | Json[]
+import { useState, useEffect } from 'react';
 
-export type Database = {
-  // Allows to automatically instanciate createClient with right options
-  // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
-  __InternalSupabase: {
-    PostgrestVersion: "12.2.12 (cd3cf9e)"
-  }
-  public: {
-    Tables: {
-      budget_data: {
-        Row: {
-          calculator_id: string
-          created_at: string
-          expenses: Json | null
-          id: string
-          income: number | null
-          page_type: string
-          updated_at: string
-          user_id: string
+// The import for '@stripe/stripe-js' has been removed as it caused a compilation error.
+// The code now dynamically loads the Stripe.js library via a script tag.
+
+const STRIPE_PUBLIC_KEY = 'pk_test_TYooMQauvdEDq54NiTphI7jx';
+
+// This is a mock backend function. In a real application, you would
+// make a fetch call to your actual server, which would then use the Stripe SDK.
+const createCheckoutSession = async (priceId) => {
+    // In a real application, this would be a fetch call to your backend.
+    // The backend would handle the API call to Stripe to create the session.
+    // We are simulating this here for a self-contained example.
+
+    console.log(`Creating checkout session for price ID: ${priceId}`);
+
+    const mockStripeSession = {
+        id: `cs_test_${priceId}_123456`,
+        url: `https://checkout.stripe.com/c/pay/${priceId}`,
+        object: 'checkout.session',
+        line_items: [
+            {
+                price: {
+                    id: priceId,
+                },
+                quantity: 1,
+            },
+        ],
+    };
+
+    return mockStripeSession;
+};
+
+// Main App Component
+export default function App() {
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
+    const [stripe, setStripe] = useState(null);
+
+    // Replace these with the actual Price IDs from your Stripe Dashboard for each product.
+    // The monthly price ID has been updated with the new value you provided.
+    const monthlyPriceId = 'price_1RrhWkBrWYpRfa7qG8SWbtWY';
+    const annualPriceId = 'price_1RrhqKBrWYpRfa7qNu0fEsf0'; 
+
+    useEffect(() => {
+        // Dynamically load the Stripe.js script
+        if (window.Stripe) {
+            setStripe(window.Stripe(STRIPE_PUBLIC_KEY));
+        } else {
+            const script = document.createElement('script');
+            script.src = 'https://js.stripe.com/v3/';
+            script.async = true;
+            script.onload = () => {
+                if (window.Stripe) {
+                    setStripe(window.Stripe(STRIPE_PUBLIC_KEY));
+                } else {
+                    setError('Stripe.js failed to load. Please check your network connection.');
+                }
+            };
+            document.body.appendChild(script);
         }
-        Insert: {
-          calculator_id: string
-          created_at?: string
-          expenses?: Json | null
-          id?: string
-          income?: number | null
-          page_type: string
-          updated_at?: string
-          user_id: string
+    }, []);
+
+    // This function now accepts a priceId argument to create the correct session.
+    const handleCheckout = async (priceId) => {
+        setLoading(true);
+        setError(null);
+        try {
+            if (!stripe) {
+                setError('Stripe is not yet loaded. Please wait a moment and try again.');
+                setLoading(false);
+                return;
+            }
+
+            // Call the mock backend to create a Checkout Session for the selected product.
+            const session = await createCheckoutSession(priceId);
+            
+            // Redirect to Stripe Checkout using the session URL.
+            window.location.href = session.url;
+
+        } catch (e) {
+            console.error(e);
+            setError("Something went wrong. Please try again later.");
+        } finally {
+            setLoading(false);
         }
-        Update: {
-          calculator_id?: string
-          created_at?: string
-          expenses?: Json | null
-          id?: string
-          income?: number | null
-          page_type?: string
-          updated_at?: string
-          user_id?: string
-        }
-        Relationships: []
-      }
-      pdf_processing_logs: {
-        Row: {
-          ai_categorization: Json | null
-          created_at: string
-          extracted_text: string | null
-          file_name: string
-          file_size: number | null
-          id: string
-          processed_at: string | null
-          processing_error: string | null
-          processing_status: string
-          user_id: string | null
-        }
-        Insert: {
-          ai_categorization?: Json | null
-          created_at?: string
-          extracted_text?: string | null
-          file_name: string
-          file_size?: number | null
-          id?: string
-          processed_at?: string | null
-          processing_error?: string | null
-          processing_status?: string
-          user_id?: string | null
-        }
-        Update: {
-          ai_categorization?: Json | null
-          created_at?: string
-          extracted_text?: string | null
-          file_name?: string
-          file_size?: number | null
-          id?: string
-          processed_at?: string | null
-          processing_error?: string | null
-          processing_status?: string
-          user_id?: string | null
-        }
-        Relationships: []
-      }
-      profiles: {
-        Row: {
-          created_at: string
-          email: string | null
-          first_name: string | null
-          id: string
-          last_name: string | null
-          updated_at: string
-          user_id: string
-        }
-        Insert: {
-          created_at?: string
-          email?: string | null
-          first_name?: string | null
-          id?: string
-          last_name?: string | null
-          updated_at?: string
-          user_id: string
-        }
-        Update: {
-          created_at?: string
-          email?: string | null
-          first_name?: string | null
-          id?: string
-          last_name?: string | null
-          updated_at?: string
-          user_id?: string
-        }
-        Relationships: []
-      }
-      subscribers: {
-        Row: {
-          created_at: string
-          email: string
-          id: string
-          stripe_customer_id: string | null
-          subscribed: boolean
-          subscription_end: string | null
-          subscription_tier: string | null
-          updated_at: string
-          user_id: string | null
-        }
-        Insert: {
-          created_at?: string
-          email: string
-          id?: string
-          stripe_customer_id?: string | null
-          subscribed?: boolean
-          subscription_end?: string | null
-          subscription_tier?: string | null
-          updated_at?: string
-          user_id?: string | null
-        }
-        Update: {
-          created_at?: string
-          email?: string
-          id?: string
-          stripe_customer_id?: string | null
-          subscribed?: boolean
-          subscription_end?: string | null
-          subscription_tier?: string | null
-          updated_at?: string
-          user_id?: string | null
-        }
-        Relationships: []
-      }
-      takeout_transactions: {
-        Row: {
-          amount: number
-          category: string | null
-          created_at: string
-          date: string
-          description: string | null
-          id: string
-          merchant: string
-          pdf_source: string | null
-          updated_at: string
-          user_id: string
-        }
-        Insert: {
-          amount: number
-          category?: string | null
-          created_at?: string
-          date: string
-          description?: string | null
-          id?: string
-          merchant: string
-          pdf_source?: string | null
-          updated_at?: string
-          user_id: string
-        }
-        Update: {
-          amount?: number
-          category?: string | null
-          created_at?: string
-          date?: string
-          description?: string | null
-          id?: string
-          merchant?: string
-          pdf_source?: string | null
-          updated_at?: string
-          user_id?: string
-        }
-        Relationships: []
-      }
-    }
-    Views: {
-      [_ in never]: never
-    }
-    Functions: {
-      [_ in never]: never
-    }
-    Enums: {
-      [_ in never]: never
-    }
-    CompositeTypes: {
-      [_ in never]: never
-    }
-  }
+    };
+
+    return (
+        <div className="bg-gray-100 min-h-screen flex items-center justify-center p-4">
+            <div className="bg-white shadow-xl rounded-2xl p-8 max-w-sm w-full text-center space-y-6">
+                <h1 className="text-3xl font-bold text-gray-900">Premium Calculator</h1>
+                <p className="text-gray-600">
+                    Get access to all premium features with a one-time purchase.
+                </p>
+                
+                <div className="flex flex-col md:flex-row gap-4">
+                    {/* Monthly Subscription Option */}
+                    <div className="flex-1 bg-blue-50 rounded-xl p-6 shadow-md border-2 border-transparent hover:border-blue-500 transition-all duration-300">
+                        <h2 className="text-2xl font-bold text-blue-800">Monthly Plan</h2>
+                        <div className="mt-2 mb-4">
+                            <span className="text-4xl font-extrabold text-blue-700">$9.99</span>
+                            <span className="text-gray-500 font-medium"> / month</span>
+                        </div>
+                        <p className="text-sm text-gray-500">
+                            Price ID: <code className="bg-gray-200 rounded px-1">{monthlyPriceId}</code>
+                        </p>
+                        <button
+                            onClick={() => handleCheckout(monthlyPriceId)}
+                            disabled={loading || !stripe}
+                            className="mt-4 w-full bg-blue-600 text-white font-semibold py-3 px-6 rounded-xl shadow-lg hover:bg-blue-700 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed transform hover:scale-105"
+                        >
+                            {loading ? 'Redirecting...' : 'Purchase Monthly'}
+                        </button>
+                    </div>
+
+                    {/* Annual Subscription Option */}
+                    <div className="flex-1 bg-green-50 rounded-xl p-6 shadow-md border-2 border-transparent hover:border-green-500 transition-all duration-300">
+                        <h2 className="text-2xl font-bold text-green-800">Annual Plan</h2>
+                        <div className="mt-2 mb-4">
+                            <span className="text-4xl font-extrabold text-green-700">$99.99</span>
+                            <span className="text-gray-500 font-medium"> / year</span>
+                        </div>
+                        <p className="text-sm text-gray-500">
+                            Price ID: <code className="bg-gray-200 rounded px-1">{annualPriceId}</code>
+                        </p>
+                        <button
+                            onClick={() => handleCheckout(annualPriceId)}
+                            disabled={loading || !stripe}
+                            className="mt-4 w-full bg-green-600 text-white font-semibold py-3 px-6 rounded-xl shadow-lg hover:bg-green-700 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed transform hover:scale-105"
+                        >
+                            {loading ? 'Redirecting...' : 'Purchase Annual'}
+                        </button>
+                    </div>
+                </div>
+
+                {error && (
+                    <p className="text-sm text-red-500 font-medium">{error}</p>
+                )}
+            </div>
+        </div>
+    );
 }
-
-type DatabaseWithoutInternals = Omit<Database, "__InternalSupabase">
-
-type DefaultSchema = DatabaseWithoutInternals[Extract<keyof Database, "public">]
-
-export type Tables<
-  DefaultSchemaTableNameOrOptions extends
-    | keyof (DefaultSchema["Tables"] & DefaultSchema["Views"])
-    | { schema: keyof DatabaseWithoutInternals },
-  TableName extends DefaultSchemaTableNameOrOptions extends {
-    schema: keyof DatabaseWithoutInternals
-  }
-    ? keyof (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
-        DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])
-    : never = never,
-> = DefaultSchemaTableNameOrOptions extends {
-  schema: keyof DatabaseWithoutInternals
-}
-  ? (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
-      DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])[TableName] extends {
-      Row: infer R
-    }
-    ? R
-    : never
-  : DefaultSchemaTableNameOrOptions extends keyof (DefaultSchema["Tables"] &
-        DefaultSchema["Views"])
-    ? (DefaultSchema["Tables"] &
-        DefaultSchema["Views"])[DefaultSchemaTableNameOrOptions] extends {
-        Row: infer R
-      }
-      ? R
-      : never
-    : never
-
-export type TablesInsert<
-  DefaultSchemaTableNameOrOptions extends
-    | keyof DefaultSchema["Tables"]
-    | { schema: keyof DatabaseWithoutInternals },
-  TableName extends DefaultSchemaTableNameOrOptions extends {
-    schema: keyof DatabaseWithoutInternals
-  }
-    ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
-    : never = never,
-> = DefaultSchemaTableNameOrOptions extends {
-  schema: keyof DatabaseWithoutInternals
-}
-  ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends {
-      Insert: infer I
-    }
-    ? I
-    : never
-  : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema["Tables"]
-    ? DefaultSchema["Tables"][DefaultSchemaTableNameOrOptions] extends {
-        Insert: infer I
-      }
-      ? I
-      : never
-    : never
-
-export type TablesUpdate<
-  DefaultSchemaTableNameOrOptions extends
-    | keyof DefaultSchema["Tables"]
-    | { schema: keyof DatabaseWithoutInternals },
-  TableName extends DefaultSchemaTableNameOrOptions extends {
-    schema: keyof DatabaseWithoutInternals
-  }
-    ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
-    : never = never,
-> = DefaultSchemaTableNameOrOptions extends {
-  schema: keyof DatabaseWithoutInternals
-}
-  ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends {
-      Update: infer U
-    }
-    ? U
-    : never
-  : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema["Tables"]
-    ? DefaultSchema["Tables"][DefaultSchemaTableNameOrOptions] extends {
-        Update: infer U
-      }
-      ? U
-      : never
-    : never
-
-export type Enums<
-  DefaultSchemaEnumNameOrOptions extends
-    | keyof DefaultSchema["Enums"]
-    | { schema: keyof DatabaseWithoutInternals },
-  EnumName extends DefaultSchemaEnumNameOrOptions extends {
-    schema: keyof DatabaseWithoutInternals
-  }
-    ? keyof DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"]
-    : never = never,
-> = DefaultSchemaEnumNameOrOptions extends {
-  schema: keyof DatabaseWithoutInternals
-}
-  ? DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"][EnumName]
-  : DefaultSchemaEnumNameOrOptions extends keyof DefaultSchema["Enums"]
-    ? DefaultSchema["Enums"][DefaultSchemaEnumNameOrOptions]
-    : never
-
-export type CompositeTypes<
-  PublicCompositeTypeNameOrOptions extends
-    | keyof DefaultSchema["CompositeTypes"]
-    | { schema: keyof DatabaseWithoutInternals },
-  CompositeTypeName extends PublicCompositeTypeNameOrOptions extends {
-    schema: keyof DatabaseWithoutInternals
-  }
-    ? keyof DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"]
-    : never = never,
-> = PublicCompositeTypeNameOrOptions extends {
-  schema: keyof DatabaseWithoutInternals
-}
-  ? DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"][CompositeTypeName]
-  : PublicCompositeTypeNameOrOptions extends keyof DefaultSchema["CompositeTypes"]
-    ? DefaultSchema["CompositeTypes"][PublicCompositeTypeNameOrOptions]
-    : never
-
-export const Constants = {
-  public: {
-    Enums: {},
-  },
-} as const
