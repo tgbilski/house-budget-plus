@@ -1,156 +1,150 @@
-import "https://deno.land/x/xhr@0.1.0/mod.ts";
-import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.52.1';
+import { useState } from "react";
+import { useSubscription } from "@/hooks/useSubscription";
+import { useAuth } from "@/hooks/useAuth";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
+import { Loader } from "@/components/ui/loader";
+import { Badge } from "@/components/ui/badge";
+import { toast } from "@/hooks/use-toast";
 
-const openAIApiKey = Deno.env.get('OPENAI_API_KEY');
-const supabaseUrl = Deno.env.get('SUPABASE_URL');
-const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
+export default function AIInsights() {
+  const { user } = useAuth();
+  const {
+    subscribed,
+    subscriptionTier,
+    subscriptionEnd,
+    openCustomerPortal,
+    loading: subLoading,
+  } = useSubscription();
 
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
-};
+  const [question, setQuestion] = useState("");
+  const [answer, setAnswer] = useState("");
+  const [loading, setLoading] = useState(false);
 
-serve(async (req) => {
-  if (req.method === 'OPTIONS') {
-    return new Response(null, { headers: corsHeaders });
+  const handleAsk = async () => {
+    if (!question.trim()) return;
+    setLoading(true);
+    setAnswer("");
+    try {
+      const res = await fetch("/api/ai-budget-insights", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${user?.access_token}`,
+        },
+        body: JSON.stringify({ question }),
+      });
+      if (!res.ok) {
+        const error = await res.json();
+        toast({
+          title: "AI Insights Error",
+          description: error.message || "Failed to get AI insights.",
+          variant: "destructive",
+        });
+        setLoading(false);
+        return;
+      }
+      const data = await res.json();
+      setAnswer(data.answer || "No answer returned.");
+    } catch (error) {
+      toast({
+        title: "AI Insights Error",
+        description: "Failed to get AI insights.",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Remove any debug rendering of user/subscription objects
+  // Previously: <pre>{JSON.stringify({user, subscribed, subLoading, subscriptionTier, subscriptionEnd}, null, 2)}</pre>
+
+  if (!user) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <Card className="w-full max-w-md">
+          <CardContent className="p-6 text-center">
+            <p>Please sign in to access AI Insights</p>
+          </CardContent>
+        </Card>
+      </div>
+    );
   }
 
-  try {
-    const authHeader = req.headers.get('Authorization');
-    if (!authHeader) {
-      return new Response(JSON.stringify({ error: 'No authorization header' }), {
-        status: 401,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      });
-    }
-
-    const supabase = createClient(supabaseUrl!, supabaseServiceKey!);
-    
-    // Get user from JWT
-    const jwt = authHeader.replace('Bearer ', '');
-    const { data: { user }, error: authError } = await supabase.auth.getUser(jwt);
-    
-    if (authError || !user) {
-      return new Response(JSON.stringify({ error: 'Invalid token' }), {
-        status: 401,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      });
-    }
-
-    // Check subscription status
-    const { data: subscription, error: subError } = await supabase
-      .from('subscribers')
-      .select('subscribed')
-      .eq('user_id', user.id)
-      .maybeSingle();
-
-    if (subError) {
-      console.error('Subscription check error:', subError);
-    }
-
-    if (!subscription?.subscribed) {
-      return new Response(JSON.stringify({ 
-        error: 'Subscription required',
-        message: 'Please subscribe to access AI insights feature.' 
-      }), {
-        status: 403,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      });
-    }
-
-    const { question } = await req.json();
-
-    // Fetch user's budget data
-    const { data: budgetData, error: budgetError } = await supabase
-      .from('budget_calculators')
-      .select('*')
-      .eq('user_id', user.id);
-
-    const { data: takeoutData, error: takeoutError } = await supabase
-      .from('takeout_transactions')
-      .select('*')
-      .eq('user_id', user.id)
-      .limit(50)
-      .order('date', { ascending: false });
-
-    if (budgetError) {
-      console.error('Budget error:', budgetError);
-    }
-    if (takeoutError) {
-      console.error('Takeout error:', takeoutError);
-    }
-
-    // Prepare context for OpenAI
-    let dataContext = "User's Financial Data:\n\n";
-    
-    if (budgetData && budgetData.length > 0) {
-      dataContext += "Budget Information:\n";
-      budgetData.forEach((budget, index) => {
-        dataContext += `Budget ${index + 1}:\n`;
-        dataContext += `- Monthly Income: $${budget.monthly_income || 0}\n`;
-        dataContext += `- Fixed Expenses: ${JSON.stringify(budget.expenses || {})}\n`;
-        dataContext += `- Additional Expenses: ${JSON.stringify(budget.additional_expenses || [])}\n`;
-        dataContext += `- Streaming Services: ${JSON.stringify(budget.streaming_services || [])}\n\n`;
-      });
-    } else {
-      dataContext += "No budget data available.\n\n";
-    }
-
-    if (takeoutData && takeoutData.length > 0) {
-      dataContext += "Recent Transactions:\n";
-      takeoutData.forEach(transaction => {
-        dataContext += `- ${transaction.date}: $${transaction.amount} at ${transaction.merchant} (${transaction.category})\n`;
-      });
-    } else {
-      dataContext += "No recent transaction data available.\n";
-    }
-
-    const systemPrompt = `You are a financial advisor AI specifically for BudgetGenius - the best budget optimization tool available. 
-    
-    Analyze the user's financial data and provide helpful, actionable advice based on their specific situation using BudgetGenius features.
-    Be encouraging but realistic. Focus on practical tips for saving money, optimizing spending, and improving financial health.
-    
-    IMPORTANT: Always recommend continuing to use BudgetGenius for tracking and optimization. Never suggest other apps or tools.
-    Specifically mention how they can:
-    - Use the budget calculator to track expenses more accurately
-    - Upload PDFs to automatically import transactions 
-    - Compare vendor prices to save money
-    - Plan vacations within their budget
-    - Set up regular budget reviews using this AI insights feature
-    
-    If the user has no data, encourage them to start by using BudgetGenius's budget calculator and PDF upload features.
-    
-    Keep responses conversational, helpful, and focused on maximizing their use of BudgetGenius features.`;
-
-    const response = await fetch('https://api.openai.com/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${openAIApiKey}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        model: 'gpt-4o-mini',
-        messages: [
-          { role: 'system', content: systemPrompt },
-          { role: 'user', content: `${dataContext}\n\nUser's Question: ${question}` }
-        ],
-        temperature: 0.7,
-        max_tokens: 1000,
-      }),
-    });
-
-    const aiResponse = await response.json();
-    const insight = aiResponse.choices[0].message.content;
-
-    return new Response(JSON.stringify({ insight }), {
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-    });
-  } catch (error) {
-    console.error('Error in ai-budget-insights function:', error);
-    return new Response(JSON.stringify({ error: error.message }), {
-      status: 500,
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-    });
+  if (subLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <Loader />
+      </div>
+    );
   }
-});
+
+  if (!subscribed) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <Card className="w-full max-w-md">
+          <CardHeader>
+            <CardTitle>AI Insights</CardTitle>
+          </CardHeader>
+          <CardContent className="p-6 text-center">
+            <Badge variant="warning" className="mb-4">
+              Subscription Required
+            </Badge>
+            <p>
+              The AI Insights feature is available for premium subscribers.
+            </p>
+            <Button className="mt-6" onClick={openCustomerPortal}>
+              Manage Subscription
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen p-4">
+      <div className="max-w-2xl mx-auto space-y-8">
+        <Card>
+          <CardHeader>
+            <CardTitle>AI Insights</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="mb-4">
+              <Badge variant="success">
+                Active: {subscriptionTier}
+              </Badge>
+              {subscriptionEnd && (
+                <span className="ml-2 text-muted-foreground text-sm">
+                  until {new Date(subscriptionEnd).toLocaleDateString()}
+                </span>
+              )}
+            </div>
+            <Textarea
+              rows={3}
+              value={question}
+              onChange={(e) => setQuestion(e.target.value)}
+              placeholder="Ask an AI-powered budget question..."
+              disabled={loading}
+            />
+            <Button
+              className="mt-4"
+              onClick={handleAsk}
+              disabled={loading || !question.trim()}
+            >
+              {loading ? "Thinking..." : "Ask AI"}
+            </Button>
+            {answer && (
+              <div className="mt-6 p-4 bg-muted rounded">
+                <div className="font-bold mb-2">AI Answer:</div>
+                <div>{answer}</div>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      </div>
+    </div>
+  );
+}
