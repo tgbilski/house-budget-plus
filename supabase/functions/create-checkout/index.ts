@@ -26,12 +26,12 @@ serve(async (req) => {
     logStep("Function started");
 
     let plan = 'monthly';
-    let priceId = 'price_1RriH0ChqC8M6G2balUOl9O8'; // <-- updated to your desired price ID
+    // Always use your desired price ID
+    const priceId = 'price_1RriH0ChqC8M6G2balUOl9O8';
     try {
       const body = await req.json();
       plan = body.plan || 'monthly';
-      // If frontend sends priceId, use it; otherwise default as above
-      priceId = body.priceId || priceId;
+      // Ignore incoming body.priceId, always use our desired priceId
     } catch (jsonError) {
       logStep("No JSON body provided, using default plan and priceId", { defaultPlan: plan, priceId });
     }
@@ -53,7 +53,6 @@ serve(async (req) => {
     }
     logStep("Customer lookup complete", { customerId: customerId || "new customer" });
 
-    // Use your price ID for Stripe checkout
     logStep("Using specific price ID", { priceId, plan });
 
     const session = await stripe.checkout.sessions.create({
