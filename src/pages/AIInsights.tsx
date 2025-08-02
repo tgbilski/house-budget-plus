@@ -85,7 +85,7 @@ const AIInsights = () => {
     setQuestion(suggestedQ);
   };
 
-  const handleSubscribe = async (plan: 'monthly' | 'annual') => {
+  const handleSubscribe = async (plan: 'monthly') => {
     try {
       await createCheckout(plan);
     } catch (error) {
