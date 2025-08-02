@@ -3,18 +3,24 @@ import { useAuth } from '@/hooks/useAuth';
 import { useSubscription } from '@/hooks/useSubscription';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
-import { useSubscription } from '@/hooks/useSubscription';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
-import { Bot, Send, Brain, Crown, Star, Check } from 'lucide-react';
+import { Bot, Send, Brain, Crown } from 'lucide-react';
 import { SEO } from '@/components/SEO';
 import { Breadcrumbs } from '@/components/Breadcrumbs';
-import { Badge } from '@/components/ui/badge';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { AdSense } from '@/components/AdSense';
+import { PricingCards } from '@/components/PricingCards';
 
 const AIInsights = () => {
   const { user } = useAuth();
-  const { subscribed, subscriptionTier, subscriptionEnd, loading: subLoading, createCheckout, openCustomerPortal } = useSubscription();
+  const {
+    subscribed,
+    subscriptionTier,
+    subscriptionEnd,
+    loading: subLoading,
+    openCustomerPortal
+  } = useSubscription();
   const { toast } = useToast();
   const [question, setQuestion] = useState('');
   const [insight, setInsight] = useState('');
@@ -85,19 +91,6 @@ const AIInsights = () => {
     setQuestion(suggestedQ);
   };
 
-  const handleSubscribe = async (plan: 'monthly') => {
-    try {
-      await createCheckout(plan);
-    } catch (error) {
-      console.error('Error creating checkout:', error);
-      toast({
-        title: "Error",
-        description: "Failed to start checkout process",
-        variant: "destructive",
-      });
-    }
-  };
-
   const handleManageSubscription = async () => {
     try {
       await openCustomerPortal();
@@ -119,7 +112,7 @@ const AIInsights = () => {
         keywords="AI financial advisor, budget insights, personal finance, money management, financial optimization"
       />
       <Breadcrumbs />
-      
+
       <div className="container mx-auto px-3 sm:px-4 py-4 sm:py-8">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-6 sm:mb-8">
@@ -150,87 +143,20 @@ const AIInsights = () => {
             </Card>
           )}
 
-          {/* AdSense for non-subscribers */}
           {!subscribed && (
             <div className="mb-8">
               <AdSense adSlot="1234567890" />
             </div>
           )}
 
+          {/* Subscription UI - uses shared PricingCards component */}
           {user && !subscribed && !subLoading && (
             <div className="mb-6 sm:mb-8 space-y-4 sm:space-y-6 px-3 sm:px-0">
-              <Card className="border-primary/20 bg-primary/5">
-                <CardContent className="pt-4 sm:pt-6 px-4 sm:px-6">
-                  <div className="text-center">
-                    <Crown className="h-10 w-10 sm:h-12 sm:w-12 text-primary mx-auto mb-3 sm:mb-4" />
-                    <h3 className="text-lg sm:text-xl font-semibold mb-2">Subscribe to Access AI Insights</h3>
-                    <p className="text-sm sm:text-base text-muted-foreground mb-4 sm:mb-6 px-2">
-                      Get personalized financial advice using your actual budget data
-                    </p>
-                  </div>
-                </CardContent>
-              </Card>
-
-              <div className="grid gap-4 sm:gap-6 grid-cols-1 lg:grid-cols-2">
-                <Card className="relative border-2 border-primary/20">
-                  <CardHeader className="text-center pb-4">
-                    <div className="flex items-center justify-center mb-2">
-                      <Star className="h-5 w-5 sm:h-6 sm:w-6 text-primary mr-2" />
-                      <CardTitle className="text-lg sm:text-xl">Monthly Plan</CardTitle>
-                    </div>
-                    <div className="text-2xl sm:text-3xl font-bold">$1.99<span className="text-base sm:text-lg font-normal text-muted-foreground">/month</span></div>
-                    <CardDescription className="text-sm sm:text-base">Affordable AI-powered budget optimization</CardDescription>
-                  </CardHeader>
-                  <CardContent className="space-y-3 sm:space-y-4 px-4 sm:px-6">
-                    <ul className="space-y-1.5 sm:space-y-2 text-sm sm:text-base">
-                      <li className="flex items-center"><Check className="h-4 w-4 text-green-500 mr-2 flex-shrink-0" />Unlimited AI insights</li>
-                      <li className="flex items-center"><Check className="h-4 w-4 text-green-500 mr-2 flex-shrink-0" />Personal budget analysis</li>
-                      <li className="flex items-center"><Check className="h-4 w-4 text-green-500 mr-2 flex-shrink-0" />Smart recommendations</li>
-                      <li className="flex items-center"><Check className="h-4 w-4 text-green-500 mr-2 flex-shrink-0" />Monthly financial review</li>
-                    </ul>
-                    <Button 
-                      onClick={() => handleSubscribe('monthly')} 
-                      className="w-full h-12"
-                      size="lg"
-                    >
-                      Subscribe Monthly
-                    </Button>
-                  </CardContent>
-                </Card>
-
-                <Card className="relative border-2 border-green-500">
-                  <Badge className="absolute -top-2 left-1/2 transform -translate-x-1/2 bg-green-500 text-xs sm:text-sm">
-                    Best Value
-                  </Badge>
-                  <CardHeader className="text-center pb-4 pt-6">
-                    <div className="flex items-center justify-center mb-2">
-                      <Crown className="h-5 w-5 sm:h-6 sm:w-6 text-yellow-500 mr-2" />
-                      <CardTitle className="text-lg sm:text-xl">Annual Plan</CardTitle>
-                    </div>
-                    <div className="text-2xl sm:text-3xl font-bold">$19.99<span className="text-base sm:text-lg font-normal text-muted-foreground">/year</span></div>
-                    <CardDescription className="text-green-600 font-medium text-sm sm:text-base">Save $3.89 per year!</CardDescription>
-                  </CardHeader>
-                  <CardContent className="space-y-3 sm:space-y-4 px-4 sm:px-6">
-                    <ul className="space-y-1.5 sm:space-y-2 text-sm sm:text-base">
-                      <li className="flex items-center"><Check className="h-4 w-4 text-green-500 mr-2 flex-shrink-0" />Unlimited AI insights</li>
-                      <li className="flex items-center"><Check className="h-4 w-4 text-green-500 mr-2 flex-shrink-0" />Personal budget analysis</li>
-                      <li className="flex items-center"><Check className="h-4 w-4 text-green-500 mr-2 flex-shrink-0" />Smart recommendations</li>
-                      <li className="flex items-center"><Check className="h-4 w-4 text-green-500 mr-2 flex-shrink-0" />Priority support</li>
-                      <li className="flex items-center"><Check className="h-4 w-4 text-green-500 mr-2 flex-shrink-0" />Annual financial planning</li>
-                    </ul>
-                    <Button 
-                      onClick={() => handleSubscribe('annual')} 
-                      className="w-full bg-green-600 hover:bg-green-700 h-12"
-                      size="lg"
-                    >
-                      Subscribe Annually
-                    </Button>
-                  </CardContent>
-                </Card>
-              </div>
+              <PricingCards />
             </div>
           )}
 
+          {/* Subscription management for active subscribers */}
           {user && subscribed && (
             <div className="mb-4 sm:mb-6 mx-3 sm:mx-0">
               <Card className="border-green-500 bg-green-50">
@@ -241,8 +167,8 @@ const AIInsights = () => {
                       <div>
                         <h3 className="font-semibold text-green-800 text-sm sm:text-base">Premium Subscriber</h3>
                         <p className="text-xs sm:text-sm text-green-600">
-                          Tier: {subscriptionTier} 
-                          {subscriptionEnd && 
+                          Tier: {subscriptionTier}
+                          {subscriptionEnd &&
                             ` • Expires: ${new Date(subscriptionEnd).toLocaleDateString()}`
                           }
                         </p>
@@ -277,8 +203,8 @@ const AIInsights = () => {
                       onChange={(e) => setQuestion(e.target.value)}
                       className="min-h-[80px] sm:min-h-[100px] text-sm sm:text-base"
                     />
-                    <Button 
-                      type="submit" 
+                    <Button
+                      type="submit"
                       disabled={loading || !question.trim()}
                       className="w-full h-12"
                       size="lg"
