@@ -2,12 +2,11 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { ScrollArea } from '@/components/ui/scroll-area';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/hooks/useAuth';
 import { useSubscription } from '@/hooks/useSubscription';
 import { supabase } from '@/integrations/supabase/client';
-import { Mic, MicOff, Send, Bot, User, Volume2, VolumeX } from 'lucide-react';
+import { Send } from 'lucide-react';
 
 interface Message {
   id: string;
@@ -25,18 +24,11 @@ export function AIChatbot({ pageContext, pageName }: AIChatbotProps) {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [isListening, setIsListening] = useState(false);
-  const [isSpeaking, setIsSpeaking] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const { user } = useAuth();
   const { subscribed } = useSubscription();
   const { toast } = useToast();
   
-  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
-  const audioChunksRef = useRef<Blob[]>([]);
-  const audioRef = useRef<HTMLAudioElement | null>(null);
-
-  // SCROLLABLE container ref
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
 
   // Check access permissions - super user or subscriber only
@@ -105,7 +97,6 @@ export function AIChatbot({ pageContext, pageName }: AIChatbotProps) {
       // Convert response to speech
       await speakText(data.response);
     } catch (error) {
-      // Handle error
       toast({ title: "Error", description: error.message });
     } finally {
       setIsLoading(false);
@@ -113,6 +104,18 @@ export function AIChatbot({ pageContext, pageName }: AIChatbotProps) {
   };
 
   // ... other functions like handleAutofill, speakText, etc.
+
+  // Mascot icon button style
+  const mascotButtonStyle: React.CSSProperties = {
+    position: 'fixed',
+    bottom: 28,
+    right: 28,
+    zIndex: 1100,
+    background: 'transparent',
+    border: 'none',
+    cursor: 'pointer',
+    padding: 0,
+  };
 
   if (!hasAccess) {
     return (
@@ -128,52 +131,88 @@ export function AIChatbot({ pageContext, pageName }: AIChatbotProps) {
   }
 
   return (
-    <Card style={{ width: 400, position: 'fixed', bottom: 20, right: 20, zIndex: 1000 }}>
-      <CardHeader>
-        <CardTitle>
-          AI Assistant
-          <Button variant="ghost" size="sm" style={{ float: 'right' }} onClick={() => setIsOpen(o => !o)}>
-            {isOpen ? 'Close' : 'Open'}
-          </Button>
-        </CardTitle>
-      </CardHeader>
-      {isOpen && (
-        <CardContent style={{ display: 'flex', flexDirection: 'column', height: 400 }}>
-          {/* SCROLLABLE MESSAGE AREA */}
-          <div style={{ flex: 1, overflowY: 'auto', padding: '0 8px', marginBottom: 8 }}>
-            {messages.map((msg) => (
-              <div
-                key={msg.id}
-                style={{
-                  textAlign: msg.role === 'user' ? 'right' : 'left',
-                  margin: '8px 0',
-                  background: msg.role === 'user' ? '#e0f7fa' : '#f1f8e9',
-                  borderRadius: 8,
-                  padding: '6px 12px',
-                  display: 'inline-block',
-                  maxWidth: '80%',
-                }}
-              >
-                <span>{msg.content}</span>
-              </div>
-            ))}
-            <div ref={messagesEndRef} />
-          </div>
-          {/* INPUT AREA */}
-          <div style={{ display: 'flex', gap: 8 }}>
-            <Input
-              value={input}
-              onChange={e => setInput(e.target.value)}
-              onKeyDown={e => {
-                if (e.key === 'Enter') sendMessage(input);
-              }}
-              disabled={isLoading}
-              placeholder="Type your message..."
-            />
-            <Button onClick={() => sendMessage(input)} disabled={isLoading || !input.trim()}><Send size={18} /></Button>
-          </div>
-        </CardContent>
+    <>
+      {!isOpen && (
+        <button
+          style={mascotButtonStyle}
+          aria-label="Open AI Chatbot"
+          onClick={() => setIsOpen(true)}
+        >
+          <img
+            src="/assets/mascot.png"
+            alt="Mascot Icon"
+            height={64}
+            width={64}
+            style={{ borderRadius: '50%', boxShadow: '0 2px 6px rgba(0,0,0,0.15)' }}
+          />
+        </button>
       )}
-    </Card>
+      {isOpen && (
+        <Card
+          style={{
+            width: 400,
+            position: 'fixed',
+            bottom: 20,
+            right: 20,
+            zIndex: 1200,
+            boxShadow: '0 6px 24px rgba(0,0,0,0.20)',
+            borderRadius: 16,
+          }}
+        >
+          <CardHeader>
+            <CardTitle style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                <img
+                  src="/assets/mascot.png"
+                  alt="Mascot Icon"
+                  height={32}
+                  width={32}
+                  style={{ borderRadius: '50%' }}
+                />
+                <span style={{ fontWeight: 'bold', fontSize: '1rem' }}>AI Assistant</span>
+              </div>
+              <Button variant="ghost" size="sm" onClick={() => setIsOpen(false)}>
+                ×
+              </Button>
+            </CardTitle>
+          </CardHeader>
+          <CardContent style={{ display: 'flex', flexDirection: 'column', height: 400 }}>
+            {/* SCROLLABLE MESSAGE AREA */}
+            <div style={{ flex: 1, overflowY: 'auto', padding: '0 8px', marginBottom: 8 }}>
+              {messages.map((msg) => (
+                <div
+                  key={msg.id}
+                  style={{
+                    textAlign: msg.role === 'user' ? 'right' : 'left',
+                    margin: '8px 0',
+                    background: msg.role === 'user' ? '#e0f7fa' : '#f1f8e9',
+                    borderRadius: 8,
+                    padding: '6px 12px',
+                    display: 'inline-block',
+                    maxWidth: '80%',
+                  }}
+                >
+                  <span>{msg.content}</span>
+                </div>
+              ))}
+              <div ref={messagesEndRef} />
+            </div>
+            {/* INPUT AREA */}
+            <div style={{ display: 'flex', gap: 8 }}>
+              <Input
+                value={input}
+                onChange={e => setInput(e.target.value)}
+                onKeyDown={e => {
+                  if (e.key === 'Enter') sendMessage(input);
+                }}
+                disabled={isLoading}
+                placeholder="Type your message..."
+              />
+              <Button onClick={() => sendMessage(input)} disabled={isLoading || !input.trim()}><Send size={18} /></Button>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+    </>
   );
 }
