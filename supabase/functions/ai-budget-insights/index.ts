@@ -66,61 +66,173 @@ serve(async (req) => {
       });
     }
 
-    // Fetch user's budget data
+    // Fetch all user's financial data from different sources
     const { data: budgetData, error: budgetError } = await supabase
-      .from("budget_calculators")
+      .from("budget_data")
       .select("*")
-      .eq("user_id", user.id);
+      .eq("user_id", user.id)
+      .order("created_at", { ascending: false });
+
     const { data: takeoutData, error: takeoutError } = await supabase
       .from("takeout_transactions")
       .select("*")
       .eq("user_id", user.id)
-      .limit(50)
+      .limit(100)
       .order("date", { ascending: false });
 
-    // Prepare context for OpenAI
-    let dataContext = "User's Financial Data:\n\n";
+    const { data: profileData, error: profileError } = await supabase
+      .from("profiles")
+      .select("*")
+      .eq("user_id", user.id)
+      .single();
+
+    const { data: pdfData, error: pdfError } = await supabase
+      .from("pdf_processing_logs")
+      .select("*")
+      .eq("user_id", user.id)
+      .eq("processing_status", "completed")
+      .order("created_at", { ascending: false })
+      .limit(10);
+
+    // Prepare comprehensive context for OpenAI
+    let dataContext = `User's Comprehensive Financial Profile:\n\n`;
+    
+    // Add profile information
+    if (profileData) {
+      dataContext += `Profile Information:\n`;
+      dataContext += `- Name: ${profileData.first_name || ''} ${profileData.last_name || ''}\n`;
+      dataContext += `- Email: ${profileData.email || ''}\n\n`;
+    }
+
+    // Add budget information from all budget entries
     if (budgetData && budgetData.length > 0) {
-      dataContext += "Budget Information:\n";
+      dataContext += `Budget Information (Multiple Budget Scenarios):\n`;
       budgetData.forEach((budget, index) => {
-        dataContext += `Budget ${index + 1}:\n`;
-        dataContext += `- Monthly Income: $${budget.monthly_income || 0}\n`;
-        dataContext += `- Fixed Expenses: ${JSON.stringify(budget.expenses || {})}\n`;
-        dataContext += `- Additional Expenses: ${JSON.stringify(budget.additional_expenses || [])}\n`;
-        dataContext += `- Streaming Services: ${JSON.stringify(budget.streaming_services || [])}\n\n`;
+        dataContext += `Budget ${index + 1} (${budget.page_type}, Created: ${new Date(budget.created_at).toLocaleDateString()}):\n`;
+        dataContext += `- Monthly Income: $${budget.income || 0}\n`;
+        
+        if (budget.expenses && typeof budget.expenses === 'object') {
+          const expenses = budget.expenses as any;
+          
+          if (expenses.fixed && typeof expenses.fixed === 'object') {
+            dataContext += `- Fixed Expenses: \n`;
+            Object.entries(expenses.fixed).forEach(([key, value]) => {
+              dataContext += `  * ${key}: $${value}\n`;
+            });
+          }
+          
+          if (expenses.custom && Array.isArray(expenses.custom)) {
+            dataContext += `- Custom Expenses: \n`;
+            expenses.custom.forEach((expense: any) => {
+              dataContext += `  * ${expense.name || 'Unknown'}: $${expense.amount || 0}\n`;
+            });
+          }
+          
+          if (expenses.subscriptionServices && typeof expenses.subscriptionServices === 'object') {
+            dataContext += `- Subscription Services: ${JSON.stringify(expenses.subscriptionServices)}\n`;
+          }
+          
+          if (expenses.additionalSubscriptions && Array.isArray(expenses.additionalSubscriptions)) {
+            dataContext += `- Additional Subscriptions: ${JSON.stringify(expenses.additionalSubscriptions)}\n`;
+          }
+        }
+        dataContext += `\n`;
       });
     } else {
       dataContext += "No budget data available.\n\n";
     }
+
+    // Add transaction data with spending patterns
     if (takeoutData && takeoutData.length > 0) {
-      dataContext += "Recent Transactions:\n";
+      dataContext += `Recent Transaction History (Last ${takeoutData.length} transactions):\n`;
+      
+      // Group transactions by month for pattern analysis
+      const monthlySpending: { [key: string]: number } = {};
+      const categorySpending: { [key: string]: number } = {};
+      const merchantSpending: { [key: string]: number } = {};
+      
       takeoutData.forEach((transaction) => {
-        dataContext += `- Date: ${transaction.date}, Amount: $${transaction.amount}, Merchant: ${transaction.merchant}\n`;
+        const month = new Date(transaction.date).toLocaleString('default', { month: 'long', year: 'numeric' });
+        const category = transaction.category || 'Uncategorized';
+        const merchant = transaction.merchant || 'Unknown';
+        
+        monthlySpending[month] = (monthlySpending[month] || 0) + parseFloat(transaction.amount || '0');
+        categorySpending[category] = (categorySpending[category] || 0) + parseFloat(transaction.amount || '0');
+        merchantSpending[merchant] = (merchantSpending[merchant] || 0) + parseFloat(transaction.amount || '0');
+        
+        dataContext += `- ${transaction.date}: $${transaction.amount} at ${merchant} (${category})\n`;
       });
+      
+      dataContext += `\nSpending Analysis:\n`;
+      dataContext += `Monthly Spending Totals:\n`;
+      Object.entries(monthlySpending).forEach(([month, total]) => {
+        dataContext += `  * ${month}: $${total.toFixed(2)}\n`;
+      });
+      
+      dataContext += `Category Spending Totals:\n`;
+      Object.entries(categorySpending).forEach(([category, total]) => {
+        dataContext += `  * ${category}: $${total.toFixed(2)}\n`;
+      });
+      
+      dataContext += `Top Merchants:\n`;
+      Object.entries(merchantSpending)
+        .sort(([,a], [,b]) => b - a)
+        .slice(0, 5)
+        .forEach(([merchant, total]) => {
+          dataContext += `  * ${merchant}: $${total.toFixed(2)}\n`;
+        });
+      
     } else {
       dataContext += "No recent transactions available.\n";
     }
 
-    // Query OpenAI
-    const openaiUrl = "https://api.openai.com/v1/chat/completions";
+    // Add PDF processing insights if available
+    if (pdfData && pdfData.length > 0) {
+      dataContext += `\nDocument Analysis:\n`;
+      pdfData.forEach((pdf, index) => {
+        dataContext += `Document ${index + 1}: ${pdf.file_name}\n`;
+        if (pdf.ai_categorization) {
+          dataContext += `- AI Analysis: ${JSON.stringify(pdf.ai_categorization)}\n`;
+        }
+        if (pdf.extracted_text && pdf.extracted_text.length > 200) {
+          dataContext += `- Content Preview: ${pdf.extracted_text.substring(0, 200)}...\n`;
+        }
+      });
+    }
+
+    // Enhanced system prompt for comprehensive financial analysis
     const systemPrompt = `
-      You are a financial advisor AI. The following is the user's financial data and question.
-      Provide clear, actionable, and friendly advice in a few paragraphs.
-      If the question is unclear or you lack data, explain what is missing or suggest a starting point.
+      You are an expert financial advisor AI with access to comprehensive user financial data. 
+      
+      The user's complete financial profile includes:
+      - Multiple budget scenarios and planning documents
+      - Detailed transaction history with spending patterns
+      - Monthly and category-based spending analysis
+      - Document analysis from financial PDFs
+      - Profile information for personalized advice
+      
+      Provide detailed, actionable, and personalized financial advice based on ALL available data.
+      Consider spending patterns, budget vs actual spending, trends over time, and specific financial goals.
+      
+      If the user asks about vendor comparisons, vacation planning, or specific spending categories, 
+      reference their actual data and provide concrete recommendations.
+      
+      If data is limited in certain areas, acknowledge this and suggest next steps.
+      
       Data Context:
       ${dataContext}
     `;
     const openaiBody = {
-      model: "gpt-3.5-turbo",
+      model: "gpt-4o-mini",
       messages: [
         { role: "system", content: systemPrompt },
         { role: "user", content: question }
       ],
-      max_tokens: 500,
+      max_tokens: 1000,
       temperature: 0.7,
     };
 
-    const openaiResp = await fetch(openaiUrl, {
+    const response = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
       headers: {
         "Authorization": `Bearer ${openAIApiKey}`,
@@ -129,8 +241,8 @@ serve(async (req) => {
       body: JSON.stringify(openaiBody),
     });
 
-    if (!openaiResp.ok) {
-      const errorDetails = await openaiResp.json();
+    if (!response.ok) {
+      const errorDetails = await response.json();
       console.error("OpenAI error:", errorDetails);
       return new Response(JSON.stringify({
         error: "OpenAI API error",
@@ -141,7 +253,7 @@ serve(async (req) => {
       });
     }
 
-    const completion = await openaiResp.json();
+    const completion = await response.json();
     const insight = completion.choices?.[0]?.message?.content ?? "No insight returned.";
 
     return new Response(JSON.stringify({ insight }), {
