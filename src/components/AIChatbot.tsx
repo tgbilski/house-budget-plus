@@ -88,13 +88,29 @@ export function AIChatbot({ pageContext, pageName }: AIChatbotProps) {
       setMessages((prev) => [...prev, assistantMessage]);
 
       if (data.autofill) {
-        console.log('Autofill data received:', data.autofill);
-        // TODO: Implement autofill functionality
+        handleAutofill(data.autofill);
       }
     } catch (error) {
       toast({ title: "Error", description: (error as Error).message });
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleAutofill = (autofillData: any) => {
+    if (autofillData.action === 'fill_form' && autofillData.entries) {
+      // Dispatch custom events for form filling
+      autofillData.entries.forEach((entry: any) => {
+        const event = new CustomEvent('autofill-entry', {
+          detail: entry
+        });
+        window.dispatchEvent(event);
+      });
+      
+      toast({
+        title: "Form Filled",
+        description: `Added ${autofillData.entries.length} entries to your takeout calendar.`,
+      });
     }
   };
 
@@ -150,7 +166,8 @@ export function AIChatbot({ pageContext, pageName }: AIChatbotProps) {
       {isOpen && (
         <Card
           style={{
-            width: 400,
+            width: 'min(400px, calc(100vw - 2rem))',
+            maxHeight: 'min(500px, calc(100vh - 2rem))',
             position: 'fixed',
             bottom: 20,
             right: 20,
@@ -176,7 +193,7 @@ export function AIChatbot({ pageContext, pageName }: AIChatbotProps) {
               </Button>
             </CardTitle>
           </CardHeader>
-          <CardContent style={{ display: 'flex', flexDirection: 'column', height: 400 }}>
+          <CardContent style={{ display: 'flex', flexDirection: 'column', height: 'min(400px, calc(100vh - 200px))' }}>
             <div style={{ flex: 1, overflowY: 'auto', padding: '0 8px', marginBottom: 8 }}>
               {messages.map((msg) => (
                 <div

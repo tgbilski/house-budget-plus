@@ -7,6 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 // Removed loader import - using inline spinner instead
 import { Badge } from "@/components/ui/badge";
 import { toast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 import { SEO } from "@/components/SEO";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { Brain, Crown } from "lucide-react";
@@ -32,34 +33,21 @@ export default function AIInsights() {
     setAnswer("");
     setErrorMsg("");
     try {
-      const res = await fetch("/api/ai-budget-insights", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          // Authorization header removed - using Supabase client auth
-        },
-        body: JSON.stringify({ question }),
+      const { data, error } = await supabase.functions.invoke('ai-budget-insights', {
+        body: { question }
       });
-      if (!res.ok) {
-        const error = await res.json();
-        toast({
-          title: "AI Insights Error",
-          description: error.message || "Failed to get AI insights.",
-          variant: "destructive",
-        });
-        setErrorMsg(error.message || "Failed to get AI insights.");
-        setLoading(false);
-        return;
-      }
-      const data = await res.json();
-      setAnswer(data.answer || "No answer returned.");
+
+      if (error) throw error;
+
+      setAnswer(data.insight || "No answer returned.");
     } catch (error) {
+      console.error('AI Insights error:', error);
       toast({
         title: "AI Insights Error",
-        description: "Failed to get AI insights.",
+        description: (error as Error).message || "Failed to get AI insights.",
         variant: "destructive",
       });
-      setErrorMsg("Failed to get AI insights.");
+      setErrorMsg((error as Error).message || "Failed to get AI insights.");
     } finally {
       setLoading(false);
     }
