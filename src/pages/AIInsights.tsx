@@ -4,7 +4,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { Loader } from "@/components/ui/loader";
+// Removed loader import - using inline spinner instead
 import { Badge } from "@/components/ui/badge";
 import { toast } from "@/hooks/use-toast";
 import { SEO } from "@/components/SEO";
@@ -36,7 +36,7 @@ export default function AIInsights() {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${user?.access_token}`,
+          // Authorization header removed - using Supabase client auth
         },
         body: JSON.stringify({ question }),
       });
@@ -134,7 +134,7 @@ export default function AIInsights() {
                   <CardTitle>AI Insights</CardTitle>
                 </CardHeader>
                 <CardContent className="p-6 text-center">
-                  <Badge variant="warning" className="mb-4">
+                  <Badge variant="destructive" className="mb-4">
                     Subscription Required
                   </Badge>
                   <p>
@@ -156,7 +156,7 @@ export default function AIInsights() {
                 </CardHeader>
                 <CardContent>
                   <div className="mb-4">
-                    <Badge variant="success">
+                    <Badge variant="secondary">
                       Active: {subscriptionTier}
                     </Badge>
                     {subscriptionEnd && (

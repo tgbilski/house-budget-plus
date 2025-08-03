@@ -98,7 +98,7 @@ export default function UserSettings() {
             <div className="flex items-center justify-between">
               <div>
                 {subscribed ? (
-                  <Badge variant="success">
+                  <Badge variant="secondary">
                     Active: {subscriptionTier}
                     {subscriptionEnd && ` (expires ${new Date(subscriptionEnd).toLocaleDateString()})`}
                   </Badge>
@@ -114,7 +114,7 @@ export default function UserSettings() {
             </div>
             {!subscribed && !loading && (
               <div className="mt-2">
-                <PricingCards priceId="price_1RriH0ChqC8M6G2balUOl9O8" />
+                <PricingCards />
               </div>
             )}
           </CardContent>

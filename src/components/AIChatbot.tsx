@@ -88,10 +88,9 @@ export function AIChatbot({ pageContext, pageName }: AIChatbotProps) {
       setMessages((prev) => [...prev, assistantMessage]);
 
       if (data.autofill) {
-        await handleAutofill(data.autofill);
+        console.log('Autofill data received:', data.autofill);
+        // TODO: Implement autofill functionality
       }
-
-      await speakText(data.response);
     } catch (error) {
       toast({ title: "Error", description: (error as Error).message });
     } finally {
