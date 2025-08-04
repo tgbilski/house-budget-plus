@@ -65,6 +65,9 @@ serve(async (req) => {
         },
       ],
       mode: "subscription",
+      automatic_tax: {
+        enabled: true,
+      },
       success_url: `${req.headers.get("origin")}/subscription-success`,
       cancel_url: `${req.headers.get("origin")}/`,
     });
