@@ -1,17 +1,19 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { MessageCircle, X, Send, Mic, MicOff, Volume2, VolumeX } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/hooks/useAuth';
 import { useSubscription } from '@/hooks/useSubscription';
 import { supabase } from '@/integrations/supabase/client';
-import { Send } from 'lucide-react';
+import { useRealtimeChat } from '@/hooks/useRealtimeChat';
 
 interface Message {
   id: string;
+  type: 'user' | 'assistant';
   content: string;
-  role: 'user' | 'assistant';
   timestamp: Date;
 }
 
@@ -21,58 +23,89 @@ interface AIChatbotProps {
 }
 
 export function AIChatbot({ pageContext, pageName }: AIChatbotProps) {
-  const [messages, setMessages] = useState<Message[]>([]);
-  const [input, setInput] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
+  const [input, setInput] = useState('');
+  const [textMessages, setTextMessages] = useState<Message[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [useVoice, setUseVoice] = useState(false);
   const { user } = useAuth();
   const { subscribed } = useSubscription();
   const { toast } = useToast();
+  const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  const messagesEndRef = useRef<HTMLDivElement | null>(null);
+  const {
+    messages: voiceMessages,
+    isConnected,
+    isRecording,
+    isSpeaking,
+    startVoiceChat,
+    stopVoiceChat,
+    sendTextMessage,
+    error: voiceError
+  } = useRealtimeChat();
 
   // Access control
   const hasAccess = user?.email === 'Tgbilski@gmail.com' || subscribed;
 
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
+
   useEffect(() => {
-    if (isOpen && messages.length === 0) {
+    scrollToBottom();
+  }, [textMessages, voiceMessages]);
+
+  useEffect(() => {
+    if (voiceError) {
+      toast({
+        title: "Voice Chat Error",
+        description: voiceError,
+        variant: "destructive",
+      });
+    }
+  }, [voiceError, toast]);
+
+  useEffect(() => {
+    if (isOpen && textMessages.length === 0) {
       const welcomeMessage: Message = {
         id: Date.now().toString(),
         content: `Hi! I'm your AI assistant for the ${pageName} page. I can help guide you through filling out the forms and using the features here. You can type your questions or use voice input!`,
-        role: 'assistant',
+        type: 'assistant',
         timestamp: new Date(),
       };
-      setMessages([welcomeMessage]);
+      setTextMessages([welcomeMessage]);
     }
-  }, [isOpen, pageName, messages.length]);
+  }, [isOpen, pageName, textMessages.length]);
 
-  useEffect(() => {
-    if (messagesEndRef.current) {
-      messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
+  const handleSendMessage = async () => {
+    if (!input.trim()) return;
+
+    if (useVoice && isConnected) {
+      // Send text through voice chat
+      sendTextMessage(input);
+      setInput('');
+      return;
     }
-  }, [messages]);
 
-  const sendMessage = async (content: string) => {
-    if (!content.trim() || isLoading) return;
-
+    // Send through regular chat
     const userMessage: Message = {
       id: Date.now().toString(),
-      content,
-      role: 'user',
-      timestamp: new Date(),
+      type: 'user',
+      content: input,
+      timestamp: new Date()
     };
 
-    setMessages((prev) => [...prev, userMessage]);
+    setTextMessages(prev => [...prev, userMessage]);
     setInput('');
     setIsLoading(true);
 
     try {
       const { data, error } = await supabase.functions.invoke('ai-chat-assistant', {
-        body: {
-          message: content,
+        body: { 
+          message: input,
           pageContext,
           pageName,
-          conversationHistory: messages.slice(-5),
+          conversationHistory: textMessages.slice(-5)
         }
       });
 
@@ -80,53 +113,62 @@ export function AIChatbot({ pageContext, pageName }: AIChatbotProps) {
 
       const assistantMessage: Message = {
         id: (Date.now() + 1).toString(),
+        type: 'assistant',
         content: data.response,
-        role: 'assistant',
-        timestamp: new Date(),
+        timestamp: new Date()
       };
 
-      setMessages((prev) => [...prev, assistantMessage]);
+      setTextMessages(prev => [...prev, assistantMessage]);
 
-      if (data.autofill) {
-        handleAutofill(data.autofill);
+      // Handle autofill suggestion
+      if (data.autofillData) {
+        console.log('Autofill data received:', data.autofillData);
+        
+        // Dispatch custom event with autofill data
+        window.dispatchEvent(new CustomEvent('aiAutofill', {
+          detail: data.autofillData
+        }));
+        
+        toast({
+          title: "Smart Fill Available",
+          description: "I've detected some budget data in our conversation. Look for auto-fill suggestions on your forms!",
+        });
       }
     } catch (error) {
-      toast({ title: "Error", description: (error as Error).message });
+      console.error('Error sending message:', error);
+      toast({
+        title: "Error",
+        description: "Failed to send message. Please try again.",
+        variant: "destructive",
+      });
     } finally {
       setIsLoading(false);
     }
   };
 
-  const handleAutofill = (autofillData: any) => {
-    if (autofillData.action === 'fill_form' && autofillData.entries) {
-      // Dispatch custom events for form filling
-      autofillData.entries.forEach((entry: any) => {
-        const event = new CustomEvent('autofill-entry', {
-          detail: entry
+  const toggleVoiceMode = async () => {
+    if (useVoice) {
+      stopVoiceChat();
+      setUseVoice(false);
+    } else {
+      try {
+        await startVoiceChat();
+        setUseVoice(true);
+        toast({
+          title: "Voice Mode Activated",
+          description: "You can now speak to the AI assistant!",
         });
-        window.dispatchEvent(event);
-      });
-      
-      toast({
-        title: "Form Filled",
-        description: `Added ${autofillData.entries.length} entries to your takeout calendar.`,
-      });
+      } catch (error) {
+        toast({
+          title: "Voice Mode Error",
+          description: "Failed to activate voice mode. Please check microphone permissions.",
+          variant: "destructive",
+        });
+      }
     }
   };
 
-  // ... other functions like handleAutofill, speakText, etc.
-
-  // Mascot icon button style
-  const mascotButtonStyle: React.CSSProperties = {
-    position: 'fixed',
-    bottom: 28,
-    right: 28,
-    zIndex: 1100,
-    background: 'transparent',
-    border: 'none',
-    cursor: 'pointer',
-    padding: 0,
-  };
+  const currentMessages = useVoice ? voiceMessages : textMessages;
 
   if (!hasAccess) {
     return (
@@ -143,9 +185,19 @@ export function AIChatbot({ pageContext, pageName }: AIChatbotProps) {
 
   return (
     <>
+      {/* Chat Toggle Button with Mascot */}
       {!isOpen && (
         <button
-          style={mascotButtonStyle}
+          style={{
+            position: 'fixed',
+            bottom: 28,
+            right: 28,
+            zIndex: 1100,
+            background: 'transparent',
+            border: 'none',
+            cursor: 'pointer',
+            padding: 0,
+          }}
           aria-label="Open AI Chatbot"
           onClick={() => setIsOpen(true)}
         >
@@ -163,68 +215,131 @@ export function AIChatbot({ pageContext, pageName }: AIChatbotProps) {
           />
         </button>
       )}
+
+      {/* Chat Window */}
       {isOpen && (
         <Card
           style={{
             width: 'min(400px, calc(100vw - 2rem))',
-            maxHeight: 'min(500px, calc(100vh - 2rem))',
+            maxHeight: 'min(600px, calc(100vh - 2rem))',
             position: 'fixed',
             bottom: 20,
             right: 20,
             zIndex: 1200,
             boxShadow: '0 6px 24px rgba(0,0,0,0.20)',
             borderRadius: 16,
+            display: 'flex',
+            flexDirection: 'column'
           }}
         >
-          <CardHeader>
-            <CardTitle style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                <img
-                  src="/lovable-uploads/ed809955-ef71-4d81-b072-945082f4380a.png"
-                  alt="Mascot Icon"
-                  height={32}
-                  width={32}
-                  style={{ borderRadius: '50%' }}
-                />
-                <span style={{ fontWeight: 'bold', fontSize: '1rem' }}>AI Assistant</span>
-              </div>
-              <Button variant="ghost" size="sm" onClick={() => setIsOpen(false)}>
-                ×
-              </Button>
-            </CardTitle>
-          </CardHeader>
-          <CardContent style={{ display: 'flex', flexDirection: 'column', height: 'min(400px, calc(100vh - 200px))' }}>
-            <div style={{ flex: 1, overflowY: 'auto', padding: '0 8px', marginBottom: 8 }}>
-              {messages.map((msg) => (
-                <div
-                  key={msg.id}
-                  style={{
-                    textAlign: msg.role === 'user' ? 'right' : 'left',
-                    margin: '8px 0',
-                    background: msg.role === 'user' ? '#e0f7fa' : '#f1f8e9',
-                    borderRadius: 8,
-                    padding: '6px 12px',
-                    display: 'inline-block',
-                    maxWidth: '80%',
-                  }}
-                >
-                  <span>{msg.content}</span>
-                </div>
-              ))}
-              <div ref={messagesEndRef} />
-            </div>
-            <div style={{ display: 'flex', gap: 8 }}>
-              <Input
-                value={input}
-                onChange={e => setInput(e.target.value)}
-                onKeyDown={e => {
-                  if (e.key === 'Enter') sendMessage(input);
-                }}
-                disabled={isLoading}
-                placeholder="Type your message..."
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
+            <div className="flex items-center gap-2">
+              <img
+                src="/lovable-uploads/ed809955-ef71-4d81-b072-945082f4380a.png"
+                alt="Mascot Icon"
+                height={32}
+                width={32}
+                style={{ borderRadius: '50%' }}
               />
-              <Button onClick={() => sendMessage(input)} disabled={isLoading || !input.trim()}><Send size={18} /></Button>
+              <CardTitle className="text-lg">AI Assistant</CardTitle>
             </div>
+            <div className="flex items-center gap-2">
+              <Button
+                variant="outline"
+                size="icon"
+                onClick={toggleVoiceMode}
+                className={`h-8 w-8 ${useVoice ? 'bg-primary text-primary-foreground' : ''}`}
+              >
+                {useVoice ? <Volume2 className="h-4 w-4" /> : <VolumeX className="h-4 w-4" />}
+              </Button>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => {
+                  setIsOpen(false);
+                  if (useVoice) {
+                    stopVoiceChat();
+                    setUseVoice(false);
+                  }
+                }}
+                className="h-8 w-8"
+              >
+                <X className="h-4 w-4" />
+              </Button>
+            </div>
+          </CardHeader>
+
+          <CardContent className="flex-1 flex flex-col p-4 pt-0">
+            {/* Voice Status */}
+            {useVoice && (
+              <div className="mb-3 p-2 rounded-lg bg-muted text-center text-sm">
+                {!isConnected && "Connecting to voice chat..."}
+                {isConnected && !isRecording && "Voice chat ready"}
+                {isRecording && !isSpeaking && "🎤 Listening..."}
+                {isSpeaking && "🔊 AI is speaking..."}
+              </div>
+            )}
+
+            {/* Messages */}
+            <ScrollArea className="flex-1 pr-3">
+              <div className="space-y-4">
+                {currentMessages.map((message) => (
+                  <div
+                    key={message.id}
+                    className={`flex ${message.type === 'user' ? 'justify-end' : 'justify-start'}`}
+                  >
+                    <div
+                      className={`max-w-[80%] rounded-lg px-3 py-2 text-sm ${
+                        message.type === 'user'
+                          ? 'bg-primary text-primary-foreground'
+                          : 'bg-muted'
+                      }`}
+                    >
+                      {message.content}
+                    </div>
+                  </div>
+                ))}
+                
+                {isLoading && (
+                  <div className="flex justify-start">
+                    <div className="bg-muted rounded-lg px-3 py-2 text-sm">
+                      <div className="flex space-x-1">
+                        <div className="w-2 h-2 bg-current rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
+                        <div className="w-2 h-2 bg-current rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
+                        <div className="w-2 h-2 bg-current rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+                <div ref={messagesEndRef} />
+              </div>
+            </ScrollArea>
+
+            {/* Input - Only show for text mode or when voice is connected */}
+            {(!useVoice || (useVoice && isConnected)) && (
+              <div className="flex gap-2 mt-3">
+                <Input
+                  value={input}
+                  onChange={(e) => setInput(e.target.value)}
+                  placeholder={useVoice ? "Type or speak your message..." : "Type your message..."}
+                  onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
+                  disabled={isLoading}
+                  className="flex-1"
+                />
+                <Button
+                  onClick={handleSendMessage}
+                  disabled={!input.trim() || isLoading}
+                  size="icon"
+                  className="shrink-0"
+                >
+                  {useVoice && isRecording ? (
+                    <Mic className="h-4 w-4" />
+                  ) : (
+                    <Send className="h-4 w-4" />
+                  )}
+                </Button>
+              </div>
+            )}
           </CardContent>
         </Card>
       )}
