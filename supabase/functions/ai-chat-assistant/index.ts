@@ -32,7 +32,46 @@ Your role is to:
 5. Be concise but helpful in your responses
 6. If users ask about features not on this page, guide them to the appropriate section
 
-**FORM FILLING CAPABILITIES:**
+**BUDGET CALCULATOR AUTOFILL CAPABILITIES:**
+When users want to autofill budget calculator data, look for instructions like:
+- "Set my income to $5000"
+- "Add $1200 for rent" 
+- "Set my electric bill to $150"
+- "My mortgage is $2500"
+- "Add Netflix for $15.99"
+- "I pay $100 for car insurance"
+
+**BUDGET FIELD MAPPING:**
+- "income", "salary", "pay" → monthlyIncome
+- "rent", "mortgage" → mortgage (fixed expense)
+- "electric", "electricity" → electric
+- "gas" → gas  
+- "water" → water
+- "sewage", "sewer" → sewage
+- "utilities" → utilities
+- "car loan", "auto loan" → car-loan
+- "car insurance", "auto insurance" → car-insurance
+- "internet", "wifi" → internet
+- "phone", "cell phone", "mobile" → phone
+- "netflix", "streaming", "subscription" → subscription fields
+
+For budget autofill requests, respond with this exact format:
+BUDGET_AUTOFILL: {
+  "action": "fill_budget",
+  "data": {
+    "income": amount_or_null,
+    "expenses": {
+      "field_id": amount,
+      "field_id2": amount
+    },
+    "customExpenses": [
+      {"label": "Expense Name", "amount": amount}
+    ]
+  },
+  "message": "I've updated your budget with the specified amounts."
+}
+
+**TAKEOUT CALENDAR AUTOFILL CAPABILITIES:**
 When users give instructions like:
 - "I bought a $2 coffee each day this week"
 - "Add $5 lunch every day this week"
@@ -52,8 +91,8 @@ You should parse the amounts, items, time periods, and create autofill instructi
 - "yesterday" = previous day
 - "last 3 days" = previous 3 days including today
 
-For autofill requests, respond with this exact format:
-AUTOFILL_INSTRUCTION: {
+For takeout autofill requests, respond with this exact format:
+TAKEOUT_AUTOFILL: {
   "action": "fill_form",
   "entries": [
     {
@@ -66,11 +105,11 @@ AUTOFILL_INSTRUCTION: {
 }
 
 **EXAMPLES:**
-User: "I bought a $2 coffee each day this week"
-Response: AUTOFILL_INSTRUCTION: {"action": "fill_form", "entries": [{"date": "2024-01-01", "restaurant": "Coffee", "amount": 2}, {"date": "2024-01-02", "restaurant": "Coffee", "amount": 2}, ...], "message": "I've added $2 coffee entries for each day this week."}
+Budget: "Set my income to $5000 and rent to $1200"
+Response: BUDGET_AUTOFILL: {"action": "fill_budget", "data": {"income": 5000, "expenses": {"mortgage": 1200}}, "message": "I've set your income to $5000 and rent to $1200."}
 
-User: "$2 coffee and $5 lunch each day this week"  
-Response: AUTOFILL_INSTRUCTION: {"action": "fill_form", "entries": [{"date": "2024-01-01", "restaurant": "Coffee & Lunch", "amount": 7}, ...], "message": "I've added $7 daily entries (coffee + lunch) for each day this week."}
+Takeout: "I bought a $2 coffee each day this week"
+Response: TAKEOUT_AUTOFILL: {"action": "fill_form", "entries": [{"date": "2024-01-01", "restaurant": "Coffee", "amount": 2}, {"date": "2024-01-02", "restaurant": "Coffee", "amount": 2}, ...], "message": "I've added $2 coffee entries for each day this week."}
 
 Keep responses focused, practical, and user-friendly. Always be encouraging about their financial planning journey.`;
 
@@ -106,8 +145,8 @@ Keep responses focused, practical, and user-friendly. Always be encouraging abou
     const assistantResponse = data.choices[0].message.content;
 
     // Check if the response contains autofill instructions
-    if (assistantResponse.includes('AUTOFILL_INSTRUCTION:')) {
-      const parts = assistantResponse.split('AUTOFILL_INSTRUCTION:');
+    if (assistantResponse.includes('BUDGET_AUTOFILL:')) {
+      const parts = assistantResponse.split('BUDGET_AUTOFILL:');
       const instruction = parts[1].trim();
       
       try {
@@ -119,7 +158,29 @@ Keep responses focused, practical, and user-friendly. Always be encouraging abou
           headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         });
       } catch (parseError) {
-        console.error('Error parsing autofill instruction:', parseError);
+        console.error('Error parsing budget autofill instruction:', parseError);
+        // If parsing fails, return the original response
+        return new Response(JSON.stringify({ response: assistantResponse }), {
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      }
+    }
+    
+    // Check for takeout calendar autofill instructions
+    if (assistantResponse.includes('TAKEOUT_AUTOFILL:')) {
+      const parts = assistantResponse.split('TAKEOUT_AUTOFILL:');
+      const instruction = parts[1].trim();
+      
+      try {
+        const autofillData = JSON.parse(instruction);
+        return new Response(JSON.stringify({ 
+          response: autofillData.message,
+          autofill: autofillData
+        }), {
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      } catch (parseError) {
+        console.error('Error parsing takeout autofill instruction:', parseError);
         // If parsing fails, return the original response
         return new Response(JSON.stringify({ response: assistantResponse }), {
           headers: { ...corsHeaders, 'Content-Type': 'application/json' },

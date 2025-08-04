@@ -120,19 +120,32 @@ export function AIChatbot({ pageContext, pageName }: AIChatbotProps) {
 
       setTextMessages(prev => [...prev, assistantMessage]);
 
-      // Handle autofill suggestion
-      if (data.autofillData) {
-        console.log('Autofill data received:', data.autofillData);
-        
-        // Dispatch custom event with autofill data
-        window.dispatchEvent(new CustomEvent('aiAutofill', {
-          detail: data.autofillData
-        }));
-        
-        toast({
-          title: "Smart Fill Available",
-          description: "I've detected some budget data in our conversation. Look for auto-fill suggestions on your forms!",
-        });
+      // Handle autofill suggestions
+      if (data.autofill) {
+        if (data.autofill.action === 'fill_budget') {
+          // Dispatch budget autofill event
+          window.dispatchEvent(new CustomEvent('budgetAutofill', {
+            detail: data.autofill
+          }));
+          
+          toast({
+            title: "Budget Updated",
+            description: "I've updated your budget calculator with the specified amounts.",
+          });
+        } else if (data.autofill.action === 'fill_form' && data.autofill.entries) {
+          // Dispatch takeout calendar autofill events
+          data.autofill.entries.forEach((entry: any) => {
+            const event = new CustomEvent('autofill-entry', {
+              detail: entry
+            });
+            window.dispatchEvent(event);
+          });
+          
+          toast({
+            title: "Form Filled",
+            description: `Added ${data.autofill.entries.length} entries to your takeout calendar.`,
+          });
+        }
       }
     } catch (error) {
       console.error('Error sending message:', error);

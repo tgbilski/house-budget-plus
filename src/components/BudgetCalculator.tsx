@@ -61,6 +61,49 @@ const BudgetCalculator: React.FC<BudgetCalculatorProps> = ({
     }
   }, [user, id, pageType]);
 
+  // Add event listener for budget autofill
+  useEffect(() => {
+    const handleBudgetAutofill = (event: CustomEvent) => {
+      const autofillData = event.detail;
+      
+      if (autofillData.action === 'fill_budget') {
+        const { data } = autofillData;
+        
+        // Set income if provided
+        if (data.income !== null && data.income !== undefined) {
+          setMonthlyIncome(data.income);
+        }
+        
+        // Set expenses if provided
+        if (data.expenses) {
+          const updatedExpenses = expenses.map(expense => {
+            if (data.expenses[expense.id] !== undefined) {
+              return { ...expense, amount: data.expenses[expense.id] };
+            }
+            return expense;
+          });
+          setExpenses(updatedExpenses);
+        }
+        
+        // Add custom expenses if provided
+        if (data.customExpenses && data.customExpenses.length > 0) {
+          const newCustomExpenses = data.customExpenses.map((expense: any, index: number) => ({
+            id: `custom-${Date.now()}-${index}`,
+            label: expense.label,
+            amount: expense.amount
+          }));
+          setAdditionalExpenses(prev => [...prev, ...newCustomExpenses]);
+        }
+      }
+    };
+
+    window.addEventListener('budgetAutofill', handleBudgetAutofill as EventListener);
+    
+    return () => {
+      window.removeEventListener('budgetAutofill', handleBudgetAutofill as EventListener);
+    };
+  }, [expenses]);
+
   const loadData = async () => {
     if (!user) return;
 
