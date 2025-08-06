@@ -282,7 +282,7 @@ export function AIChatbot({ pageContext, pageName }: AIChatbotProps) {
             </div>
           </CardHeader>
 
-          <CardContent className="flex-1 flex flex-col p-4 pt-0">
+          <CardContent className="flex-1 flex flex-col p-4 pt-0 overflow-hidden">
             {/* Voice Status */}
             {useVoice && (
               <div className="mb-3 p-2 rounded-lg bg-muted text-center text-sm">
