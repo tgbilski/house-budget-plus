@@ -116,10 +116,12 @@ Keep responses focused, practical, and user-friendly. Always be encouraging abou
     // Prepare conversation context
     const messages = [
       { role: 'system', content: systemPrompt },
-      ...conversationHistory.map((msg: any) => ({
-        role: msg.role,
-        content: msg.content
-      })),
+      ...conversationHistory
+        .filter((msg: any) => msg.role && msg.content && typeof msg.content === 'string')
+        .map((msg: any) => ({
+          role: msg.type === 'user' ? 'user' : 'assistant',
+          content: msg.content
+        })),
       { role: 'user', content: message }
     ];
 
