@@ -15,6 +15,7 @@ const routeMap: Record<string, string> = {
   '/takeout': 'Takeout Calendar',
   '/vacation': 'Vacation Planner',
   '/ai-insights': 'AI Insights',
+  '/gifts': 'Gift Lists',
   '/settings': 'Settings',
   '/auth': 'Sign In'
 };

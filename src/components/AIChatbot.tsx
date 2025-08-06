@@ -145,6 +145,16 @@ export function AIChatbot({ pageContext, pageName }: AIChatbotProps) {
             title: "Form Filled",
             description: `Added ${data.autofill.entries.length} entries to your takeout calendar.`,
           });
+        } else if (data.autofill.action === 'fill_gift') {
+          // Dispatch gift autofill event
+          window.dispatchEvent(new CustomEvent('giftAutofill', {
+            detail: data.autofill.data
+          }));
+          
+          toast({
+            title: "Gift Added",
+            description: "I've added your gift idea to the list.",
+          });
         }
       }
     } catch (error) {

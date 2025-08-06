@@ -71,6 +71,25 @@ BUDGET_AUTOFILL: {
   "message": "I've updated your budget with the specified amounts."
 }
 
+**GIFTS AUTOFILL CAPABILITIES:**
+When users want to autofill gift information, look for instructions like:
+- "Add a $50 book for Christmas"
+- "Set up a birthday list with a $25 toy"
+- "Add a holiday gift: $100 headphones from Amazon"
+- "Create a gift idea for my brother's birthday: $75 shoes from Nike.com"
+
+For gift autofill requests, respond with this exact format:
+GIFT_AUTOFILL: {
+  "action": "fill_gift",
+  "data": {
+    "list_title": "list title or null",
+    "gift_idea": "gift description",
+    "price": amount_or_null,
+    "url": "url_or_null"
+  },
+  "message": "I've added your gift idea."
+}
+
 **TAKEOUT CALENDAR AUTOFILL CAPABILITIES:**
 When users give instructions like:
 - "I bought a $2 coffee each day this week"
@@ -110,6 +129,9 @@ Response: BUDGET_AUTOFILL: {"action": "fill_budget", "data": {"income": 5000, "e
 
 Takeout: "I bought a $2 coffee each day this week"
 Response: TAKEOUT_AUTOFILL: {"action": "fill_form", "entries": [{"date": "2024-01-01", "restaurant": "Coffee", "amount": 2}, {"date": "2024-01-02", "restaurant": "Coffee", "amount": 2}, ...], "message": "I've added $2 coffee entries for each day this week."}
+
+Gift: "Add a $50 book for Christmas"
+Response: GIFT_AUTOFILL: {"action": "fill_gift", "data": {"list_title": "Christmas Gifts", "gift_idea": "Book", "price": 50, "url": null}, "message": "I've added a $50 book to your Christmas gift list."}
 
 Keep responses focused, practical, and user-friendly. Always be encouraging about their financial planning journey.`;
 
@@ -183,6 +205,28 @@ Keep responses focused, practical, and user-friendly. Always be encouraging abou
         });
       } catch (parseError) {
         console.error('Error parsing takeout autofill instruction:', parseError);
+        // If parsing fails, return the original response
+        return new Response(JSON.stringify({ response: assistantResponse }), {
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      }
+    }
+
+    // Check for gift autofill instructions
+    if (assistantResponse.includes('GIFT_AUTOFILL:')) {
+      const parts = assistantResponse.split('GIFT_AUTOFILL:');
+      const instruction = parts[1].trim();
+      
+      try {
+        const autofillData = JSON.parse(instruction);
+        return new Response(JSON.stringify({ 
+          response: autofillData.message,
+          autofill: autofillData
+        }), {
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      } catch (parseError) {
+        console.error('Error parsing gift autofill instruction:', parseError);
         // If parsing fails, return the original response
         return new Response(JSON.stringify({ response: assistantResponse }), {
           headers: { ...corsHeaders, 'Content-Type': 'application/json' },
