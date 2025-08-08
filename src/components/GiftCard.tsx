@@ -2,23 +2,27 @@ import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
-import { Trash2, ExternalLink, Edit2, Check, X } from 'lucide-react';
+import { Plus, Edit2, Check, Trash2 } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { GiftItem } from './GiftItem';
 
-interface GiftData {
+interface GiftListData {
   id?: string;
   list_title: string;
+}
+
+interface GiftItemData {
+  id: string;
+  list_id: string;
   gift_idea: string;
-  price: number | string;
+  price: number;
   url: string;
 }
 
 interface GiftCardProps {
-  initialData?: GiftData;
+  initialData?: GiftListData;
   onDelete?: (id: string) => void;
 }
 
@@ -26,45 +30,64 @@ export function GiftCard({ initialData, onDelete }: GiftCardProps) {
   const { user } = useAuth();
   const { toast } = useToast();
   const [isEditingTitle, setIsEditingTitle] = useState(!initialData?.id);
-  const [giftData, setGiftData] = useState<GiftData>({
+  const [listData, setListData] = useState<GiftListData>({
     list_title: initialData?.list_title || 'Holiday Gifts',
-    gift_idea: initialData?.gift_idea || '',
-    price: initialData?.price || '',
-    url: initialData?.url || '',
     ...initialData
   });
+  const [giftItems, setGiftItems] = useState<GiftItemData[]>([]);
+  const [showNewItem, setShowNewItem] = useState(false);
+
+  useEffect(() => {
+    if (listData.id) {
+      loadGiftItems();
+    }
+  }, [listData.id]);
 
   useEffect(() => {
     const handleAutofill = (event: CustomEvent) => {
       const { list_title, gift_idea, price, url } = event.detail;
-      setGiftData(prev => ({
-        ...prev,
-        ...(list_title && { list_title }),
-        ...(gift_idea && { gift_idea }),
-        ...(price && { price }),
-        ...(url && { url })
-      }));
+      if (list_title) {
+        setListData(prev => ({ ...prev, list_title }));
+      }
+      // For gift items, we'll add to the newest item or create a new one
+      if (gift_idea || price || url) {
+        setShowNewItem(true);
+      }
     };
 
     window.addEventListener('giftAutofill' as any, handleAutofill);
     return () => window.removeEventListener('giftAutofill' as any, handleAutofill);
   }, []);
 
-  const saveData = async () => {
+  const loadGiftItems = async () => {
+    if (!listData.id) return;
+
+    try {
+      const { data, error } = await supabase
+        .from('gift_items')
+        .select('*')
+        .eq('list_id', listData.id)
+        .order('created_at', { ascending: true });
+
+      if (error) throw error;
+      setGiftItems(data || []);
+    } catch (error) {
+      console.error('Error loading gift items:', error);
+    }
+  };
+
+  const saveListTitle = async () => {
     if (!user) return;
 
     try {
-      if (giftData.id) {
+      if (listData.id) {
         // Update existing
         const { error } = await supabase
           .from('gift_lists')
           .update({
-            list_title: giftData.list_title,
-            gift_idea: giftData.gift_idea,
-            price: giftData.price ? Number(giftData.price) : null,
-            url: giftData.url
+            list_title: listData.list_title
           })
-          .eq('id', giftData.id);
+          .eq('id', listData.id);
 
         if (error) throw error;
       } else {
@@ -73,91 +96,95 @@ export function GiftCard({ initialData, onDelete }: GiftCardProps) {
           .from('gift_lists')
           .insert({
             user_id: user.id,
-            list_title: giftData.list_title,
-            gift_idea: giftData.gift_idea,
-            price: giftData.price ? Number(giftData.price) : null,
-            url: giftData.url
+            list_title: listData.list_title
           })
           .select()
           .single();
 
         if (error) throw error;
-        setGiftData(prev => ({ ...prev, id: data.id }));
+        setListData(prev => ({ ...prev, id: data.id }));
       }
 
+      setIsEditingTitle(false);
       toast({
-        title: "Gift saved",
-        description: "Your gift idea has been saved successfully.",
+        title: "List saved",
+        description: "Your gift list has been saved successfully.",
       });
     } catch (error) {
-      console.error('Error saving gift:', error);
+      console.error('Error saving list:', error);
       toast({
         title: "Error",
-        description: "Failed to save gift idea. Please try again.",
+        description: "Failed to save gift list. Please try again.",
         variant: "destructive",
       });
     }
   };
 
-  const handleDelete = async () => {
-    if (!giftData.id) return;
+  const handleDeleteList = async () => {
+    if (!listData.id) return;
 
     try {
+      // Delete all gift items first
+      const { error: itemsError } = await supabase
+        .from('gift_items')
+        .delete()
+        .eq('list_id', listData.id);
+
+      if (itemsError) throw itemsError;
+
+      // Then delete the list
       const { error } = await supabase
         .from('gift_lists')
         .delete()
-        .eq('id', giftData.id);
+        .eq('id', listData.id);
 
       if (error) throw error;
 
-      onDelete?.(giftData.id);
+      onDelete?.(listData.id);
       toast({
-        title: "Gift deleted",
-        description: "The gift idea has been removed.",
+        title: "List deleted",
+        description: "The gift list has been removed.",
       });
     } catch (error) {
-      console.error('Error deleting gift:', error);
+      console.error('Error deleting list:', error);
       toast({
         title: "Error",
-        description: "Failed to delete gift idea. Please try again.",
+        description: "Failed to delete gift list. Please try again.",
         variant: "destructive",
       });
     }
   };
 
-  const handleInputChange = (field: keyof GiftData, value: string | number) => {
-    setGiftData(prev => ({ ...prev, [field]: value }));
+  const handleDeleteItem = (itemId: string) => {
+    setGiftItems(prev => prev.filter(item => item.id !== itemId));
   };
 
-  const openUrl = () => {
-    if (giftData.url) {
-      const url = giftData.url.startsWith('http') ? giftData.url : `https://${giftData.url}`;
-      window.open(url, '_blank');
-    }
+  const handleTitleChange = (value: string) => {
+    setListData(prev => ({ ...prev, list_title: value }));
   };
 
   return (
-    <Card className="w-full max-w-md">
+    <Card className="w-full">
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
         {isEditingTitle ? (
           <div className="flex items-center gap-2 flex-1">
             <Input
-              value={giftData.list_title}
-              onChange={(e) => handleInputChange('list_title', e.target.value)}
+              value={listData.list_title}
+              onChange={(e) => handleTitleChange(e.target.value)}
               className="text-lg font-semibold"
               placeholder="Gift list title"
             />
             <Button
               size="sm"
               variant="ghost"
-              onClick={() => setIsEditingTitle(false)}
+              onClick={saveListTitle}
             >
               <Check className="h-4 w-4" />
             </Button>
           </div>
         ) : (
           <div className="flex items-center gap-2 flex-1">
-            <CardTitle className="text-lg">{giftData.list_title}</CardTitle>
+            <CardTitle className="text-lg">{listData.list_title}</CardTitle>
             <Button
               size="sm"
               variant="ghost"
@@ -168,11 +195,11 @@ export function GiftCard({ initialData, onDelete }: GiftCardProps) {
           </div>
         )}
         
-        {giftData.id && (
+        {listData.id && (
           <Button
             size="sm"
             variant="ghost"
-            onClick={handleDelete}
+            onClick={handleDeleteList}
             className="text-destructive hover:text-destructive"
           >
             <Trash2 className="h-4 w-4" />
@@ -181,54 +208,47 @@ export function GiftCard({ initialData, onDelete }: GiftCardProps) {
       </CardHeader>
 
       <CardContent className="space-y-4">
-        <div>
-          <Label htmlFor="gift-idea">Gift Idea</Label>
-          <Textarea
-            id="gift-idea"
-            value={giftData.gift_idea}
-            onChange={(e) => handleInputChange('gift_idea', e.target.value)}
-            placeholder="Enter a gift idea..."
-            rows={3}
+        {/* Existing gift items */}
+        {giftItems.map((item) => (
+          <GiftItem
+            key={item.id}
+            item={item}
+            listId={listData.id!}
+            onSave={loadGiftItems}
+            onDelete={handleDeleteItem}
           />
-        </div>
+        ))}
 
-        <div>
-          <Label htmlFor="price">Price</Label>
-          <Input
-            id="price"
-            type="number"
-            step="0.01"
-            value={giftData.price}
-            onChange={(e) => handleInputChange('price', e.target.value)}
-            placeholder="0.00"
+        {/* New gift item form */}
+        {showNewItem && listData.id && (
+          <GiftItem
+            listId={listData.id}
+            onSave={() => {
+              setShowNewItem(false);
+              loadGiftItems();
+            }}
+            isNew
           />
-        </div>
+        )}
 
-        <div>
-          <Label htmlFor="url">URL</Label>
-          <div className="flex gap-2">
-            <Input
-              id="url"
-              value={giftData.url}
-              onChange={(e) => handleInputChange('url', e.target.value)}
-              placeholder="https://example.com"
-              className="flex-1"
-            />
-            {giftData.url && (
-              <Button
-                size="sm"
-                variant="outline"
-                onClick={openUrl}
-              >
-                <ExternalLink className="h-4 w-4" />
-              </Button>
-            )}
-          </div>
-        </div>
+        {/* Add new item button */}
+        {listData.id && !showNewItem && (
+          <Button
+            onClick={() => setShowNewItem(true)}
+            variant="outline"
+            className="w-full"
+          >
+            <Plus className="h-4 w-4 mr-2" />
+            Add Gift Idea
+          </Button>
+        )}
 
-        <Button onClick={saveData} className="w-full">
-          Save Gift
-        </Button>
+        {/* Save list button (for new lists) */}
+        {!listData.id && (
+          <Button onClick={saveListTitle} className="w-full">
+            Create Gift List
+          </Button>
+        )}
       </CardContent>
     </Card>
   );

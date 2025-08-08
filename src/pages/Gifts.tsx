@@ -8,26 +8,25 @@ import { Breadcrumbs } from '@/components/Breadcrumbs';
 import { AIChatbot } from '@/components/AIChatbot';
 import { SEO } from '@/components/SEO';
 
-interface GiftData {
+interface GiftListData {
   id: string;
   list_title: string;
-  gift_idea: string;
-  price: number;
-  url: string;
+  created_at: string;
+  updated_at: string;
 }
 
 export function Gifts() {
   const { user } = useAuth();
-  const [gifts, setGifts] = useState<GiftData[]>([]);
+  const [giftLists, setGiftLists] = useState<GiftListData[]>([]);
   const [showNewCard, setShowNewCard] = useState(false);
 
   useEffect(() => {
     if (user) {
-      loadGifts();
+      loadGiftLists();
     }
   }, [user]);
 
-  const loadGifts = async () => {
+  const loadGiftLists = async () => {
     try {
       const { data, error } = await supabase
         .from('gift_lists')
@@ -36,14 +35,14 @@ export function Gifts() {
         .order('created_at', { ascending: false });
 
       if (error) throw error;
-      setGifts(data || []);
+      setGiftLists(data || []);
     } catch (error) {
-      console.error('Error loading gifts:', error);
+      console.error('Error loading gift lists:', error);
     }
   };
 
-  const handleDeleteGift = (id: string) => {
-    setGifts(prev => prev.filter(gift => gift.id !== id));
+  const handleDeleteList = (id: string) => {
+    setGiftLists(prev => prev.filter(list => list.id !== id));
   };
 
   const addNewCard = () => {
@@ -95,22 +94,22 @@ export function Gifts() {
             <GiftCard 
               onDelete={() => {
                 setShowNewCard(false);
-                loadGifts();
+                loadGiftLists();
               }}
             />
           )}
 
-          {/* Existing gift cards */}
-          {gifts.map((gift) => (
+          {/* Existing gift lists */}
+          {giftLists.map((list) => (
             <GiftCard
-              key={gift.id}
-              initialData={gift}
-              onDelete={handleDeleteGift}
+              key={list.id}
+              initialData={list}
+              onDelete={handleDeleteList}
             />
           ))}
         </div>
 
-        {gifts.length === 0 && !showNewCard && (
+        {giftLists.length === 0 && !showNewCard && (
           <div className="text-center py-12">
             <p className="text-muted-foreground mb-4">
               No gift lists yet. Create your first one to get started!

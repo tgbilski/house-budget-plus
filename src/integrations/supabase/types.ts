@@ -47,35 +47,56 @@ export type Database = {
         }
         Relationships: []
       }
-      gift_lists: {
+      gift_items: {
         Row: {
           created_at: string
           gift_idea: string | null
           id: string
-          list_title: string
+          list_id: string
           price: number | null
           updated_at: string
           url: string | null
-          user_id: string
         }
         Insert: {
           created_at?: string
           gift_idea?: string | null
           id?: string
-          list_title?: string
+          list_id: string
           price?: number | null
           updated_at?: string
           url?: string | null
-          user_id: string
         }
         Update: {
           created_at?: string
           gift_idea?: string | null
           id?: string
-          list_title?: string
+          list_id?: string
           price?: number | null
           updated_at?: string
           url?: string | null
+        }
+        Relationships: []
+      }
+      gift_lists: {
+        Row: {
+          created_at: string
+          id: string
+          list_title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          list_title?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          list_title?: string
+          updated_at?: string
           user_id?: string
         }
         Relationships: []
