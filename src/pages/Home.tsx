@@ -69,7 +69,7 @@ const Home = () => {
               />
             </div>
             <h1 className="text-3xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
-              Home Budget Calculator
+              House Budget Calculator!
             </h1>
             <p className="text-xl md:text-2xl text-muted-foreground mb-8 max-w-3xl mx-auto">
               Smart financial planning tools with AI insights. Track expenses, compare vendors, and make informed decisions.
