@@ -3,12 +3,11 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { MessageCircle, X, Send, Mic, MicOff, Volume2, VolumeX } from 'lucide-react';
+import { MessageCircle, X, Send, Mic, MicOff } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/hooks/useAuth';
 import { useSubscription } from '@/hooks/useSubscription';
 import { supabase } from '@/integrations/supabase/client';
-import { useRealtimeChat } from '@/hooks/useRealtimeChat';
 
 interface Message {
   id: string;
@@ -25,24 +24,16 @@ interface AIChatbotProps {
 export function AIChatbot({ pageContext, pageName }: AIChatbotProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [input, setInput] = useState('');
-  const [textMessages, setTextMessages] = useState<Message[]>([]);
+  const [messages, setMessages] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [useVoice, setUseVoice] = useState(false);
+  const [isRecording, setIsRecording] = useState(false);
+  const [isTranscribing, setIsTranscribing] = useState(false);
   const { user } = useAuth();
   const { subscribed } = useSubscription();
   const { toast } = useToast();
   const messagesEndRef = useRef<HTMLDivElement>(null);
-
-  const {
-    messages: voiceMessages,
-    isConnected,
-    isRecording,
-    isSpeaking,
-    startVoiceChat,
-    stopVoiceChat,
-    sendTextMessage,
-    error: voiceError
-  } = useRealtimeChat();
+  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
+  const audioChunksRef = useRef<Blob[]>([]);
 
   // Access control
   const hasAccess = user?.email === 'Tgbilski@gmail.com' || subscribed;
@@ -53,59 +44,41 @@ export function AIChatbot({ pageContext, pageName }: AIChatbotProps) {
 
   useEffect(() => {
     scrollToBottom();
-  }, [textMessages, voiceMessages]);
+  }, [messages]);
 
   useEffect(() => {
-    if (voiceError) {
-      toast({
-        title: "Voice Chat Error",
-        description: voiceError,
-        variant: "destructive",
-      });
-    }
-  }, [voiceError, toast]);
-
-  useEffect(() => {
-    if (isOpen && textMessages.length === 0) {
+    if (isOpen && messages.length === 0) {
       const welcomeMessage: Message = {
         id: Date.now().toString(),
         content: `Hi! I'm your AI assistant for the ${pageName} page. I can help guide you through filling out the forms and using the features here. You can type your questions or use voice input!`,
         type: 'assistant',
         timestamp: new Date(),
       };
-      setTextMessages([welcomeMessage]);
+      setMessages([welcomeMessage]);
     }
-  }, [isOpen, pageName, textMessages.length]);
+  }, [isOpen, pageName, messages.length]);
 
-  const handleSendMessage = async () => {
-    if (!input.trim()) return;
+  const handleSendMessage = async (messageText: string = input) => {
+    if (!messageText.trim()) return;
 
-    if (useVoice && isConnected) {
-      // Send text through voice chat
-      sendTextMessage(input);
-      setInput('');
-      return;
-    }
-
-    // Send through regular chat
     const userMessage: Message = {
       id: Date.now().toString(),
       type: 'user',
-      content: input,
+      content: messageText,
       timestamp: new Date()
     };
 
-    setTextMessages(prev => [...prev, userMessage]);
+    setMessages(prev => [...prev, userMessage]);
     setInput('');
     setIsLoading(true);
 
     try {
       const { data, error } = await supabase.functions.invoke('ai-chat-assistant', {
         body: { 
-          message: input,
+          message: messageText,
           pageContext,
           pageName,
-          conversationHistory: textMessages.slice(-5)
+          conversationHistory: messages.slice(-5)
         }
       });
 
@@ -118,12 +91,11 @@ export function AIChatbot({ pageContext, pageName }: AIChatbotProps) {
         timestamp: new Date()
       };
 
-      setTextMessages(prev => [...prev, assistantMessage]);
+      setMessages(prev => [...prev, assistantMessage]);
 
       // Handle autofill suggestions
       if (data.autofill) {
         if (data.autofill.action === 'fill_budget') {
-          // Dispatch budget autofill event
           window.dispatchEvent(new CustomEvent('budgetAutofill', {
             detail: data.autofill
           }));
@@ -133,7 +105,6 @@ export function AIChatbot({ pageContext, pageName }: AIChatbotProps) {
             description: "I've updated your budget calculator with the specified amounts.",
           });
         } else if (data.autofill.action === 'fill_form' && data.autofill.entries) {
-          // Dispatch takeout calendar autofill events
           data.autofill.entries.forEach((entry: any) => {
             const event = new CustomEvent('autofill-entry', {
               detail: entry
@@ -146,7 +117,6 @@ export function AIChatbot({ pageContext, pageName }: AIChatbotProps) {
             description: `Added ${data.autofill.entries.length} entries to your takeout calendar.`,
           });
         } else if (data.autofill.action === 'fill_gift') {
-          // Dispatch gift autofill event
           window.dispatchEvent(new CustomEvent('giftAutofill', {
             detail: data.autofill.data
           }));
@@ -169,29 +139,98 @@ export function AIChatbot({ pageContext, pageName }: AIChatbotProps) {
     }
   };
 
-  const toggleVoiceMode = async () => {
-    if (useVoice) {
-      stopVoiceChat();
-      setUseVoice(false);
-    } else {
-      try {
-        await startVoiceChat();
-        setUseVoice(true);
-        toast({
-          title: "Voice Mode Activated",
-          description: "You can now speak to the AI assistant!",
-        });
-      } catch (error) {
-        toast({
-          title: "Voice Mode Error",
-          description: "Failed to activate voice mode. Please check microphone permissions.",
-          variant: "destructive",
-        });
-      }
+  const startRecording = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const mediaRecorder = new MediaRecorder(stream);
+      mediaRecorderRef.current = mediaRecorder;
+      audioChunksRef.current = [];
+
+      mediaRecorder.ondataavailable = (event) => {
+        audioChunksRef.current.push(event.data);
+      };
+
+      mediaRecorder.onstop = async () => {
+        const audioBlob = new Blob(audioChunksRef.current, { type: 'audio/webm' });
+        await transcribeAudio(audioBlob);
+        stream.getTracks().forEach(track => track.stop());
+      };
+
+      mediaRecorder.start();
+      setIsRecording(true);
+      
+      toast({
+        title: "Recording Started",
+        description: "Speak your message. Click the mic again to stop.",
+      });
+    } catch (error) {
+      console.error('Error starting recording:', error);
+      toast({
+        title: "Recording Error",
+        description: "Failed to access microphone. Please check permissions.",
+        variant: "destructive",
+      });
     }
   };
 
-  const currentMessages = useVoice ? voiceMessages : textMessages;
+  const stopRecording = () => {
+    if (mediaRecorderRef.current && isRecording) {
+      mediaRecorderRef.current.stop();
+      setIsRecording(false);
+    }
+  };
+
+  const transcribeAudio = async (audioBlob: Blob) => {
+    setIsTranscribing(true);
+    try {
+      // Convert blob to base64
+      const reader = new FileReader();
+      const base64Promise = new Promise<string>((resolve) => {
+        reader.onload = () => {
+          const result = reader.result as string;
+          resolve(result.split(',')[1]); // Remove data:audio/webm;base64, prefix
+        };
+      });
+      reader.readAsDataURL(audioBlob);
+      const base64Audio = await base64Promise;
+
+      const { data, error } = await supabase.functions.invoke('speech-to-text', {
+        body: { audio: base64Audio }
+      });
+
+      if (error) throw error;
+
+      if (data.text && data.text.trim()) {
+        setInput(data.text);
+        await handleSendMessage(data.text);
+      } else {
+        toast({
+          title: "No Speech Detected",
+          description: "Please try speaking more clearly.",
+          variant: "destructive",
+        });
+      }
+    } catch (error) {
+      console.error('Error transcribing audio:', error);
+      toast({
+        title: "Transcription Error",
+        description: "Failed to convert speech to text. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsTranscribing(false);
+    }
+  };
+
+  const toggleRecording = () => {
+    if (isRecording) {
+      stopRecording();
+    } else {
+      startRecording();
+    }
+  };
+
+  
 
   if (!hasAccess) {
     return (
@@ -270,19 +309,19 @@ export function AIChatbot({ pageContext, pageName }: AIChatbotProps) {
               <Button
                 variant="outline"
                 size="icon"
-                onClick={toggleVoiceMode}
-                className={`h-8 w-8 ${useVoice ? 'bg-primary text-primary-foreground' : ''}`}
+                onClick={toggleRecording}
+                disabled={isTranscribing}
+                className={`h-8 w-8 ${isRecording ? 'bg-red-500 text-white' : ''}`}
               >
-                {useVoice ? <Volume2 className="h-4 w-4" /> : <VolumeX className="h-4 w-4" />}
+                {isRecording ? <MicOff className="h-4 w-4" /> : <Mic className="h-4 w-4" />}
               </Button>
               <Button
                 variant="ghost"
                 size="icon"
                 onClick={() => {
                   setIsOpen(false);
-                  if (useVoice) {
-                    stopVoiceChat();
-                    setUseVoice(false);
+                  if (isRecording) {
+                    stopRecording();
                   }
                 }}
                 className="h-8 w-8"
@@ -294,19 +333,17 @@ export function AIChatbot({ pageContext, pageName }: AIChatbotProps) {
 
           <CardContent className="flex-1 flex flex-col p-4 pt-0 overflow-hidden">
             {/* Voice Status */}
-            {useVoice && (
+            {(isRecording || isTranscribing) && (
               <div className="mb-3 p-2 rounded-lg bg-muted text-center text-sm">
-                {!isConnected && "Connecting to voice chat..."}
-                {isConnected && !isRecording && "Voice chat ready"}
-                {isRecording && !isSpeaking && "🎤 Listening..."}
-                {isSpeaking && "🔊 AI is speaking..."}
+                {isRecording && "🎤 Recording... Click mic to stop"}
+                {isTranscribing && "🔄 Converting speech to text..."}
               </div>
             )}
 
             {/* Messages */}
             <ScrollArea className="flex-1 pr-3">
               <div className="space-y-4">
-                {currentMessages.map((message) => (
+                {messages.map((message) => (
                   <div
                     key={message.id}
                     className={`flex ${message.type === 'user' ? 'justify-end' : 'justify-start'}`}
@@ -338,31 +375,25 @@ export function AIChatbot({ pageContext, pageName }: AIChatbotProps) {
               </div>
             </ScrollArea>
 
-            {/* Input - Only show for text mode or when voice is connected */}
-            {(!useVoice || (useVoice && isConnected)) && (
-              <div className="flex gap-2 mt-3">
-                <Input
-                  value={input}
-                  onChange={(e) => setInput(e.target.value)}
-                  placeholder={useVoice ? "Type or speak your message..." : "Type your message..."}
-                  onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
-                  disabled={isLoading}
-                  className="flex-1"
-                />
-                <Button
-                  onClick={handleSendMessage}
-                  disabled={!input.trim() || isLoading}
-                  size="icon"
-                  className="shrink-0"
-                >
-                  {useVoice && isRecording ? (
-                    <Mic className="h-4 w-4" />
-                  ) : (
-                    <Send className="h-4 w-4" />
-                  )}
-                </Button>
-              </div>
-            )}
+            {/* Input */}
+            <div className="flex gap-2 mt-3">
+              <Input
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                placeholder="Type your message or use voice..."
+                onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
+                disabled={isLoading || isTranscribing}
+                className="flex-1"
+              />
+              <Button
+                onClick={() => handleSendMessage()}
+                disabled={!input.trim() || isLoading || isTranscribing}
+                size="icon"
+                className="shrink-0"
+              >
+                <Send className="h-4 w-4" />
+              </Button>
+            </div>
           </CardContent>
         </Card>
       )}

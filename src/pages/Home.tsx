@@ -10,19 +10,19 @@ import { AdSense } from "@/components/AdSense";
 const Home = () => {
   const tools = [
     {
-      title: "🤖 AI Financial Insights",
-      description: "Get instant AI-powered financial advice and personalized insights to optimize your budget.",
-      icon: Brain,
-      href: "/ai-insights",
-      color: "bg-gradient-to-br from-orange-500/10 to-red-500/10 text-orange-600 border-orange-200",
-      featured: true
-    },
-    {
-      title: "Smart Budget Calculator",
+      title: "Monthly Budget Calculator",
       description: "Track income and expenses with intelligent categorization and spending insights.",
       icon: Calculator,
       href: "/budget",
-      color: "bg-primary/10 text-primary"
+      color: "bg-primary/10 text-primary",
+      featured: true
+    },
+    {
+      title: "AI Financial Insights",
+      description: "Get instant AI-powered financial advice and personalized insights to optimize your budget.",
+      icon: Brain,
+      href: "/ai-insights",
+      color: "bg-orange-500/10 text-orange-600"
     },
     {
       title: "Vendor Quote Comparison",
@@ -69,20 +69,20 @@ const Home = () => {
               />
             </div>
             <h1 className="text-3xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
-              AI-Powered Budget Master
+              Home Budget Calculator
             </h1>
             <p className="text-xl md:text-2xl text-muted-foreground mb-8 max-w-3xl mx-auto">
-              Let AI transform your finances. Smart budgeting, instant insights, smarter decisions.
+              Smart financial planning tools with AI insights. Track expenses, compare vendors, and make informed decisions.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button asChild size="lg" className="text-lg px-8 bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70">
-                <Link to="/ai-insights">
-                  🤖 Try AI Insights <ArrowRight className="ml-2 h-5 w-5" />
+              <Button asChild size="lg" className="text-lg px-8">
+                <Link to="/budget">
+                  Start Budgeting <ArrowRight className="ml-2 h-5 w-5" />
                 </Link>
               </Button>
               <Button asChild variant="outline" size="lg" className="text-lg px-8">
-                <Link to="/budget">
-                  Start Budget
+                <Link to="/ai-insights">
+                  Get AI Insights
                 </Link>
               </Button>
             </div>
@@ -94,7 +94,7 @@ const Home = () => {
           <div className="max-w-6xl mx-auto">
             <div className="text-center mb-16">
               <h2 className="text-3xl md:text-4xl font-bold mb-4">
-                AI-Enhanced Financial Tools
+                Financial Tools for Every Need
               </h2>
               <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
                 Smart tools powered by AI to make budgeting effortless and insights instant.
@@ -106,7 +106,7 @@ const Home = () => {
                 <Card 
                   key={index} 
                   className={`group hover:shadow-lg transition-all duration-300 border-2 hover:border-primary/20 ${
-                    tool.featured ? 'md:col-span-2 lg:col-span-1 ring-2 ring-orange-200 bg-gradient-to-br from-orange-50/50 to-red-50/50' : ''
+                    tool.featured ? 'md:col-span-2 lg:col-span-1 ring-2 ring-primary/20' : ''
                   }`}
                 >
                   <CardHeader>
@@ -137,11 +137,11 @@ const Home = () => {
         <section className="py-20 px-4 bg-secondary/30">
           <div className="max-w-4xl mx-auto text-center">
             <h2 className="text-3xl font-bold mb-8">
-              Why AI Makes the Difference
+              Why Choose Our Financial Tools?
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               <div className="space-y-4">
-                <div className="w-16 h-16 bg-gradient-to-br from-green-500/10 to-emerald-500/10 text-green-600 rounded-full flex items-center justify-center mx-auto">
+                <div className="w-16 h-16 bg-primary/10 text-primary rounded-full flex items-center justify-center mx-auto">
                   <Calculator className="h-8 w-8" />
                 </div>
                 <h3 className="text-xl font-semibold">100% Free</h3>
@@ -150,7 +150,7 @@ const Home = () => {
                 </p>
               </div>
               <div className="space-y-4">
-                <div className="w-16 h-16 bg-gradient-to-br from-orange-500/10 to-red-500/10 text-orange-600 rounded-full flex items-center justify-center mx-auto">
+                <div className="w-16 h-16 bg-primary/10 text-primary rounded-full flex items-center justify-center mx-auto">
                   <Brain className="h-8 w-8" />
                 </div>
                 <h3 className="text-xl font-semibold">AI-Powered</h3>
@@ -159,7 +159,7 @@ const Home = () => {
                 </p>
               </div>
               <div className="space-y-4">
-                <div className="w-16 h-16 bg-gradient-to-br from-blue-500/10 to-purple-500/10 text-blue-600 rounded-full flex items-center justify-center mx-auto">
+                <div className="w-16 h-16 bg-primary/10 text-primary rounded-full flex items-center justify-center mx-auto">
                   <Scale className="h-8 w-8" />
                 </div>
                 <h3 className="text-xl font-semibold">Instant Results</h3>
@@ -180,22 +180,22 @@ const Home = () => {
         <section className="py-20 px-4">
           <div className="max-w-4xl mx-auto text-center">
             <h2 className="text-3xl font-bold mb-6">
-              Ready for AI-Powered Financial Success?
+              Ready to Take Control of Your Finances?
             </h2>
             <p className="text-lg text-muted-foreground mb-8">
-              Experience the future of budgeting. Let AI guide your financial decisions.
+              Start with our budget calculator and discover AI-powered financial insights.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button asChild size="lg" className="text-lg px-8 bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600">
-                <Link to="/ai-insights">
-                  🤖 Get AI Insights <ArrowRight className="ml-2 h-5 w-5" />
+              <Button asChild size="lg" className="text-lg px-8">
+                <Link to="/budget">
+                  Start Your Budget <ArrowRight className="ml-2 h-5 w-5" />
                 </Link>
               </Button>
               <Button 
                 asChild 
                 variant="outline" 
                 size="lg"
-                onClick={() => window.location.href = 'mailto:homebudgetcalculator@gmail.com?subject=AI Budget Calculator Feedback'}
+                onClick={() => window.location.href = 'mailto:homebudgetcalculator@gmail.com?subject=Budget Calculator Feedback'}
               >
                 <span>Contact Us</span>
               </Button>
