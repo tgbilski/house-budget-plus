@@ -57,20 +57,22 @@ const HeroSection = () => (
   <section
     className="relative py-20 px-4 bg-cover bg-no-repeat bg-right"
     style={{
-      backgroundImage: `url('https://res.cloudinary.com/dqh8kcdas/image/upload/v1754758366/Gemini_Generated_Image_40ga540ga540ga54_smkr18.png')`
+      backgroundImage: `url('https://res.cloudinary.com/dqh8kcdas/image/upload/v1754757418/Gemini_Generated_Image_40ga540ga540ga54_smkr18.png')`
     }}
   >
     <div className="max-w-6xl mx-auto text-left">
-      <div className="flex mb-6 justify-start">
-        <img
-          src="/lovable-uploads/ed809955-ef71-4d81-b072-945082f4380a.png"
-          alt="Budget Calculator mascot"
-          className="w-[100px] h-[100px] object-contain"
-        />
+      <div className="flex flex-col items-center">
+        <div className="flex mb-6">
+          <img
+            src="/lovable-uploads/ed809955-ef71-4d81-b072-945082f4380a.png"
+            alt="Budget Calculator mascot"
+            className="w-[100px] h-[100px] object-contain"
+          />
+        </div>
+        <h1 className="text-2xl md:text-4xl font-bold mb-8 text-gray-900">
+          House Budget Calculator!
+        </h1>
       </div>
-      <h1 className="text-2xl md:text-4xl font-bold mb-8 text-gray-900">
-        House Budget Calculator!
-      </h1>
       <p className="text-base md:text-xl text-muted-foreground mb-6 max-w-3xl">
         Smart financial planning tools with AI insights. Track expenses, compare vendors, and make informed decisions.
       </p>
