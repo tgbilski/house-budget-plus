@@ -14,7 +14,7 @@ const toolsData = [
     icon: Calculator,
     href: "/budget",
     color: "bg-primary/10 text-primary",
-    featured: true
+    // Removed the 'featured: true' prop
   },
   {
     title: "AI Financial Insights",
@@ -61,7 +61,7 @@ const HeroSection = () => (
     }}
   >
     <div className="max-w-6xl mx-auto text-left">
-      <div className="flex flex-col items-left">
+      <div className="flex flex-col items-start">
         <div className="flex mb-6">
           <img
             src="/lovable-uploads/ed809955-ef71-4d81-b072-945082f4380a.png"
@@ -107,9 +107,7 @@ const ToolsGrid = () => (
         {toolsData.map((tool, index) => (
           <Link to={tool.href} key={index}>
             <Card
-              className={`group relative hover:shadow-lg transition-all duration-300 border-2 hover:border-primary/20 cursor-pointer hover:scale-105 ${
-                tool.featured ? 'md:col-span-2 lg:col-span-1 ring-2 ring-primary/20' : ''
-              }`}
+              className={`group relative hover:shadow-lg transition-all duration-300 border-2 hover:border-primary/20 cursor-pointer hover:scale-105`}
             >
               <CardHeader>
                 <div className={`w-12 h-12 rounded-lg ${tool.color} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300`}>
