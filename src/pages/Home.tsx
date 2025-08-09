@@ -61,7 +61,7 @@ const HeroSection = () => (
     }}
   >
     <div className="max-w-6xl mx-auto text-left">
-      <div className="flex flex-col items-center">
+      <div className="flex flex-col items-left">
         <div className="flex mb-6">
           <img
             src="/lovable-uploads/ed809955-ef71-4d81-b072-945082f4380a.png"
