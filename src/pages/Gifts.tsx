@@ -57,7 +57,7 @@ export function Gifts() {
   const pageContext = "This is the Gifts page where users can create multiple gift list cards for different holidays or birthdays. Each card allows users to enter a gift idea, price, and URL that opens in a new tab. Users can edit the title of each card and all data is saved to their account. The AI assistant can help fill out gift information.";
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background to-muted/20">
+    <div className="min-h-screen">
       <SEO 
         title="Gift Lists"
         description="Organize your gift ideas for holidays and birthdays. Keep track of gift ideas, prices, and links all in one place."
