@@ -120,7 +120,7 @@ const ToolsGrid = () => (
                   {tool.description}
                 </CardDescription>
               </CardHeader>
-              <div className="absolute bottom-4 right-4 flex items-center text-sm text-primary group-hover:translate-x-1 transition-transform duration-300">
+              <div className="absolute top-4 right-4 flex items-center text-sm text-primary group-hover:translate-x-1 transition-transform duration-300">
                 try now <ArrowRight className="ml-1 h-4 w-4" />
               </div>
             </Card>
