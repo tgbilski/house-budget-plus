@@ -27,8 +27,8 @@ const Header: React.FC = () => {
   };
 
   return (
-    <header className="w-full bg-muted border-b border-border">
-      <div className="container mx-auto px-4 h-16 flex items-center justify-between">
+    <header className="w-full bg-muted border-b border-border sticky top-0 z-50">
+      <div className="container mx-auto px-4 h-16 flex items-center justify-between min-h-[64px]">
         {/* Logo */}
         <div className="flex items-center">
           <img 
