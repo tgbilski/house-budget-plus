@@ -57,7 +57,7 @@ const HeroSection = () => (
   <section
     className="relative py-20 px-4 bg-cover bg-no-repeat bg-right"
     style={{
-      backgroundImage: `url('https://res.cloudinary.com/dqh8kcdas/image/upload/v1754757418/Gemini_Generated_Image_40ga540ga540ga54_smkr18.png')`
+      backgroundImage: `url('https://res.cloudinary.com/dqh8kcdas/image/upload/v1754758061/Gemini_Generated_Image_40ga540ga540ga54_smkr18.png')`
     }}
   >
     <div className="max-w-6xl mx-auto text-left">
