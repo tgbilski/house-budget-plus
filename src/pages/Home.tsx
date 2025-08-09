@@ -10,7 +10,7 @@ import { AdSense } from "@/components/AdSense";
 const toolsData = [
   {
     title: "Monthly Budget Calculator",
-    description: "Track income and expenses with intelligent categorization and spending insights.",
+    description: "Track income & expenses to calculate monthly budget.",
     icon: Calculator,
     href: "/budget",
     color: "bg-primary/10 text-primary",
@@ -18,35 +18,35 @@ const toolsData = [
   },
   {
     title: "AI Financial Insights",
-    description: "Get instant AI-powered financial advice and personalized insights to optimize your budget.",
+    description: "Get instant AI-powered insight using your data.",
     icon: Brain,
     href: "/ai-insights",
     color: "bg-orange-500/10 text-orange-600"
   },
   {
     title: "Vendor Quote Comparison",
-    description: "Compare contractor quotes instantly. Make smarter purchasing decisions.",
+    description: "Compare contractor quotes & save your favorites.",
     icon: Scale,
     href: "/compare-prices",
     color: "bg-blue-500/10 text-blue-600"
   },
   {
     title: "Takeout Tracker",
-    description: "Monitor dining expenses with calendar view. Spot spending patterns instantly.",
+    description: "Monitor dining expenses within calendar view.",
     icon: Calendar,
     href: "/takeout",
     color: "bg-green-500/10 text-green-600"
   },
   {
     title: "Vacation Planner",
-    description: "Plan trips with budget analysis. Compare destinations and costs effortlessly.",
+    description: "Plan trips & compare vacation costs.",
     icon: Plane,
     href: "/vacation",
     color: "bg-purple-500/10 text-purple-600"
   },
   {
     title: "Gifts & Celebrations",
-    description: "Organize gift ideas and track spending for all your celebrations and holidays.",
+    description: "Organize gift ideas & track holiday costs.",
     icon: Gift,
     href: "/gifts",
     color: "bg-pink-500/10 text-pink-600"
