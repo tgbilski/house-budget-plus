@@ -50,7 +50,7 @@ const HeroSection = () => (
   <section
     className="relative py-20 px-4 bg-cover bg-no-repeat bg-right"
     style={{
-      backgroundImage: `url('http://googleusercontent.com/file_content/2')`
+      backgroundImage: `url('https://app.box.com/s/6j1jzmngo9vtbd096xpwztty1rmd6k0s')`
     }}
   >
     <div className="max-w-6xl mx-auto text-left">
