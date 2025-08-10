@@ -8,6 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Textarea } from '@/components/ui/textarea';
 import { useAuth } from '@/hooks/useAuth';
 import { useCurrency } from '@/hooks/useCurrency';
+import { useBadges } from '@/hooks/useBadges';
 import { supabase } from '@/integrations/supabase/client';
 import { AdSense } from '@/components/AdSense';
 import { useToast } from '@/hooks/use-toast';
@@ -202,12 +203,14 @@ const Vacation: React.FC = () => {
   const { user } = useAuth();
   const { currency } = useCurrency();
   const { toast } = useToast();
+  const { earnBadge } = useBadges();
 
   useEffect(() => {
     if (user) {
       loadData();
+      earnBadge('vacation');
     }
-  }, [user, selectedProject]);
+  }, [user, selectedProject, earnBadge]);
 
   useEffect(() => {
     if (user && options.length > 0) {

@@ -9,6 +9,7 @@ import { Switch } from '@/components/ui/switch';
 import { Textarea } from '@/components/ui/textarea';
 import { useAuth } from '@/hooks/useAuth';
 import { useCurrency } from '@/hooks/useCurrency';
+import { useBadges } from '@/hooks/useBadges';
 import { supabase } from '@/integrations/supabase/client';
 import { AdSense } from '@/components/AdSense';
 import { useToast } from '@/hooks/use-toast';
@@ -298,13 +299,15 @@ const CompareVendors: React.FC = () => {
   const { user } = useAuth();
   const { currency } = useCurrency();
   const { toast } = useToast();
+  const { earnBadge } = useBadges();
 
   // Initialize with new project state if no data exists
   useEffect(() => {
     if (user) {
       loadData();
+      earnBadge('compare_vendors');
     }
-  }, [user, selectedProject]);
+  }, [user, selectedProject, earnBadge]);
 
   const loadData = async () => {
     if (!user) return;

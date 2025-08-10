@@ -6,6 +6,7 @@ import { Link } from "react-router-dom";
 import { SEO } from "@/components/SEO";
 import { seoData } from "@/utils/seoData";
 import { AdSense } from "@/components/AdSense";
+import { BadgeDisplay } from "@/components/BadgeDisplay";
 
 const toolsData = [
   {
@@ -210,11 +211,21 @@ const Home = () => {
         structuredData={seoData.home.structuredData}
         canonical="https://www.housebudgetcalculator.com/"
       />
-      <div className="min-h-screen">
+      <div className="min-h-screen relative">
         <HeroSection />
         <ToolsGrid />
         <FeaturesSection />
         <CTASection />
+        
+        {/* Badge Display Section - Right Side */}
+        <div className="fixed top-20 right-4 w-80 z-10 hidden lg:block">
+          <BadgeDisplay />
+        </div>
+        
+        {/* Mobile Badge Display */}
+        <div className="lg:hidden container mx-auto px-4 mt-8">
+          <BadgeDisplay />
+        </div>
       </div>
     </>
   );

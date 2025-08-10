@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Plus } from 'lucide-react';
 import { GiftCard } from '@/components/GiftCard';
 import { useAuth } from '@/hooks/useAuth';
+import { useBadges } from '@/hooks/useBadges';
 import { supabase } from '@/integrations/supabase/client';
 import { Breadcrumbs } from '@/components/Breadcrumbs';
 import { AIChatbot } from '@/components/AIChatbot';
@@ -17,14 +18,16 @@ interface GiftListData {
 
 export function Gifts() {
   const { user } = useAuth();
+  const { earnBadge } = useBadges();
   const [giftLists, setGiftLists] = useState<GiftListData[]>([]);
   const [showNewCard, setShowNewCard] = useState(false);
 
   useEffect(() => {
     if (user) {
       loadGiftLists();
+      earnBadge('gifts');
     }
-  }, [user]);
+  }, [user, earnBadge]);
 
   const loadGiftLists = async () => {
     try {

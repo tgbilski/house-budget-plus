@@ -1,6 +1,8 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { SEO } from '@/components/SEO';
 import { Breadcrumbs } from '@/components/Breadcrumbs';
+import { useAuth } from '@/hooks/useAuth';
+import { useBadges } from '@/hooks/useBadges';
 import { InternalLinks } from '@/components/InternalLinks';
 import { SocialShare } from '@/components/SocialShare';
 import { FAQ } from '@/components/FAQ';
@@ -149,7 +151,15 @@ const seoData = {
 };
 
 const FinancialResources: React.FC = () => {
+  const { user } = useAuth();
+  const { earnBadge } = useBadges();
   const categories = [...new Set(articles.map(article => article.category))];
+
+  useEffect(() => {
+    if (user) {
+      earnBadge('financial_resources');
+    }
+  }, [user, earnBadge]);
 
   return (
     <div className="min-h-screen">

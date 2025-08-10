@@ -5,6 +5,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import BudgetCalculator from '@/components/BudgetCalculator';
 import { useCurrency } from '@/hooks/useCurrency';
 import { useAuth } from '@/hooks/useAuth';
+import { useBadges } from '@/hooks/useBadges';
 import { supabase } from '@/integrations/supabase/client';
 import { AdSense } from '@/components/AdSense';
 import { SEO } from '@/components/SEO';
@@ -44,12 +45,14 @@ const MonthlyBudget: React.FC = () => {
   const [calculators, setCalculators] = useState<Calculator[]>([{ id: '1' }]);
   const { currency, setCurrency } = useCurrency();
   const { user } = useAuth();
+  const { earnBadge } = useBadges();
 
   useEffect(() => {
     if (user) {
       loadCalculators();
+      earnBadge('monthly_budget');
     }
-  }, [user]);
+  }, [user, earnBadge]);
 
   const loadCalculators = async () => {
     if (!user) return;

@@ -14,6 +14,7 @@ import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
 import { useAuth } from '@/hooks/useAuth';
 import { useCurrency } from '@/hooks/useCurrency';
+import { useBadges } from '@/hooks/useBadges';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { AIChatbot } from '@/components/AIChatbot';
 import { supabase } from '@/integrations/supabase/client';
@@ -52,6 +53,7 @@ const TakeoutCalendar: React.FC = () => {
   const [activeMonth, setActiveMonth] = useState(new Date().getMonth());
   const { user } = useAuth();
   const { currency } = useCurrency();
+  const { earnBadge } = useBadges();
   const isMobile = useIsMobile();
 
   // Generate array of available years (current year + past 4 years)
@@ -60,8 +62,9 @@ const TakeoutCalendar: React.FC = () => {
   useEffect(() => {
     if (user) {
       loadData();
+      earnBadge('takeout_calendar');
     }
-  }, [user, selectedYear]);
+  }, [user, selectedYear, earnBadge]);
 
   const loadData = async () => {
     if (!user) return;

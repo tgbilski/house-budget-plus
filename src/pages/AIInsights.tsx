@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useSubscription } from "@/hooks/useSubscription";
 import { useAuth } from "@/hooks/useAuth";
+import { useBadges } from "@/hooks/useBadges";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -14,6 +15,7 @@ import { Brain, Crown } from "lucide-react";
 
 export default function AIInsights() {
   const { user } = useAuth();
+  const { earnBadge } = useBadges();
   const {
     subscribed,
     subscriptionTier,
@@ -21,6 +23,13 @@ export default function AIInsights() {
     openCustomerPortal,
     loading: subLoading,
   } = useSubscription();
+
+  // Earn badge when user visits this page
+  useEffect(() => {
+    if (user) {
+      earnBadge('ai_insights');
+    }
+  }, [user, earnBadge]);
 
   const [question, setQuestion] = useState("");
   const [answer, setAnswer] = useState("");
