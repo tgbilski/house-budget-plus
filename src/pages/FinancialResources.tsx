@@ -157,7 +157,12 @@ const FinancialResources: React.FC = () => {
 
   useEffect(() => {
     if (user) {
-      earnBadge('financial_resources');
+      // Award badge after user spends some time reading (3 seconds)
+      const timer = setTimeout(() => {
+        earnBadge('financial_resources');
+      }, 3000);
+      
+      return () => clearTimeout(timer);
     }
   }, [user, earnBadge]);
 

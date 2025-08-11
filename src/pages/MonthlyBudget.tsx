@@ -47,12 +47,22 @@ const MonthlyBudget: React.FC = () => {
   const { user } = useAuth();
   const { earnBadge } = useBadges();
 
+  // Listen for badge earning events
+  useEffect(() => {
+    const handleEarnBadge = (event: CustomEvent) => {
+      const { badgeType } = event.detail;
+      earnBadge(badgeType);
+    };
+
+    window.addEventListener('earnBadge', handleEarnBadge as EventListener);
+    return () => window.removeEventListener('earnBadge', handleEarnBadge as EventListener);
+  }, [earnBadge]);
+
   useEffect(() => {
     if (user) {
       loadCalculators();
-      earnBadge('monthly_budget');
     }
-  }, [user, earnBadge]);
+  }, [user]);
 
   const loadCalculators = async () => {
     if (!user) return;

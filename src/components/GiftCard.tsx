@@ -103,6 +103,9 @@ export function GiftCard({ initialData, onDelete }: GiftCardProps) {
 
         if (error) throw error;
         setListData(prev => ({ ...prev, id: data.id }));
+        
+        // Award badge when user creates their first gift list
+        window.dispatchEvent(new CustomEvent('earnBadge', { detail: { badgeType: 'gifts' } }));
       }
 
       setIsEditingTitle(false);

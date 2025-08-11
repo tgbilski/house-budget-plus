@@ -305,9 +305,8 @@ const CompareVendors: React.FC = () => {
   useEffect(() => {
     if (user) {
       loadData();
-      earnBadge('compare_vendors');
     }
-  }, [user, selectedProject, earnBadge]);
+  }, [user, selectedProject]);
 
   const loadData = async () => {
     if (!user) return;
@@ -367,6 +366,9 @@ const CompareVendors: React.FC = () => {
 
     if (error) {
       console.error('Error saving data:', error);
+    } else {
+      // Award badge when user actually saves vendor comparison data
+      earnBadge('compare_vendors');
     }
   };
 

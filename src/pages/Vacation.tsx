@@ -208,9 +208,8 @@ const Vacation: React.FC = () => {
   useEffect(() => {
     if (user) {
       loadData();
-      earnBadge('vacation');
     }
-  }, [user, selectedProject, earnBadge]);
+  }, [user, selectedProject]);
 
   useEffect(() => {
     if (user && options.length > 0) {
@@ -276,6 +275,9 @@ const Vacation: React.FC = () => {
 
     if (error) {
       console.error('Error saving data:', error);
+    } else {
+      // Award badge when user actually saves vacation data
+      earnBadge('vacation');
     }
   };
 

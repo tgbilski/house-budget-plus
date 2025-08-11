@@ -174,6 +174,15 @@ const BudgetCalculator: React.FC<BudgetCalculatorProps> = ({
 
     if (error) {
       console.error('Error saving budget data:', error);
+    } else {
+      // Award badge when user actually saves budget data
+      if (pageType === 'monthly_budget' && (monthlyIncome > 0 || Object.keys(fixedExpensesData).length > 0 || additionalExpenses.length > 0 || additionalSubscriptions.length > 0)) {
+        // Dynamically import and use the badge system
+        import('@/hooks/useBadges').then(({ useBadges }) => {
+          // We can't use hooks here, so we'll dispatch a custom event
+          window.dispatchEvent(new CustomEvent('earnBadge', { detail: { badgeType: 'monthly_budget' } }));
+        });
+      }
     }
   };
 

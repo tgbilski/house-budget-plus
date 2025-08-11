@@ -62,9 +62,8 @@ const TakeoutCalendar: React.FC = () => {
   useEffect(() => {
     if (user) {
       loadData();
-      earnBadge('takeout_calendar');
     }
-  }, [user, selectedYear, earnBadge]);
+  }, [user, selectedYear]);
 
   const loadData = async () => {
     if (!user) return;
@@ -208,6 +207,9 @@ const TakeoutCalendar: React.FC = () => {
 
         // Save to database first
         await saveTransactionToDatabase(newSpending);
+
+        // Award badge when user actually adds expense data
+        earnBadge('takeout_calendar');
 
         // Then update local state
         if (existingIndex >= 0) {

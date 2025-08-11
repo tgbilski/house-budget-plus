@@ -24,12 +24,7 @@ export default function AIInsights() {
     loading: subLoading,
   } = useSubscription();
 
-  // Earn badge when user visits this page
-  useEffect(() => {
-    if (user) {
-      earnBadge('ai_insights');
-    }
-  }, [user, earnBadge]);
+  // Removed auto badge earning - now earned when user asks a question
 
   const [question, setQuestion] = useState("");
   const [answer, setAnswer] = useState("");
@@ -49,6 +44,9 @@ export default function AIInsights() {
       if (error) throw error;
 
       setAnswer(data.insight || "No answer returned.");
+      
+      // Award badge when user successfully gets AI insights
+      earnBadge('ai_insights');
     } catch (error) {
       console.error('AI Insights error:', error);
       toast({

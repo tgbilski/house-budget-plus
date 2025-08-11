@@ -19,15 +19,25 @@ interface GiftListData {
 export function Gifts() {
   const { user } = useAuth();
   const { earnBadge } = useBadges();
+
+  // Listen for badge earning events
+  useEffect(() => {
+    const handleEarnBadge = (event: CustomEvent) => {
+      const { badgeType } = event.detail;
+      earnBadge(badgeType);
+    };
+
+    window.addEventListener('earnBadge', handleEarnBadge as EventListener);
+    return () => window.removeEventListener('earnBadge', handleEarnBadge as EventListener);
+  }, [earnBadge]);
   const [giftLists, setGiftLists] = useState<GiftListData[]>([]);
   const [showNewCard, setShowNewCard] = useState(false);
 
   useEffect(() => {
     if (user) {
       loadGiftLists();
-      earnBadge('gifts');
     }
-  }, [user, earnBadge]);
+  }, [user]);
 
   const loadGiftLists = async () => {
     try {
