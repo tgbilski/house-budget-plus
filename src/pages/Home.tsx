@@ -1,83 +1,204 @@
 import React from 'react';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Calculator, Scale, Calendar, Plane, Brain, ArrowRight, Gift } from "lucide-react";
+import { Link } from "react-router-dom";
 import { SEO } from "@/components/SEO";
 import { seoData } from "@/utils/seoData";
-import { BadgeDisplay } from "@/components/BadgeDisplay";
-import { HeroSection } from "@/components/HeroSection";
-import { ToolsGrid } from "@/components/ToolsGrid";
-import { FeaturesSection } from "@/components/FeaturesSection";
-import { CTASection } from "@/components/CTASection";
+import { AdSense } from "@/components/AdSense";
 
-// Demo data for news
-const DEMO_ARTICLES = [
+const toolsData = [
   {
-    title: "Fed Holds Interest Rates Steady",
-    link: "#",
-    thumbnail: "https://placehold.co/300x160?text=Finance+1",
-    pubDate: "2025-08-09",
-    source: "Reuters"
+    title: "Monthly Budget Calculator",
+    description: "Track income & expenses to calculate monthly budget.",
+    icon: Calculator,
+    href: "/budget",
+    color: "bg-primary/10 text-primary",
   },
   {
-    title: "How to Save More Money in 2025",
-    link: "#",
-    thumbnail: "https://placehold.co/300x160?text=Finance+2",
-    pubDate: "2025-08-08",
-    source: "Bloomberg"
+    title: "AI Financial Insights",
+    description: "Get instant AI-powered insight using your data.",
+    icon: Brain,
+    href: "/ai-insights",
+    color: "bg-orange-500/10 text-orange-600"
   },
   {
-    title: "Stock Markets Rally After CPI Report",
-    link: "#",
-    thumbnail: "https://placehold.co/300x160?text=Finance+3",
-    pubDate: "2025-08-07",
-    source: "CNBC"
+    title: "Vendor Quote Comparison",
+    description: "Compare contractor quotes & save your favorites.",
+    icon: Scale,
+    href: "/compare-prices",
+    color: "bg-blue-500/10 text-blue-600"
+  },
+  {
+    title: "Takeout Tracker",
+    description: "Monitor dining expenses within calendar view.",
+    icon: Calendar,
+    href: "/takeout",
+    color: "bg-green-500/10 text-green-600"
+  },
+  {
+    title: "Vacation Planner",
+    description: "Plan trips with budget analysis and compare destinations.",
+    icon: Plane,
+    href: "/vacation",
+    color: "bg-purple-500/10 text-purple-600"
+  },
+  {
+    title: "Gifts & Celebrations",
+    description: "Organize gift ideas and track spending for all your celebrations.",
+    icon: Gift,
+    href: "/gifts",
+    color: "bg-pink-500/10 text-pink-600"
   }
 ];
 
-const fallbackImage = "https://placehold.co/300x160?text=News";
+const HeroSection = () => (
+  <section
+    className="relative py-20 px-4 bg-cover bg-no-repeat bg-right"
+    style={{
+      backgroundImage: `url('https://res.cloudinary.com/dqh8kcdas/image/upload/v1754758366/Gemini_Generated_Image_40ga540ga540ga54_smkr18.png')`
+    }}
+  >
+    <div className="max-w-6xl mx-auto text-left">
+      <div className="flex flex-col items-start">
+        <div className="flex mb-6">
+          <img
+            src="/lovable-uploads/ed809955-ef71-4d81-b072-945082f4380a.png"
+            alt="Budget Calculator mascot"
+            className="w-[100px] h-[100px] object-contain"
+          />
+        </div>
+        <h1 className="text-2xl md:text-4xl font-bold mb-8 text-gray-900">
+          House Budget Calculator!
+        </h1>
+      </div>
+      <p className="text-base md:text-xl text-muted-foreground mb-6 max-w-3xl">
+        Smart financial planning tools with AI insights. Track expenses, compare vendors, and make informed decisions.
+      </p>
+      <div className="flex flex-col sm:flex-row gap-4 justify-start">
+        <Button asChild size="lg" className="text-base px-8">
+          <Link to="/budget">
+            Start Budgeting <ArrowRight className="ml-2 h-5 w-5" />
+          </Link>
+        </Button>
+        <Button asChild variant="outline" size="lg" className="text-base px-8">
+          <Link to="/ai-insights">
+            Get AI Insights
+          </Link>
+        </Button>
+      </div>
+    </div>
+  </section>
+);
 
-// Finance News Section
-const FinanceNewsSection = () => {
-  // Uncomment and use the fetch logic below for live data
-  // const [articles, setArticles] = useState([]);
-  // useEffect(() => {
-  //   fetch("https://api.rss2json.com/v1/api.json?rss_url=https://www.cnbc.com/id/100003114/device/rss/rss.html")
-  //     .then(res => res.json())
-  //     .then(data => setArticles(data.items));
-  // }, []);
-  // For now, use demo data:
-  const articles = DEMO_ARTICLES;
-
-  return (
-    <section className="py-4 px-4 bg-muted/50 border-b border-border">
-      <div className="max-w-6xl mx-auto">
-        <h2 className="text-lg font-bold mb-3">Finance News</h2>
-        <div className="overflow-x-auto no-scrollbar">
-          <div className="flex flex-nowrap gap-4">
-            {articles.map((article, idx) => (
-              <a
-                key={idx}
-                href={article.link}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="min-w-[300px] max-w-[300px] bg-background rounded-lg shadow hover:shadow-lg transition flex-shrink-0"
-              >
-                <img
-                  src={article.thumbnail || fallbackImage}
-                  alt={article.title}
-                  className="rounded-t-lg w-full h-[160px] object-cover"
-                  loading="lazy"
-                />
-                <div className="p-3">
-                  <div className="font-semibold text-sm mb-1">{article.title}</div>
-                  <div className="text-xs text-muted-foreground mb-1">{article.source} &bull; {new Date(article.pubDate).toLocaleDateString()}</div>
+const ToolsGrid = () => (
+  <section className="py-20 px-4">
+    <div className="max-w-6xl mx-auto">
+      <div className="text-center mb-16">
+        <h2 className="text-2xl md:text-3xl font-bold mb-4">
+          Financial Tools for Every Need
+        </h2>
+        <p className="text-base text-muted-foreground max-w-2xl mx-auto">
+          Smart tools powered by AI to make budgeting effortless and insights instant.
+        </p>
+      </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {toolsData.map((tool, index) => (
+          <Link to={tool.href} key={index}>
+            <Card
+              className={`group relative hover:shadow-lg transition-all duration-300 border-2 hover:border-primary/20 cursor-pointer hover:scale-105`}
+            >
+              <CardHeader>
+                <div className={`w-12 h-12 rounded-lg ${tool.color} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300`}>
+                  <tool.icon className="h-6 w-6" />
                 </div>
-              </a>
-            ))}
+                <CardTitle className="text-lg group-hover:text-primary transition-colors">
+                  {tool.title}
+                </CardTitle>
+                <CardDescription className="text-sm">
+                  {tool.description}
+                </CardDescription>
+              </CardHeader>
+              <div className="absolute top-4 right-4 flex items-center text-sm text-primary group-hover:translate-x-1 transition-transform duration-300">
+                try now <ArrowRight className="ml-1 h-4 w-4" />
+              </div>
+            </Card>
+          </Link>
+        ))}
+      </div>
+    </div>
+  </section>
+);
+
+const FeaturesSection = () => (
+  <section className="py-20 px-4 bg-secondary/30">
+    <div className="max-w-4xl mx-auto text-center">
+      <h2 className="text-2xl font-bold mb-8">
+        Why Choose Our Financial Tools?
+      </h2>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className="space-y-4">
+          <div className="w-16 h-16 bg-primary/10 text-primary rounded-full flex items-center justify-center mx-auto">
+            <Calculator className="h-8 w-8" />
           </div>
+          <h3 className="text-lg font-semibold">100% Free</h3>
+          <p className="text-muted-foreground text-sm">
+            Basic tools free forever. Premium AI insights available.
+          </p>
+        </div>
+        <div className="space-y-4">
+          <div className="w-16 h-16 bg-primary/10 text-primary rounded-full flex items-center justify-center mx-auto">
+            <Brain className="h-8 w-8" />
+          </div>
+          <h3 className="text-lg font-semibold">AI-Powered</h3>
+          <p className="text-muted-foreground text-sm">
+            Smart insights that learn from your spending patterns.
+          </p>
+        </div>
+        <div className="space-y-4">
+          <div className="w-16 h-16 bg-primary/10 text-primary rounded-full flex items-center justify-center mx-auto">
+            <Scale className="h-8 w-8" />
+          </div>
+          <h3 className="text-lg font-semibold">Instant Results</h3>
+          <p className="text-muted-foreground text-sm">
+            Get answers and insights in seconds, not hours.
+          </p>
         </div>
       </div>
-    </section>
-  );
-};
+      <div className="max-w-4xl mx-auto mt-12 text-center">
+        <AdSense adSlot="1234567890" />
+      </div>
+    </div>
+  </section>
+);
+
+const CTASection = () => (
+  <section className="py-20 px-4">
+    <div className="max-w-4xl mx-auto text-center">
+      <h2 className="text-2xl font-bold mb-6">
+        Ready to Take Control of Your Finances?
+      </h2>
+      <p className="text-base text-muted-foreground mb-8">
+        Start with our budget calculator and discover AI-powered financial insights.
+      </p>
+      <div className="flex flex-col sm:flex-row gap-4 justify-center">
+        <Button asChild size="lg" className="text-base px-8">
+          <Link to="/budget">
+            Start Your Budget <ArrowRight className="ml-2 h-5 w-5" />
+          </Link>
+        </Button>
+        <Button
+          asChild
+          variant="outline"
+          size="lg"
+          onClick={() => window.location.href = 'mailto:homebudgetcalculator@gmail.com?subject=Budget Calculator Feedback'}
+        >
+          <span>Contact Us</span>
+        </Button>
+      </div>
+    </div>
+  </section>
+);
 
 const Home = () => {
   return (
@@ -89,20 +210,11 @@ const Home = () => {
         structuredData={seoData.home.structuredData}
         canonical="https://www.housebudgetcalculator.com/"
       />
-      <div className="min-h-screen relative">
+      <div className="min-h-screen">
         <HeroSection />
-        <FinanceNewsSection />
         <ToolsGrid />
         <FeaturesSection />
         <CTASection />
-        {/* Badge Display Section - Right Side */}
-        <div className="fixed top-20 right-4 w-80 z-10 hidden lg:block">
-          <BadgeDisplay />
-        </div>
-        {/* Mobile Badge Display */}
-        <div className="lg:hidden container mx-auto px-4 mt-8">
-          <BadgeDisplay />
-        </div>
       </div>
     </>
   );
