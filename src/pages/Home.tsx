@@ -1,16 +1,13 @@
-import React, { useEffect, useState } from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Calculator, Scale, Calendar, Plane, Brain, ArrowRight, Gift } from "lucide-react";
-import { Link } from "react-router-dom";
+import React from 'react';
 import { SEO } from "@/components/SEO";
 import { seoData } from "@/utils/seoData";
-import { AdSense } from "@/components/AdSense";
 import { BadgeDisplay } from "@/components/BadgeDisplay";
+import { HeroSection } from "@/components/HeroSection";
+import { ToolsGrid } from "@/components/ToolsGrid";
+import { FeaturesSection } from "@/components/FeaturesSection";
+import { CTASection } from "@/components/CTASection";
 
-// ...other code (toolsData, HeroSection, etc.)
-
-// 1. FinanceNewsSection: Horizontally scrollable RSS finance news
+// Demo data for news
 const DEMO_ARTICLES = [
   {
     title: "Fed Holds Interest Rates Steady",
@@ -37,9 +34,9 @@ const DEMO_ARTICLES = [
 
 const fallbackImage = "https://placehold.co/300x160?text=News";
 
-// Replace DEMO_ARTICLES and use this state logic to fetch from a real RSS-JSON API (see instructions below)
+// Finance News Section
 const FinanceNewsSection = () => {
-  // Uncomment this to go live:
+  // Uncomment and use the fetch logic below for live data
   // const [articles, setArticles] = useState([]);
   // useEffect(() => {
   //   fetch("https://api.rss2json.com/v1/api.json?rss_url=https://www.cnbc.com/id/100003114/device/rss/rss.html")
@@ -82,7 +79,6 @@ const FinanceNewsSection = () => {
   );
 };
 
-// Home page, with FinanceNewsSection added above ToolsGrid
 const Home = () => {
   return (
     <>
@@ -95,11 +91,10 @@ const Home = () => {
       />
       <div className="min-h-screen relative">
         <HeroSection />
-        <FinanceNewsSection /> {/* <--- NEW SECTION */}
+        <FinanceNewsSection />
         <ToolsGrid />
         <FeaturesSection />
         <CTASection />
-
         {/* Badge Display Section - Right Side */}
         <div className="fixed top-20 right-4 w-80 z-10 hidden lg:block">
           <BadgeDisplay />
