@@ -218,7 +218,7 @@ const Home = () => {
         <CTASection />
         
         {/* Badge Display Section - Right Side */}
-        <div className="fixed top-20 right-4 w-40 z-10 hidden lg:block">
+        <div className="fixed top-20 right-4 w-60 z-10 hidden lg:block">
           <BadgeDisplay />
         </div>
         
