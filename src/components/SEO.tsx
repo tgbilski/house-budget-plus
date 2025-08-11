@@ -23,6 +23,7 @@ export const SEO: React.FC<SEOProps> = ({
       <title>{fullTitle}</title>
       <meta name="description" content={description} />
       <meta name="keywords" content={keywords} />
+      <meta name="google-adsense-account" content="ca-pub-5656855326953521" />
       
       {/* Open Graph tags */}
       <meta property="og:title" content={fullTitle} />
