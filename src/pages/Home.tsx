@@ -7,6 +7,7 @@ import { SEO } from "@/components/SEO";
 import { seoData } from "@/utils/seoData";
 import { AdSense } from "@/components/AdSense";
 import { BadgeDisplay } from "@/components/BadgeDisplay";
+import { RSSFeed } from "@/components/RSSFeed";
 
 const toolsData = [
   {
@@ -213,6 +214,7 @@ const Home = () => {
       />
       <div className="min-h-screen relative">
         <HeroSection />
+        <RSSFeed />
         <ToolsGrid />
         <FeaturesSection />
         <CTASection />
