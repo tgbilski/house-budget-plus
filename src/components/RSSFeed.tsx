@@ -3,6 +3,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { ExternalLink, Calendar, Clock } from "lucide-react";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
+import { supabase } from "@/integrations/supabase/client";
 
 interface RSSItem {
   title: string;
@@ -68,6 +69,7 @@ export const RSSFeed: React.FC<RSSFeedProps> = ({
     const fetchRSSFeed = async () => {
       try {
         setLoading(true);
+        setError(null);
         
         if (!feedUrl) {
           // Use mock data when no feed URL is provided
@@ -78,13 +80,30 @@ export const RSSFeed: React.FC<RSSFeedProps> = ({
           return;
         }
 
-        // TODO: Implement actual RSS feed fetching
-        // This would typically involve a proxy service or server-side API
-        // For now, we'll use mock data
-        setArticles(mockArticles);
+        console.log('Fetching RSS feed from:', feedUrl);
+        
+        // Call our Supabase Edge Function
+        const { data, error } = await supabase.functions.invoke('fetch-rss', {
+          body: { feedUrl }
+        });
+
+        if (error) {
+          throw new Error(error.message);
+        }
+
+        if (data.success) {
+          setArticles(data.data || []);
+        } else {
+          throw new Error(data.error || 'Failed to fetch RSS feed');
+        }
+        
         setLoading(false);
       } catch (err) {
-        setError("Failed to load financial news");
+        console.error('Error fetching RSS feed:', err);
+        setError(err instanceof Error ? err.message : "Failed to load financial news");
+        
+        // Fallback to mock data on error
+        setArticles(mockArticles);
         setLoading(false);
       }
     };
