@@ -214,7 +214,10 @@ const Home = () => {
       />
       <div className="min-h-screen relative">
         <HeroSection />
-        <RSSFeed />
+        <RSSFeed 
+          feedUrl="https://feeds.marketwatch.com/marketwatch/realtimeheadlines/"
+          title="Latest MarketWatch Headlines"
+        />
         <ToolsGrid />
         <FeaturesSection />
         <CTASection />
