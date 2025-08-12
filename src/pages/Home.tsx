@@ -217,13 +217,8 @@ const Home = () => {
         <FeaturesSection />
         <CTASection />
         
-        {/* Badge Display Section - Right Side */}
-        <div className="fixed top-20 right-4 w-60 z-10 hidden lg:block">
-          <BadgeDisplay />
-        </div>
-        
-        {/* Mobile Badge Display */}
-        <div className="lg:hidden container mx-auto px-4 mt-8">
+        {/* Badge Display Section - Bottom */}
+        <div className="container mx-auto px-4 py-8">
           <BadgeDisplay />
         </div>
       </div>
