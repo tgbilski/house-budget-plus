@@ -174,6 +174,8 @@ export const RSSFeed: React.FC<RSSFeedProps> = ({
     );
   }
 
+  console.log('RSSFeed render - articles:', articles.length, articles);
+
   return (
     <section className="py-16 px-4 bg-secondary/20">
       <div className="max-w-6xl mx-auto">
@@ -186,8 +188,13 @@ export const RSSFeed: React.FC<RSSFeedProps> = ({
           </p>
         </div>
         
-        <ScrollArea className="w-full whitespace-nowrap">
-          <div className="flex gap-6 pb-4">
+        {articles.length === 0 ? (
+          <div className="text-center py-8">
+            <p className="text-muted-foreground">No articles found. Using fallback content...</p>
+          </div>
+        ) : (
+          <ScrollArea className="w-full whitespace-nowrap">
+            <div className="flex gap-6 pb-4">
             {articles.map((article, index) => (
               <Card 
                 key={index} 
@@ -227,9 +234,10 @@ export const RSSFeed: React.FC<RSSFeedProps> = ({
                 </CardContent>
               </Card>
             ))}
-          </div>
-          <ScrollBar orientation="horizontal" />
-        </ScrollArea>
+            </div>
+            <ScrollBar orientation="horizontal" />
+          </ScrollArea>
+        )}
       </div>
     </section>
   );
