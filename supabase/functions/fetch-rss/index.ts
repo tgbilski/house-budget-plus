@@ -1,6 +1,5 @@
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-import { DOMParser } from "https://deno.land/x/deno_dom@v0.1.43/deno-dom-wasm.ts";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -28,43 +27,42 @@ function cleanText(text: string | null): string {
 
 function parseRSSFeed(xmlContent: string, feedUrl: string): RSSItem[] {
   try {
-    const parser = new DOMParser();
-    const doc = parser.parseFromString(xmlContent, "application/xml");
-    
-    if (!doc) {
-      throw new Error("Failed to parse XML");
-    }
-
     const items: RSSItem[] = [];
+    let sourceName = new URL(feedUrl).hostname;
     
-    // Try RSS 2.0 format first
-    let itemElements = doc.querySelectorAll("item");
-    let sourceName = cleanText(doc.querySelector("channel > title")?.textContent) || new URL(feedUrl).hostname;
-    
-    // If no items found, try Atom format
-    if (itemElements.length === 0) {
-      itemElements = doc.querySelectorAll("entry");
-      sourceName = cleanText(doc.querySelector("feed > title")?.textContent) || new URL(feedUrl).hostname;
+    // Extract channel/feed title
+    const channelTitleMatch = xmlContent.match(/<channel[^>]*>[\s\S]*?<title[^>]*>(.*?)<\/title>/i) ||
+                             xmlContent.match(/<feed[^>]*>[\s\S]*?<title[^>]*>(.*?)<\/title>/i);
+    if (channelTitleMatch) {
+      sourceName = cleanText(channelTitleMatch[1]);
     }
 
-    for (const item of itemElements) {
-      const title = cleanText(
-        item.querySelector("title")?.textContent
-      );
+    // Extract items using regex (more reliable in edge functions)
+    const itemRegex = /<item[^>]*>([\s\S]*?)<\/item>/gi;
+    const entryRegex = /<entry[^>]*>([\s\S]*?)<\/entry>/gi;
+    
+    let matches = [...xmlContent.matchAll(itemRegex)];
+    if (matches.length === 0) {
+      matches = [...xmlContent.matchAll(entryRegex)];
+    }
+
+    for (const match of matches.slice(0, 10)) {
+      const itemContent = match[1];
       
-      const description = cleanText(
-        item.querySelector("description")?.textContent || 
-        item.querySelector("summary")?.textContent ||
-        item.querySelector("content")?.textContent
-      );
-      
-      const link = item.querySelector("link")?.textContent?.trim() || 
-                  item.querySelector("link")?.getAttribute("href") || '';
-      
-      const pubDate = item.querySelector("pubDate")?.textContent?.trim() || 
-                     item.querySelector("published")?.textContent?.trim() ||
-                     item.querySelector("updated")?.textContent?.trim() ||
-                     new Date().toISOString();
+      const titleMatch = itemContent.match(/<title[^>]*>(.*?)<\/title>/i);
+      const descMatch = itemContent.match(/<description[^>]*>(.*?)<\/description>/i) ||
+                       itemContent.match(/<summary[^>]*>(.*?)<\/summary>/i) ||
+                       itemContent.match(/<content[^>]*>(.*?)<\/content>/i);
+      const linkMatch = itemContent.match(/<link[^>]*>(.*?)<\/link>/i) ||
+                       itemContent.match(/<link[^>]*href=["'](.*?)["']/i);
+      const pubDateMatch = itemContent.match(/<pubDate[^>]*>(.*?)<\/pubDate>/i) ||
+                          itemContent.match(/<published[^>]*>(.*?)<\/published>/i) ||
+                          itemContent.match(/<updated[^>]*>(.*?)<\/updated>/i);
+
+      const title = titleMatch ? cleanText(titleMatch[1]) : '';
+      const description = descMatch ? cleanText(descMatch[1]) : '';
+      const link = linkMatch ? linkMatch[1].trim() : '';
+      const pubDate = pubDateMatch ? pubDateMatch[1].trim() : new Date().toISOString();
 
       if (title && description) {
         items.push({
@@ -77,7 +75,7 @@ function parseRSSFeed(xmlContent: string, feedUrl: string): RSSItem[] {
       }
     }
 
-    return items.slice(0, 10); // Limit to 10 items
+    return items;
   } catch (error) {
     console.error('Error parsing RSS feed:', error);
     throw new Error(`Failed to parse RSS feed: ${error.message}`);
