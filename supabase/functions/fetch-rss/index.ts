@@ -1,6 +1,6 @@
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-import { DOMParser } from "https://deno.land/x/deno_dom@v0.1.38/deno-dom-wasm.ts";
+import { DOMParser } from "https://deno.land/x/deno_dom@v0.1.43/deno-dom-wasm.ts";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -29,7 +29,7 @@ function cleanText(text: string | null): string {
 function parseRSSFeed(xmlContent: string, feedUrl: string): RSSItem[] {
   try {
     const parser = new DOMParser();
-    const doc = parser.parseFromString(xmlContent, "text/xml");
+    const doc = parser.parseFromString(xmlContent, "application/xml");
     
     if (!doc) {
       throw new Error("Failed to parse XML");

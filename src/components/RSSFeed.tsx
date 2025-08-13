@@ -17,18 +17,15 @@ interface RSSItem {
 interface RSSFeedProps {
   feedUrl?: string;
   title?: string;
-  generateImages?: boolean;
 }
 
 export const RSSFeed: React.FC<RSSFeedProps> = ({ 
   feedUrl = "", 
-  title = "Latest Financial News",
-  generateImages = true
+  title = "Latest Financial News"
 }) => {
   const [articles, setArticles] = useState<RSSItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [imagesLoading, setImagesLoading] = useState<Set<number>>(new Set());
 
   // Mock data for demonstration
   const mockArticles: RSSItem[] = [
@@ -115,53 +112,6 @@ export const RSSFeed: React.FC<RSSFeedProps> = ({
     fetchRSSFeed();
   }, [feedUrl]);
 
-  // Generate images for articles
-  const generateImageForArticle = async (article: RSSItem, index: number) => {
-    if (!generateImages || article.imageUrl) return;
-    
-    try {
-      setImagesLoading(prev => new Set(prev).add(index));
-      
-      // Create a concise prompt based on the article title
-      const prompt = `${article.title.substring(0, 100)}`;
-      
-      const { data, error } = await supabase.functions.invoke('generate-image', {
-        body: { 
-          prompt,
-          size: "512x512"
-        }
-      });
-
-      if (error) {
-        console.error('Error generating image:', error);
-        return;
-      }
-
-      if (data.success && data.imageUrl) {
-        setArticles(prev => prev.map((art, i) => 
-          i === index ? { ...art, imageUrl: data.imageUrl } : art
-        ));
-      }
-    } catch (error) {
-      console.error('Error generating image:', error);
-    } finally {
-      setImagesLoading(prev => {
-        const newSet = new Set(prev);
-        newSet.delete(index);
-        return newSet;
-      });
-    }
-  };
-
-  // Generate images after articles are loaded
-  useEffect(() => {
-    if (articles.length > 0 && generateImages) {
-      // Generate images for first 3 articles to avoid API rate limits
-      articles.slice(0, 3).forEach((article, index) => {
-        setTimeout(() => generateImageForArticle(article, index), index * 2000);
-      });
-    }
-  }, [articles.length, generateImages]);
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
@@ -237,22 +187,6 @@ export const RSSFeed: React.FC<RSSFeedProps> = ({
                 key={index} 
                 className="min-w-[320px] max-w-[320px] hover:shadow-lg transition-all duration-300 cursor-pointer group overflow-hidden"
               >
-                {/* Image Section */}
-                {(article.imageUrl || imagesLoading.has(index)) && (
-                  <div className="h-32 bg-muted relative overflow-hidden">
-                    {imagesLoading.has(index) ? (
-                      <div className="w-full h-full bg-muted animate-pulse flex items-center justify-center">
-                        <Clock className="h-6 w-6 text-muted-foreground animate-spin" />
-                      </div>
-                    ) : article.imageUrl ? (
-                      <img 
-                        src={article.imageUrl} 
-                        alt={article.title}
-                        className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-                      />
-                    ) : null}
-                  </div>
-                )}
                 
                 <CardHeader className="pb-3">
                   <div className="flex items-center gap-2 text-xs text-muted-foreground mb-2">
