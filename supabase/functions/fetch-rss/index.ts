@@ -36,6 +36,8 @@ function parseRSSFeed(xmlContent: string, feedUrl: string): RSSItem[] {
     if (channelTitleMatch) {
       sourceName = cleanText(channelTitleMatch[1]);
     }
+    
+    console.log(`Source name extracted: ${sourceName}`);
 
     // Extract items using regex (more reliable in edge functions)
     const itemRegex = /<item[^>]*>([\s\S]*?)<\/item>/gi;
@@ -45,6 +47,8 @@ function parseRSSFeed(xmlContent: string, feedUrl: string): RSSItem[] {
     if (matches.length === 0) {
       matches = [...xmlContent.matchAll(entryRegex)];
     }
+    
+    console.log(`Found ${matches.length} items/entries in RSS feed`);
 
     for (const match of matches.slice(0, 10)) {
       const itemContent = match[1];
@@ -65,6 +69,7 @@ function parseRSSFeed(xmlContent: string, feedUrl: string): RSSItem[] {
       const pubDate = pubDateMatch ? pubDateMatch[1].trim() : new Date().toISOString();
 
       if (title && description) {
+        console.log(`Adding item: ${title.substring(0, 50)}...`);
         items.push({
           title,
           description,

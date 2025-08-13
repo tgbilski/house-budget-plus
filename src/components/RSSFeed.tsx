@@ -84,18 +84,24 @@ export const RSSFeed: React.FC<RSSFeedProps> = ({
         console.log('Fetching RSS feed from:', feedUrl);
         
         // Call our Supabase Edge Function
+        console.log('About to call fetch-rss function...');
         const { data, error } = await supabase.functions.invoke('fetch-rss', {
           body: { feedUrl }
         });
 
+        console.log('Function response:', { data, error });
+
         if (error) {
+          console.error('Supabase function error:', error);
           throw new Error(error.message);
         }
 
-        if (data.success) {
+        if (data && data.success) {
+          console.log('Successfully fetched articles:', data.data?.length || 0);
           setArticles(data.data || []);
         } else {
-          throw new Error(data.error || 'Failed to fetch RSS feed');
+          console.error('Function returned error:', data);
+          throw new Error(data?.error || 'Failed to fetch RSS feed');
         }
         
         setLoading(false);
