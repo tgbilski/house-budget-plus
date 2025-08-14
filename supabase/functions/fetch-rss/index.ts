@@ -23,7 +23,41 @@ interface RSSResponse {
 
 function cleanText(text: string | null): string {
   if (!text) return '';
-  return text.replace(/<[^>]*>/g, '').trim();
+  
+  // First remove HTML tags
+  let cleaned = text.replace(/<[^>]*>/g, '');
+  
+  // Decode common HTML entities
+  const entityMap: { [key: string]: string } = {
+    '&#x2019;': "'",
+    '&#x2018;': "'", 
+    '&#x201C;': '"',
+    '&#x201D;': '"',
+    '&quot;': '"',
+    '&amp;': '&',
+    '&lt;': '<',
+    '&gt;': '>',
+    '&nbsp;': ' ',
+    '&#39;': "'",
+    '&apos;': "'"
+  };
+  
+  // Replace HTML entities
+  for (const [entity, replacement] of Object.entries(entityMap)) {
+    cleaned = cleaned.replace(new RegExp(entity, 'g'), replacement);
+  }
+  
+  // Handle numeric HTML entities (like &#8217; for apostrophe)
+  cleaned = cleaned.replace(/&#(\d+);/g, (match, dec) => {
+    return String.fromCharCode(parseInt(dec, 10));
+  });
+  
+  // Handle hex HTML entities (like &#x2019;)
+  cleaned = cleaned.replace(/&#x([0-9A-Fa-f]+);/g, (match, hex) => {
+    return String.fromCharCode(parseInt(hex, 16));
+  });
+  
+  return cleaned.trim();
 }
 
 function parseRSSFeed(xmlContent: string, feedUrl: string): RSSItem[] {
