@@ -142,9 +142,6 @@ const FeaturedToolsSection = () => {
           <h2 className="text-2xl md:text-4xl font-bold mb-4">
             Start Saving Money Today
           </h2>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Join thousands who've already saved money with our smart financial tools
-          </p>
         </div>
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
