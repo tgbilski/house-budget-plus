@@ -267,7 +267,7 @@ const SocialProofSection = () => (
       </div>
       <div className="bg-green-50 border border-green-200 rounded-lg p-6">
         <p className="text-green-800 font-semibold mb-2">
-          💡 Average users save $350+ per month using our tools
+          💡 Take control of your wallet!
         </p>
         <p className="text-green-700">
           Start your journey to financial freedom with our free budget calculator
