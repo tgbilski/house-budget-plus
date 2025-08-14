@@ -167,7 +167,7 @@ const FeaturedToolsSection = () => {
                 </CardHeader>
                 <CardContent className="pt-0">
                   <div className="flex items-center justify-between">
-                    <span className="text-sm font-medium text-primary">Get Started Free</span>
+                    <span className="text-sm font-medium text-primary">Get Started</span>
                     <ArrowRight className="h-5 w-5 text-primary group-hover:translate-x-1 transition-transform duration-300" />
                   </div>
                 </CardContent>
@@ -177,11 +177,6 @@ const FeaturedToolsSection = () => {
         </div>
         
         <div className="text-center">
-          <Button asChild size="lg" variant="outline" className="text-lg px-8">
-            <Link to="/budget">
-              View All Tools <ArrowRight className="ml-2 h-5 w-5" />
-            </Link>
-          </Button>
         </div>
       </div>
     </section>
