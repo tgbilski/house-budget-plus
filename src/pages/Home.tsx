@@ -296,7 +296,7 @@ const CTASection = () => (
           asChild
           variant="secondary"
           size="lg"
-          className="text-lg px-8 py-3 border-bg-primary-foreground/20 hover:bg-primary-foreground/10"
+          className="text-lg px-8 py-3 cursor-pointer border-bg-primary-foreground/20 hover:bg-primary-foreground/10"
           onClick={() => window.location.href = 'mailto:homebudgetcalculator@gmail.com?subject=Budget Calculator Feedback'}
         >
           <span>Get Support</span>
