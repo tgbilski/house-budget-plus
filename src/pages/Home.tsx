@@ -215,8 +215,8 @@ const Home = () => {
       <div className="min-h-screen relative">
         <HeroSection />
         <RSSFeed 
-          feedUrl="https://feeds.marketwatch.com/marketwatch/realtimeheadlines/"
-          title="Latest MarketWatch Headlines"
+          feedUrl="https://feeds.reuters.com/reuters/businessNews"
+          title="Latest Business News"
         />
         <ToolsGrid />
         <FeaturesSection />

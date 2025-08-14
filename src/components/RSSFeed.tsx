@@ -72,21 +72,15 @@ export const RSSFeed: React.FC<RSSFeedProps> = ({
         setLoading(true);
         setError(null);
         
-        if (!feedUrl) {
-          // Use mock data when no feed URL is provided
-          setTimeout(() => {
-            setArticles(mockArticles);
-            setLoading(false);
-          }, 1000);
-          return;
-        }
+        // Use a reliable RSS feed if none provided
+        const rssUrl = feedUrl || "https://feeds.reuters.com/reuters/businessNews";
 
-        console.log('Fetching RSS feed from:', feedUrl);
+        console.log('Fetching RSS feed from:', rssUrl);
         
         // Call our Supabase Edge Function
         console.log('About to call fetch-rss function...');
         const { data, error } = await supabase.functions.invoke('fetch-rss', {
-          body: { feedUrl }
+          body: { feedUrl: rssUrl }
         });
 
         console.log('Function response:', { data, error });

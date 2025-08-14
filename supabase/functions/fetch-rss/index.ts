@@ -68,15 +68,17 @@ function parseRSSFeed(xmlContent: string, feedUrl: string): RSSItem[] {
       const link = linkMatch ? linkMatch[1].trim() : '';
       const pubDate = pubDateMatch ? pubDateMatch[1].trim() : new Date().toISOString();
 
-      if (title && description) {
+      if (title) {
         console.log(`Adding item: ${title.substring(0, 50)}...`);
         items.push({
           title,
-          description,
+          description: description || title.substring(0, 100) + '...', // Use title as fallback
           link,
           pubDate,
           source: sourceName
         });
+      } else {
+        console.log(`Skipping item - no title found in: ${itemContent.substring(0, 100)}`);
       }
     }
 
