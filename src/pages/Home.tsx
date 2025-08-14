@@ -13,7 +13,7 @@ import { RSSFeed } from "@/components/RSSFeed";
 const toolsData = [
   {
     title: "Monthly Budget Calculator",
-    description: "Track income & expenses to calculate monthly budget.",
+    description: "Understand monthly income & expenses.",
     icon: Calculator,
     href: "/budget",
     color: "bg-primary/10 text-primary",
