@@ -294,7 +294,7 @@ const CTASection = () => (
         </Button>
         <Button
           asChild
-          variant="outline"
+          variant="secondary"
           size="lg"
           className="text-lg px-8 py-3 border-bg-primary-foreground/20 hover:bg-primary-foreground/10"
           onClick={() => window.location.href = 'mailto:homebudgetcalculator@gmail.com?subject=Budget Calculator Feedback'}
