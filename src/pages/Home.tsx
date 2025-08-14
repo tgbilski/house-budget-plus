@@ -284,7 +284,7 @@ const CTASection = () => (
         Ready to Save Money Every Month?
       </h2>
       <p className="text-xl mb-8 opacity-90">
-        Join thousands who've taken control of their finances with our free tools
+        Join our community and take control of your finances with our free tools
       </p>
       <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
         <Button asChild size="lg" variant="secondary" className="text-lg px-8 py-3">
@@ -296,7 +296,7 @@ const CTASection = () => (
           asChild
           variant="outline"
           size="lg"
-          className="text-lg px-8 py-3 border-primary-foreground/20 hover:bg-primary-foreground/10"
+          className="text-lg px-8 py-3 border-bg-primary-foreground/20 hover:bg-primary-foreground/10"
           onClick={() => window.location.href = 'mailto:homebudgetcalculator@gmail.com?subject=Budget Calculator Feedback'}
         >
           <span>Get Support</span>
