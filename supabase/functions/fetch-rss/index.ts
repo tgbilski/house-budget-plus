@@ -1,3 +1,4 @@
+
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 
@@ -89,6 +90,38 @@ function parseRSSFeed(xmlContent: string, feedUrl: string): RSSItem[] {
   }
 }
 
+async function fetchWithRetry(url: string, maxRetries = 3): Promise<Response> {
+  for (let i = 0; i < maxRetries; i++) {
+    try {
+      console.log(`Attempt ${i + 1} to fetch: ${url}`);
+      const response = await fetch(url, {
+        headers: {
+          'User-Agent': 'Mozilla/5.0 (compatible; RSS-Reader/1.0)',
+          'Accept': 'application/rss+xml, application/xml, text/xml, application/atom+xml',
+        },
+        signal: AbortSignal.timeout(10000), // 10 second timeout
+      });
+
+      if (response.ok) {
+        return response;
+      }
+      
+      console.log(`Attempt ${i + 1} failed with status: ${response.status}`);
+      if (i === maxRetries - 1) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+    } catch (error) {
+      console.log(`Attempt ${i + 1} failed:`, error.message);
+      if (i === maxRetries - 1) {
+        throw error;
+      }
+      // Wait before retrying
+      await new Promise(resolve => setTimeout(resolve, 1000 * (i + 1)));
+    }
+  }
+  throw new Error('All retry attempts failed');
+}
+
 serve(async (req) => {
   // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
@@ -98,65 +131,61 @@ serve(async (req) => {
   try {
     const { feedUrl } = await req.json();
     
-    if (!feedUrl) {
-      return new Response(
-        JSON.stringify({ 
-          success: false, 
-          error: 'Feed URL is required' 
-        } as RSSResponse),
-        {
-          status: 400,
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+    // Fallback feeds if none provided or if primary fails
+    const fallbackFeeds = [
+      feedUrl || "https://rss.cnn.com/rss/money_news_international.rss",
+      "https://feeds.bbci.co.uk/news/business/rss.xml",
+      "https://www.marketwatch.com/rss/topstories",
+      "https://finance.yahoo.com/news/rssindex"
+    ];
+
+    let lastError: Error | null = null;
+    
+    // Try each feed until one works
+    for (const currentFeedUrl of fallbackFeeds) {
+      try {
+        // Validate URL
+        new URL(currentFeedUrl);
+        
+        console.log(`Trying RSS feed: ${currentFeedUrl}`);
+
+        // Fetch the RSS feed with retry logic
+        const response = await fetchWithRetry(currentFeedUrl);
+        const xmlContent = await response.text();
+        console.log(`Fetched XML content length: ${xmlContent.length}`);
+
+        // Basic validation that we got XML content
+        if (!xmlContent.includes('<') || xmlContent.length < 100) {
+          throw new Error('Invalid XML content received');
         }
-      );
-    }
 
-    // Validate URL
-    try {
-      new URL(feedUrl);
-    } catch {
-      return new Response(
-        JSON.stringify({ 
-          success: false, 
-          error: 'Invalid URL format' 
-        } as RSSResponse),
-        {
-          status: 400,
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        // Parse the RSS feed
+        const items = parseRSSFeed(xmlContent, currentFeedUrl);
+        console.log(`Successfully parsed ${items.length} items from RSS feed`);
+
+        if (items.length > 0) {
+          return new Response(
+            JSON.stringify({ 
+              success: true, 
+              data: items 
+            } as RSSResponse),
+            {
+              headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+            }
+          );
+        } else {
+          throw new Error('No items found in feed');
         }
-      );
-    }
 
-    console.log(`Fetching RSS feed from: ${feedUrl}`);
-
-    // Fetch the RSS feed
-    const response = await fetch(feedUrl, {
-      headers: {
-        'User-Agent': 'RSS-Reader/1.0',
-        'Accept': 'application/rss+xml, application/xml, text/xml',
-      },
-    });
-
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-
-    const xmlContent = await response.text();
-    console.log(`Fetched XML content length: ${xmlContent.length}`);
-
-    // Parse the RSS feed
-    const items = parseRSSFeed(xmlContent, feedUrl);
-    console.log(`Parsed ${items.length} items from RSS feed`);
-
-    return new Response(
-      JSON.stringify({ 
-        success: true, 
-        data: items 
-      } as RSSResponse),
-      {
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      } catch (error) {
+        console.error(`Failed to fetch from ${currentFeedUrl}:`, error.message);
+        lastError = error;
+        continue; // Try next feed
       }
-    );
+    }
+
+    // If all feeds failed, return the last error
+    throw lastError || new Error('All RSS feeds failed');
 
   } catch (error) {
     console.error('Error in fetch-rss function:', error);
