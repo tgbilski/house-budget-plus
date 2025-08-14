@@ -18,7 +18,7 @@ const toolsData = [
     href: "/budget",
     color: "bg-primary/10 text-primary",
     featured: true,
-    benefit: "Save $500+ monthly"
+    benefit: "Save monthly"
   },
   {
     title: "AI Financial Insights",
