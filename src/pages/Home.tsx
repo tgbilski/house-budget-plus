@@ -73,13 +73,6 @@ const HeroSection = () => (
       backgroundRepeat: 'no-repeat'
     }}
   >
-    {/* Floating elements for whimsy - made more visible */}
-    <div className="absolute inset-0 pointer-events-none">
-      <div className="absolute top-20 left-10 w-6 h-6 bg-primary/40 rounded-full animate-bounce shadow-lg" style={{ animationDelay: '0s', animationDuration: '3s' }}></div>
-      <div className="absolute top-40 right-20 w-4 h-4 bg-secondary/50 rounded-full animate-bounce shadow-md" style={{ animationDelay: '1s', animationDuration: '4s' }}></div>
-      <div className="absolute bottom-32 left-1/4 w-8 h-8 bg-accent/45 rounded-full animate-bounce shadow-lg" style={{ animationDelay: '2s', animationDuration: '5s' }}></div>
-      <div className="absolute top-1/3 right-1/3 w-5 h-5 bg-primary/35 rounded-full animate-pulse shadow-md" style={{ animationDelay: '1.5s' }}></div>
-    </div>
     
     {/* Diagonal wave separator - made more visible */}
     <div className="absolute bottom-0 left-0 right-0 z-10">
@@ -152,11 +145,6 @@ const FeaturedToolsSection = () => {
   
   return (
     <section className="py-16 px-4 bg-white relative">
-      {/* Subtle floating elements */}
-      <div className="absolute inset-0 pointer-events-none overflow-hidden">
-        <div className="absolute top-10 right-10 w-32 h-32 bg-gradient-to-br from-primary/5 to-secondary/5 rounded-full blur-xl"></div>
-        <div className="absolute bottom-20 left-10 w-24 h-24 bg-gradient-to-br from-accent/5 to-primary/5 rounded-full blur-lg"></div>
-      </div>
       <div className="max-w-6xl mx-auto">
         <div className="text-center mb-12">
           <h2 className="text-2xl md:text-4xl font-bold mb-4">
@@ -258,11 +246,6 @@ const AllToolsGrid = () => (
 
 const SocialProofSection = () => (
   <section className="py-16 px-4 bg-gradient-to-r from-white via-primary/5 to-white relative">
-    {/* Floating orbs for ambience */}
-    <div className="absolute inset-0 pointer-events-none">
-      <div className="absolute top-1/4 left-1/4 w-16 h-16 bg-primary/10 rounded-full blur-xl animate-pulse"></div>
-      <div className="absolute bottom-1/4 right-1/4 w-20 h-20 bg-secondary/10 rounded-full blur-xl animate-pulse" style={{ animationDelay: '1s' }}></div>
-    </div>
     <div className="max-w-4xl mx-auto text-center">
       <h2 className="text-2xl md:text-3xl font-bold mb-8">
         Join a Community of Smart Savers
@@ -310,12 +293,6 @@ const SocialProofSection = () => (
 
 const CTASection = () => (
   <section className="py-20 px-4 bg-gradient-to-r from-primary via-primary/90 to-primary/80 text-primary-foreground relative overflow-hidden">
-    {/* Animated background elements */}
-    <div className="absolute inset-0 pointer-events-none">
-      <div className="absolute top-10 right-10 w-32 h-32 border border-primary-foreground/20 rounded-full animate-pulse"></div>
-      <div className="absolute bottom-10 left-10 w-24 h-24 border border-primary-foreground/10 rounded-full animate-pulse" style={{ animationDelay: '1s' }}></div>
-      <div className="absolute top-1/2 left-1/4 w-4 h-4 bg-primary-foreground/20 rounded-full animate-bounce" style={{ animationDelay: '0.5s' }}></div>
-    </div>
     <div className="max-w-4xl mx-auto text-center relative z-10">
       <h2 className="text-3xl md:text-4xl font-bold mb-6 animate-fade-in">
         Ready to Save Money Every Month?
