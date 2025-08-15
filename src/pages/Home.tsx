@@ -103,7 +103,7 @@ const HeroSection = () => (
           <div className="flex flex-col sm:flex-row gap-4 mb-8">
             <Button asChild size="lg" className="text-lg px-8 py-3 shadow-lg hover:shadow-xl transition-shadow">
               <Link to="/budget">
-                Start Free Budget Calculator <ArrowRight className="ml-2 h-5 w-5" />
+                Free Budget Calculator <ArrowRight className="ml-2 h-5 w-5" />
               </Link>
             </Button>
             <Button asChild variant="outline" size="lg" className="text-lg px-8 py-3 border-2">
@@ -281,7 +281,7 @@ const CTASection = () => (
       <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
         <Button asChild size="lg" variant="secondary" className="text-lg px-8 py-3">
           <Link to="/budget">
-            Start Free Budget Calculator <ArrowRight className="ml-2 h-5 w-5" />
+            Free Budget Calculator <ArrowRight className="ml-2 h-5 w-5" />
           </Link>
         </Button>
         <Button
