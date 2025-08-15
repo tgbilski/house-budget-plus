@@ -65,7 +65,7 @@ const toolsData = [
 
 const HeroSection = () => (
   <section
-    className="relative py-16 md:py-24 px-4 bg-gradient-to-br from-primary/5 via-secondary/10 to-accent/5"
+    className="relative py-16 md:py-24 px-4 bg-gradient-to-br from-primary/5 via-secondary/10 to-accent/5 overflow-hidden"
     style={{
       backgroundImage: `url('https://res.cloudinary.com/dqh8kcdas/image/upload/v1754758366/Gemini_Generated_Image_40ga540ga540ga54_smkr18.png')`,
       backgroundSize: 'cover',
@@ -73,21 +73,35 @@ const HeroSection = () => (
       backgroundRepeat: 'no-repeat'
     }}
   >
+    {/* Floating elements for whimsy */}
+    <div className="absolute inset-0 pointer-events-none">
+      <div className="absolute top-20 left-10 w-3 h-3 bg-primary/20 rounded-full animate-bounce" style={{ animationDelay: '0s', animationDuration: '3s' }}></div>
+      <div className="absolute top-40 right-20 w-2 h-2 bg-secondary/30 rounded-full animate-bounce" style={{ animationDelay: '1s', animationDuration: '4s' }}></div>
+      <div className="absolute bottom-32 left-1/4 w-4 h-4 bg-accent/25 rounded-full animate-bounce" style={{ animationDelay: '2s', animationDuration: '5s' }}></div>
+      <div className="absolute top-1/3 right-1/3 w-2 h-2 bg-primary/15 rounded-full animate-pulse" style={{ animationDelay: '1.5s' }}></div>
+    </div>
+    
+    {/* Diagonal wave separator */}
+    <div className="absolute bottom-0 left-0 right-0">
+      <svg viewBox="0 0 1200 120" className="w-full h-auto">
+        <path d="M0,60 C200,100 400,20 600,60 C800,100 1000,20 1200,60 L1200,120 L0,120 Z" fill="white" />
+      </svg>
+    </div>
     <div className="max-w-6xl mx-auto">
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
-        <div className="text-left">
+        <div className="text-left animate-fade-in">
           <div className="flex items-center mb-6">
             <img
               src="/lovable-uploads/ed809955-ef71-4d81-b072-945082f4380a.png"
               alt="Budget Calculator mascot"
-              className="w-16 h-16 md:w-20 md:h-20 object-contain mr-4"
+              className="w-16 h-16 md:w-20 md:h-20 object-contain mr-4 hover:scale-110 transition-transform duration-300"
             />
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
-              <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-              <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-              <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-              <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-              <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+              <Star className="h-4 w-4 fill-yellow-400 text-yellow-400 animate-pulse" style={{ animationDelay: '0.1s' }} />
+              <Star className="h-4 w-4 fill-yellow-400 text-yellow-400 animate-pulse" style={{ animationDelay: '0.2s' }} />
+              <Star className="h-4 w-4 fill-yellow-400 text-yellow-400 animate-pulse" style={{ animationDelay: '0.3s' }} />
+              <Star className="h-4 w-4 fill-yellow-400 text-yellow-400 animate-pulse" style={{ animationDelay: '0.4s' }} />
+              <Star className="h-4 w-4 fill-yellow-400 text-yellow-400 animate-pulse" style={{ animationDelay: '0.5s' }} />
             </div>
           </div>
           
@@ -136,7 +150,12 @@ const FeaturedToolsSection = () => {
   const featuredTools = toolsData.filter(tool => tool.featured);
   
   return (
-    <section className="py-16 px-4 bg-white">
+    <section className="py-16 px-4 bg-white relative">
+      {/* Subtle floating elements */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden">
+        <div className="absolute top-10 right-10 w-32 h-32 bg-gradient-to-br from-primary/5 to-secondary/5 rounded-full blur-xl"></div>
+        <div className="absolute bottom-20 left-10 w-24 h-24 bg-gradient-to-br from-accent/5 to-primary/5 rounded-full blur-lg"></div>
+      </div>
       <div className="max-w-6xl mx-auto">
         <div className="text-center mb-12">
           <h2 className="text-2xl md:text-4xl font-bold mb-4">
@@ -144,10 +163,10 @@ const FeaturedToolsSection = () => {
           </h2>
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12 relative z-10">
           {featuredTools.map((tool, index) => (
             <Link to={tool.href} key={index}>
-              <Card className="group relative hover:shadow-xl transition-all duration-300 border-2 hover:border-primary/30 cursor-pointer h-full">
+              <Card className="group relative hover:shadow-xl transition-all duration-500 border-2 hover:border-primary/30 cursor-pointer h-full animate-fade-in hover:scale-105 transform" style={{ animationDelay: `${index * 0.2}s` }}>
                 <div className="absolute top-4 right-4 bg-primary text-primary-foreground text-xs px-2 py-1 rounded-full">
                   POPULAR
                 </div>
@@ -184,7 +203,20 @@ const FeaturedToolsSection = () => {
 };
 
 const AllToolsGrid = () => (
-  <section className="py-16 px-4 bg-secondary/20">
+  <section className="py-16 px-4 bg-gradient-to-b from-secondary/20 to-secondary/10 relative overflow-hidden">
+    {/* Diagonal pattern background */}
+    <div className="absolute inset-0 opacity-5">
+      <div className="absolute inset-0" style={{
+        backgroundImage: `repeating-linear-gradient(45deg, transparent, transparent 20px, hsl(var(--primary)) 20px, hsl(var(--primary)) 21px)`,
+      }}></div>
+    </div>
+    
+    {/* Waterfall effect with staggered cards */}
+    <div className="absolute top-0 left-0 right-0">
+      <svg viewBox="0 0 1200 60" className="w-full h-auto">
+        <path d="M0,0 C300,40 600,20 900,40 C1000,50 1100,30 1200,40 L1200,0 Z" fill="white" fillOpacity="0.8" />
+      </svg>
+    </div>
     <div className="max-w-6xl mx-auto">
       <div className="text-center mb-12">
         <h2 className="text-2xl md:text-3xl font-bold mb-4">
@@ -194,11 +226,12 @@ const AllToolsGrid = () => (
           Everything you need to manage your household finances in one place
         </p>
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 relative z-10">
         {toolsData.map((tool, index) => (
           <Link to={tool.href} key={index}>
             <Card
-              className={`group relative hover:shadow-lg transition-all duration-300 border-2 hover:border-primary/20 cursor-pointer hover:scale-105 h-full`}
+              className={`group relative hover:shadow-lg transition-all duration-500 border-2 hover:border-primary/20 cursor-pointer hover:scale-105 h-full animate-fade-in bg-white/80 backdrop-blur-sm`}
+              style={{ animationDelay: `${index * 0.1}s` }}
             >
               <CardHeader className="pb-3">
                 <div className={`w-12 h-12 rounded-lg ${tool.color} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300`}>
@@ -223,14 +256,19 @@ const AllToolsGrid = () => (
 );
 
 const SocialProofSection = () => (
-  <section className="py-16 px-4 bg-white">
+  <section className="py-16 px-4 bg-gradient-to-r from-white via-primary/5 to-white relative">
+    {/* Floating orbs for ambience */}
+    <div className="absolute inset-0 pointer-events-none">
+      <div className="absolute top-1/4 left-1/4 w-16 h-16 bg-primary/10 rounded-full blur-xl animate-pulse"></div>
+      <div className="absolute bottom-1/4 right-1/4 w-20 h-20 bg-secondary/10 rounded-full blur-xl animate-pulse" style={{ animationDelay: '1s' }}></div>
+    </div>
     <div className="max-w-4xl mx-auto text-center">
       <h2 className="text-2xl md:text-3xl font-bold mb-8">
         Join a Community of Smart Savers
       </h2>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
-        <div className="space-y-4">
-          <div className="w-16 h-16 bg-primary/10 text-primary rounded-full flex items-center justify-center mx-auto">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12 relative z-10">
+        <div className="space-y-4 animate-fade-in" style={{ animationDelay: '0.2s' }}>
+          <div className="w-16 h-16 bg-primary/10 text-primary rounded-full flex items-center justify-center mx-auto hover:scale-110 transition-transform duration-300 hover:bg-primary/20">
             <Calculator className="h-8 w-8" />
           </div>
           <h3 className="text-xl font-semibold">100% Free Forever</h3>
@@ -238,8 +276,8 @@ const SocialProofSection = () => (
             Core budgeting tools are completely free. Premium AI insights available for advanced users.
           </p>
         </div>
-        <div className="space-y-4">
-          <div className="w-16 h-16 bg-primary/10 text-primary rounded-full flex items-center justify-center mx-auto">
+        <div className="space-y-4 animate-fade-in" style={{ animationDelay: '0.4s' }}>
+          <div className="w-16 h-16 bg-primary/10 text-primary rounded-full flex items-center justify-center mx-auto hover:scale-110 transition-transform duration-300 hover:bg-primary/20">
             <Brain className="h-8 w-8" />
           </div>
           <h3 className="text-xl font-semibold">AI-Powered Insights</h3>
@@ -247,8 +285,8 @@ const SocialProofSection = () => (
             Smart recommendations that learn from your spending patterns and help you save more.
           </p>
         </div>
-        <div className="space-y-4">
-          <div className="w-16 h-16 bg-primary/10 text-primary rounded-full flex items-center justify-center mx-auto">
+        <div className="space-y-4 animate-fade-in" style={{ animationDelay: '0.6s' }}>
+          <div className="w-16 h-16 bg-primary/10 text-primary rounded-full flex items-center justify-center mx-auto hover:scale-110 transition-transform duration-300 hover:bg-primary/20">
             <TrendingUp className="h-8 w-8" />
           </div>
           <h3 className="text-xl font-semibold">Instant Results</h3>
@@ -270,12 +308,18 @@ const SocialProofSection = () => (
 );
 
 const CTASection = () => (
-  <section className="py-20 px-4 bg-gradient-to-r from-primary to-primary/80 text-primary-foreground">
-    <div className="max-w-4xl mx-auto text-center">
-      <h2 className="text-3xl md:text-4xl font-bold mb-6">
+  <section className="py-20 px-4 bg-gradient-to-r from-primary via-primary/90 to-primary/80 text-primary-foreground relative overflow-hidden">
+    {/* Animated background elements */}
+    <div className="absolute inset-0 pointer-events-none">
+      <div className="absolute top-10 right-10 w-32 h-32 border border-primary-foreground/20 rounded-full animate-pulse"></div>
+      <div className="absolute bottom-10 left-10 w-24 h-24 border border-primary-foreground/10 rounded-full animate-pulse" style={{ animationDelay: '1s' }}></div>
+      <div className="absolute top-1/2 left-1/4 w-4 h-4 bg-primary-foreground/20 rounded-full animate-bounce" style={{ animationDelay: '0.5s' }}></div>
+    </div>
+    <div className="max-w-4xl mx-auto text-center relative z-10">
+      <h2 className="text-3xl md:text-4xl font-bold mb-6 animate-fade-in">
         Ready to Save Money Every Month?
       </h2>
-      <p className="text-xl mb-8 opacity-90">
+      <p className="text-xl mb-8 opacity-90 animate-fade-in" style={{ animationDelay: '0.2s' }}>
         Join our community and take control of your finances with our free tools
       </p>
       <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
