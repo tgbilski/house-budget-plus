@@ -5,14 +5,18 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useAuth } from '@/hooks/useAuth';
+import { supabase } from '@/integrations/supabase/client';
+import { useToast } from '@/hooks/use-toast';
 
 const Auth: React.FC = () => {
   const [isSignUp, setIsSignUp] = useState(false);
+  const [isForgotPassword, setIsForgotPassword] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const { signUp, signIn, user } = useAuth();
   const navigate = useNavigate();
+  const { toast } = useToast();
 
   // Redirect if already authenticated
   useEffect(() => {
@@ -26,7 +30,25 @@ const Auth: React.FC = () => {
     setLoading(true);
 
     try {
-      if (isSignUp) {
+      if (isForgotPassword) {
+        const { error } = await supabase.auth.resetPasswordForEmail(email, {
+          redirectTo: `${window.location.origin}/auth`
+        });
+        
+        if (error) {
+          toast({
+            title: "Error",
+            description: error.message,
+            variant: "destructive"
+          });
+        } else {
+          toast({
+            title: "Check your email",
+            description: "We've sent you a password reset link."
+          });
+          setIsForgotPassword(false);
+        }
+      } else if (isSignUp) {
         const { error } = await signUp(email, password);
         if (!error) {
           navigate('/');
@@ -46,11 +68,16 @@ const Auth: React.FC = () => {
     <div className="min-h-screen bg-background flex items-center justify-center p-4">
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
-          <CardTitle>{isSignUp ? 'Sign Up' : 'Sign In'}</CardTitle>
+          <CardTitle>
+            {isForgotPassword ? 'Reset Password' : (isSignUp ? 'Sign Up' : 'Sign In')}
+          </CardTitle>
           <CardDescription>
-            {isSignUp
-              ? 'Create an account to save your budget data'
-              : 'Sign in to access your saved budget data'
+            {isForgotPassword 
+              ? 'Enter your email to receive a password reset link'
+              : (isSignUp
+                ? 'Create an account to save your budget data'
+                : 'Sign in to access your saved budget data'
+              )
             }
           </CardDescription>
         </CardHeader>
@@ -67,20 +94,24 @@ const Auth: React.FC = () => {
                 placeholder="Enter your email"
               />
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="password">Password</Label>
-              <Input
-                id="password"
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-                placeholder="Enter your password"
-                minLength={6}
-              />
-            </div>
+            {!isForgotPassword && (
+              <div className="space-y-2">
+                <Label htmlFor="password">Password</Label>
+                <Input
+                  id="password"
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                  placeholder="Enter your password"
+                  minLength={6}
+                />
+              </div>
+            )}
             <Button type="submit" className="w-full" disabled={loading}>
-              {loading ? 'Please wait...' : (isSignUp ? 'Sign Up' : 'Sign In')}
+              {loading ? 'Please wait...' : (
+                isForgotPassword ? 'Send Reset Link' : (isSignUp ? 'Sign Up' : 'Sign In')
+              )}
             </Button>
             
             {isSignUp && (
@@ -90,17 +121,29 @@ const Auth: React.FC = () => {
             )}
           </form>
           
-          <div className="text-center mt-4">
-            <Button
-              variant="link"
-              onClick={() => setIsSignUp(!isSignUp)}
-              className="text-sm"
-            >
-              {isSignUp
-                ? 'Already have an account? Sign In'
-                : "Don't have an account? Sign Up"
-              }
-            </Button>
+          <div className="text-center mt-4 space-y-2">
+            {!isForgotPassword && (
+              <Button
+                variant="link"
+                onClick={() => setIsSignUp(!isSignUp)}
+                className="text-sm"
+              >
+                {isSignUp
+                  ? 'Already have an account? Sign In'
+                  : "Don't have an account? Sign Up"
+                }
+              </Button>
+            )}
+            
+            {!isSignUp && (
+              <Button
+                variant="link"
+                onClick={() => setIsForgotPassword(!isForgotPassword)}
+                className="text-sm block w-full"
+              >
+                {isForgotPassword ? 'Back to Sign In' : 'Forgot your password?'}
+              </Button>
+            )}
           </div>
         </CardContent>
       </Card>
