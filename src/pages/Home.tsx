@@ -73,18 +73,19 @@ const HeroSection = () => (
       backgroundRepeat: 'no-repeat'
     }}
   >
-    {/* Floating elements for whimsy */}
+    {/* Floating elements for whimsy - made more visible */}
     <div className="absolute inset-0 pointer-events-none">
-      <div className="absolute top-20 left-10 w-3 h-3 bg-primary/20 rounded-full animate-bounce" style={{ animationDelay: '0s', animationDuration: '3s' }}></div>
-      <div className="absolute top-40 right-20 w-2 h-2 bg-secondary/30 rounded-full animate-bounce" style={{ animationDelay: '1s', animationDuration: '4s' }}></div>
-      <div className="absolute bottom-32 left-1/4 w-4 h-4 bg-accent/25 rounded-full animate-bounce" style={{ animationDelay: '2s', animationDuration: '5s' }}></div>
-      <div className="absolute top-1/3 right-1/3 w-2 h-2 bg-primary/15 rounded-full animate-pulse" style={{ animationDelay: '1.5s' }}></div>
+      <div className="absolute top-20 left-10 w-6 h-6 bg-primary/40 rounded-full animate-bounce shadow-lg" style={{ animationDelay: '0s', animationDuration: '3s' }}></div>
+      <div className="absolute top-40 right-20 w-4 h-4 bg-secondary/50 rounded-full animate-bounce shadow-md" style={{ animationDelay: '1s', animationDuration: '4s' }}></div>
+      <div className="absolute bottom-32 left-1/4 w-8 h-8 bg-accent/45 rounded-full animate-bounce shadow-lg" style={{ animationDelay: '2s', animationDuration: '5s' }}></div>
+      <div className="absolute top-1/3 right-1/3 w-5 h-5 bg-primary/35 rounded-full animate-pulse shadow-md" style={{ animationDelay: '1.5s' }}></div>
     </div>
     
-    {/* Diagonal wave separator */}
-    <div className="absolute bottom-0 left-0 right-0">
+    {/* Diagonal wave separator - made more visible */}
+    <div className="absolute bottom-0 left-0 right-0 z-10">
       <svg viewBox="0 0 1200 120" className="w-full h-auto">
-        <path d="M0,60 C200,100 400,20 600,60 C800,100 1000,20 1200,60 L1200,120 L0,120 Z" fill="white" />
+        <path d="M0,60 C200,100 400,20 600,60 C800,100 1000,20 1200,60 L1200,120 L0,120 Z" fill="white" fillOpacity="0.95" />
+        <path d="M0,80 C300,40 600,80 900,40 C1000,20 1100,60 1200,40 L1200,120 L0,120 Z" fill="white" fillOpacity="0.7" />
       </svg>
     </div>
     <div className="max-w-6xl mx-auto">
