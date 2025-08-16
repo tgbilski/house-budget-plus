@@ -31,11 +31,13 @@ const Header: React.FC = () => {
       <div className="container mx-auto px-4 py-4 flex items-center justify-between min-h-[64px]">
         {/* Logo */}
         <div className="flex items-center">
-          <img 
-            src="/lovable-uploads/5377daa4-3f84-4748-a91b-081403394030.png" 
-            alt="House Budget Calculator"
-            className="h-8 w-auto"
-          />
+          <Link to="/" className="hover:opacity-80 transition-opacity">
+            <img 
+              src="/lovable-uploads/5377daa4-3f84-4748-a91b-081403394030.png" 
+              alt="House Budget Calculator"
+              className="h-8 w-auto cursor-pointer"
+            />
+          </Link>
         </div>
 
         {/* Navigation */}
