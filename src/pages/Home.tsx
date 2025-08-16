@@ -145,7 +145,7 @@ const FeaturedToolsSection = () => {
   
   return (
     <section className="py-16 px-4 bg-slate-900 text-white relative" style={{
-      backgroundImage: `repeating-linear-gradient(45deg, transparent, transparent 40px, rgba(255,255,255,0.02) 40px, rgba(255,255,255,0.02) 42px)`
+      backgroundImage: `repeating-linear-gradient(45deg, transparent, transparent 40px, rgba(255,255,255,0.04) 40px, rgba(255,255,255,0.04) 42px)`
     }}>
       <div className="max-w-6xl mx-auto">
         <div className="text-center mb-12">
@@ -195,21 +195,8 @@ const FeaturedToolsSection = () => {
 
 const AllToolsGrid = () => (
   <section className="py-16 px-4 bg-slate-900 text-white relative overflow-hidden" style={{
-    backgroundImage: `repeating-linear-gradient(45deg, transparent, transparent 40px, rgba(255,255,255,0.02) 40px, rgba(255,255,255,0.02) 42px)`
+    backgroundImage: `repeating-linear-gradient(45deg, transparent, transparent 40px, rgba(255,255,255,0.04) 40px, rgba(255,255,255,0.04) 42px)`
   }}>
-    {/* Diagonal pattern background */}
-    <div className="absolute inset-0 opacity-5">
-      <div className="absolute inset-0" style={{
-        backgroundImage: `repeating-linear-gradient(45deg, transparent, transparent 20px, hsl(var(--primary)) 20px, hsl(var(--primary)) 21px)`,
-      }}></div>
-    </div>
-    
-    {/* Waterfall effect with staggered cards */}
-    <div className="absolute top-0 left-0 right-0">
-      <svg viewBox="0 0 1200 60" className="w-full h-auto">
-        <path d="M0,0 C300,40 600,20 900,40 C1000,50 1100,30 1200,40 L1200,0 Z" fill="white" fillOpacity="0.8" />
-      </svg>
-    </div>
     <div className="max-w-6xl mx-auto">
       <div className="text-center mb-12">
         <h2 className="text-2xl md:text-3xl font-bold mb-4 text-white">
@@ -283,21 +270,13 @@ const SocialProofSection = () => (
           </p>
         </div>
       </div>
-      <div className="bg-green-50 border border-green-200 rounded-lg p-6">
-        <p className="text-green-800 font-semibold mb-2">
-          💡 Take control of your wallet!
-        </p>
-        <p className="text-green-700">
-          Start your journey to financial freedom with our free budget calculator
-        </p>
-      </div>
     </div>
   </section>
 );
 
 const CTASection = () => (
   <section className="py-20 px-4 bg-slate-900 text-white relative overflow-hidden" style={{
-    backgroundImage: `repeating-linear-gradient(45deg, transparent, transparent 40px, rgba(255,255,255,0.02) 40px, rgba(255,255,255,0.02) 42px)`
+    backgroundImage: `repeating-linear-gradient(45deg, transparent, transparent 40px, rgba(255,255,255,0.04) 40px, rgba(255,255,255,0.04) 42px)`
   }}>
     <div className="max-w-4xl mx-auto text-center relative z-10">
       <h2 className="text-3xl md:text-4xl font-bold mb-6 animate-fade-in">
