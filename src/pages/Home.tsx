@@ -144,10 +144,12 @@ const FeaturedToolsSection = () => {
   const featuredTools = toolsData.filter(tool => tool.featured);
   
   return (
-    <section className="py-16 px-4 bg-white relative">
+    <section className="py-16 px-4 bg-slate-900 text-white relative" style={{
+      backgroundImage: `repeating-linear-gradient(45deg, transparent, transparent 40px, rgba(255,255,255,0.02) 40px, rgba(255,255,255,0.02) 42px)`
+    }}>
       <div className="max-w-6xl mx-auto">
         <div className="text-center mb-12">
-          <h2 className="text-2xl md:text-4xl font-bold mb-4">
+          <h2 className="text-2xl md:text-4xl font-bold mb-4 text-white">
             Start Saving Money Today
           </h2>
         </div>
@@ -245,9 +247,11 @@ const AllToolsGrid = () => (
 );
 
 const SocialProofSection = () => (
-  <section className="py-16 px-4 bg-gradient-to-r from-white via-primary/5 to-white relative">
+  <section className="py-16 px-4 bg-slate-900 text-white relative" style={{
+    backgroundImage: `repeating-linear-gradient(45deg, transparent, transparent 40px, rgba(255,255,255,0.02) 40px, rgba(255,255,255,0.02) 42px)`
+  }}>
     <div className="max-w-4xl mx-auto text-center">
-      <h2 className="text-2xl md:text-3xl font-bold mb-8">
+      <h2 className="text-2xl md:text-3xl font-bold mb-8 text-white">
         Join a Community of Smart Savers
       </h2>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12 relative z-10">
@@ -256,35 +260,35 @@ const SocialProofSection = () => (
             <Calculator className="h-8 w-8" />
           </div>
           <h3 className="text-xl font-semibold">100% Free Forever</h3>
-          <p className="text-muted-foreground">
-            Core budgeting tools are completely free. Premium AI insights available for advanced users.
-          </p>
-        </div>
-        <div className="space-y-4 animate-fade-in" style={{ animationDelay: '0.4s' }}>
-          <div className="w-16 h-16 bg-primary/10 text-primary rounded-full flex items-center justify-center mx-auto hover:scale-110 transition-transform duration-300 hover:bg-primary/20">
-            <Brain className="h-8 w-8" />
-          </div>
-          <h3 className="text-xl font-semibold">AI-Powered Insights</h3>
-          <p className="text-muted-foreground">
-            Smart recommendations that learn from your spending patterns and help you save more.
-          </p>
-        </div>
-        <div className="space-y-4 animate-fade-in" style={{ animationDelay: '0.6s' }}>
-          <div className="w-16 h-16 bg-primary/10 text-primary rounded-full flex items-center justify-center mx-auto hover:scale-110 transition-transform duration-300 hover:bg-primary/20">
-            <TrendingUp className="h-8 w-8" />
-          </div>
-          <h3 className="text-xl font-semibold">Instant Results</h3>
-          <p className="text-muted-foreground">
-            Get budget analysis and money-saving insights in seconds, not hours.
-          </p>
-        </div>
-      </div>
-      <div className="bg-green-50 border border-green-200 rounded-lg p-6">
-        <p className="text-green-800 font-semibold mb-2">
-          💡 Take control of your wallet!
-        </p>
-        <p className="text-green-700">
-          Start your journey to financial freedom with our free budget calculator
+           <p className="text-gray-300">
+             Core budgeting tools are completely free. Premium AI insights available for advanced users.
+           </p>
+         </div>
+         <div className="space-y-4 animate-fade-in" style={{ animationDelay: '0.4s' }}>
+           <div className="w-16 h-16 bg-primary/20 text-primary rounded-full flex items-center justify-center mx-auto hover:scale-110 transition-transform duration-300 hover:bg-primary/30">
+             <Brain className="h-8 w-8" />
+           </div>
+           <h3 className="text-xl font-semibold text-white">AI-Powered Insights</h3>
+           <p className="text-gray-300">
+             Smart recommendations that learn from your spending patterns and help you save more.
+           </p>
+         </div>
+         <div className="space-y-4 animate-fade-in" style={{ animationDelay: '0.6s' }}>
+           <div className="w-16 h-16 bg-primary/20 text-primary rounded-full flex items-center justify-center mx-auto hover:scale-110 transition-transform duration-300 hover:bg-primary/30">
+             <TrendingUp className="h-8 w-8" />
+           </div>
+           <h3 className="text-xl font-semibold text-white">Instant Results</h3>
+           <p className="text-gray-300">
+             Get budget analysis and money-saving insights in seconds, not hours.
+           </p>
+         </div>
+       </div>
+       <div className="bg-slate-800 border border-slate-700 rounded-lg p-6">
+         <p className="text-green-400 font-semibold mb-2">
+           💡 Take control of your wallet!
+         </p>
+         <p className="text-green-300">
+           Start your journey to financial freedom with our free budget calculator
         </p>
       </div>
     </div>
