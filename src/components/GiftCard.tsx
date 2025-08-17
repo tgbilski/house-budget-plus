@@ -193,14 +193,14 @@ export function GiftCard({ initialData, onDelete }: GiftCardProps) {
   const isUnderBudget = budgetTarget > 0 && totalSpent <= budgetTarget;
 
   return (
-    <Card className="w-full">
+    <Card className="w-full bg-gray-900 dark:bg-gray-800 border-gray-700 text-white">
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
         {isEditingTitle ? (
           <div className="flex items-center gap-2 flex-1">
             <Input
               value={listData.list_title}
               onChange={(e) => handleTitleChange(e.target.value)}
-              className="text-lg font-semibold"
+              className="text-lg font-semibold bg-gray-800 border-gray-600 text-white"
               placeholder="Gift list title"
             />
             <Button
@@ -239,15 +239,15 @@ export function GiftCard({ initialData, onDelete }: GiftCardProps) {
       <CardContent className="space-y-4">
         {/* Budget tracking section */}
         {listData.id && (
-          <div className="border rounded-lg p-4 bg-muted/20 space-y-3">
+          <div className="border border-gray-600 rounded-lg p-4 bg-gray-800/50 space-y-3">
             <div className="flex items-center gap-2">
-              <DollarSign className="h-4 w-4" />
-              <Label className="text-sm font-medium">Budget Tracking</Label>
+              <DollarSign className="h-4 w-4 text-gray-300" />
+              <Label className="text-sm font-medium text-gray-300">Budget Tracking</Label>
             </div>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <Label htmlFor="budget-target" className="text-xs text-muted-foreground">
+                <Label htmlFor="budget-target" className="text-xs text-gray-400">
                   Target Budget
                 </Label>
                 <Input
@@ -264,24 +264,24 @@ export function GiftCard({ initialData, onDelete }: GiftCardProps) {
                     saveBudgetTarget(value);
                   }}
                   placeholder="0.00"
-                  className="h-8"
+                  className="h-8 bg-gray-700 border-gray-600 text-white"
                 />
               </div>
               
               <div>
-                <Label className="text-xs text-muted-foreground">Current Total</Label>
+                <Label className="text-xs text-gray-400">Current Total</Label>
                 <div 
                   className={`text-lg font-semibold p-2 rounded ${
                     isOverBudget 
-                      ? 'text-destructive' 
+                      ? 'text-red-400' 
                       : isUnderBudget 
-                        ? 'text-green-600 dark:text-green-400' 
-                        : 'text-foreground'
+                        ? 'text-green-400' 
+                        : 'text-white'
                   }`}
                 >
                   ${totalSpent.toFixed(2)}
                   {budgetTarget > 0 && (
-                    <span className="text-xs text-muted-foreground ml-2">
+                    <span className="text-xs text-gray-400 ml-2">
                       / ${budgetTarget.toFixed(2)}
                     </span>
                   )}
