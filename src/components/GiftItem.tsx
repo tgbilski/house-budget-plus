@@ -135,7 +135,7 @@ export function GiftItem({ item, listId, onSave, onDelete, isNew = false }: Gift
             />
           </div>
 
-          <div className="grid grid-cols-2 gap-3">
+          <div className="space-y-3">
             <div>
               <Label htmlFor={`price-${itemData.id || 'new'}`}>Price</Label>
               <Input
@@ -145,24 +145,26 @@ export function GiftItem({ item, listId, onSave, onDelete, isNew = false }: Gift
                 value={itemData.price}
                 onChange={(e) => handleInputChange('price', e.target.value)}
                 placeholder="0.00"
+                className="w-full"
               />
             </div>
 
             <div>
-              <Label htmlFor={`url-${itemData.id || 'new'}`}>URL</Label>
+              <Label htmlFor={`url-${itemData.id || 'new'}`}>URL (optional)</Label>
               <div className="flex gap-2">
                 <Input
                   id={`url-${itemData.id || 'new'}`}
                   value={itemData.url}
                   onChange={(e) => handleInputChange('url', e.target.value)}
                   placeholder="https://example.com"
-                  className="flex-1"
+                  className="flex-1 min-w-0"
                 />
                 {itemData.url && (
                   <Button
                     size="sm"
                     variant="outline"
                     onClick={openUrl}
+                    className="shrink-0"
                   >
                     <ExternalLink className="h-4 w-4" />
                   </Button>
