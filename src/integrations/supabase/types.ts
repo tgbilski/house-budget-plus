@@ -79,6 +79,7 @@ export type Database = {
       }
       gift_lists: {
         Row: {
+          budget_target: number | null
           created_at: string
           id: string
           list_title: string
@@ -86,6 +87,7 @@ export type Database = {
           user_id: string
         }
         Insert: {
+          budget_target?: number | null
           created_at?: string
           id?: string
           list_title?: string
@@ -93,6 +95,7 @@ export type Database = {
           user_id: string
         }
         Update: {
+          budget_target?: number | null
           created_at?: string
           id?: string
           list_title?: string
