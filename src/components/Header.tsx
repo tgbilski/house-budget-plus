@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
@@ -11,6 +11,7 @@ const Header: React.FC = () => {
   const location = useLocation();
   const { user, signOut } = useAuth();
   const isMobile = useIsMobile();
+  const [isSheetOpen, setIsSheetOpen] = useState(false);
 
   const navigation = [
     { name: 'Home', href: '/' },
@@ -24,6 +25,10 @@ const Header: React.FC = () => {
 
   const isActive = (href: string) => {
     return location.pathname === href;
+  };
+
+  const handleLinkClick = () => {
+    setIsSheetOpen(false);
   };
 
   return (
@@ -70,7 +75,7 @@ const Header: React.FC = () => {
               </Link>
             )}
             
-            <Sheet>
+            <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
               <SheetTrigger asChild>
                 <Button variant="ghost" size="sm">
                   <Menu className="h-5 w-5" />
@@ -82,6 +87,7 @@ const Header: React.FC = () => {
                     <Link
                       key={item.name}
                       to={item.href}
+                      onClick={handleLinkClick}
                       className={`text-base font-medium transition-colors hover:text-primary p-2 rounded-md ${
                         isActive(item.href)
                           ? 'text-primary bg-muted'
