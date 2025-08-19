@@ -317,7 +317,7 @@ export function GiftCard({ initialData, onDelete }: GiftCardProps) {
         {listData.id && !showNewItem && (
           <Button
             onClick={() => setShowNewItem(true)}
-            variant="outline"
+            variant="secondary"
             className="w-full"
           >
             <Plus className="h-4 w-4 mr-2" />
