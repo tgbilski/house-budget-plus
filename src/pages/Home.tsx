@@ -100,7 +100,7 @@ const HeroSection = () => (
           </div>
           
           <h1 className="text-3xl md:text-5xl font-bold mb-6 text-gray-900 leading-tight">
-            Take Control of Your 
+            Own Your 
             <span className="text-primary block">House Budget</span>
           </h1>
           

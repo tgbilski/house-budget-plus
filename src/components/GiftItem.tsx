@@ -132,6 +132,7 @@ export function GiftItem({ item, listId, onSave, onDelete, isNew = false }: Gift
               onChange={(e) => handleInputChange('gift_idea', e.target.value)}
               placeholder="Enter a gift idea..."
               rows={2}
+              className="text-gray-900 dark:text-white"
             />
           </div>
 
@@ -145,7 +146,7 @@ export function GiftItem({ item, listId, onSave, onDelete, isNew = false }: Gift
                 value={itemData.price}
                 onChange={(e) => handleInputChange('price', e.target.value)}
                 placeholder="0.00"
-                className="w-full"
+                className="w-full text-gray-900 dark:text-white"
               />
             </div>
 
@@ -157,7 +158,7 @@ export function GiftItem({ item, listId, onSave, onDelete, isNew = false }: Gift
                   value={itemData.url}
                   onChange={(e) => handleInputChange('url', e.target.value)}
                   placeholder="https://example.com"
-                  className="flex-1 min-w-0"
+                  className="flex-1 min-w-0 text-gray-900 dark:text-white"
                 />
                 {itemData.url && (
                   <Button
