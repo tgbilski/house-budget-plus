@@ -4,7 +4,7 @@ project_id = "jakfagdthwehkvynykwu"
 verify_jwt = false
 
 [functions.generate-image]
-verify_jwt = false
+verify_jwt = true
 
 [api]
 enabled = true

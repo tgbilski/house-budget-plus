@@ -3,7 +3,7 @@ import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 
 const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Origin": "https://jakfagdthwehkvynykwu.supabase.co",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
@@ -36,48 +36,38 @@ serve(async (req) => {
     if (!user?.email) throw new Error("User not authenticated");
     logStep("User authenticated", { userId: user.id, email: user.email });
 
-    // Check subscription status (bypass for super user)
-    const isSuperUser = user.email === "tgbilski@gmail.com";
-    logStep("User subscription check", { 
-      userId: user.id, 
-      email: user.email,
-      isSuperUser: isSuperUser 
-    });
+    // Check subscription status for all users
+    const { data: subscriber } = await supabaseClient
+      .from("subscribers")
+      .select("*")
+      .eq("user_id", user.id)
+      .maybeSingle();
 
-    if (!isSuperUser) {
-      const { data: subscriber } = await supabaseClient
-        .from("subscribers")
-        .select("*")
+    // Check total usage for free users (lifetime limit, not monthly)
+    if (!subscriber?.subscribed) {
+      const { data: totalUsage, error: usageError } = await supabaseClient
+        .from("pdf_processing_logs")
+        .select("id")
         .eq("user_id", user.id)
-        .single();
+        .eq("processing_status", "completed");
 
-      // Check total usage for free users (lifetime limit, not monthly)
-      if (!subscriber?.subscribed) {
-        const { data: totalUsage, error: usageError } = await supabaseClient
-          .from("pdf_processing_logs")
-          .select("id")
-          .eq("user_id", user.id)
-          .eq("processing_status", "completed");
-
-        if (usageError) {
-          logStep("Error checking usage", { error: usageError.message });
-          throw new Error("Failed to check usage limits");
-        }
-
-        if (totalUsage && totalUsage.length >= 1) {
-          logStep("Free user exceeded lifetime limit", { count: totalUsage.length });
-          return new Response(JSON.stringify({ 
-            error: "You've used your free PDF. Upgrade to Premium for unlimited PDF processing.",
-            requiresUpgrade: true
-          }), {
-            headers: { ...corsHeaders, "Content-Type": "application/json" },
-            status: 403,
-          });
-        }
+      if (usageError) {
+        logStep("Error checking usage", { error: usageError.message });
+        throw new Error("Failed to check usage limits");
       }
-    } else {
-      logStep("Super user bypass - unlimited PDF processing allowed");
+
+      if (totalUsage && totalUsage.length >= 1) {
+        logStep("Free user exceeded lifetime limit", { count: totalUsage.length });
+        return new Response(JSON.stringify({ 
+          error: "You've used your free PDF. Upgrade to Premium for unlimited PDF processing.",
+          requiresUpgrade: true
+        }), {
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+          status: 403,
+        });
+      }
     }
+    logStep("Subscription check completed", { subscribed: subscriber?.subscribed });
 
     const formData = await req.formData();
     const file = formData.get("file") as File;

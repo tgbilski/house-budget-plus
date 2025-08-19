@@ -3,7 +3,7 @@ import Stripe from "https://esm.sh/stripe@14.21.0";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 
 const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Origin": "https://jakfagdthwehkvynykwu.supabase.co",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
@@ -55,6 +55,19 @@ serve(async (req) => {
 
     logStep("Using specific price ID", { priceId, plan });
 
+    // Validate origin for security
+    const origin = req.headers.get("origin");
+    const allowedOrigins = [
+      "https://jakfagdthwehkvynykwu.supabase.co",
+      "http://localhost:3000",
+      "https://localhost:3000"
+    ];
+    
+    if (!origin || !allowedOrigins.includes(origin)) {
+      logStep("ERROR: Invalid origin", { origin, allowedOrigins });
+      throw new Error("Invalid origin");
+    }
+
     const session = await stripe.checkout.sessions.create({
       customer: customerId,
       customer_email: customerId ? undefined : user.email,
@@ -68,8 +81,8 @@ serve(async (req) => {
       automatic_tax: {
         enabled: true,
       },
-      success_url: `${req.headers.get("origin")}/subscription-success`,
-      cancel_url: `${req.headers.get("origin")}/`,
+      success_url: `${origin}/subscription-success`,
+      cancel_url: `${origin}/`,
     });
     logStep("Checkout session created", { sessionId: session.id });
 
