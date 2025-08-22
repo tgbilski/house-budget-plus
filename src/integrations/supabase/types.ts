@@ -47,6 +47,93 @@ export type Database = {
         }
         Relationships: []
       }
+      challenges: {
+        Row: {
+          challenge_type: string
+          created_at: string
+          current_progress: number | null
+          description: string | null
+          end_date: string | null
+          id: string
+          reward_badge: string | null
+          start_date: string
+          status: string
+          target_amount: number | null
+          target_days: number | null
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          challenge_type: string
+          created_at?: string
+          current_progress?: number | null
+          description?: string | null
+          end_date?: string | null
+          id?: string
+          reward_badge?: string | null
+          start_date?: string
+          status?: string
+          target_amount?: number | null
+          target_days?: number | null
+          title: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          challenge_type?: string
+          created_at?: string
+          current_progress?: number | null
+          description?: string | null
+          end_date?: string | null
+          id?: string
+          reward_badge?: string | null
+          start_date?: string
+          status?: string
+          target_amount?: number | null
+          target_days?: number | null
+          title?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      daily_checkins: {
+        Row: {
+          amount: number | null
+          category: string | null
+          created_at: string
+          date: string
+          description: string | null
+          id: string
+          mood_score: number | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          amount?: number | null
+          category?: string | null
+          created_at?: string
+          date?: string
+          description?: string | null
+          id?: string
+          mood_score?: number | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          amount?: number | null
+          category?: string | null
+          created_at?: string
+          date?: string
+          description?: string | null
+          id?: string
+          mood_score?: number | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       gift_items: {
         Row: {
           created_at: string
@@ -272,6 +359,45 @@ export type Database = {
         }
         Relationships: []
       }
+      user_insights: {
+        Row: {
+          created_at: string
+          data: Json | null
+          description: string
+          id: string
+          insight_type: string
+          is_read: boolean | null
+          priority: number | null
+          title: string
+          user_id: string
+          valid_until: string | null
+        }
+        Insert: {
+          created_at?: string
+          data?: Json | null
+          description: string
+          id?: string
+          insight_type: string
+          is_read?: boolean | null
+          priority?: number | null
+          title: string
+          user_id: string
+          valid_until?: string | null
+        }
+        Update: {
+          created_at?: string
+          data?: Json | null
+          description?: string
+          id?: string
+          insight_type?: string
+          is_read?: boolean | null
+          priority?: number | null
+          title?: string
+          user_id?: string
+          valid_until?: string | null
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           created_at: string
@@ -296,6 +422,39 @@ export type Database = {
         }
         Relationships: []
       }
+      user_streaks: {
+        Row: {
+          created_at: string
+          current_streak: number | null
+          id: string
+          last_activity_date: string | null
+          longest_streak: number | null
+          streak_type: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          current_streak?: number | null
+          id?: string
+          last_activity_date?: string | null
+          longest_streak?: number | null
+          streak_type: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          current_streak?: number | null
+          id?: string
+          last_activity_date?: string | null
+          longest_streak?: number | null
+          streak_type?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
@@ -315,6 +474,14 @@ export type Database = {
           _user_id: string
         }
         Returns: boolean
+      }
+      update_user_streak: {
+        Args: {
+          _activity_date?: string
+          _streak_type: string
+          _user_id: string
+        }
+        Returns: undefined
       }
     }
     Enums: {

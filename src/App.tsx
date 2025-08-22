@@ -16,6 +16,7 @@ import Auth from "@/pages/Auth";
 import NotFound from "@/pages/NotFound";
 import SubscriptionSuccess from "@/pages/SubscriptionSuccess";
 import UserSettings from "@/pages/UserSettings";
+import Engagement from "@/pages/Engagement";
 import AIInsights from "@/pages/AIInsights";
 import { Gifts } from "@/pages/Gifts";
 import { useState, createContext } from "react";
@@ -63,6 +64,7 @@ const App = () => {
                   <Route path="/compare-prices" element={<CompareVendors />} />
                   <Route path="/takeout" element={<TakeoutCalendar />} />
                   <Route path="/vacation" element={<Vacation />} />
+                  <Route path="/engagement" element={<Engagement />} />
                   <Route path="/auth" element={<Auth />} />
                   <Route path="/settings" element={<UserSettings />} />
                   <Route path="/gifts" element={<Gifts />} />
