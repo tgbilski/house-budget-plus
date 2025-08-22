@@ -18,7 +18,7 @@ import { useBadges } from '@/hooks/useBadges';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { AIChatbot } from '@/components/AIChatbot';
 import { supabase } from '@/integrations/supabase/client';
-import { AdSense } from '@/components/AdSense';
+
 import { SEO } from '@/components/SEO';
 import { seoData } from '@/utils/seoData';
 import { Breadcrumbs } from '@/components/Breadcrumbs';
@@ -631,16 +631,6 @@ const TakeoutCalendar: React.FC = () => {
           </DialogContent>
         </Dialog>
 
-        {/* AdSense Banner */}
-        <div className="max-w-6xl mx-auto mt-8 flex justify-center">
-          <div className="w-full max-w-2xl">
-            <div className="text-center text-xs text-muted-foreground mb-2">Advertisement</div>
-            <AdSense 
-              adSlot="9361321362"
-              style={{ display: 'block', minHeight: '120px' }}
-            />
-          </div>
-        </div>
 
         <FAQ faqs={takeoutCalendarFAQs} />
         <InternalLinks currentPage="/takeout" category="tracking" />

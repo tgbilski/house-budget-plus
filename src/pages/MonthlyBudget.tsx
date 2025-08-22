@@ -7,7 +7,7 @@ import { useCurrency } from '@/hooks/useCurrency';
 import { useAuth } from '@/hooks/useAuth';
 import { useBadges } from '@/hooks/useBadges';
 import { supabase } from '@/integrations/supabase/client';
-import { AdSense } from '@/components/AdSense';
+
 import { SEO } from '@/components/SEO';
 import { seoData } from '@/utils/seoData';
 import { Breadcrumbs } from '@/components/Breadcrumbs';
@@ -186,16 +186,6 @@ const MonthlyBudget: React.FC = () => {
           </div>
         </div>
 
-        {/* AdSense Banner */}
-        <div className="max-w-6xl mx-auto mt-8 flex justify-center">
-          <div className="w-full max-w-2xl">
-            <div className="text-center text-xs text-muted-foreground mb-2">Advertisement</div>
-            <AdSense 
-              adSlot="9361321362"
-              style={{ display: 'block', minHeight: '120px' }}
-            />
-          </div>
-        </div>
 
         {/* AdSense Optimization Content */}
         <section className="mt-16 max-w-4xl mx-auto">
