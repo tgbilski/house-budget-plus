@@ -43,14 +43,12 @@ export const FinancialGauges: React.FC = () => {
       const prevMonthStart = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth() - 1, 1));
       const prevMonthEnd = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), 0, 23, 59, 59));
 
-      // Fetch budget data (income vs expenses)
+      // Fetch all budget data (income vs expenses) from monthly calculators
       const { data: budgetData } = await supabase
         .from('budget_data')
         .select('income, expenses')
         .eq('user_id', user.id)
-        .eq('page_type', 'monthly-budget')
-        .order('created_at', { ascending: false })
-        .limit(1);
+        .eq('page_type', 'monthly-budget');
 
       // Fetch current month takeout transactions
       const { data: currentTakeout } = await supabase
@@ -68,10 +66,13 @@ export const FinancialGauges: React.FC = () => {
         .gte('date', prevMonthStart.toISOString().split('T')[0])
         .lte('date', prevMonthEnd.toISOString().split('T')[0]);
 
-      // Calculate metrics
-      const income = budgetData?.[0]?.income || 0;
-      const expenses = budgetData?.[0]?.expenses ? 
-        Object.values(budgetData[0].expenses as Record<string, number>).reduce((sum, val) => sum + val, 0) : 0;
+      // Calculate metrics - sum all monthly budget calculators
+      const totalIncome = budgetData?.reduce((sum, budget) => sum + (budget.income || 0), 0) || 0;
+      const totalExpenses = budgetData?.reduce((sum, budget) => {
+        const expenseObj = budget.expenses as Record<string, number> || {};
+        const expenseSum = Object.values(expenseObj).reduce((expSum, val) => expSum + val, 0);
+        return sum + expenseSum;
+      }, 0) || 0;
       
       const currentTakeoutTotal = currentTakeout?.reduce((sum, t) => sum + Number(t.amount), 0) || 0;
       const prevTakeoutTotal = prevTakeout?.reduce((sum, t) => sum + Number(t.amount), 0) || 0;
@@ -80,26 +81,57 @@ export const FinancialGauges: React.FC = () => {
         ? ((currentTakeoutTotal - prevTakeoutTotal) / prevTakeoutTotal) * 100 
         : currentTakeoutTotal > 0 ? 100 : 0;
 
-      // Generate AI insights
-      const { data: insights } = await supabase.functions.invoke('ai-budget-insights', {
-        body: {
-          question: `Analyze these financial metrics and provide insights: Income: $${income}, Total Expenses: $${expenses}, Income-Expense Difference: $${income - expenses}, Current Month Takeout: $${currentTakeoutTotal}, Previous Month Takeout: $${prevTakeoutTotal}, Month-over-Month Change: ${takeoutChange.toFixed(1)}%. Provide separate insights for each metric in this format: {"incomeExpense": "insight about income vs expenses", "takeout": "insight about takeout spending", "trend": "insight about the month-over-month trend"}`
-        }
-      });
+      // Check for cached insights first
+      const cacheKey = `${totalIncome}-${totalExpenses}-${currentTakeoutTotal}-${prevTakeoutTotal}`;
+      const { data: cachedInsights } = await supabase
+        .from('user_insights')
+        .select('*')
+        .eq('user_id', user.id)
+        .eq('insight_type', 'financial_gauges')
+        .eq('title', cacheKey)
+        .gte('valid_until', new Date().toISOString().split('T')[0])
+        .single();
 
       let parsedInsights;
-      try {
-        parsedInsights = JSON.parse(insights?.insight || '{}');
-      } catch {
-        parsedInsights = {
-          incomeExpense: "Your income and expenses show your financial position for this month.",
-          takeout: "Monitor your takeout spending to understand your dining habits.",
-          trend: "Track changes in spending patterns month over month."
-        };
+      if (cachedInsights) {
+        parsedInsights = cachedInsights.data;
+      } else {
+        // Generate new AI insights
+        const { data: insights } = await supabase.functions.invoke('ai-budget-insights', {
+          body: {
+            question: `Analyze these financial metrics and provide insights: Income: $${totalIncome}, Total Expenses: $${totalExpenses}, Income-Expense Difference: $${totalIncome - totalExpenses}, Current Month Takeout: $${currentTakeoutTotal}, Previous Month Takeout: $${prevTakeoutTotal}, Month-over-Month Change: ${takeoutChange.toFixed(1)}%. Provide separate insights for each metric in this format: {"incomeExpense": "insight about income vs expenses", "takeout": "insight about takeout spending", "trend": "insight about the month-over-month trend"}`
+          }
+        });
+
+        try {
+          parsedInsights = JSON.parse(insights?.insight || '{}');
+        } catch {
+          parsedInsights = {
+            incomeExpense: "Your income and expenses show your financial position for this month.",
+            takeout: "Monitor your takeout spending to understand your dining habits.",
+            trend: "Track changes in spending patterns month over month."
+          };
+        }
+
+        // Cache the insights for 24 hours
+        const validUntil = new Date();
+        validUntil.setHours(validUntil.getHours() + 24);
+        
+        await supabase
+          .from('user_insights')
+          .insert({
+            user_id: user.id,
+            insight_type: 'financial_gauges',
+            title: cacheKey,
+            description: 'Cached financial gauge insights',
+            data: parsedInsights,
+            priority: 1,
+            valid_until: validUntil.toISOString().split('T')[0]
+          });
       }
 
       setMetrics({
-        incomeExpenseDiff: income - expenses,
+        incomeExpenseDiff: totalIncome - totalExpenses,
         monthlyTakeout: currentTakeoutTotal,
         takeoutChange,
         insights: parsedInsights
