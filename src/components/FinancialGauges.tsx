@@ -81,7 +81,7 @@ export const FinancialGauges: React.FC = () => {
         ? ((currentTakeoutTotal - prevTakeoutTotal) / prevTakeoutTotal) * 100 
         : currentTakeoutTotal > 0 ? 100 : 0;
 
-      // Check for cached insights first
+      // Check for cached insights based on current data
       const cacheKey = `${totalIncome}-${totalExpenses}-${currentTakeoutTotal}-${prevTakeoutTotal}`;
       const { data: cachedInsights } = await supabase
         .from('user_insights')
@@ -89,7 +89,6 @@ export const FinancialGauges: React.FC = () => {
         .eq('user_id', user.id)
         .eq('insight_type', 'financial_gauges')
         .eq('title', cacheKey)
-        .gte('valid_until', new Date().toISOString().split('T')[0])
         .single();
 
       let parsedInsights;
@@ -113,10 +112,14 @@ export const FinancialGauges: React.FC = () => {
           };
         }
 
-        // Cache the insights for 24 hours
-        const validUntil = new Date();
-        validUntil.setHours(validUntil.getHours() + 24);
-        
+        // Clear old cached insights for this user and type
+        await supabase
+          .from('user_insights')
+          .delete()
+          .eq('user_id', user.id)
+          .eq('insight_type', 'financial_gauges');
+
+        // Cache the new insights
         await supabase
           .from('user_insights')
           .insert({
@@ -125,8 +128,7 @@ export const FinancialGauges: React.FC = () => {
             title: cacheKey,
             description: 'Cached financial gauge insights',
             data: parsedInsights,
-            priority: 1,
-            valid_until: validUntil.toISOString().split('T')[0]
+            priority: 1
           });
       }
 
