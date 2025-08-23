@@ -12,6 +12,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { SEO } from "@/components/SEO";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { Brain, Crown } from "lucide-react";
+import { FinancialGauges } from "@/components/FinancialGauges";
 
 export default function AIInsights() {
   const { user } = useAuth();
@@ -144,44 +145,53 @@ export default function AIInsights() {
           )}
 
           {user && subscribed && !subLoading && (
-            <div className="max-w-2xl mx-auto space-y-8">
-              <Card>
-                <CardHeader>
-                  <CardTitle>AI Insights</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="mb-4">
-                    <Badge variant="secondary">
-                      Active: {subscriptionTier}
-                    </Badge>
-                    {subscriptionEnd && (
-                      <span className="ml-2 text-muted-foreground text-sm">
-                        until {new Date(subscriptionEnd).toLocaleDateString()}
-                      </span>
-                    )}
-                  </div>
-                  <Textarea
-                    rows={3}
-                    value={question}
-                    onChange={(e) => setQuestion(e.target.value)}
-                    placeholder="Ask an AI-powered budget question..."
-                    disabled={loading}
-                  />
-                  <Button
-                    className="mt-4"
-                    onClick={handleAsk}
-                    disabled={loading || !question.trim()}
-                  >
-                    {loading ? "Thinking..." : "Ask AI"}
-                  </Button>
-                  {answer && (
-                    <div className="mt-6 p-4 bg-muted rounded">
-                      <div className="font-bold mb-2">AI Answer:</div>
-                      <div>{answer}</div>
+            <div className="max-w-6xl mx-auto space-y-8">
+              {/* Financial Gauges */}
+              <div className="mb-8">
+                <h2 className="text-xl font-semibold mb-4 text-center">Your Financial Overview</h2>
+                <FinancialGauges />
+              </div>
+
+              {/* AI Chat Interface */}
+              <div className="max-w-2xl mx-auto">
+                <Card>
+                  <CardHeader>
+                    <CardTitle>AI Insights</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="mb-4">
+                      <Badge variant="secondary">
+                        Active: {subscriptionTier}
+                      </Badge>
+                      {subscriptionEnd && (
+                        <span className="ml-2 text-muted-foreground text-sm">
+                          until {new Date(subscriptionEnd).toLocaleDateString()}
+                        </span>
+                      )}
                     </div>
-                  )}
-                </CardContent>
-              </Card>
+                    <Textarea
+                      rows={3}
+                      value={question}
+                      onChange={(e) => setQuestion(e.target.value)}
+                      placeholder="Ask an AI-powered budget question..."
+                      disabled={loading}
+                    />
+                    <Button
+                      className="mt-4"
+                      onClick={handleAsk}
+                      disabled={loading || !question.trim()}
+                    >
+                      {loading ? "Thinking..." : "Ask AI"}
+                    </Button>
+                    {answer && (
+                      <div className="mt-6 p-4 bg-muted rounded">
+                        <div className="font-bold mb-2">AI Answer:</div>
+                        <div>{answer}</div>
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
+              </div>
             </div>
           )}
         </div>

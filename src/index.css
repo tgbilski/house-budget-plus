@@ -145,4 +145,9 @@
   .card-modern:hover {
     @apply shadow-glow;
   }
+
+  /* Custom progress bar colors */
+  .progress-custom [data-progress-indicator] {
+    background-color: var(--progress-color, hsl(var(--primary)));
+  }
 }
