@@ -2,111 +2,102 @@
 @tailwind components;
 @tailwind utilities;
 
-/* House Budget Calculator Design System - Clean, Professional, AdSense Optimized */
+/* 90s Cyberpunk Design System */
 
 @layer base {
   :root {
-    /* Base colors - clean whites and grays */
-    --background: 0 0% 100%;
-    --foreground: 221 47% 24%;
+    /* Dark cyberpunk background */
+    --background: 200 50% 3%;
+    --foreground: 177 100% 85%;
 
-    --card: 0 0% 100%;
-    --card-foreground: 221 47% 24%;
+    --card: 200 50% 4%;
+    --card-foreground: 177 100% 85%;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 221 47% 24%;
+    --popover: 200 50% 4%;
+    --popover-foreground: 177 100% 85%;
 
-    /* Your logo's primary color #203459 = HSL(221, 47%, 24%) */
-    --primary: 221 47% 24%;
-    --primary-foreground: 0 0% 100%;
+    /* Electric cyan primary */
+    --primary: 185 100% 50%;
+    --primary-foreground: 200 50% 3%;
 
-    /* Lighter version of your primary for hover states */
-    --primary-hover: 221 47% 30%;
+    /* Neon pink accent */
+    --secondary: 320 100% 70%;
+    --secondary-foreground: 200 50% 3%;
 
-    /* Complementary colors for a modern, fun feel */
-    --secondary: 221 20% 96%;
-    --secondary-foreground: 221 47% 24%;
+    --muted: 200 25% 8%;
+    --muted-foreground: 177 50% 65%;
 
-    --muted: 221 15% 95%;
-    --muted-foreground: 221 20% 55%;
+    /* Electric green accent */
+    --accent: 125 100% 50%;
+    --accent-foreground: 200 50% 3%;
 
-    /* Your accent color #669c3e = HSL(93, 43%, 43%) */
-    --accent: 93 43% 43%;
-    --accent-foreground: 0 0% 100%;
-    --accent-hover: 93 43% 38%;
+    /* Neon red for warnings */
+    --destructive: 0 100% 60%;
+    --destructive-foreground: 200 50% 3%;
 
-    /* Status colors that work well with your blue */
-    --destructive: 0 84% 60%;
-    --destructive-foreground: 0 0% 100%;
+    --success: 125 100% 50%;
+    --success-foreground: 200 50% 3%;
 
-    --success: 142 76% 36%;
-    --success-foreground: 0 0% 100%;
+    --warning: 45 100% 60%;
+    --warning-foreground: 200 50% 3%;
 
-    --warning: 38 92% 50%;
-    --warning-foreground: 0 0% 100%;
+    /* Subtle cyan borders */
+    --border: 185 50% 15%;
+    --input: 185 50% 10%;
+    --ring: 185 100% 50%;
 
-    /* Borders and inputs with subtle blue tint */
-    --border: 221 30% 88%;
-    --input: 221 30% 88%;
-    --ring: 221 47% 24%;
-
-    --radius: 0.75rem;
+    --radius: 0.25rem;
 
     /* Sidebar colors */
-    --sidebar-background: 0 0% 98%;
-    --sidebar-foreground: 221 47% 24%;
-    --sidebar-primary: 221 47% 24%;
-    --sidebar-primary-foreground: 0 0% 98%;
-    --sidebar-accent: 221 15% 95%;
-    --sidebar-accent-foreground: 221 47% 24%;
-    --sidebar-border: 221 30% 88%;
-    --sidebar-ring: 221 47% 24%;
+    --sidebar-background: 200 50% 2%;
+    --sidebar-foreground: 177 100% 85%;
+    --sidebar-primary: 185 100% 50%;
+    --sidebar-primary-foreground: 200 50% 3%;
+    --sidebar-accent: 200 25% 8%;
+    --sidebar-accent-foreground: 177 100% 85%;
+    --sidebar-border: 185 50% 15%;
+    --sidebar-ring: 185 100% 50%;
 
-    /* Fun gradients using your brand color */
-    --gradient-primary: linear-gradient(135deg, hsl(221 47% 24%), hsl(221 47% 35%));
-    --gradient-secondary: linear-gradient(135deg, hsl(221 15% 95%), hsl(0 0% 100%));
+    /* Cyberpunk gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(185 100% 50%), hsl(125 100% 50%));
+    --gradient-secondary: linear-gradient(135deg, hsl(320 100% 70%), hsl(270 100% 60%));
+    --gradient-danger: linear-gradient(135deg, hsl(0 100% 60%), hsl(15 100% 50%));
+    --gradient-cyber: linear-gradient(135deg, hsl(185 100% 50%) 0%, hsl(320 100% 70%) 50%, hsl(270 100% 60%) 100%);
     
-    /* Modern shadows */
-    --shadow-elegant: 0 4px 24px -4px hsl(221 47% 24% / 0.1);
-    --shadow-glow: 0 0 32px hsl(221 47% 24% / 0.15);
+    /* Neon glows */
+    --glow-cyan: 0 0 20px hsl(185 100% 50% / 0.5), 0 0 40px hsl(185 100% 50% / 0.3);
+    --glow-pink: 0 0 20px hsl(320 100% 70% / 0.5), 0 0 40px hsl(320 100% 70% / 0.3);
+    --glow-green: 0 0 20px hsl(125 100% 50% / 0.5), 0 0 40px hsl(125 100% 50% / 0.3);
   }
 
   .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
-
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
-
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
-
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 11.2%;
-
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
-
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
-
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
-
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
-
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 212.7 26.8% 83.9%;
-    --sidebar-background: 240 5.9% 10%;
-    --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 3.7% 15.9%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --background: 200 50% 3%;
+    --foreground: 177 100% 85%;
+    --card: 200 50% 4%;
+    --card-foreground: 177 100% 85%;
+    --popover: 200 50% 4%;
+    --popover-foreground: 177 100% 85%;
+    --primary: 185 100% 50%;
+    --primary-foreground: 200 50% 3%;
+    --secondary: 320 100% 70%;
+    --secondary-foreground: 200 50% 3%;
+    --muted: 200 25% 8%;
+    --muted-foreground: 177 50% 65%;
+    --accent: 125 100% 50%;
+    --accent-foreground: 200 50% 3%;
+    --destructive: 0 100% 60%;
+    --destructive-foreground: 200 50% 3%;
+    --border: 185 50% 15%;
+    --input: 185 50% 10%;
+    --ring: 185 100% 50%;
+    --sidebar-background: 200 50% 2%;
+    --sidebar-foreground: 177 100% 85%;
+    --sidebar-primary: 185 100% 50%;
+    --sidebar-primary-foreground: 200 50% 3%;
+    --sidebar-accent: 200 25% 8%;
+    --sidebar-accent-foreground: 177 100% 85%;
+    --sidebar-border: 185 50% 15%;
+    --sidebar-ring: 185 100% 50%;
   }
 }
 
@@ -116,38 +107,139 @@
   }
 
   body {
-    @apply text-foreground font-sans;
+    @apply text-foreground font-mono;
     font-feature-settings: "rlig" 1, "calt" 1;
-    background: linear-gradient(135deg, 
-      hsl(221, 47%, 95%) 0%, 
-      hsl(93, 43%, 92%) 25%, 
-      hsl(221, 30%, 94%) 50%, 
-      hsl(93, 25%, 93%) 75%, 
-      hsl(221, 20%, 96%) 100%);
+    background: 
+      radial-gradient(circle at 20% 50%, hsl(185 100% 50% / 0.1) 0%, transparent 20%),
+      radial-gradient(circle at 80% 20%, hsl(320 100% 70% / 0.1) 0%, transparent 20%),
+      radial-gradient(circle at 40% 80%, hsl(125 100% 50% / 0.1) 0%, transparent 20%),
+      linear-gradient(180deg, hsl(200 50% 3%), hsl(200 40% 2%));
     background-attachment: fixed;
     min-height: 100vh;
+    position: relative;
   }
 
-  /* Modern button hover effects */
-  .btn-gradient {
-    @apply bg-gradient-primary text-primary-foreground shadow-elegant;
+  /* Cyberpunk grid overlay */
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: 
+      linear-gradient(hsl(185 100% 50% / 0.03) 1px, transparent 1px),
+      linear-gradient(90deg, hsl(185 100% 50% / 0.03) 1px, transparent 1px);
+    background-size: 50px 50px;
+    pointer-events: none;
+    z-index: -1;
   }
 
-  .btn-gradient:hover {
-    @apply shadow-glow;
+  /* Cyberpunk text effects */
+  .cyber-text {
+    @apply text-transparent bg-clip-text;
+    background-image: var(--gradient-cyber);
+    text-shadow: 0 0 10px hsl(185 100% 50% / 0.5);
   }
 
-  /* Enhanced card styling */
-  .card-modern {
-    @apply bg-card rounded-lg shadow-elegant border border-border/50;
+  /* Neon button styles */
+  .btn-neon {
+    @apply relative overflow-hidden bg-transparent border-2;
+    border-color: hsl(var(--primary));
+    color: hsl(var(--primary));
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    font-weight: 700;
+    letter-spacing: 2px;
   }
 
-  .card-modern:hover {
-    @apply shadow-glow;
+  .btn-neon:hover {
+    background-color: hsl(var(--primary) / 0.1);
+    box-shadow: var(--glow-cyan);
+    transform: translateY(-2px);
   }
 
-  /* Custom progress bar colors */
-  .progress-custom [data-progress-indicator] {
-    background-color: var(--progress-color, hsl(var(--primary)));
+  .btn-neon::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, hsl(var(--primary) / 0.2), transparent);
+    transition: left 0.5s;
+  }
+
+  .btn-neon:hover::before {
+    left: 100%;
+  }
+
+  /* Enhanced card styling with neon glow */
+  .card-cyber {
+    @apply bg-card rounded border;
+    border-color: hsl(var(--border));
+    background: linear-gradient(135deg, hsl(var(--card)) 0%, hsl(var(--muted)) 100%);
+    backdrop-filter: blur(10px);
+    position: relative;
+  }
+
+  .card-cyber::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    padding: 1px;
+    background: var(--gradient-cyber);
+    border-radius: inherit;
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask-composite: xor;
+    pointer-events: none;
+  }
+
+  .card-cyber:hover {
+    box-shadow: var(--glow-cyan);
+    transform: translateY(-2px);
+  }
+
+  /* Progress bar with neon effect */
+  .progress-cyber [data-progress-indicator] {
+    background: var(--gradient-primary);
+    box-shadow: var(--glow-cyan);
+  }
+
+  /* Glitch effect */
+  .glitch {
+    position: relative;
+    animation: glitch 2s infinite;
+  }
+
+  @keyframes glitch {
+    0%, 100% { transform: translate(0); }
+    20% { transform: translate(-2px, 2px); }
+    40% { transform: translate(-2px, -2px); }
+    60% { transform: translate(2px, 2px); }
+    80% { transform: translate(2px, -2px); }
+  }
+
+  /* Scanline effect */
+  .scanlines {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .scanlines::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      hsl(185 100% 50% / 0.05) 2px,
+      hsl(185 100% 50% / 0.05) 4px
+    );
+    pointer-events: none;
   }
 }
