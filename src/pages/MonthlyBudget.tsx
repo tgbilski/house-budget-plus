@@ -186,6 +186,34 @@ const MonthlyBudget: React.FC = () => {
           </div>
         </div>
 
+        {/* Dark Section with Pin Stripes - Matching Home Page */}
+        <section className="py-16 px-4 bg-slate-900 text-white relative" style={{
+          backgroundImage: `repeating-linear-gradient(45deg, transparent, transparent 40px, rgba(255,255,255,0.04) 40px, rgba(255,255,255,0.04) 42px)`
+        }}>
+          <div className="max-w-4xl mx-auto text-center relative z-10">
+            <h2 className="text-2xl md:text-3xl font-bold mb-6 text-white">
+              Take Control of Your Finances
+            </h2>
+            <p className="text-lg mb-8 opacity-90">
+              Use our comprehensive budget calculator to plan your financial future and achieve your goals
+            </p>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+              <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6 border border-white/20">
+                <h3 className="font-semibold mb-2 text-white">Track Every Dollar</h3>
+                <p className="text-sm opacity-90">Monitor income and expenses to see exactly where your money goes each month</p>
+              </div>
+              <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6 border border-white/20">
+                <h3 className="font-semibold mb-2 text-white">Plan for the Future</h3>
+                <p className="text-sm opacity-90">Build emergency funds and save for major purchases with clear financial planning</p>
+              </div>
+              <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6 border border-white/20">
+                <h3 className="font-semibold mb-2 text-white">Multiple Scenarios</h3>
+                <p className="text-sm opacity-90">Create separate budgets for different household members or financial situations</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
 
         {/* AdSense Optimization Content */}
         <section className="mt-16 max-w-4xl mx-auto">

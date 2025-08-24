@@ -629,8 +629,35 @@ const TakeoutCalendar: React.FC = () => {
               )}
             </div>
           </DialogContent>
-        </Dialog>
+         </Dialog>
 
+        {/* Dark Section with Pin Stripes - Matching Home Page */}
+        <section className="py-16 px-4 bg-slate-900 text-white relative" style={{
+          backgroundImage: `repeating-linear-gradient(45deg, transparent, transparent 40px, rgba(255,255,255,0.04) 40px, rgba(255,255,255,0.04) 42px)`
+        }}>
+          <div className="max-w-4xl mx-auto text-center relative z-10">
+            <h2 className="text-2xl md:text-3xl font-bold mb-6 text-white">
+              Master Your Daily Spending
+            </h2>
+            <p className="text-lg mb-8 opacity-90">
+              Track every expense and understand your spending patterns with our visual calendar approach
+            </p>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+              <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6 border border-white/20">
+                <h3 className="font-semibold mb-2 text-white">Visual Tracking</h3>
+                <p className="text-sm opacity-90">See your spending habits at a glance with our interactive calendar view</p>
+              </div>
+              <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6 border border-white/20">
+                <h3 className="font-semibold mb-2 text-white">Monthly Insights</h3>
+                <p className="text-sm opacity-90">Get detailed charts and summaries of your monthly spending patterns</p>
+              </div>
+              <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6 border border-white/20">
+                <h3 className="font-semibold mb-2 text-white">Goal Setting</h3>
+                <p className="text-sm opacity-90">Set spending targets and track your progress toward financial goals</p>
+              </div>
+            </div>
+          </div>
+        </section>
 
         <FAQ faqs={takeoutCalendarFAQs} />
         <InternalLinks currentPage="/takeout" category="tracking" />
