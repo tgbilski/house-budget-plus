@@ -146,11 +146,6 @@ export default function AIInsights() {
 
           {user && subscribed && !subLoading && (
             <div className="max-w-6xl mx-auto space-y-8">
-              {/* Financial Gauges */}
-              <div className="mb-8">
-                <h2 className="text-xl font-semibold mb-4 text-center">Your Financial Overview</h2>
-                <FinancialGauges />
-              </div>
 
               {/* AI Chat Interface */}
               <div className="max-w-2xl mx-auto">
