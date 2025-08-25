@@ -111,15 +111,27 @@ const MonthlyBudget: React.FC = () => {
       />
       <Breadcrumbs />
       <div className="container mx-auto px-4 py-8">
-        <div className="text-center mb-8">
-          <div className="flex items-center justify-center gap-4 mb-4">
-            <img 
-              src="/lovable-uploads/ed809955-ef71-4d81-b072-945082f4380a.png" 
-              alt="Calculator mascot" 
-              className="w-16 h-16 object-contain"
-            />
-            <h1 className="text-3xl font-bold text-foreground">Monthly Budget Calculator</h1>
+        {/* Hero Section with Dark Gradient */}
+        <div className="relative bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 text-white py-16 mb-8">
+          <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHZpZXdCb3g9IjAgMCAyMCAyMCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3QgeD0iMCIgeT0iMCIgd2lkdGg9IjEiIGhlaWdodD0iMjAiIGZpbGw9InJnYmEoMjU1LDI1NSwyNTUsMC4xKSIvPgo8L3N2Zz4K')] opacity-20"></div>
+          <div className="container mx-auto px-4 relative z-10">
+            <div className="text-center">
+              <div className="flex items-center justify-center gap-4 mb-6">
+                <img 
+                  src="/lovable-uploads/ed809955-ef71-4d81-b072-945082f4380a.png" 
+                  alt="Calculator mascot" 
+                  className="w-16 h-16 object-contain"
+                />
+              </div>
+              <h1 className="text-4xl font-bold mb-4">Monthly Budget Calculator</h1>
+              <p className="text-xl text-gray-300 max-w-2xl mx-auto">
+                Plan your household finances with precision{!user && ' (sign up to save)'}
+              </p>
+            </div>
           </div>
+        </div>
+
+        <div className="text-center mb-8">
           <p className="text-muted-foreground text-lg mb-6">
             Plan your household finances with precision{!user && ' (sign up to save)'}
           </p>

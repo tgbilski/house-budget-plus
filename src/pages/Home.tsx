@@ -74,13 +74,6 @@ const HeroSection = () => (
     }}
   >
     
-    {/* Diagonal wave separator - made more visible */}
-    <div className="absolute bottom-0 left-0 right-0 z-10">
-      <svg viewBox="0 0 1200 120" className="w-full h-auto">
-        <path d="M0,60 C200,100 400,20 600,60 C800,100 1000,20 1200,60 L1200,120 L0,120 Z" fill="white" fillOpacity="0.95" />
-        <path d="M0,80 C300,40 600,80 900,40 C1000,20 1100,60 1200,40 L1200,120 L0,120 Z" fill="white" fillOpacity="0.7" />
-      </svg>
-    </div>
     <div className="max-w-6xl mx-auto">
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
         <div className="text-left animate-fade-in">

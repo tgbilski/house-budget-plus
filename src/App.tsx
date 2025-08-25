@@ -60,16 +60,15 @@ const App = () => {
                 <Routes>
                   <Route path="/" element={<Home />} />
                   <Route path="/budget" element={<MonthlyBudget />} />
+                  <Route path="/savings" element={<SavingsGoals />} />
+                  <Route path="/ai-insights" element={<AIInsights />} />
                   <Route path="/home" element={<Home />} />
                   <Route path="/compare-prices" element={<CompareVendors />} />
-                  <Route path="/savings" element={<SavingsGoals />} />
                   <Route path="/vacation" element={<Vacation />} />
                   <Route path="/engagement" element={<Engagement />} />
                   <Route path="/auth" element={<Auth />} />
                   <Route path="/settings" element={<UserSettings />} />
                   <Route path="/gifts" element={<Gifts />} />
-                  
-                  <Route path="/ai-insights" element={<AIInsights />} />
                   <Route path="/subscription-success" element={<SubscriptionSuccess />} />
                   <Route path="*" element={<NotFound />} />
                 </Routes>

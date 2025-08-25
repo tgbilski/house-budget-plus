@@ -16,11 +16,11 @@ const Header: React.FC = () => {
   const navigation = [
     { name: 'Home', href: '/' },
     { name: 'Monthly Budget', href: '/budget' },
-    { name: 'Compare Vendors', href: '/compare-prices' },
     { name: 'Savings', href: '/savings' },
+    { name: 'AI Insights', href: '/ai-insights' },
+    { name: 'Compare Vendors', href: '/compare-prices' },
     { name: 'Vacation', href: '/vacation' },
     { name: 'Gifts', href: '/gifts' },
-    { name: 'AI Insights', href: '/ai-insights' },
   ];
 
   const isActive = (href: string) => {

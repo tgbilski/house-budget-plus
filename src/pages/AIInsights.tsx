@@ -85,15 +85,21 @@ export default function AIInsights() {
         <div className="max-w-6xl mx-auto">
           {/* The debugState <pre> block has been removed */}
 
-          <div className="text-center mb-6 sm:mb-8">
-            <div className="flex items-center justify-center mb-3 sm:mb-4">
-              <Brain className="h-8 w-8 sm:h-12 sm:w-12 text-primary mr-2 sm:mr-3" />
-              <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold">AI Budget Insights</h1>
-              <Crown className="h-6 w-6 sm:h-8 sm:w-8 text-yellow-500 ml-1 sm:ml-2" />
+          {/* Hero Section with Dark Gradient */}
+          <div className="relative bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 text-white py-16 mb-8">
+            <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHZpZXdCb3g9IjAgMCAyMCAyMCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3QgeD0iMCIgeT0iMCIgd2lkdGg9IjEiIGhlaWdodD0iMjAiIGZpbGw9InJnYmEoMjU1LDI1NSwyNTUsMC4xKSIvPgo8L3N2Zz4K')] opacity-20"></div>
+            <div className="container mx-auto px-4 relative z-10">
+              <div className="text-center">
+                <div className="flex items-center justify-center mb-6">
+                  <Brain className="h-16 w-16 text-primary mr-3" />
+                  <Crown className="h-8 w-8 text-yellow-500 ml-2" />
+                </div>
+                <h1 className="text-4xl font-bold mb-4">AI Budget Insights</h1>
+                <p className="text-xl text-gray-300 max-w-2xl mx-auto">
+                  Get personalized financial advice powered by AI
+                </p>
+              </div>
             </div>
-            <p className="text-lg sm:text-xl text-muted-foreground px-4">
-              Get personalized financial advice powered by AI
-            </p>
           </div>
 
           {subLoading && (

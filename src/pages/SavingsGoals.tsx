@@ -5,6 +5,8 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Plus } from 'lucide-react';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Target, Edit2, Check, X } from 'lucide-react';
 import { toast } from 'sonner';
@@ -17,17 +19,27 @@ interface SavingsEntry {
   goal_id: string;
 }
 
+interface SavingsGoal {
+  id: string;
+  title: string;
+  target_amount: number;
+  current_amount: number;
+  description?: string;
+  image_url?: string;
+}
+
 const SavingsGoals = () => {
   const { user } = useAuth();
+  const [savingsGoals, setSavingsGoals] = useState<SavingsGoal[]>([]);
   const [currentGoalId, setCurrentGoalId] = useState<string | null>(null);
   const [goalTitle, setGoalTitle] = useState('My Savings Goal');
   const [isEditingTitle, setIsEditingTitle] = useState(false);
   const [editTitle, setEditTitle] = useState(goalTitle);
-  const [selectedYear, setSelectedYear] = useState('2025');
+  const [selectedYear, setSelectedYear] = useState(new Date().getFullYear().toString());
   const [savingsData, setSavingsData] = useState<Record<string, number>>({});
   const [loading, setLoading] = useState(true);
 
-  const years = ['2025', '2026', '2027', '2028', '2029', '2030'];
+  const years = Array.from({ length: 11 }, (_, i) => (2025 + i).toString());
   const months = [
     'January', 'February', 'March', 'April', 'May', 'June',
     'July', 'August', 'September', 'October', 'November', 'December'
@@ -35,7 +47,7 @@ const SavingsGoals = () => {
 
   useEffect(() => {
     if (user) {
-      initializeGoal();
+      loadSavingsGoals();
     }
   }, [user]);
 
@@ -45,21 +57,21 @@ const SavingsGoals = () => {
     }
   }, [currentGoalId, selectedYear]);
 
-  const initializeGoal = async () => {
+  const loadSavingsGoals = async () => {
     try {
-      // Check if user has an existing goal
-      const { data: existingGoals, error: fetchError } = await supabase
+      const { data: goals, error: fetchError } = await supabase
         .from('savings_goals')
         .select('*')
-        .limit(1);
+        .eq('user_id', user?.id)
+        .order('created_at', { ascending: true });
 
       if (fetchError) throw fetchError;
 
-      if (existingGoals && existingGoals.length > 0) {
-        const goal = existingGoals[0];
-        setCurrentGoalId(goal.id);
-        setGoalTitle(goal.title);
-        setEditTitle(goal.title);
+      if (goals && goals.length > 0) {
+        setSavingsGoals(goals);
+        setCurrentGoalId(goals[0].id);
+        setGoalTitle(goals[0].title);
+        setEditTitle(goals[0].title);
       } else {
         // Create a default goal for the user
         const { data: newGoal, error: createError } = await supabase
@@ -75,15 +87,51 @@ const SavingsGoals = () => {
 
         if (createError) throw createError;
 
+        setSavingsGoals([newGoal]);
         setCurrentGoalId(newGoal.id);
         setGoalTitle(newGoal.title);
         setEditTitle(newGoal.title);
       }
     } catch (error) {
-      console.error('Error initializing goal:', error);
-      toast.error('Failed to initialize savings goal');
+      console.error('Error loading savings goals:', error);
+      toast.error('Failed to load savings goals');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const createNewGoal = async () => {
+    try {
+      const { data: newGoal, error } = await supabase
+        .from('savings_goals')
+        .insert([{
+          user_id: user?.id,
+          title: `Goal ${savingsGoals.length + 1}`,
+          target_amount: 0,
+          current_amount: 0
+        }])
+        .select()
+        .single();
+
+      if (error) throw error;
+
+      setSavingsGoals([...savingsGoals, newGoal]);
+      setCurrentGoalId(newGoal.id);
+      setGoalTitle(newGoal.title);
+      setEditTitle(newGoal.title);
+      toast.success('New savings goal created!');
+    } catch (error) {
+      console.error('Error creating goal:', error);
+      toast.error('Failed to create new goal');
+    }
+  };
+
+  const selectGoal = (goalId: string) => {
+    const goal = savingsGoals.find(g => g.id === goalId);
+    if (goal) {
+      setCurrentGoalId(goal.id);
+      setGoalTitle(goal.title);
+      setEditTitle(goal.title);
     }
   };
 
@@ -246,14 +294,36 @@ const SavingsGoals = () => {
       </div>
 
       <div className="container mx-auto px-4 py-8">
-        {/* Editable Title */}
+        {/* Savings Goals Management */}
         <div className="mb-6">
+          <div className="flex items-center gap-4 mb-4">
+            <h2 className="text-xl font-semibold">Savings Goals</h2>
+            <Button onClick={createNewGoal} size="sm" className="flex items-center gap-2">
+              <Plus className="h-4 w-4" />
+              Add Goal
+            </Button>
+          </div>
+          
+          <div className="flex flex-wrap gap-2 mb-4">
+            {savingsGoals.map((goal) => (
+              <Button
+                key={goal.id}
+                variant={currentGoalId === goal.id ? "default" : "outline"}
+                size="sm"
+                onClick={() => selectGoal(goal.id)}
+              >
+                {goal.title}
+              </Button>
+            ))}
+          </div>
+
+          {/* Editable Title for Current Goal */}
           {isEditingTitle ? (
             <div className="flex items-center gap-2">
               <Input
                 value={editTitle}
                 onChange={(e) => setEditTitle(e.target.value)}
-                className="text-2xl font-bold"
+                className="text-lg font-medium"
                 onKeyDown={(e) => {
                   if (e.key === 'Enter') updateGoalTitle();
                   if (e.key === 'Escape') {
@@ -279,7 +349,7 @@ const SavingsGoals = () => {
             </div>
           ) : (
             <div className="flex items-center gap-2">
-              <h2 className="text-2xl font-bold">{goalTitle}</h2>
+              <h3 className="text-lg font-medium">{goalTitle}</h3>
               <Button
                 size="sm"
                 variant="ghost"
@@ -303,70 +373,74 @@ const SavingsGoals = () => {
           </CardContent>
         </Card>
 
-        {/* Year Tabs and Savings Table */}
+        {/* Year Selection and Savings Table */}
         <Card>
           <CardContent className="pt-6">
-            <Tabs value={selectedYear} onValueChange={setSelectedYear}>
-              <TabsList className="grid w-full grid-cols-6">
-                {years.map((year) => (
-                  <TabsTrigger key={year} value={year}>
-                    {year}
-                  </TabsTrigger>
-                ))}
-              </TabsList>
+            <div className="mb-6">
+              <div className="flex items-center gap-4">
+                <label className="text-sm font-medium">Year:</label>
+                <Select value={selectedYear} onValueChange={setSelectedYear}>
+                  <SelectTrigger className="w-32">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {years.map((year) => (
+                      <SelectItem key={year} value={year}>
+                        {year}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
 
-              {years.map((year) => (
-                <TabsContent key={year} value={year} className="mt-6">
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead className="w-1/2">Month</TableHead>
-                        <TableHead>Amount Saved</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {months.map((month, index) => {
-                        const monthKey = `${year}-${(index + 1).toString().padStart(2, '0')}`;
-                        const currentAmount = savingsData[monthKey] || 0;
-                        
-                        return (
-                          <TableRow key={month}>
-                            <TableCell className="font-medium">{month}</TableCell>
-                            <TableCell>
-                              <Input
-                                type="number"
-                                value={currentAmount || ''}
-                                onChange={(e) => {
-                                  const value = parseFloat(e.target.value) || 0;
-                                  updateSavingsAmount(index, value);
-                                }}
-                                placeholder="0"
-                                className="w-32"
-                                min="0"
-                                step="0.01"
-                              />
-                            </TableCell>
-                          </TableRow>
-                        );
-                      })}
-                    </TableBody>
-                  </Table>
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead className="w-1/2">Month</TableHead>
+                  <TableHead>Amount Saved</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {months.map((month, index) => {
+                  const monthKey = `${selectedYear}-${(index + 1).toString().padStart(2, '0')}`;
+                  const currentAmount = savingsData[monthKey] || 0;
                   
-                  {/* Year Total */}
-                  <div className="mt-4 p-4 bg-muted rounded-lg">
-                    <div className="flex justify-between items-center">
-                      <span className="font-semibold">Total for {year}:</span>
-                      <span className="text-lg font-bold text-primary">
-                        ${Object.entries(savingsData)
-                          .filter(([key]) => key.startsWith(year))
-                          .reduce((sum, [, value]) => sum + value, 0)
-                          .toLocaleString()}
-                      </span>
-                    </div>
-                  </div>
-                </TabsContent>
-              ))}
-            </Tabs>
+                  return (
+                    <TableRow key={month}>
+                      <TableCell className="font-medium">{month}</TableCell>
+                      <TableCell>
+                        <Input
+                          type="number"
+                          value={currentAmount || ''}
+                          onChange={(e) => {
+                            const value = parseFloat(e.target.value) || 0;
+                            updateSavingsAmount(index, value);
+                          }}
+                          placeholder="0"
+                          className="w-32"
+                          min="0"
+                          step="0.01"
+                        />
+                      </TableCell>
+                    </TableRow>
+                  );
+                })}
+              </TableBody>
+            </Table>
+            
+            {/* Year Total */}
+            <div className="mt-4 p-4 bg-muted rounded-lg">
+              <div className="flex justify-between items-center">
+                <span className="font-semibold">Total for {selectedYear}:</span>
+                <span className="text-lg font-bold text-primary">
+                  ${Object.entries(savingsData)
+                    .filter(([key]) => key.startsWith(selectedYear))
+                    .reduce((sum, [, value]) => sum + value, 0)
+                    .toLocaleString()}
+                </span>
+              </div>
+            </div>
           </CardContent>
         </Card>
       </div>
