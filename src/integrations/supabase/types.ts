@@ -260,6 +260,83 @@ export type Database = {
         }
         Relationships: []
       }
+      savings_entries: {
+        Row: {
+          amount: number
+          created_at: string
+          entry_month: string
+          goal_id: string
+          id: string
+          notes: string | null
+          updated_at: string
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          entry_month: string
+          goal_id: string
+          id?: string
+          notes?: string | null
+          updated_at?: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          entry_month?: string
+          goal_id?: string
+          id?: string
+          notes?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "savings_entries_goal_id_fkey"
+            columns: ["goal_id"]
+            isOneToOne: false
+            referencedRelation: "savings_goals"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      savings_goals: {
+        Row: {
+          created_at: string
+          current_amount: number
+          description: string | null
+          id: string
+          image_url: string | null
+          target_amount: number
+          target_date: string | null
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          current_amount?: number
+          description?: string | null
+          id?: string
+          image_url?: string | null
+          target_amount?: number
+          target_date?: string | null
+          title: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          current_amount?: number
+          description?: string | null
+          id?: string
+          image_url?: string | null
+          target_amount?: number
+          target_date?: string | null
+          title?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       subscribers: {
         Row: {
           created_at: string
@@ -293,45 +370,6 @@ export type Database = {
           subscription_tier?: string | null
           updated_at?: string
           user_id?: string | null
-        }
-        Relationships: []
-      }
-      takeout_transactions: {
-        Row: {
-          amount: number
-          category: string | null
-          created_at: string
-          date: string
-          description: string | null
-          id: string
-          merchant: string
-          pdf_source: string | null
-          updated_at: string
-          user_id: string
-        }
-        Insert: {
-          amount: number
-          category?: string | null
-          created_at?: string
-          date: string
-          description?: string | null
-          id?: string
-          merchant: string
-          pdf_source?: string | null
-          updated_at?: string
-          user_id: string
-        }
-        Update: {
-          amount?: number
-          category?: string | null
-          created_at?: string
-          date?: string
-          description?: string | null
-          id?: string
-          merchant?: string
-          pdf_source?: string | null
-          updated_at?: string
-          user_id?: string
         }
         Relationships: []
       }

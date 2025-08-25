@@ -17,7 +17,7 @@ const Header: React.FC = () => {
     { name: 'Home', href: '/' },
     { name: 'Monthly Budget', href: '/budget' },
     { name: 'Compare Vendors', href: '/compare-prices' },
-    { name: 'Takeout', href: '/takeout' },
+    { name: 'Savings', href: '/savings' },
     { name: 'Vacation', href: '/vacation' },
     { name: 'Gifts', href: '/gifts' },
     { name: 'AI Insights', href: '/ai-insights' },

@@ -10,7 +10,7 @@ import Header from "@/components/Header";
 import Home from "@/pages/Home";
 import MonthlyBudget from "@/pages/MonthlyBudget";
 import CompareVendors from "@/pages/CompareVendors";
-import TakeoutCalendar from "@/pages/TakeoutCalendar";
+import SavingsGoals from "@/pages/SavingsGoals";
 import Vacation from "@/pages/Vacation";
 import Auth from "@/pages/Auth";
 import NotFound from "@/pages/NotFound";
@@ -62,7 +62,7 @@ const App = () => {
                   <Route path="/budget" element={<MonthlyBudget />} />
                   <Route path="/home" element={<Home />} />
                   <Route path="/compare-prices" element={<CompareVendors />} />
-                  <Route path="/takeout" element={<TakeoutCalendar />} />
+                  <Route path="/savings" element={<SavingsGoals />} />
                   <Route path="/vacation" element={<Vacation />} />
                   <Route path="/engagement" element={<Engagement />} />
                   <Route path="/auth" element={<Auth />} />
