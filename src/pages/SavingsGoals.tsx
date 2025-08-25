@@ -1,210 +1,202 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { Progress } from '@/components/ui/progress';
-import { Plus, Target, DollarSign, Calendar, Upload, X } from 'lucide-react';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Target, Edit2, Check, X } from 'lucide-react';
 import { toast } from 'sonner';
 import { SEO } from '@/components/SEO';
-
-interface SavingsGoal {
-  id: string;
-  title: string;
-  target_amount: number;
-  current_amount: number;
-  target_date: string | null;
-  description: string | null;
-  image_url: string | null;
-}
 
 interface SavingsEntry {
   id: string;
   amount: number;
   entry_month: string;
-  notes: string | null;
+  goal_id: string;
 }
 
 const SavingsGoals = () => {
   const { user } = useAuth();
-  const [goals, setGoals] = useState<SavingsGoal[]>([]);
-  const [selectedGoal, setSelectedGoal] = useState<SavingsGoal | null>(null);
-  const [entries, setEntries] = useState<SavingsEntry[]>([]);
+  const [currentGoalId, setCurrentGoalId] = useState<string | null>(null);
+  const [goalTitle, setGoalTitle] = useState('My Savings Goal');
+  const [isEditingTitle, setIsEditingTitle] = useState(false);
+  const [editTitle, setEditTitle] = useState(goalTitle);
+  const [selectedYear, setSelectedYear] = useState('2025');
+  const [savingsData, setSavingsData] = useState<Record<string, number>>({});
   const [loading, setLoading] = useState(true);
-  const [dialogOpen, setDialogOpen] = useState(false);
-  const [entryDialogOpen, setEntryDialogOpen] = useState(false);
-  const [imageFile, setImageFile] = useState<File | null>(null);
-  const [imagePreview, setImagePreview] = useState<string | null>(null);
 
-  const [newGoal, setNewGoal] = useState({
-    title: '',
-    target_amount: '',
-    target_date: '',
-    description: ''
-  });
-
-  const [newEntry, setNewEntry] = useState({
-    amount: '',
-    entry_month: new Date().toISOString().slice(0, 7), // YYYY-MM format
-    notes: ''
-  });
+  const years = ['2025', '2026', '2027', '2028', '2029', '2030'];
+  const months = [
+    'January', 'February', 'March', 'April', 'May', 'June',
+    'July', 'August', 'September', 'October', 'November', 'December'
+  ];
 
   useEffect(() => {
     if (user) {
-      fetchGoals();
+      initializeGoal();
     }
   }, [user]);
 
-  const fetchGoals = async () => {
+  useEffect(() => {
+    if (currentGoalId) {
+      fetchSavingsData();
+    }
+  }, [currentGoalId, selectedYear]);
+
+  const initializeGoal = async () => {
     try {
-      const { data, error } = await supabase
+      // Check if user has an existing goal
+      const { data: existingGoals, error: fetchError } = await supabase
         .from('savings_goals')
         .select('*')
-        .order('created_at', { ascending: false });
+        .limit(1);
 
-      if (error) throw error;
-      setGoals(data || []);
+      if (fetchError) throw fetchError;
+
+      if (existingGoals && existingGoals.length > 0) {
+        const goal = existingGoals[0];
+        setCurrentGoalId(goal.id);
+        setGoalTitle(goal.title);
+        setEditTitle(goal.title);
+      } else {
+        // Create a default goal for the user
+        const { data: newGoal, error: createError } = await supabase
+          .from('savings_goals')
+          .insert([{
+            user_id: user?.id,
+            title: 'My Savings Goal',
+            target_amount: 0,
+            current_amount: 0
+          }])
+          .select()
+          .single();
+
+        if (createError) throw createError;
+
+        setCurrentGoalId(newGoal.id);
+        setGoalTitle(newGoal.title);
+        setEditTitle(newGoal.title);
+      }
     } catch (error) {
-      console.error('Error fetching goals:', error);
-      toast.error('Failed to load savings goals');
+      console.error('Error initializing goal:', error);
+      toast.error('Failed to initialize savings goal');
     } finally {
       setLoading(false);
     }
   };
 
-  const fetchEntries = async (goalId: string) => {
+  const fetchSavingsData = async () => {
+    if (!currentGoalId) return;
+
     try {
       const { data, error } = await supabase
         .from('savings_entries')
         .select('*')
-        .eq('goal_id', goalId)
-        .order('entry_month', { ascending: false });
+        .eq('goal_id', currentGoalId)
+        .gte('entry_month', `${selectedYear}-01-01`)
+        .lt('entry_month', `${parseInt(selectedYear) + 1}-01-01`);
 
       if (error) throw error;
-      setEntries(data || []);
+
+      const dataMap: Record<string, number> = {};
+      data?.forEach((entry: SavingsEntry) => {
+        const monthKey = entry.entry_month.slice(0, 7); // YYYY-MM format
+        dataMap[monthKey] = entry.amount;
+      });
+
+      setSavingsData(dataMap);
     } catch (error) {
-      console.error('Error fetching entries:', error);
-      toast.error('Failed to load savings entries');
+      console.error('Error fetching savings data:', error);
+      toast.error('Failed to load savings data');
     }
   };
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      setImageFile(file);
-      const previewUrl = URL.createObjectURL(file);
-      setImagePreview(previewUrl);
-    }
-  };
+  const updateSavingsAmount = async (monthIndex: number, amount: number) => {
+    if (!currentGoalId) return;
 
-  const uploadImage = async (file: File): Promise<string | null> => {
+    const monthKey = `${selectedYear}-${(monthIndex + 1).toString().padStart(2, '0')}`;
+    const entryDate = `${monthKey}-01`;
+
     try {
-      const fileExt = file.name.split('.').pop();
-      const fileName = `${user?.id}/${Date.now()}.${fileExt}`;
-      
-      const { error: uploadError } = await supabase.storage
-        .from('goal-images')
-        .upload(fileName, file);
+      // Check if entry exists
+      const { data: existingEntry } = await supabase
+        .from('savings_entries')
+        .select('id')
+        .eq('goal_id', currentGoalId)
+        .eq('entry_month', entryDate)
+        .single();
 
-      if (uploadError) throw uploadError;
-
-      const { data } = supabase.storage
-        .from('goal-images')
-        .getPublicUrl(fileName);
-
-      return data.publicUrl;
-    } catch (error) {
-      console.error('Error uploading image:', error);
-      toast.error('Failed to upload image');
-      return null;
-    }
-  };
-
-  const createGoal = async () => {
-    try {
-      let imageUrl = null;
-      if (imageFile) {
-        imageUrl = await uploadImage(imageFile);
+      if (existingEntry) {
+        // Update existing entry
+        if (amount === 0) {
+          // Delete if amount is 0
+          await supabase
+            .from('savings_entries')
+            .delete()
+            .eq('id', existingEntry.id);
+        } else {
+          await supabase
+            .from('savings_entries')
+            .update({ amount })
+            .eq('id', existingEntry.id);
+        }
+      } else if (amount > 0) {
+        // Create new entry only if amount > 0
+        await supabase
+          .from('savings_entries')
+          .insert([{
+            goal_id: currentGoalId,
+            amount,
+            entry_month: entryDate
+          }]);
       }
 
-      const { data, error } = await supabase
+      // Update local state
+      const newData = { ...savingsData };
+      if (amount === 0) {
+        delete newData[monthKey];
+      } else {
+        newData[monthKey] = amount;
+      }
+      setSavingsData(newData);
+
+      // Update total in goals table
+      const total = Object.values(newData).reduce((sum, val) => sum + val, 0);
+      await supabase
         .from('savings_goals')
-        .insert([{
-          user_id: user?.id,
-          title: newGoal.title,
-          target_amount: parseFloat(newGoal.target_amount),
-          target_date: newGoal.target_date || null,
-          description: newGoal.description || null,
-          image_url: imageUrl
-        }])
-        .select()
-        .single();
+        .update({ current_amount: total })
+        .eq('id', currentGoalId);
 
-      if (error) throw error;
-
-      setGoals([data, ...goals]);
-      setDialogOpen(false);
-      setNewGoal({ title: '', target_amount: '', target_date: '', description: '' });
-      setImageFile(null);
-      setImagePreview(null);
-      toast.success('Savings goal created successfully!');
     } catch (error) {
-      console.error('Error creating goal:', error);
-      toast.error('Failed to create savings goal');
+      console.error('Error updating savings:', error);
+      toast.error('Failed to update savings amount');
     }
   };
 
-  const addEntry = async () => {
-    if (!selectedGoal) return;
+  const updateGoalTitle = async () => {
+    if (!currentGoalId || !editTitle.trim()) return;
 
     try {
-      const { data, error } = await supabase
-        .from('savings_entries')
-        .insert([{
-          goal_id: selectedGoal.id,
-          amount: parseFloat(newEntry.amount),
-          entry_month: newEntry.entry_month + '-01', // Convert YYYY-MM to YYYY-MM-DD
-          notes: newEntry.notes || null
-        }])
-        .select()
-        .single();
+      const { error } = await supabase
+        .from('savings_goals')
+        .update({ title: editTitle.trim() })
+        .eq('id', currentGoalId);
 
       if (error) throw error;
 
-      // Update the goal's current amount
-      const newCurrentAmount = selectedGoal.current_amount + parseFloat(newEntry.amount);
-      
-      const { error: updateError } = await supabase
-        .from('savings_goals')
-        .update({ current_amount: newCurrentAmount })
-        .eq('id', selectedGoal.id);
-
-      if (updateError) throw updateError;
-
-      // Update local state
-      setGoals(goals.map(goal => 
-        goal.id === selectedGoal.id 
-          ? { ...goal, current_amount: newCurrentAmount }
-          : goal
-      ));
-      setSelectedGoal({ ...selectedGoal, current_amount: newCurrentAmount });
-      setEntries([data, ...entries]);
-      
-      setEntryDialogOpen(false);
-      setNewEntry({ amount: '', entry_month: new Date().toISOString().slice(0, 7), notes: '' });
-      toast.success('Savings entry added successfully!');
+      setGoalTitle(editTitle.trim());
+      setIsEditingTitle(false);
+      toast.success('Goal title updated!');
     } catch (error) {
-      console.error('Error adding entry:', error);
-      toast.error('Failed to add savings entry');
+      console.error('Error updating title:', error);
+      toast.error('Failed to update goal title');
     }
   };
 
-  const getProgressPercentage = (current: number, target: number) => {
-    return Math.min((current / target) * 100, 100);
+  const getTotalSaved = () => {
+    return Object.values(savingsData).reduce((sum, amount) => sum + amount, 0);
   };
 
   if (!user) {
@@ -219,12 +211,24 @@ const SavingsGoals = () => {
     );
   }
 
+  if (loading) {
+    return (
+      <div className="container mx-auto px-4 py-8">
+        <div className="animate-pulse space-y-4">
+          <div className="h-8 bg-gray-200 rounded w-1/3"></div>
+          <div className="h-16 bg-gray-200 rounded"></div>
+          <div className="h-64 bg-gray-200 rounded"></div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-background/80">
       <SEO 
-        title="Savings Goals - Track Your Financial Dreams"
-        description="Set and track your monthly savings goals with visual progress tracking and image uploads to stay motivated."
-        keywords="savings goals, financial planning, money saving, monthly savings tracker"
+        title="Savings Goals - Track Your Monthly Savings"
+        description="Track your monthly savings with an interactive yearly table and editable goals."
+        keywords="savings goals, monthly savings, financial planning, money tracker"
       />
       
       {/* Hero Section with Dark Gradient */}
@@ -233,244 +237,138 @@ const SavingsGoals = () => {
         <div className="container mx-auto px-4 relative z-10">
           <div className="text-center">
             <Target className="h-16 w-16 mx-auto mb-6 text-primary" />
-            <h1 className="text-4xl font-bold mb-4">Savings Goals</h1>
+            <h1 className="text-4xl font-bold mb-4">Savings Tracker</h1>
             <p className="text-xl text-gray-300 max-w-2xl mx-auto">
-              Set financial targets, track monthly progress, and visualize your dreams with photo uploads
+              Track your monthly savings progress with an easy-to-use yearly table
             </p>
           </div>
         </div>
       </div>
 
       <div className="container mx-auto px-4 py-8">
-        <div className="flex justify-between items-center mb-8">
-          <h2 className="text-2xl font-semibold">Your Savings Goals</h2>
-          <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-            <DialogTrigger asChild>
-              <Button>
-                <Plus className="h-4 w-4 mr-2" />
-                New Goal
+        {/* Editable Title */}
+        <div className="mb-6">
+          {isEditingTitle ? (
+            <div className="flex items-center gap-2">
+              <Input
+                value={editTitle}
+                onChange={(e) => setEditTitle(e.target.value)}
+                className="text-2xl font-bold"
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') updateGoalTitle();
+                  if (e.key === 'Escape') {
+                    setEditTitle(goalTitle);
+                    setIsEditingTitle(false);
+                  }
+                }}
+                autoFocus
+              />
+              <Button size="sm" onClick={updateGoalTitle}>
+                <Check className="h-4 w-4" />
               </Button>
-            </DialogTrigger>
-            <DialogContent className="sm:max-w-md">
-              <DialogHeader>
-                <DialogTitle>Create New Savings Goal</DialogTitle>
-                <DialogDescription>
-                  Set a target amount and track your monthly progress
-                </DialogDescription>
-              </DialogHeader>
-              <div className="space-y-4">
-                <div>
-                  <Label htmlFor="title">Goal Title</Label>
-                  <Input
-                    id="title"
-                    value={newGoal.title}
-                    onChange={(e) => setNewGoal({ ...newGoal, title: e.target.value })}
-                    placeholder="e.g., New Car, Vacation, Emergency Fund"
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="target_amount">Target Amount ($)</Label>
-                  <Input
-                    id="target_amount"
-                    type="number"
-                    value={newGoal.target_amount}
-                    onChange={(e) => setNewGoal({ ...newGoal, target_amount: e.target.value })}
-                    placeholder="10000"
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="target_date">Target Date (Optional)</Label>
-                  <Input
-                    id="target_date"
-                    type="date"
-                    value={newGoal.target_date}
-                    onChange={(e) => setNewGoal({ ...newGoal, target_date: e.target.value })}
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="description">Description (Optional)</Label>
-                  <Textarea
-                    id="description"
-                    value={newGoal.description}
-                    onChange={(e) => setNewGoal({ ...newGoal, description: e.target.value })}
-                    placeholder="What are you saving for?"
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="image">Goal Image (Optional)</Label>
-                  <div className="space-y-2">
-                    <Input
-                      id="image"
-                      type="file"
-                      accept="image/*"
-                      onChange={handleImageChange}
-                    />
-                    {imagePreview && (
-                      <div className="relative">
-                        <img
-                          src={imagePreview}
-                          alt="Preview"
-                          className="w-full h-32 object-cover rounded-md"
-                        />
-                        <Button
-                          size="sm"
-                          variant="destructive"
-                          className="absolute top-2 right-2"
-                          onClick={() => {
-                            setImageFile(null);
-                            setImagePreview(null);
-                          }}
-                        >
-                          <X className="h-4 w-4" />
-                        </Button>
-                      </div>
-                    )}
-                  </div>
-                </div>
-                <div className="flex gap-2">
-                  <Button onClick={createGoal} className="flex-1">
-                    Create Goal
-                  </Button>
-                  <Button variant="outline" onClick={() => setDialogOpen(false)}>
-                    Cancel
-                  </Button>
-                </div>
-              </div>
-            </DialogContent>
-          </Dialog>
+              <Button 
+                size="sm" 
+                variant="outline" 
+                onClick={() => {
+                  setEditTitle(goalTitle);
+                  setIsEditingTitle(false);
+                }}
+              >
+                <X className="h-4 w-4" />
+              </Button>
+            </div>
+          ) : (
+            <div className="flex items-center gap-2">
+              <h2 className="text-2xl font-bold">{goalTitle}</h2>
+              <Button
+                size="sm"
+                variant="ghost"
+                onClick={() => setIsEditingTitle(true)}
+              >
+                <Edit2 className="h-4 w-4" />
+              </Button>
+            </div>
+          )}
         </div>
 
-        {loading ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {[...Array(3)].map((_, i) => (
-              <Card key={i} className="animate-pulse">
-                <CardContent className="p-6">
-                  <div className="h-4 bg-gray-200 rounded mb-4"></div>
-                  <div className="h-8 bg-gray-200 rounded mb-2"></div>
-                  <div className="h-4 bg-gray-200 rounded"></div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        ) : goals.length === 0 ? (
-          <Card>
-            <CardContent className="pt-6 text-center">
-              <Target className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
-              <h3 className="text-lg font-semibold mb-2">No Savings Goals Yet</h3>
-              <p className="text-muted-foreground mb-4">
-                Create your first savings goal to start tracking your financial progress
+        {/* Total Saved */}
+        <Card className="mb-6">
+          <CardContent className="pt-6">
+            <div className="text-center">
+              <h3 className="text-lg font-semibold text-muted-foreground mb-2">Total Saved</h3>
+              <p className="text-4xl font-bold text-primary">
+                ${getTotalSaved().toLocaleString()}
               </p>
-              <Button onClick={() => setDialogOpen(true)}>
-                <Plus className="h-4 w-4 mr-2" />
-                Create Your First Goal
-              </Button>
-            </CardContent>
-          </Card>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {goals.map((goal) => {
-              const progressPercent = getProgressPercentage(goal.current_amount, goal.target_amount);
-              return (
-                <Card key={goal.id} className="cursor-pointer hover:shadow-lg transition-shadow">
-                  <CardContent className="p-6">
-                    {goal.image_url && (
-                      <img
-                        src={goal.image_url}
-                        alt={goal.title}
-                        className="w-full h-32 object-cover rounded-md mb-4"
-                      />
-                    )}
-                    <h3 className="text-lg font-semibold mb-2">{goal.title}</h3>
-                    {goal.description && (
-                      <p className="text-sm text-muted-foreground mb-4">{goal.description}</p>
-                    )}
-                    
-                    <div className="space-y-2 mb-4">
-                      <div className="flex justify-between text-sm">
-                        <span>Progress</span>
-                        <span>{progressPercent.toFixed(1)}%</span>
-                      </div>
-                      <Progress value={progressPercent} className="h-2" />
-                      <div className="flex justify-between text-sm">
-                        <span>${goal.current_amount.toLocaleString()}</span>
-                        <span>${goal.target_amount.toLocaleString()}</span>
-                      </div>
-                    </div>
-
-                    {goal.target_date && (
-                      <div className="flex items-center text-sm text-muted-foreground mb-4">
-                        <Calendar className="h-4 w-4 mr-1" />
-                        Target: {new Date(goal.target_date).toLocaleDateString()}
-                      </div>
-                    )}
-
-                    <Button
-                      onClick={() => {
-                        setSelectedGoal(goal);
-                        setEntryDialogOpen(true);
-                        fetchEntries(goal.id);
-                      }}
-                      className="w-full"
-                    >
-                      <DollarSign className="h-4 w-4 mr-2" />
-                      Add Savings
-                    </Button>
-                  </CardContent>
-                </Card>
-              );
-            })}
-          </div>
-        )}
-
-        {/* Add Entry Dialog */}
-        <Dialog open={entryDialogOpen} onOpenChange={setEntryDialogOpen}>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Add Savings Entry</DialogTitle>
-              <DialogDescription>
-                Record your monthly savings for: {selectedGoal?.title}
-              </DialogDescription>
-            </DialogHeader>
-            <div className="space-y-4">
-              <div>
-                <Label htmlFor="amount">Amount Saved ($)</Label>
-                <Input
-                  id="amount"
-                  type="number"
-                  value={newEntry.amount}
-                  onChange={(e) => setNewEntry({ ...newEntry, amount: e.target.value })}
-                  placeholder="500"
-                />
-              </div>
-              <div>
-                <Label htmlFor="entry_month">Month</Label>
-                <Input
-                  id="entry_month"
-                  type="month"
-                  value={newEntry.entry_month}
-                  onChange={(e) => setNewEntry({ ...newEntry, entry_month: e.target.value })}
-                />
-              </div>
-              <div>
-                <Label htmlFor="notes">Notes (Optional)</Label>
-                <Textarea
-                  id="notes"
-                  value={newEntry.notes}
-                  onChange={(e) => setNewEntry({ ...newEntry, notes: e.target.value })}
-                  placeholder="Any additional notes about this savings..."
-                />
-              </div>
-              <div className="flex gap-2">
-                <Button onClick={addEntry} className="flex-1">
-                  Add Entry
-                </Button>
-                <Button variant="outline" onClick={() => setEntryDialogOpen(false)}>
-                  Cancel
-                </Button>
-              </div>
             </div>
-          </DialogContent>
-        </Dialog>
+          </CardContent>
+        </Card>
+
+        {/* Year Tabs and Savings Table */}
+        <Card>
+          <CardContent className="pt-6">
+            <Tabs value={selectedYear} onValueChange={setSelectedYear}>
+              <TabsList className="grid w-full grid-cols-6">
+                {years.map((year) => (
+                  <TabsTrigger key={year} value={year}>
+                    {year}
+                  </TabsTrigger>
+                ))}
+              </TabsList>
+
+              {years.map((year) => (
+                <TabsContent key={year} value={year} className="mt-6">
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead className="w-1/2">Month</TableHead>
+                        <TableHead>Amount Saved</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {months.map((month, index) => {
+                        const monthKey = `${year}-${(index + 1).toString().padStart(2, '0')}`;
+                        const currentAmount = savingsData[monthKey] || 0;
+                        
+                        return (
+                          <TableRow key={month}>
+                            <TableCell className="font-medium">{month}</TableCell>
+                            <TableCell>
+                              <Input
+                                type="number"
+                                value={currentAmount || ''}
+                                onChange={(e) => {
+                                  const value = parseFloat(e.target.value) || 0;
+                                  updateSavingsAmount(index, value);
+                                }}
+                                placeholder="0"
+                                className="w-32"
+                                min="0"
+                                step="0.01"
+                              />
+                            </TableCell>
+                          </TableRow>
+                        );
+                      })}
+                    </TableBody>
+                  </Table>
+                  
+                  {/* Year Total */}
+                  <div className="mt-4 p-4 bg-muted rounded-lg">
+                    <div className="flex justify-between items-center">
+                      <span className="font-semibold">Total for {year}:</span>
+                      <span className="text-lg font-bold text-primary">
+                        ${Object.entries(savingsData)
+                          .filter(([key]) => key.startsWith(year))
+                          .reduce((sum, [, value]) => sum + value, 0)
+                          .toLocaleString()}
+                      </span>
+                    </div>
+                  </div>
+                </TabsContent>
+              ))}
+            </Tabs>
+          </CardContent>
+        </Card>
       </div>
     </div>
   );
