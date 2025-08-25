@@ -8,9 +8,11 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Plus } from 'lucide-react';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Target, Edit2, Check, X } from 'lucide-react';
+import { Target, Edit2, Check, X, AlertTriangle } from 'lucide-react';
 import { toast } from 'sonner';
 import { SEO } from '@/components/SEO';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Link } from 'react-router-dom';
 
 interface SavingsEntry {
   id: string;
@@ -48,6 +50,19 @@ const SavingsGoals = () => {
   useEffect(() => {
     if (user) {
       loadSavingsGoals();
+    } else {
+      // Initialize with a default goal for non-authenticated users
+      const defaultGoal = {
+        id: 'temp-1',
+        title: 'My Savings Goal',
+        target_amount: 0,
+        current_amount: 0
+      };
+      setSavingsGoals([defaultGoal]);
+      setCurrentGoalId(defaultGoal.id);
+      setGoalTitle(defaultGoal.title);
+      setEditTitle(defaultGoal.title);
+      setLoading(false);
     }
   }, [user]);
 
@@ -101,6 +116,22 @@ const SavingsGoals = () => {
   };
 
   const createNewGoal = async () => {
+    if (!user) {
+      // For non-authenticated users, create a temporary goal
+      const tempGoal = {
+        id: `temp-${Date.now()}`,
+        title: `Goal ${savingsGoals.length + 1}`,
+        target_amount: 0,
+        current_amount: 0
+      };
+      setSavingsGoals([...savingsGoals, tempGoal]);
+      setCurrentGoalId(tempGoal.id);
+      setGoalTitle(tempGoal.title);
+      setEditTitle(tempGoal.title);
+      toast.success('New savings goal created! Sign in to save your progress.');
+      return;
+    }
+
     try {
       const { data: newGoal, error } = await supabase
         .from('savings_goals')
@@ -162,9 +193,22 @@ const SavingsGoals = () => {
   };
 
   const updateSavingsAmount = async (monthIndex: number, amount: number) => {
+    const monthKey = `${selectedYear}-${(monthIndex + 1).toString().padStart(2, '0')}`;
+    
+    if (!user) {
+      // For non-authenticated users, just update local state
+      const newData = { ...savingsData };
+      if (amount === 0) {
+        delete newData[monthKey];
+      } else {
+        newData[monthKey] = amount;
+      }
+      setSavingsData(newData);
+      return;
+    }
+
     if (!currentGoalId) return;
 
-    const monthKey = `${selectedYear}-${(monthIndex + 1).toString().padStart(2, '0')}`;
     const entryDate = `${monthKey}-01`;
 
     try {
@@ -224,7 +268,21 @@ const SavingsGoals = () => {
   };
 
   const updateGoalTitle = async () => {
-    if (!currentGoalId || !editTitle.trim()) return;
+    if (!editTitle.trim()) return;
+
+    if (!user) {
+      // For non-authenticated users, just update local state
+      const updatedGoals = savingsGoals.map(goal => 
+        goal.id === currentGoalId ? { ...goal, title: editTitle.trim() } : goal
+      );
+      setSavingsGoals(updatedGoals);
+      setGoalTitle(editTitle.trim());
+      setIsEditingTitle(false);
+      toast.success('Goal title updated! Sign in to save your progress.');
+      return;
+    }
+
+    if (!currentGoalId) return;
 
     try {
       const { error } = await supabase
@@ -246,18 +304,6 @@ const SavingsGoals = () => {
   const getTotalSaved = () => {
     return Object.values(savingsData).reduce((sum, amount) => sum + amount, 0);
   };
-
-  if (!user) {
-    return (
-      <div className="container mx-auto px-4 py-8">
-        <Card>
-          <CardContent className="pt-6">
-            <p className="text-center text-muted-foreground">Please sign in to track your savings goals.</p>
-          </CardContent>
-        </Card>
-      </div>
-    );
-  }
 
   if (loading) {
     return (
@@ -294,6 +340,18 @@ const SavingsGoals = () => {
       </div>
 
       <div className="container mx-auto px-4 py-8">
+        {/* Warning Banner for Non-Authenticated Users */}
+        {!user && (
+          <Alert className="mb-6 border-yellow-200 bg-yellow-50 dark:border-yellow-800 dark:bg-yellow-950">
+            <AlertTriangle className="h-4 w-4 text-yellow-600 dark:text-yellow-400" />
+            <AlertDescription className="text-yellow-800 dark:text-yellow-200">
+              <strong>Try it out!</strong> You're using savings tracker in demo mode. 
+              <Link to="/auth" className="underline font-medium ml-1 hover:text-yellow-900 dark:hover:text-yellow-100">
+                Sign in to save your progress
+              </Link> and access all features.
+            </AlertDescription>
+          </Alert>
+        )}
         {/* Savings Goals Management */}
         <div className="mb-6">
           <div className="flex items-center gap-4 mb-4">
