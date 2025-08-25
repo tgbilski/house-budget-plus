@@ -8,6 +8,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { Breadcrumbs } from '@/components/Breadcrumbs';
 import { AIChatbot } from '@/components/AIChatbot';
 import { SEO } from '@/components/SEO';
+import { WarningBanner } from '@/components/WarningBanner';
 
 interface GiftListData {
   id: string;
@@ -77,19 +78,26 @@ export function Gifts() {
         keywords="gift lists, holiday gifts, birthday gifts, gift ideas, gift planning, gift organization"
       />
       
+      {/* Hero Section with Dark Gradient */}
+      <div className="relative bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 text-white py-16">
+        <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHZpZXdCb3g9IjAgMCAyMCAyMCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3QgeD0iMCIgeT0iMCIgd2lkdGg9IjEiIGhlaWdodD0iMjAiIGZpbGw9InJnYmEoMjU1LDI1NSwyNTUsMC4xKSIvPgo8L3N2Zz4K')] opacity-20"></div>
+        <div className="container mx-auto px-4 relative z-10">
+          <div className="text-center">
+            <svg className="h-16 w-16 mx-auto mb-6 text-primary" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+            </svg>
+            <h1 className="text-4xl font-bold mb-4">Gift Lists</h1>
+            <p className="text-xl text-gray-300 max-w-2xl mx-auto">
+              Organize your gift ideas for holidays, birthdays, and special occasions
+            </p>
+          </div>
+        </div>
+      </div>
+      
       <div className="container mx-auto px-4 py-8">
         <Breadcrumbs />
+        <WarningBanner />
         
-        <div className="mb-8 text-center">
-          <h1 className="text-4xl font-bold mb-4">
-            Gift Lists
-          </h1>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Organize your gift ideas for holidays, birthdays, and special occasions. 
-            Keep track of what to buy, how much it costs, and where to find it.
-          </p>
-        </div>
-
         <div className="mb-6">
           <Button 
             onClick={addNewCard}

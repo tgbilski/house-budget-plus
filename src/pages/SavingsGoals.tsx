@@ -8,7 +8,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Plus } from 'lucide-react';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Target, Edit2, Check, X, AlertTriangle } from 'lucide-react';
+import { Target, Edit2, Check, X, AlertTriangle, Trash2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { SEO } from '@/components/SEO';
 import { Alert, AlertDescription } from '@/components/ui/alert';
@@ -154,6 +154,65 @@ const SavingsGoals = () => {
     } catch (error) {
       console.error('Error creating goal:', error);
       toast.error('Failed to create new goal');
+    }
+  };
+
+  const deleteGoal = async (goalId: string) => {
+    if (savingsGoals.length <= 1) {
+      toast.error('Cannot delete the last remaining goal');
+      return;
+    }
+
+    if (!user) {
+      // For non-authenticated users, just remove from local state
+      const updatedGoals = savingsGoals.filter(goal => goal.id !== goalId);
+      setSavingsGoals(updatedGoals);
+      
+      // Select first remaining goal
+      if (updatedGoals.length > 0) {
+        setCurrentGoalId(updatedGoals[0].id);
+        setGoalTitle(updatedGoals[0].title);
+        setEditTitle(updatedGoals[0].title);
+      }
+      
+      // Clear savings data for this goal
+      const newData = { ...savingsData };
+      Object.keys(newData).forEach(key => delete newData[key]);
+      setSavingsData(newData);
+      
+      toast.success('Goal deleted! Sign in to save your progress.');
+      return;
+    }
+
+    try {
+      // Delete from database
+      const { error } = await supabase
+        .from('savings_goals')
+        .delete()
+        .eq('id', goalId);
+
+      if (error) throw error;
+
+      // Update local state
+      const updatedGoals = savingsGoals.filter(goal => goal.id !== goalId);
+      setSavingsGoals(updatedGoals);
+
+      // Select first remaining goal
+      if (updatedGoals.length > 0) {
+        setCurrentGoalId(updatedGoals[0].id);
+        setGoalTitle(updatedGoals[0].title);
+        setEditTitle(updatedGoals[0].title);
+      }
+
+      // Clear savings data for this goal
+      const newData = { ...savingsData };
+      Object.keys(newData).forEach(key => delete newData[key]);
+      setSavingsData(newData);
+
+      toast.success('Savings goal deleted!');
+    } catch (error) {
+      console.error('Error deleting goal:', error);
+      toast.error('Failed to delete goal');
     }
   };
 
@@ -364,14 +423,25 @@ const SavingsGoals = () => {
           
           <div className="flex flex-wrap gap-2 mb-4">
             {savingsGoals.map((goal) => (
-              <Button
-                key={goal.id}
-                variant={currentGoalId === goal.id ? "default" : "outline"}
-                size="sm"
-                onClick={() => selectGoal(goal.id)}
-              >
-                {goal.title}
-              </Button>
+              <div key={goal.id} className="flex items-center gap-1">
+                <Button
+                  variant={currentGoalId === goal.id ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => selectGoal(goal.id)}
+                >
+                  {goal.title}
+                </Button>
+                {savingsGoals.length > 1 && (
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => deleteGoal(goal.id)}
+                    className="text-destructive hover:text-destructive p-1 h-8 w-8"
+                  >
+                    <Trash2 className="h-3 w-3" />
+                  </Button>
+                )}
+              </div>
             ))}
           </div>
 

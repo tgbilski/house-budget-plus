@@ -19,6 +19,7 @@ import { InternalLinks } from '@/components/InternalLinks';
 import { SocialShare } from '@/components/SocialShare';
 import { FAQ } from '@/components/FAQ';
 import { vacationPlanningFAQs } from '@/utils/faqData';
+import { WarningBanner } from '@/components/WarningBanner';
 
 interface VacationOption {
   id: string;
@@ -241,7 +242,6 @@ const Vacation: React.FC = () => {
       setOptions([]);
     }
 
-    // Load all projects
     const { data: allData } = await supabase
       .from('budget_data')
       .select('calculator_id')
@@ -253,7 +253,6 @@ const Vacation: React.FC = () => {
       const projectList = uniqueProjects.length > 0 ? uniqueProjects : ['default'];
       setProjects(projectList);
       
-      // Set default selected project if none is selected
       if (!selectedProject && projectList.length > 0) {
         setSelectedProject(projectList[0]);
       }
@@ -276,7 +275,6 @@ const Vacation: React.FC = () => {
     if (error) {
       console.error('Error saving data:', error);
     } else {
-      // Award badge when user actually saves vacation data
       earnBadge('vacation');
     }
   };
@@ -318,7 +316,6 @@ const Vacation: React.FC = () => {
       setNewProjectName('');
       setIsCreatingProject(false);
       
-      // Create a new vacation option for the new project
       const newOption: VacationOption = {
         id: Date.now().toString(),
         destination: '',
@@ -337,7 +334,6 @@ const Vacation: React.FC = () => {
       
       setOptions([newOption]);
       
-      // Save to database immediately if user is logged in
       if (user) {
         const { error } = await supabase
           .from('budget_data')
@@ -356,94 +352,6 @@ const Vacation: React.FC = () => {
     }
   };
 
-  const updateProjectName = async () => {
-    if (editProjectName.trim() && editProjectName.trim() !== selectedProject) {
-      // Update projects locally
-      const updatedProjects = projects.map(project => 
-        project === selectedProject ? editProjectName.trim() : project
-      );
-      setProjects(updatedProjects);
-      
-      // Update database if user is logged in
-      if (user) {
-        const { error } = await supabase
-          .from('budget_data')
-          .update({ calculator_id: editProjectName.trim() })
-          .eq('user_id', user.id)
-          .eq('page_type', 'vacation')
-          .eq('calculator_id', selectedProject);
-          
-        if (error) {
-          console.error('Error updating vacation name:', error);
-          toast({
-            title: "Error",
-            description: "Failed to update vacation name. Please try again.",
-            variant: "destructive",
-          });
-          return;
-        }
-      }
-      
-      setSelectedProject(editProjectName.trim());
-      
-      toast({
-        title: "Vacation renamed",
-        description: `Vacation renamed to "${editProjectName.trim()}" successfully.`,
-      });
-    }
-    setIsEditingProjectName(false);
-    setEditProjectName('');
-  };
-
-  const deleteCurrentProject = async () => {
-    if (!user) {
-      return;
-    }
-    
-    // Confirm deletion
-    if (!confirm(`Are you sure you want to delete the vacation "${selectedProject}"? This action cannot be undone.`)) {
-      return;
-    }
-    
-    // Store project name for toast
-    const deletedProjectName = selectedProject;
-    
-    // Delete all data for this project
-    const { error } = await supabase
-      .from('budget_data')
-      .delete()
-      .eq('user_id', user.id)
-      .eq('page_type', 'vacation')
-      .eq('calculator_id', selectedProject);
-
-    if (error) {
-      console.error('Error deleting project:', error);
-      toast({
-        title: "Error",
-        description: "Failed to delete vacation project. Please try again.",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    // Update local state
-    const updatedProjects = projects.filter(project => project !== selectedProject);
-    setProjects(updatedProjects);
-    
-    // Select first remaining project or default
-    const newSelectedProject = updatedProjects.length > 0 ? updatedProjects[0] : 'default';
-    setSelectedProject(newSelectedProject);
-    
-    // Clear current options
-    setOptions([]);
-
-    // Show success toast
-    toast({
-      title: "Vacation deleted",
-      description: `"${deletedProjectName}" has been successfully deleted.`,
-    });
-  };
-
   const getLowestCost = () => {
     if (options.length === 0) return 0;
     return Math.min(...options.map(option => option.estimatedCost || Infinity));
@@ -453,18 +361,29 @@ const Vacation: React.FC = () => {
     <div className="min-h-screen">
       <SEO {...seoData.vacation} />
       <Breadcrumbs />
-      <div className="container mx-auto px-4 py-8">
-        <div className="text-center mb-8">
-          <div className="flex items-center justify-center gap-4 mb-4">
-            <img 
-              src="/lovable-uploads/ed809955-ef71-4d81-b072-945082f4380a.png" 
-              alt="Calculator mascot" 
-              className="w-16 h-16 object-contain"
-            />
-            <h1 className="text-3xl font-bold text-foreground">Vacation Planning</h1>
+      
+      {/* Hero Section with Dark Gradient */}
+      <div className="relative bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 text-white py-16">
+        <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHZpZXdCb3g9IjAgMCAyMCAyMCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3QgeD0iMCIgeT0iMCIgd2lkdGg9IjEiIGhlaWdodD0iMjAiIGZpbGw9InJnYmEoMjU1LDI1NSwyNTUsMC4xKSIvPgo8L3N2Zz4K')] opacity-20"></div>
+        <div className="container mx-auto px-4 relative z-10">
+          <div className="text-center">
+            <svg className="h-16 w-16 mx-auto mb-6 text-primary" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z"/>
+            </svg>
+            <h1 className="text-4xl font-bold mb-4">Vacation Planning</h1>
+            <p className="text-xl text-gray-300 max-w-2xl mx-auto">
+              Plan and compare vacation options within your budget
+            </p>
           </div>
+        </div>
+      </div>
+
+      <div className="container mx-auto px-4 py-8">
+        <WarningBanner />
+
+        <div className="text-center mb-8">
           <p className="text-muted-foreground text-lg mb-4">
-            Plan and compare vacation options within your budget
+            Compare destinations and costs to make the best vacation choice
           </p>
           <div className="flex justify-center mb-6">
             <SocialShare 
@@ -473,7 +392,6 @@ const Vacation: React.FC = () => {
             />
           </div>
           
-          {/* Project Management */}
           <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between max-w-6xl mx-auto">            
             <div className="flex flex-col sm:flex-row gap-2 items-start sm:items-center">
               <Button 
@@ -486,62 +404,20 @@ const Vacation: React.FC = () => {
               
               {!isCreatingProject && projects.filter(p => p !== 'default').length > 0 && (
                 <div className="flex items-center gap-2">
-                  {isEditingProjectName ? (
-                    <div className="flex items-center gap-2">
-                      <Input
-                        value={editProjectName}
-                        onChange={(e) => setEditProjectName(e.target.value)}
-                        className="w-[200px]"
-                        onKeyPress={(e) => e.key === 'Enter' && updateProjectName()}
-                        autoFocus
-                      />
-                      <Button size="sm" onClick={updateProjectName}>Save</Button>
-                      <Button 
-                        size="sm" 
-                        variant="outline" 
-                        onClick={() => {
-                          setIsEditingProjectName(false);
-                          setEditProjectName('');
-                        }}
-                      >
-                        Cancel
-                      </Button>
-                    </div>
-                  ) : (
-                    <>
-                       <Select value={selectedProject} onValueChange={setSelectedProject}>
-                         <SelectTrigger className="w-[200px]">
-                           <SelectValue placeholder="Select vacation">
-                             {selectedProject && selectedProject !== 'default' ? selectedProject : "Select vacation"}
-                           </SelectValue>
-                         </SelectTrigger>
-                         <SelectContent className="z-50 bg-background border shadow-lg">
-                           {projects.filter(project => project !== 'default').map((project) => (
-                             <SelectItem key={project} value={project}>
-                               {project}
-                             </SelectItem>
-                           ))}
-                         </SelectContent>
-                       </Select>
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        onClick={() => {
-                          setIsEditingProjectName(true);
-                          setEditProjectName(selectedProject);
-                        }}
-                      >
-                        <Edit3 className="h-4 w-4" />
-                      </Button>
-                      <Button
-                        size="sm"
-                        variant="destructive"
-                        onClick={deleteCurrentProject}
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
-                    </>
-                  )}
+                  <Select value={selectedProject} onValueChange={setSelectedProject}>
+                    <SelectTrigger className="w-[200px]">
+                      <SelectValue placeholder="Select vacation">
+                        {selectedProject && selectedProject !== 'default' ? selectedProject : "Select vacation"}
+                      </SelectValue>
+                    </SelectTrigger>
+                    <SelectContent className="z-50 bg-background border shadow-lg">
+                      {projects.filter(project => project !== 'default').map((project) => (
+                        <SelectItem key={project} value={project}>
+                          {project}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 </div>
               )}
             </div>
@@ -553,9 +429,8 @@ const Vacation: React.FC = () => {
             )}
           </div>
 
-          {/* Project Creation */}
           {isCreatingProject && (
-            <div className="max-w-6xl mx-auto">
+            <div className="max-w-6xl mx-auto mb-8">
               <Card>
                 <CardHeader>
                   <CardTitle>Create New Vacation</CardTitle>
@@ -586,7 +461,6 @@ const Vacation: React.FC = () => {
           )}
         </div>
 
-        {/* Vacation Options */}
         <div className="max-w-6xl mx-auto">
           <div className="grid gap-6">
             {options.map((option) => (
@@ -600,7 +474,6 @@ const Vacation: React.FC = () => {
             ))}
           </div>
 
-          {/* Add New Option Button - Only show when project is selected and not creating */}
           {!isCreatingProject && selectedProject && selectedProject !== 'default' && (
             <div className="flex items-center justify-center mt-6">
               <Button
@@ -614,7 +487,6 @@ const Vacation: React.FC = () => {
             </div>
           )}
 
-          {/* Empty States */}
           {!isCreatingProject && options.length === 0 && selectedProject && selectedProject !== 'default' && (
             <div className="text-center py-8">
               <p className="text-muted-foreground">
@@ -632,8 +504,7 @@ const Vacation: React.FC = () => {
           )}
         </div>
 
-        {/* Dark Section with Pin Stripes - Matching Home Page */}
-        <section className="py-16 px-4 bg-slate-900 text-white relative" style={{
+        <section className="py-16 px-4 bg-slate-900 text-white relative mt-16" style={{
           backgroundImage: `repeating-linear-gradient(45deg, transparent, transparent 40px, rgba(255,255,255,0.04) 40px, rgba(255,255,255,0.04) 42px)`
         }}>
           <div className="max-w-4xl mx-auto text-center relative z-10">

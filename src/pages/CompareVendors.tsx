@@ -20,6 +20,7 @@ import { InternalLinks } from '@/components/InternalLinks';
 import { SocialShare } from '@/components/SocialShare';
 import { FAQ } from '@/components/FAQ';
 import { vendorComparisonFAQs } from '@/utils/faqData';
+import { WarningBanner } from '@/components/WarningBanner';
 
 interface VendorQuote {
   id: string;
@@ -91,7 +92,6 @@ const VendorCard: React.FC<VendorCardProps> = ({ quote, onUpdate, onRemove, show
             />
           </div>
           <div className="ml-4 flex items-center gap-2">
-            {/* 5-Star Rating Display */}
             <div className="flex items-center gap-1">
               {[1, 2, 3, 4, 5].map((starIndex) => (
                 <Star
@@ -118,7 +118,6 @@ const VendorCard: React.FC<VendorCardProps> = ({ quote, onUpdate, onRemove, show
       </CardHeader>
 
       <CardContent className="space-y-4">
-        {/* Estimate Amount */}
         <div>
           <Label className="text-sm font-semibold text-foreground">
             Estimate Amount
@@ -138,7 +137,6 @@ const VendorCard: React.FC<VendorCardProps> = ({ quote, onUpdate, onRemove, show
           </div>
         </div>
 
-        {/* Contact Info */}
         <div>
           <Label className="text-sm font-medium text-muted-foreground">
             Contact Info
@@ -151,7 +149,6 @@ const VendorCard: React.FC<VendorCardProps> = ({ quote, onUpdate, onRemove, show
           />
         </div>
 
-        {/* Date Received */}
         <div>
           <Label className="text-sm font-medium text-muted-foreground">
             Date Received
@@ -164,7 +161,6 @@ const VendorCard: React.FC<VendorCardProps> = ({ quote, onUpdate, onRemove, show
           />
         </div>
 
-        {/* Vendor Evaluation Questions */}
         <div className="pt-4 border-t">
           <h3 className="text-sm font-semibold text-foreground mb-3">Vendor Evaluation</h3>
           
@@ -271,7 +267,6 @@ const VendorCard: React.FC<VendorCardProps> = ({ quote, onUpdate, onRemove, show
           </div>
         </div>
 
-        {/* Notes */}
         <div>
           <Label className="text-sm font-medium text-muted-foreground">
             Notes
@@ -301,7 +296,6 @@ const CompareVendors: React.FC = () => {
   const { toast } = useToast();
   const { earnBadge } = useBadges();
 
-  // Initialize with new project state if no data exists
   useEffect(() => {
     if (user) {
       loadData();
@@ -311,7 +305,6 @@ const CompareVendors: React.FC = () => {
   const loadData = async () => {
     if (!user) return;
 
-    // First, get all projects for this user
     const { data: allData } = await supabase
       .from('budget_data')
       .select('calculator_id')
@@ -321,7 +314,6 @@ const CompareVendors: React.FC = () => {
     const projects = allData ? [...new Set(allData.map(item => item.calculator_id))] : [];
     setAllProjects(projects);
     
-    // If we have a selected project, load its data
     if (selectedProject && projects.includes(selectedProject)) {
       const { data } = await supabase
         .from('budget_data')
@@ -342,11 +334,9 @@ const CompareVendors: React.FC = () => {
         setQuotes([]);
       }
     } else if (projects.length > 0 && !selectedProject) {
-      // If no project selected but projects exist, select the first one
       setSelectedProject(projects[0]);
-      return; // Return here to let the next useEffect call load the data
+      return;
     } else if (!selectedProject) {
-      // No projects exist
       setQuotes([]);
       setIsNewProject(false);
     }
@@ -367,7 +357,6 @@ const CompareVendors: React.FC = () => {
     if (error) {
       console.error('Error saving data:', error);
     } else {
-      // Award badge when user actually saves vendor comparison data
       earnBadge('compare_vendors');
     }
   };
@@ -386,7 +375,6 @@ const CompareVendors: React.FC = () => {
 
   const saveNewProject = async (projectName: string) => {
     if (projectName.trim()) {
-      // Add to projects list
       const newProjects = [...allProjects, projectName.trim()];
       setAllProjects(newProjects);
       
@@ -394,7 +382,6 @@ const CompareVendors: React.FC = () => {
       setIsNewProject(false);
       setIsEditingProjectName(false);
       
-      // Create a new vendor card for the new project
       const newQuote: VendorQuote = {
         id: Date.now().toString(),
         projectName: projectName.trim(),
@@ -412,7 +399,6 @@ const CompareVendors: React.FC = () => {
       
       setQuotes([newQuote]);
       
-      // Save to database immediately if user is logged in
       if (user) {
         const { error } = await supabase
           .from('budget_data')
@@ -459,7 +445,6 @@ const CompareVendors: React.FC = () => {
     const filteredQuotes = quotes.filter(quote => quote.id !== quoteId);
     setQuotes(filteredQuotes);
     
-    // If no quotes left for current project, select another project or clear
     const currentProjectQuotes = filteredQuotes.filter(quote => quote.projectName === selectedProject);
     if (currentProjectQuotes.length === 0 && filteredQuotes.length > 0) {
       const remainingProject = filteredQuotes[0].projectName;
@@ -471,101 +456,6 @@ const CompareVendors: React.FC = () => {
     }
   };
 
-  const updateProjectName = async () => {
-    if (editProjectName.trim() && editProjectName.trim() !== selectedProject) {
-      // Update quotes locally
-      const updatedQuotes = quotes.map(quote => 
-        quote.projectName === selectedProject 
-          ? { ...quote, projectName: editProjectName.trim() }
-          : quote
-      );
-      setQuotes(updatedQuotes);
-      
-      // Update database if user is logged in
-      if (user) {
-        const { error } = await supabase
-          .from('budget_data')
-          .update({ calculator_id: editProjectName.trim() })
-          .eq('user_id', user.id)
-          .eq('page_type', 'compare_prices')
-          .eq('calculator_id', selectedProject);
-          
-        if (error) {
-          console.error('Error updating project name:', error);
-          toast({
-            title: "Error",
-            description: "Failed to update project name. Please try again.",
-            variant: "destructive",
-          });
-          return;
-        }
-      }
-      
-      setSelectedProject(editProjectName.trim());
-      
-      toast({
-        title: "Project renamed",
-        description: `Project renamed to "${editProjectName.trim()}" successfully.`,
-      });
-    }
-    setIsEditingProjectName(false);
-    setEditProjectName('');
-  };
-
-  const deleteCurrentProject = async () => {
-    if (!user) return;
-    
-    // Confirm deletion
-    if (!confirm(`Are you sure you want to delete the project "${selectedProject}"? This action cannot be undone.`)) {
-      return;
-    }
-    
-    // Store project name for toast
-    const deletedProjectName = selectedProject;
-    
-    // Delete all data for this project from database
-    const { error } = await supabase
-      .from('budget_data')
-      .delete()
-      .eq('user_id', user.id)
-      .eq('page_type', 'compare_prices')
-      .eq('calculator_id', selectedProject);
-
-    if (error) {
-      console.error('Error deleting project:', error);
-      toast({
-        title: "Error",
-        description: "Failed to delete project. Please try again.",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    // Update local projects list
-    const updatedProjects = allProjects.filter(project => project !== selectedProject);
-    setAllProjects(updatedProjects);
-    
-    // Clear current quotes
-    setQuotes([]);
-    
-    // Select first remaining project or clear
-    if (updatedProjects.length > 0) {
-      setSelectedProject(updatedProjects[0]);
-    } else {
-      setSelectedProject('');
-      setIsNewProject(false);
-    }
-
-    // Show success toast
-    toast({
-      title: "Project deleted",
-      description: `"${deletedProjectName}" has been successfully deleted.`,
-    });
-  };
-
-  const uniqueProjects = [...new Set(quotes.map(quote => quote.projectName))];
-  
-  
   const displayedQuotes = selectedProject && !isNewProject 
     ? quotes.filter(quote => quote.projectName === selectedProject)
     : [];
@@ -581,16 +471,25 @@ const CompareVendors: React.FC = () => {
     <div className="min-h-screen">
       <SEO {...seoData.compareVendors} />
       <Breadcrumbs />
-      <div className="container mx-auto px-4 py-8">
-        <div className="text-center mb-8">
-          <div className="flex items-center justify-center gap-4 mb-4">
-            <img 
-              src="/lovable-uploads/ed809955-ef71-4d81-b072-945082f4380a.png" 
-              alt="Calculator mascot" 
-              className="w-16 h-16 object-contain"
-            />
-            <h1 className="text-3xl font-bold text-foreground">Compare Vendors</h1>
+      
+      {/* Hero Section with Dark Gradient */}
+      <div className="relative bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 text-white py-16">
+        <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHZpZXdCb3g9IjAgMCAyMCAyMCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3QgeD0iMCIgeT0iMCIgd2lkdGg9IjEiIGhlaWdodD0iMjAiIGZpbGw9InJnYmEoMjU1LDI1NSwyNTUsMC4xKSIvPgo8L3N2Zz4K')] opacity-20"></div>
+        <div className="container mx-auto px-4 relative z-10">
+          <div className="text-center">
+            <Star className="h-16 w-16 mx-auto mb-6 text-primary" />
+            <h1 className="text-4xl font-bold mb-4">Compare Vendors</h1>
+            <p className="text-xl text-gray-300 max-w-2xl mx-auto">
+              Compare contractor quotes and vendor proposals side by side
+            </p>
           </div>
+        </div>
+      </div>
+
+      <div className="container mx-auto px-4 py-8">
+        <WarningBanner />
+
+        <div className="text-center mb-8">
           <p className="text-muted-foreground text-lg mb-4">
             Compare vendor quotes and make informed decisions for your projects
           </p>
@@ -601,8 +500,7 @@ const CompareVendors: React.FC = () => {
             />
           </div>
           
-          {/* Project Management */}
-          <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between max-w-6xl mx-auto">            
+          <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between max-w-6xl mx-auto mb-8">            
             <div className="flex flex-col sm:flex-row gap-2 items-start sm:items-center">
               <Button
                 onClick={createNewProject}
@@ -614,69 +512,27 @@ const CompareVendors: React.FC = () => {
               
               {!isNewProject && allProjects.length > 0 && (
                 <div className="flex items-center gap-2">
-                  {isEditingProjectName ? (
-                    <div className="flex items-center gap-2">
-                      <Input
-                        value={editProjectName}
-                        onChange={(e) => setEditProjectName(e.target.value)}
-                        className="w-[200px]"
-                        onKeyPress={(e) => e.key === 'Enter' && updateProjectName()}
-                        autoFocus
-                      />
-                      <Button size="sm" onClick={updateProjectName}>Save</Button>
-                      <Button 
-                        size="sm" 
-                        variant="outline" 
-                        onClick={() => {
-                          setIsEditingProjectName(false);
-                          setEditProjectName('');
-                        }}
-                      >
-                        Cancel
-                      </Button>
-                    </div>
-                  ) : (
-                    <>
-                       <Select
-                         value={selectedProject}
-                         onValueChange={(value) => {
-                           setSelectedProject(value);
-                           setIsNewProject(false);
-                           setIsEditingProjectName(false);
-                         }}
-                       >
-                         <SelectTrigger className="w-[200px]">
-                           <SelectValue placeholder="Select project">
-                             {selectedProject || "Select project"}
-                           </SelectValue>
-                         </SelectTrigger>
-                         <SelectContent className="z-50 bg-background border shadow-lg">
-                           {allProjects.map((project) => (
-                             <SelectItem key={project} value={project}>
-                               {project}
-                             </SelectItem>
-                           ))}
-                         </SelectContent>
-                       </Select>
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        onClick={() => {
-                          setIsEditingProjectName(true);
-                          setEditProjectName(selectedProject);
-                        }}
-                      >
-                        <Edit3 className="h-4 w-4" />
-                      </Button>
-                      <Button
-                        size="sm"
-                        variant="destructive"
-                        onClick={deleteCurrentProject}
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
-                    </>
-                  )}
+                  <Select
+                    value={selectedProject}
+                    onValueChange={(value) => {
+                      setSelectedProject(value);
+                      setIsNewProject(false);
+                      setIsEditingProjectName(false);
+                    }}
+                  >
+                    <SelectTrigger className="w-[200px]">
+                      <SelectValue placeholder="Select project">
+                        {selectedProject || "Select project"}
+                      </SelectValue>
+                    </SelectTrigger>
+                    <SelectContent className="z-50 bg-background border shadow-lg">
+                      {allProjects.map((project) => (
+                        <SelectItem key={project} value={project}>
+                          {project}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 </div>
               )}
             </div>
@@ -688,9 +544,8 @@ const CompareVendors: React.FC = () => {
             )}
           </div>
 
-          {/* Project Creation */}
           {isNewProject && (
-            <div className="max-w-6xl mx-auto">
+            <div className="max-w-6xl mx-auto mb-8">
               <Card>
                 <CardHeader>
                   <CardTitle>Create New Project</CardTitle>
@@ -728,7 +583,6 @@ const CompareVendors: React.FC = () => {
           )}
         </div>
 
-        {/* Vendor Cards */}
         <div className="max-w-6xl mx-auto">
           <div className="flex flex-wrap gap-6 justify-center mb-8">
             {displayedQuotes.map((quote) => (
@@ -742,7 +596,6 @@ const CompareVendors: React.FC = () => {
               />
             ))}
 
-            {/* Add New Vendor Card Button */}
             {!isNewProject && selectedProject && (
               <div className="flex items-center justify-center">
                 <Button
@@ -757,7 +610,6 @@ const CompareVendors: React.FC = () => {
             )}
           </div>
 
-          {/* Empty States */}
           {!isNewProject && displayedQuotes.length === 0 && selectedProject && (
             <div className="text-center py-8">
               <p className="text-muted-foreground">
@@ -775,8 +627,7 @@ const CompareVendors: React.FC = () => {
           )}
         </div>
 
-        {/* Dark Section with Pin Stripes - Matching Home Page */}
-        <section className="py-16 px-4 bg-slate-900 text-white relative" style={{
+        <section className="py-16 px-4 bg-slate-900 text-white relative mt-16" style={{
           backgroundImage: `repeating-linear-gradient(45deg, transparent, transparent 40px, rgba(255,255,255,0.04) 40px, rgba(255,255,255,0.04) 42px)`
         }}>
           <div className="max-w-4xl mx-auto text-center relative z-10">
