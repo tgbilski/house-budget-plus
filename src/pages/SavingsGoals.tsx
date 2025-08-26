@@ -432,28 +432,28 @@ const SavingsGoals = () => {
   }
 
   return (
-    <div className="min-h-screen overflow-x-hidden">
+    <div className="min-h-screen w-full overflow-x-hidden">
       <SEO 
         title="Savings Goals - Track Your Monthly Savings"
         description="Track your monthly savings with an interactive yearly table and editable goals."
         keywords="savings goals, monthly savings, financial planning, money tracker"
       />
       
-      {/* Hero Section with Dark Gradient */}
-      <div className="relative bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 text-white py-4 md:py-6 mb-8">
+      {/* Hero Section */}
+      <div className="relative bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 text-white py-8 w-full">
         <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHZpZXdCb3g9IjAgMCAyMCAyMCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3QgeD0iMCIgeT0iMCIgd2lkdGg9IjEiIGhlaWdodD0iMjAiIGZpbGw9InJnYmEoMjU1LDI1NSwyNTUsMC4xKSIvPgo8L3N2Zz4K')] opacity-20"></div>
-        <div className="w-full max-w-6xl mx-auto px-4 relative z-10">
+        <div className="container mx-auto px-4 relative z-10">
           <div className="text-center">
-            <Target className="h-8 w-8 md:h-10 md:w-10 mx-auto mb-2 md:mb-3 text-primary" />
-            <h1 className="text-lg md:text-2xl font-bold mb-2">Savings Tracker</h1>
-            <p className="text-sm md:text-base text-gray-300">
+            <Target className="h-12 w-12 mx-auto mb-4 text-primary" />
+            <h1 className="text-3xl font-bold mb-3">Savings Tracker</h1>
+            <p className="text-lg text-gray-300">
               Track your monthly savings progress with an easy-to-use yearly table
             </p>
           </div>
         </div>
       </div>
 
-      <div className="w-full max-w-6xl mx-auto px-4 py-8">
+      <div className="container mx-auto px-4 py-8">
         {/* Warning Banner for Non-Authenticated Users */}
         {!user && (
           <Alert className="mb-6 border-yellow-200 bg-yellow-50 dark:border-yellow-800 dark:bg-yellow-950">
@@ -557,8 +557,8 @@ const SavingsGoals = () => {
         {/* Year Selection and Savings Table */}
         <Card>
           <CardContent className="pt-6">
-            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-              <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 w-full sm:w-auto">
+            <div className="space-y-4">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
                 {/* Total Goal Amount */}
                 <div className="flex items-center gap-2 w-full sm:w-auto">
                   <label className="text-sm font-medium whitespace-nowrap">Total Goal:</label>
@@ -596,15 +596,17 @@ const SavingsGoals = () => {
               
               {/* Delete Goal Button */}
               {savingsGoals.length > 1 && currentGoalId && (
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => deleteGoal(currentGoalId)}
-                  className="text-destructive hover:text-destructive border-destructive/30 hover:border-destructive"
-                >
-                  <Trash2 className="h-4 w-4 mr-1" />
-                  Delete Goal
-                </Button>
+                <div className="flex justify-end">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => deleteGoal(currentGoalId)}
+                    className="text-destructive hover:text-destructive border-destructive/30 hover:border-destructive"
+                  >
+                    <Trash2 className="h-4 w-4 mr-1" />
+                    Delete Goal
+                  </Button>
+                </div>
               )}
             </div>
 

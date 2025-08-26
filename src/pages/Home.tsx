@@ -63,16 +63,8 @@ const toolsData = [
 ];
 
 const HeroSection = () => (
-  <section
-    className="relative py-6 md:py-12 lg:py-16 px-4 bg-gradient-to-br from-primary/5 via-secondary/10 to-accent/5 overflow-hidden"
-    style={{
-      backgroundImage: `url('https://res.cloudinary.com/dqh8kcdas/image/upload/v1754758366/Gemini_Generated_Image_40ga540ga540ga54_smkr18.png')`,
-      backgroundSize: 'cover',
-      backgroundPosition: 'right center',
-      backgroundRepeat: 'no-repeat'
-    }}
-  >
-    <div className="container mx-auto px-4">
+  <section className="relative py-12 px-4 bg-gradient-to-br from-primary/5 via-secondary/10 to-accent/5 w-full overflow-hidden">
+    <div className="container mx-auto px-4 max-w-7xl">
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
         <div className="text-left animate-fade-in w-full">
           <div className="flex items-center mb-6">
@@ -309,7 +301,7 @@ const Home = () => {
         structuredData={seoData.home.structuredData}
         canonical="https://www.housebudgetcalculator.com/"
       />
-      <div className="min-h-screen relative overflow-x-hidden">
+      <div className="min-h-screen relative w-full overflow-x-hidden">
         <HeroSection />
         <FeaturedToolsSection />
         <RSSFeed 
