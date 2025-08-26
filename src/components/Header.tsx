@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { User } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import ProfileDropdown from './ProfileDropdown';
+import logo from '@/assets/logo.png';
 
 const Header: React.FC = () => {
   const { user } = useAuth();
@@ -11,9 +12,14 @@ const Header: React.FC = () => {
   return (
     <header className="w-full bg-muted border-b border-border sticky top-0 z-50">
       <div className="w-full px-6 py-4 flex items-center justify-between min-h-[64px]">
-        {/* Brand Text */}
+        {/* Brand with Logo */}
         <div className="flex items-center">
-          <Link to="/" className="hover:opacity-80 transition-opacity">
+          <Link to="/" className="flex items-center space-x-3 hover:opacity-80 transition-opacity">
+            <img 
+              src={logo} 
+              alt="House Budget Calculator Logo"
+              className="h-8 w-8"
+            />
             <h1 className="text-xl font-semibold text-primary">
               House Budget Calculator
             </h1>
