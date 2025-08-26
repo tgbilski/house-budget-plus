@@ -287,8 +287,8 @@ const VendorCard: React.FC<VendorCardProps> = ({ quote, onUpdate, onRemove, show
 
 const CompareVendors: React.FC = () => {
   const [quotes, setQuotes] = useState<VendorQuote[]>([]);
-  const [selectedProject, setSelectedProject] = useState<string>('');
-  const [allProjects, setAllProjects] = useState<string[]>([]);
+  const [selectedProject, setSelectedProject] = useState<string>('My Project');
+  const [allProjects, setAllProjects] = useState<string[]>(['My Project']);
   const [isNewProject, setIsNewProject] = useState(false);
   const [editingProjectId, setEditingProjectId] = useState<string | null>(null);
   const [editingTitle, setEditingTitle] = useState('');
@@ -301,6 +301,12 @@ const CompareVendors: React.FC = () => {
   useEffect(() => {
     if (user) {
       loadData();
+    } else {
+      // Initialize with a default project for non-authenticated users
+      const defaultProject = 'My Project';
+      setAllProjects([defaultProject]);
+      setSelectedProject(defaultProject);
+      setQuotes([]);
     }
   }, [user, selectedProject]);
 
@@ -309,37 +315,35 @@ const CompareVendors: React.FC = () => {
 
     const { data: allData } = await supabase
       .from('budget_data')
-      .select('calculator_id')
+      .select('*')
       .eq('user_id', user.id)
       .eq('page_type', 'compare_prices');
 
     const projects = allData ? [...new Set(allData.map(item => item.calculator_id))] : [];
-    setAllProjects(projects);
     
-    if (selectedProject && projects.includes(selectedProject)) {
-      const { data } = await supabase
-        .from('budget_data')
-        .select('*')
-        .eq('user_id', user.id)
-        .eq('page_type', 'compare_prices')
-        .eq('calculator_id', selectedProject)
-        .order('created_at', { ascending: false });
+    // Ensure "My Project" is always included for authenticated users
+    let projectList = projects.length > 0 ? projects : ['My Project'];
+    if (!projectList.includes('My Project')) {
+      projectList = ['My Project', ...projectList];
+    }
+    
+    setAllProjects(projectList);
 
-      if (data && data.length > 0) {
-        const expenses = data[0].expenses as any;
-        if (expenses.quotes) {
-          setQuotes(expenses.quotes);
-        } else {
-          setQuotes([]);
+    if (selectedProject && projectList.includes(selectedProject)) {
+      const projectData = allData?.find(item => item.calculator_id === selectedProject);
+      if (projectData && projectData.expenses) {
+        const expensesData = projectData.expenses as any;
+        if (expensesData.quotes) {
+          setQuotes(expensesData.quotes.map((quote: any) => ({
+            ...quote,
+            projectName: selectedProject
+          })));
         }
-      } else {
-        setQuotes([]);
       }
-    } else if (projects.length > 0 && !selectedProject) {
-      setSelectedProject(projects[0]);
-      return;
+    } else if (projectList.length > 0 && !selectedProject) {
+      setSelectedProject(projectList[0]);
     } else if (!selectedProject) {
-      setQuotes([]);
+      setSelectedProject('My Project');
       setIsNewProject(false);
     }
   };

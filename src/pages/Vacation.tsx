@@ -195,8 +195,8 @@ const VacationCard: React.FC<VacationCardProps> = ({ option, onUpdate, onRemove,
 
 const Vacation: React.FC = () => {
   const [options, setOptions] = useState<VacationOption[]>([]);
-  const [selectedProject, setSelectedProject] = useState<string>('default');
-  const [projects, setProjects] = useState<string[]>(['default']);
+  const [selectedProject, setSelectedProject] = useState<string>('My Vacation');
+  const [projects, setProjects] = useState<string[]>(['My Vacation']);
   const [isCreatingProject, setIsCreatingProject] = useState(false);
   const [newProjectName, setNewProjectName] = useState('');
   const [editingProjectId, setEditingProjectId] = useState<string | null>(null);
@@ -251,7 +251,13 @@ const Vacation: React.FC = () => {
 
     if (allData) {
       const uniqueProjects = [...new Set(allData.map(item => item.calculator_id))];
-      const projectList = uniqueProjects.length > 0 ? uniqueProjects : ['default'];
+      let projectList = uniqueProjects.length > 0 ? uniqueProjects : ['My Vacation'];
+      
+      // Ensure "My Vacation" is always included for authenticated users
+      if (!projectList.includes('My Vacation')) {
+        projectList = ['My Vacation', ...projectList];
+      }
+      
       setProjects(projectList);
       
       if (!selectedProject && projectList.length > 0) {
@@ -434,7 +440,7 @@ const Vacation: React.FC = () => {
           {/* Project Tabs */}
           <div className="mb-6">
             <div className="flex items-center gap-2 mb-4 flex-wrap">
-              {projects.filter(p => p !== 'default').map((project) => (
+              {projects.map((project) => (
                 <div key={project} className="flex items-center gap-1">
                   {editingProjectId === project ? (
                     <div className="flex items-center gap-1">
@@ -530,7 +536,7 @@ const Vacation: React.FC = () => {
             </div>
           </div>
 
-          {selectedProject && selectedProject !== 'default' && options.length > 0 && (
+          {selectedProject && options.length > 0 && (
             <div className="text-sm text-muted-foreground mb-4">
               Lowest estimate: {currency.symbol}{getLowestCost().toFixed(2)}
             </div>
@@ -550,7 +556,7 @@ const Vacation: React.FC = () => {
             ))}
           </div>
 
-          {!isCreatingProject && selectedProject && selectedProject !== 'default' && (
+          {!isCreatingProject && selectedProject && (
             <div className="flex items-center justify-center mt-6">
               <Button
                 onClick={addVacationCard}
@@ -563,18 +569,10 @@ const Vacation: React.FC = () => {
             </div>
           )}
 
-          {!isCreatingProject && options.length === 0 && selectedProject && selectedProject !== 'default' && (
+          {!isCreatingProject && options.length === 0 && selectedProject && (
             <div className="text-center py-8">
               <p className="text-muted-foreground">
                 No vacation options for "{selectedProject}" yet. Click the + button to add your first option!
-              </p>
-            </div>
-          )}
-          
-          {((!selectedProject || selectedProject === 'default') && !isCreatingProject && options.length === 0) && (
-            <div className="text-center py-8">
-              <p className="text-muted-foreground">
-                Click "New Vacation" above to create your first vacation comparison!
               </p>
             </div>
           )}
