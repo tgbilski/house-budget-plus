@@ -4,7 +4,6 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import { useAuth } from '@/hooks/useAuth';
 import { useCurrency } from '@/hooks/useCurrency';
@@ -415,9 +414,6 @@ const Vacation: React.FC = () => {
               <path d="M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z"/>
             </svg>
             <h1 className="text-4xl font-bold mb-4">Vacation Planning</h1>
-            <p className="text-xl text-gray-300 max-w-2xl mx-auto">
-              Plan and compare vacation options within your budget
-            </p>
           </div>
         </div>
       </div>
@@ -426,15 +422,6 @@ const Vacation: React.FC = () => {
         <WarningBanner />
 
         <div className="text-center mb-8">
-          <p className="text-muted-foreground text-lg mb-4">
-            Compare destinations and costs to make the best vacation choice
-          </p>
-          <div className="flex justify-center mb-6">
-            <SocialShare 
-              title="Vacation Planning & Budget Tool"
-              description="Compare vacation destinations and costs. Plan your perfect trip within budget with our comparison tool."
-            />
-          </div>
           
           
           {/* Project Tabs */}
