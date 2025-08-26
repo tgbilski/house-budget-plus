@@ -40,12 +40,10 @@ export function AppSidebar() {
 
   const isActive = (path: string) => currentPath === path;
 
-  const handleLinkClick = () => {
+  const handleLinkClick = (e: React.MouseEvent) => {
     if (isMobile) {
-      // Use a small delay to ensure navigation happens first
-      setTimeout(() => {
-        setOpen(false);
-      }, 100);
+      // Close sidebar immediately on mobile
+      setOpen(false);
     }
   };
 
