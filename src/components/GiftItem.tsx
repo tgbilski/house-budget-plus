@@ -3,7 +3,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { Trash2, ExternalLink, Plus } from 'lucide-react';
+import { Trash2, ExternalLink, Edit2 } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
@@ -178,7 +178,7 @@ export function GiftItem({ item, listId, onSave, onDelete, isNew = false }: Gift
                       size="sm"
                       variant="outline"
                       onClick={openUrl}
-                      className="shrink-0"
+                      className="shrink-0 text-slate-800 hover:text-slate-900"
                     >
                       <ExternalLink className="h-4 w-4" />
                     </Button>
@@ -205,11 +205,12 @@ export function GiftItem({ item, listId, onSave, onDelete, isNew = false }: Gift
             Save Gift
           </Button>
           {!isNew && (
-            <Button 
-              onClick={() => setIsEditing(false)} 
-              variant="outline" 
-              size="sm"
-            >
+          <Button 
+            onClick={() => setIsEditing(false)} 
+            variant="outline" 
+            size="sm"
+            className="text-slate-800 border-slate-300 hover:text-slate-900 hover:border-slate-400"
+          >
               Cancel
             </Button>
           )}
@@ -261,7 +262,7 @@ export function GiftItem({ item, listId, onSave, onDelete, isNew = false }: Gift
           }}
           className="h-8 w-8 p-0"
         >
-          <Plus className="h-4 w-4" />
+          <Edit2 className="h-4 w-4" />
         </Button>
         {itemData.id && (
           <Button
