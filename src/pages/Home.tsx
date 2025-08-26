@@ -64,7 +64,7 @@ const toolsData = [
 
 const HeroSection = () => (
   <section
-    className="relative py-16 md:py-24 px-4 bg-gradient-to-br from-primary/5 via-secondary/10 to-accent/5 overflow-hidden"
+    className="relative py-8 md:py-16 lg:py-24 px-4 bg-gradient-to-br from-primary/5 via-secondary/10 to-accent/5 overflow-hidden"
     style={{
       backgroundImage: `url('https://res.cloudinary.com/dqh8kcdas/image/upload/v1754758366/Gemini_Generated_Image_40ga540ga540ga54_smkr18.png')`,
       backgroundSize: 'cover',
@@ -72,7 +72,7 @@ const HeroSection = () => (
       backgroundRepeat: 'no-repeat'
     }}
   >
-    <div className="w-full max-w-6xl mx-auto px-4">
+    <div className="w-full max-w-full lg:max-w-6xl mx-auto px-2 sm:px-4">
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
         <div className="text-left animate-fade-in w-full">
           <div className="flex items-center mb-6">
@@ -90,22 +90,22 @@ const HeroSection = () => (
             </div>
           </div>
           
-          <h1 className="text-3xl md:text-5xl font-bold mb-6 text-gray-900 leading-tight">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-4 md:mb-6 text-gray-900 leading-tight">
             Own Your 
             <span className="text-primary block">House Budget</span>
           </h1>
           
-          <p className="text-lg md:text-xl text-muted-foreground mb-8 leading-relaxed">
+          <p className="text-base sm:text-lg md:text-xl text-muted-foreground mb-6 md:mb-8 leading-relaxed">
             Smart financial planning tools with AI insights. Track expenses, compare vendors, and make informed decisions that save you money.
           </p>
           
-          <div className="flex flex-col sm:flex-row gap-4 mb-8">
-            <Button asChild size="lg" className="text-lg px-8 py-3 shadow-lg hover:shadow-xl transition-shadow">
+          <div className="flex flex-col sm:flex-row gap-3 md:gap-4 mb-6 md:mb-8">
+            <Button asChild size="lg" className="text-sm sm:text-base md:text-lg px-4 sm:px-6 md:px-8 py-3 shadow-lg hover:shadow-xl transition-shadow">
               <Link to="/budget">
-                Free Budget Calculator <ArrowRight className="ml-2 h-5 w-5" />
+                Free Budget Calculator <ArrowRight className="ml-2 h-4 w-4 md:h-5 md:w-5" />
               </Link>
             </Button>
-            <Button asChild variant="outline" size="lg" className="text-lg px-8 py-3 border-2">
+            <Button asChild variant="outline" size="lg" className="text-sm sm:text-base md:text-lg px-4 sm:px-6 md:px-8 py-3 border-2">
               <Link to="/ai-insights">
                 Try AI Insights
               </Link>
@@ -138,14 +138,14 @@ const FeaturedToolsSection = () => {
     <section className="py-16 px-4 bg-slate-900 text-white relative overflow-hidden" style={{
       backgroundImage: `repeating-linear-gradient(45deg, transparent, transparent 40px, rgba(255,255,255,0.04) 40px, rgba(255,255,255,0.04) 42px)`
     }}>
-      <div className="w-full max-w-6xl mx-auto px-4">
-        <div className="text-center mb-12">
-          <h2 className="text-2xl md:text-4xl font-bold mb-4 text-white">
-            Start Saving Money Today
-          </h2>
-        </div>
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12 relative z-10">
+    <div className="w-full max-w-full lg:max-w-6xl mx-auto px-2 sm:px-4">
+      <div className="text-center mb-8 md:mb-12">
+        <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold mb-4 text-white px-2">
+          Start Saving Money Today
+        </h2>
+      </div>
+      
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 md:gap-8 mb-8 md:mb-12 relative z-10">
           {featuredTools.map((tool, index) => (
             <Link to={tool.href} key={index}>
               <Card className="group relative hover:shadow-xl transition-all duration-500 border-2 hover:border-primary/30 cursor-pointer h-full animate-fade-in hover:scale-105 transform" style={{ animationDelay: `${index * 0.2}s` }}>
@@ -188,16 +188,16 @@ const AllToolsGrid = () => (
   <section className="py-16 px-4 bg-slate-900 text-white relative overflow-hidden" style={{
     backgroundImage: `repeating-linear-gradient(45deg, transparent, transparent 40px, rgba(255,255,255,0.04) 40px, rgba(255,255,255,0.04) 42px)`
   }}>
-    <div className="w-full max-w-6xl mx-auto px-4">
-      <div className="text-center mb-12">
-        <h2 className="text-2xl md:text-3xl font-bold mb-4 text-white">
+    <div className="w-full max-w-full lg:max-w-6xl mx-auto px-2 sm:px-4">
+      <div className="text-center mb-8 md:mb-12">
+        <h2 className="text-xl sm:text-2xl md:text-3xl font-bold mb-4 text-white px-2">
           Complete Financial Toolkit
         </h2>
-        <p className="text-base text-gray-300 max-w-2xl mx-auto">
+        <p className="text-sm sm:text-base text-gray-300 max-w-2xl mx-auto px-2">
           Everything you need to manage your household finances in one place
         </p>
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 relative z-10">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 relative z-10">
         {toolsData.map((tool, index) => (
           <Link to={tool.href} key={index}>
             <Card
@@ -228,11 +228,11 @@ const AllToolsGrid = () => (
 
 const SocialProofSection = () => (
   <section className="py-16 px-4 bg-gradient-to-r from-white via-primary/5 to-white relative overflow-hidden">
-    <div className="w-full max-w-4xl mx-auto text-center px-4">
-      <h2 className="text-2xl md:text-3xl font-bold mb-8">
+    <div className="w-full max-w-full lg:max-w-4xl mx-auto text-center px-2 sm:px-4">
+      <h2 className="text-xl sm:text-2xl md:text-3xl font-bold mb-6 md:mb-8 px-2">
         Join a Community of Smart Savers
       </h2>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12 relative z-10">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 mb-8 md:mb-12 relative z-10">
         <div className="space-y-4 animate-fade-in" style={{ animationDelay: '0.2s' }}>
           <div className="w-16 h-16 bg-primary/10 text-primary rounded-full flex items-center justify-center mx-auto hover:scale-110 transition-transform duration-300 hover:bg-primary/20">
             <Calculator className="h-8 w-8" />
@@ -269,24 +269,24 @@ const CTASection = () => (
   <section className="py-20 px-4 bg-slate-900 text-white relative overflow-hidden" style={{
     backgroundImage: `repeating-linear-gradient(45deg, transparent, transparent 40px, rgba(255,255,255,0.04) 40px, rgba(255,255,255,0.04) 42px)`
   }}>
-    <div className="w-full max-w-4xl mx-auto text-center relative z-10 px-4">
-      <h2 className="text-3xl md:text-4xl font-bold mb-6 animate-fade-in">
+    <div className="w-full max-w-full lg:max-w-4xl mx-auto text-center relative z-10 px-2 sm:px-4">
+      <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold mb-4 md:mb-6 animate-fade-in px-2">
         Ready to Save Money Every Month?
       </h2>
-      <p className="text-xl mb-8 opacity-90 animate-fade-in" style={{ animationDelay: '0.2s' }}>
+      <p className="text-base sm:text-lg md:text-xl mb-6 md:mb-8 opacity-90 animate-fade-in px-2" style={{ animationDelay: '0.2s' }}>
         Join our community and take control of your finances with our free tools
       </p>
-      <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
-        <Button asChild size="lg" variant="secondary" className="text-lg px-8 py-3">
+      <div className="flex flex-col sm:flex-row gap-3 md:gap-4 justify-center mb-6 md:mb-8">
+        <Button asChild size="lg" variant="secondary" className="text-sm sm:text-base md:text-lg px-4 sm:px-6 md:px-8 py-3">
           <Link to="/budget">
-            Free Budget Calculator <ArrowRight className="ml-2 h-5 w-5" />
+            Free Budget Calculator <ArrowRight className="ml-2 h-4 w-4 md:h-5 md:w-5" />
           </Link>
         </Button>
         <Button
           asChild
           variant="secondary"
           size="lg"
-          className="text-lg px-8 py-3 cursor-pointer border-bg-primary-foreground/20 hover:bg-primary-foreground/10"
+          className="text-sm sm:text-base md:text-lg px-4 sm:px-6 md:px-8 py-3 cursor-pointer border-bg-primary-foreground/20 hover:bg-primary-foreground/10"
           onClick={() => window.location.href = 'mailto:homebudgetcalculator@gmail.com?subject=Budget Calculator Feedback'}
         >
           <span>Get Support</span>
@@ -319,8 +319,8 @@ const Home = () => {
         <AllToolsGrid />
         
         {/* AdSense Ad Unit */}
-        <div className="py-8 bg-background overflow-hidden">
-          <div className="w-full max-w-6xl mx-auto px-4">
+        <div className="py-6 md:py-8 bg-background overflow-hidden">
+          <div className="w-full max-w-full lg:max-w-6xl mx-auto px-2 sm:px-4">
             <AdSense 
               adSlot="5669663372" 
               adFormat="fluid"
@@ -334,7 +334,7 @@ const Home = () => {
         <CTASection />
         
         {/* Badge Display Section - Bottom */}
-        <div className="w-full max-w-6xl mx-auto px-4 py-8">
+        <div className="w-full max-w-full lg:max-w-6xl mx-auto px-2 sm:px-4 py-6 md:py-8">
           <BadgeDisplay />
         </div>
       </div>
