@@ -11,16 +11,6 @@ import {
   ChevronLeft 
 } from "lucide-react";
 import { NavLink, useLocation } from "react-router-dom";
-import {
-  Sidebar,
-  SidebarContent,
-  SidebarGroup,
-  SidebarGroupContent,
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
-  useSidebar,
-} from "@/components/ui/sidebar";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
@@ -35,7 +25,6 @@ const navigationItems = [
 ];
 
 export function AppSidebar() {
-  const { open, setOpen, isMobile } = useSidebar();
   const location = useLocation();
   const currentPath = location.pathname;
   const [isExpanded, setIsExpanded] = useState(false);
@@ -43,14 +32,13 @@ export function AppSidebar() {
   const isActive = (path: string) => currentPath === path;
 
   return (
-    <Sidebar
+    <div
       className={cn(
         "fixed left-0 top-16 h-[calc(100vh-4rem)] bg-sidebar border-r border-border transition-all duration-300 ease-in-out z-40",
         isExpanded ? "w-64" : "w-16"
       )}
-      collapsible="icon"
     >
-      <SidebarContent className="p-2">
+      <div className="p-2">
         {/* Toggle Button */}
         <div className={cn("flex mb-4", isExpanded ? "justify-end" : "justify-center")}>
           <Button
@@ -67,36 +55,30 @@ export function AppSidebar() {
           </Button>
         </div>
 
-        <SidebarGroup>
-          <SidebarGroupContent>
-            <SidebarMenu className="space-y-2">
-              {navigationItems.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton
-                    asChild
-                    className={cn(
-                      "w-full h-12 rounded-lg transition-colors",
-                      isExpanded ? "justify-start" : "justify-center",
-                      isActive(item.url)
-                        ? "bg-sidebar-accent text-sidebar-accent-foreground"
-                        : "hover:bg-sidebar-accent/50"
-                    )}
-                  >
-                    <NavLink to={item.url} className="flex items-center">
-                      <item.icon className="h-5 w-5 flex-shrink-0" />
-                      {isExpanded && (
-                        <span className="ml-3 text-sm font-medium truncate">
-                          {item.title}
-                        </span>
-                      )}
-                    </NavLink>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
-      </SidebarContent>
-    </Sidebar>
+        {/* Navigation Menu */}
+        <div className="space-y-2">
+          {navigationItems.map((item) => (
+            <NavLink
+              key={item.title}
+              to={item.url}
+              className={cn(
+                "flex items-center w-full h-12 rounded-lg transition-colors",
+                isExpanded ? "justify-start px-3" : "justify-center",
+                isActive(item.url)
+                  ? "bg-sidebar-accent text-sidebar-accent-foreground"
+                  : "hover:bg-sidebar-accent/50 text-sidebar-foreground"
+              )}
+            >
+              <item.icon className="h-5 w-5 flex-shrink-0" />
+              {isExpanded && (
+                <span className="ml-3 text-sm font-medium truncate">
+                  {item.title}
+                </span>
+              )}
+            </NavLink>
+          ))}
+        </div>
+      </div>
+    </div>
   );
 }
