@@ -474,7 +474,7 @@ const CompareVendors: React.FC = () => {
   };
 
   const deleteProject = async (projectToDelete: string) => {
-    if (allProjects.length <= 1 || deletingProject === projectToDelete) return;
+    if (allProjects.length <= 1 || deletingProject) return;
     
     setDeletingProject(projectToDelete);
     

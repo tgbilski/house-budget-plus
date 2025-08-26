@@ -394,7 +394,7 @@ const Vacation: React.FC = () => {
   };
 
   const deleteProject = async (projectToDelete: string) => {
-    if (projects.length <= 1 || deletingProject === projectToDelete) return;
+    if (projects.length <= 1 || deletingProject) return;
     
     setDeletingProject(projectToDelete);
     
