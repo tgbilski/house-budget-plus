@@ -397,20 +397,31 @@ const Vacation: React.FC = () => {
   };
 
   const deleteProject = async (projectToDelete: string) => {
-    if (projects.length <= 1) return; // Don't delete the last project
+    console.log('Delete project called with:', projectToDelete);
+    console.log('Current projects:', projects);
+    console.log('Projects length:', projects.length);
+    
+    if (projects.length <= 1) {
+      console.log('Cannot delete - only one project left');
+      return; // Don't delete the last project
+    }
     
     try {
+      console.log('Proceeding with deletion...');
       // Remove from projects array
       const updatedProjects = projects.filter(p => p !== projectToDelete);
+      console.log('Updated projects after filter:', updatedProjects);
       setProjects(updatedProjects);
       
       // If we're deleting the currently selected project, switch to another one
       if (selectedProject === projectToDelete) {
+        console.log('Switching selected project to:', updatedProjects[0]);
         setSelectedProject(updatedProjects[0]);
       }
       
       // Remove from database if user is logged in
       if (user) {
+        console.log('Deleting from database for user:', user.id);
         const { error } = await supabase
           .from('budget_data')
           .delete()
@@ -419,10 +430,12 @@ const Vacation: React.FC = () => {
           .eq('calculator_id', projectToDelete);
           
         if (error) throw error;
+        console.log('Database deletion successful');
       }
       
       // Clear options if we deleted the currently selected project
       if (selectedProject === projectToDelete) {
+        console.log('Clearing options for deleted project');
         setOptions([]);
       }
       
