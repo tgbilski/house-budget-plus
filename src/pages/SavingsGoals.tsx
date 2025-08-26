@@ -453,7 +453,7 @@ const SavingsGoals = () => {
         </div>
       </div>
 
-      <div className="w-full max-w-none px-4 py-4 md:py-6">
+      <div className="container mx-auto px-4 py-8">
         {/* Warning Banner for Non-Authenticated Users */}
         {!user && (
           <Alert className="mb-6 border-yellow-200 bg-yellow-50 dark:border-yellow-800 dark:bg-yellow-950">
