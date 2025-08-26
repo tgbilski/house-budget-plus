@@ -589,7 +589,9 @@ const CompareVendors: React.FC = () => {
                           if (e.key === 'Enter') updateProjectTitle(project, editingTitle);
                           if (e.key === 'Escape') setEditingProjectId(null);
                         }}
-                        onBlur={() => updateProjectTitle(project, editingTitle)}
+                        onBlur={() => {
+                          // Don't update on blur to avoid conflicts with delete
+                        }}
                         autoFocus
                       />
                       <Button size="sm" variant="ghost" onClick={() => updateProjectTitle(project, editingTitle)} className="h-8 w-8 p-0">
@@ -599,18 +601,23 @@ const CompareVendors: React.FC = () => {
                         <X className="h-3 w-3" />
                       </Button>
                       {allProjects.length > 1 && (
-                        <Button 
-                          size="sm" 
-                          variant="ghost" 
-                          onClick={() => {
+                        <button 
+                          onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
                             deleteProject(project);
                             setEditingProjectId(null);
-                          }} 
-                          className="h-8 w-8 p-0 text-red-500 hover:bg-red-500/20"
+                          }}
+                          onMouseDown={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                          }}
+                          className="h-8 w-8 text-red-500 hover:text-red-700 hover:bg-red-50 rounded flex items-center justify-center"
                           title="Delete project"
+                          type="button"
                         >
-                          <Trash2 className="h-3 w-3" />
-                        </Button>
+                          <Trash2 className="h-4 w-4" />
+                        </button>
                       )}
                     </div>
                   ) : (
