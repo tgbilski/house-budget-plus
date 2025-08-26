@@ -1,13 +1,14 @@
-import { 
-  Home, 
-  Calculator, 
-  PiggyBank, 
-  ShoppingCart, 
-  Plane, 
-  Gift, 
+import React, { useEffect, useState } from "react";
+import {
+  Home,
+  Calculator,
+  PiggyBank,
+  ShoppingCart,
+  Plane,
+  Gift,
   Brain,
   ChevronRight,
-  ChevronLeft
+  ChevronLeft,
 } from "lucide-react";
 import { NavLink, useLocation } from "react-router-dom";
 import {
@@ -22,7 +23,6 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 import { cn } from "@/lib/utils";
-import React from "react";
 
 const navigationItems = [
   { title: "Home", url: "/", icon: Home },
@@ -37,6 +37,16 @@ const navigationItems = [
 export function AppSidebar() {
   const location = useLocation();
   const { open, setOpen, isMobile, openMobile, setOpenMobile, state } = useSidebar();
+  const [headerHeight, setHeaderHeight] = useState(56); // default to desktop
+
+  useEffect(() => {
+    const updateHeaderHeight = () => {
+      setHeaderHeight(window.innerWidth < 768 ? 48 : 56);
+    };
+    updateHeaderHeight();
+    window.addEventListener("resize", updateHeaderHeight);
+    return () => window.removeEventListener("resize", updateHeaderHeight);
+  }, []);
 
   const handleNavClick = () => {
     if (isMobile) setOpenMobile(false);
@@ -44,15 +54,11 @@ export function AppSidebar() {
 
   const isCollapsed = state === "collapsed";
 
-  // Offsets for header (56px desktop, 48px mobile)
-  const topOffset = window.innerWidth >= 768 ? 56 : 48;
-  const heightCalc = `calc(100vh - ${topOffset}px)`;
-
   return (
     <Sidebar
       variant="inset"
       className={cn(
-        "fixed left-0 z-40",
+        "fixed left-0 z-40 transition-all duration-300 bg-white border-r shadow",
         isMobile
           ? openMobile
             ? "translate-x-0"
@@ -60,17 +66,21 @@ export function AppSidebar() {
           : "translate-x-0"
       )}
       style={{
-        top: topOffset,
-        height: heightCalc,
-        transition: "width 0.3s",
+        top: headerHeight,
+        height: `calc(100vh - ${headerHeight}px)`,
+        width: isCollapsed ? 56 : 240, // adjust these values as needed!
+        minWidth: isCollapsed ? 56 : 240,
+        maxWidth: isCollapsed ? 56 : 240,
+        transition: "width 0.2s",
+        overflowX: "hidden",
       }}
       data-state={state}
     >
-      {/* Expand/Collapse Button */}
+      {/* Collapse/Expand Button */}
       <div className="flex items-center justify-end px-2 py-2 border-b">
         <button
           aria-label={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
-          onClick={() => setOpen((prev) => !prev)}
+          onClick={() => setOpen((prev: boolean) => !prev)}
           className="rounded p-1 hover:bg-accent transition"
         >
           {isCollapsed ? <ChevronRight /> : <ChevronLeft />}
@@ -78,7 +88,7 @@ export function AppSidebar() {
       </div>
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel className={cn("transition-all", isCollapsed && "sr-only")}>
+          <SidebarGroupLabel className={cn(isCollapsed && "sr-only")}>
             Navigation
           </SidebarGroupLabel>
           <SidebarGroupContent>
@@ -92,10 +102,16 @@ export function AppSidebar() {
                       onClick={handleNavClick}
                     >
                       <item.icon className="w-6 h-6" />
-                      <span className={cn(
-                        "transition-all whitespace-nowrap",
-                        isCollapsed && "opacity-0 w-0 overflow-hidden"
-                      )}>
+                      <span
+                        className={cn(
+                          "transition-all whitespace-nowrap",
+                          isCollapsed && "opacity-0 w-0 overflow-hidden"
+                        )}
+                        style={{
+                          transition: "opacity 0.2s, width 0.2s",
+                          width: isCollapsed ? 0 : "auto",
+                        }}
+                      >
                         {item.title}
                       </span>
                     </NavLink>
