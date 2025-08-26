@@ -64,7 +64,7 @@ const toolsData = [
 
 const HeroSection = () => (
   <section className="py-8 md:py-16 px-4 bg-gradient-to-br from-primary/5 via-secondary/10 to-accent/5 overflow-x-hidden">
-    <div className="w-full max-w-sm sm:max-w-md md:max-w-2xl mx-auto">
+    <div className="w-full max-w-sm mx-auto">
       <div className="text-center">
         <div className="flex flex-col items-center mb-6">
           <img
@@ -122,14 +122,14 @@ const FeaturedToolsSection = () => {
   
   return (
     <section className="py-8 md:py-12 px-4 bg-slate-900 text-white relative overflow-x-hidden">
-      <div className="w-full max-w-sm sm:max-w-md md:max-w-2xl mx-auto">
+      <div className="w-full max-w-sm mx-auto">
         <div className="text-center mb-6 md:mb-8">
           <h2 className="text-xl md:text-2xl lg:text-3xl font-bold mb-3 text-white">
             Start Saving Money Today
           </h2>
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 mb-6 md:mb-8 relative z-10">
+        <div className="grid grid-cols-1 gap-4 mb-6 md:mb-8 relative z-10">
           {featuredTools.map((tool, index) => (
             <Link to={tool.href} key={index} className="block">
               <Card className="group relative hover:shadow-xl transition-all duration-500 border-2 hover:border-primary/30 cursor-pointer h-full animate-fade-in hover:scale-105 transform" style={{ animationDelay: `${index * 0.2}s` }}>
@@ -169,7 +169,7 @@ const AllToolsGrid = () => (
   <section className="py-8 md:py-12 px-4 bg-slate-900 text-white relative overflow-hidden" style={{
     backgroundImage: `repeating-linear-gradient(45deg, transparent, transparent 40px, rgba(255,255,255,0.04) 40px, rgba(255,255,255,0.04) 42px)`
   }}>
-    <div className="w-full max-w-sm sm:max-w-md md:max-w-2xl mx-auto">
+    <div className="w-full max-w-sm mx-auto">
       <div className="text-center mb-6 md:mb-8">
         <h2 className="text-xl md:text-2xl font-bold mb-3 text-white px-2">
           Complete Financial Toolkit
@@ -178,7 +178,7 @@ const AllToolsGrid = () => (
           Everything you need to manage your household finances in one place
         </p>
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 relative z-10">
+      <div className="grid grid-cols-1 gap-4 relative z-10">
         {toolsData.map((tool, index) => (
           <Link to={tool.href} key={index} className="block">
             <Card
@@ -209,11 +209,11 @@ const AllToolsGrid = () => (
 
 const SocialProofSection = () => (
   <section className="py-8 md:py-12 px-4 bg-gradient-to-r from-white via-primary/5 to-white relative overflow-hidden">
-    <div className="w-full max-w-sm sm:max-w-md md:max-w-2xl mx-auto text-center">
+    <div className="w-full max-w-sm mx-auto text-center">
       <h2 className="text-xl md:text-2xl font-bold mb-6 md:mb-8 px-2">
         Join a Community of Smart Savers
       </h2>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 relative z-10">
+      <div className="grid grid-cols-1 gap-6 relative z-10">
         <div className="space-y-3 md:space-y-4 animate-fade-in px-2" style={{ animationDelay: '0.2s' }}>
           <div className="w-12 h-12 md:w-16 md:h-16 bg-primary/10 text-primary rounded-full flex items-center justify-center mx-auto hover:scale-110 transition-transform duration-300 hover:bg-primary/20">
             <Calculator className="h-6 w-6 md:h-8 md:w-8" />
@@ -250,7 +250,7 @@ const CTASection = () => (
   <section className="py-8 md:py-12 px-4 bg-slate-900 text-white relative overflow-hidden" style={{
     backgroundImage: `repeating-linear-gradient(45deg, transparent, transparent 40px, rgba(255,255,255,0.04) 40px, rgba(255,255,255,0.04) 42px)`
   }}>
-    <div className="w-full max-w-sm sm:max-w-md md:max-w-2xl mx-auto text-center relative z-10">
+    <div className="w-full max-w-sm mx-auto text-center relative z-10">
       <h2 className="text-xl md:text-2xl lg:text-3xl font-bold mb-4 md:mb-6 animate-fade-in px-2">
         Ready to Save Money Every Month?
       </h2>
@@ -302,7 +302,7 @@ const Home = () => {
         
         {/* AdSense Ad Unit */}
         <div className="py-6 md:py-8 bg-background overflow-hidden">
-          <div className="w-full max-w-sm sm:max-w-md md:max-w-2xl mx-auto px-4">
+          <div className="w-full max-w-sm mx-auto px-4">
             <div className="max-w-full overflow-hidden">
               <AdSense 
                 adSlot="5669663372" 
@@ -318,7 +318,7 @@ const Home = () => {
         <CTASection />
         
         {/* Badge Display Section - Bottom */}
-        <div className="w-full max-w-sm sm:max-w-md md:max-w-2xl mx-auto px-4 py-6 md:py-8">
+        <div className="w-full max-w-sm mx-auto px-4 py-6 md:py-8">
           <BadgeDisplay />
         </div>
       </div>
