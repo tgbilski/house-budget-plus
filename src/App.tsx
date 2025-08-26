@@ -1,62 +1,94 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { SidebarProvider } from "@/components/ui/sidebar";
-import Header from "@/components/Header";
-import AppSidebar from "@/components/AppSidebar";
-import SidebarInset from "@/components/SidebarInset";
-import Home from "@/pages/Home";
-import MonthlyBudget from "@/pages/MonthlyBudget";
-import SavingsGoals from "@/pages/SavingsGoals";
-import ComparePrices from "@/pages/ComparePrices";
-import Vacation from "@/pages/Vacation";
-import Gifts from "@/pages/Gifts";
-import AIInsights from "@/pages/AIInsights";
-import FinancialResources from "@/pages/FinancialResources";
+import AppSidebar from "./components/AppSidebar";
 
-const SIDEBAR_EXPANDED = 240; // Make sure this matches your expanded sidebar width
+const SIDEBAR_COLLAPSED = 56;
+const SIDEBAR_EXPANDED = 240;
+const HEADER_HEIGHT_DESKTOP = 56;
+const HEADER_HEIGHT_MOBILE = 48;
 
-function App() {
+// Dummy header
+function Header() {
+  const [height, setHeight] = useState(
+    window.innerWidth < 768 ? HEADER_HEIGHT_MOBILE : HEADER_HEIGHT_DESKTOP
+  );
+  useEffect(() => {
+    const onResize = () =>
+      setHeight(window.innerWidth < 768 ? HEADER_HEIGHT_MOBILE : HEADER_HEIGHT_DESKTOP);
+    window.addEventListener("resize", onResize);
+    return () => window.removeEventListener("resize", onResize);
+  }, []);
   return (
-    <Router>
-      <SidebarProvider defaultOpen={false}>
-        <div className="min-h-screen w-full flex flex-col">
-          {/* Sticky Header */}
-          <Header />
-
-          {/* Main app content: floating sidebar + main content */}
-          <div className="flex flex-1 min-h-0">
-            {/* Floating Sidebar */}
-            <AppSidebar />
-
-            {/* Main Content */}
-            <div
-              className="flex-1"
-              // On desktop, add left margin so content is not hidden behind the floating sidebar
-              style={{
-                marginLeft: SIDEBAR_EXPANDED,
-                transition: "margin-left 0.2s",
-              }}
-            >
-              <SidebarInset>
-                <main className="p-4 md:p-6 min-h-screen">
-                  <Routes>
-                    <Route path="/" element={<Home />} />
-                    <Route path="/budget" element={<MonthlyBudget />} />
-                    <Route path="/savings" element={<SavingsGoals />} />
-                    <Route path="/compare-prices" element={<ComparePrices />} />
-                    <Route path="/vacation" element={<Vacation />} />
-                    <Route path="/gifts" element={<Gifts />} />
-                    <Route path="/ai-insights" element={<AIInsights />} />
-                    <Route path="/resources" element={<FinancialResources />} />
-                  </Routes>
-                </main>
-              </SidebarInset>
-            </div>
-          </div>
-        </div>
-      </SidebarProvider>
-    </Router>
+    <header
+      className="w-full bg-blue-600 text-white flex items-center px-6"
+      style={{
+        height,
+        position: "sticky",
+        top: 0,
+        zIndex: 50,
+      }}
+    >
+      <h1 className="text-2xl font-bold">Lovable Demo Header</h1>
+    </header>
   );
 }
 
-export default App;
+// Dummy pages
+function Page({ title }) {
+  return (
+    <div>
+      <h2 className="text-3xl font-bold mb-4">{title}</h2>
+      <p>This is the {title} page content.</p>
+    </div>
+  );
+}
+
+export default function App() {
+  const [collapsed, setCollapsed] = useState(true);
+  const [headerHeight, setHeaderHeight] = useState(
+    window.innerWidth < 768 ? HEADER_HEIGHT_MOBILE : HEADER_HEIGHT_DESKTOP
+  );
+
+  useEffect(() => {
+    const onResize = () =>
+      setHeaderHeight(window.innerWidth < 768 ? HEADER_HEIGHT_MOBILE : HEADER_HEIGHT_DESKTOP);
+    window.addEventListener("resize", onResize);
+    return () => window.removeEventListener("resize", onResize);
+  }, []);
+
+  // Keep sidebar width in sync with collapse state
+  const sidebarWidth = collapsed ? SIDEBAR_COLLAPSED : SIDEBAR_EXPANDED;
+
+  return (
+    <Router>
+      <div className="min-h-screen w-full flex flex-col bg-gray-50">
+        <Header />
+        <div className="flex-1 flex flex-row min-h-0">
+          <AppSidebar
+            collapsed={collapsed}
+            onToggle={() => setCollapsed((c) => !c)}
+            headerHeight={headerHeight}
+          />
+          <main
+            className="flex-1 p-6"
+            style={{
+              marginLeft: sidebarWidth,
+              marginTop: headerHeight,
+              transition: "margin-left 0.2s",
+            }}
+          >
+            <Routes>
+              <Route path="/" element={<Page title="Home" />} />
+              <Route path="/budget" element={<Page title="Monthly Budget" />} />
+              <Route path="/savings" element={<Page title="Savings" />} />
+              <Route path="/compare-prices" element={<Page title="Compare Vendors" />} />
+              <Route path="/vacation" element={<Page title="Vacation" />} />
+              <Route path="/gifts" element={<Page title="Gifts" />} />
+              <Route path="/ai-insights" element={<Page title="AI Insights" />} />
+            </Routes>
+          </main>
+        </div>
+      </div>
+    </Router>
+  );
+}
