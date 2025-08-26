@@ -17,6 +17,7 @@ const Header: React.FC = () => {
       <div className="w-full px-4 md:px-6 py-2 md:py-3 flex items-center justify-between min-h-[48px] md:min-h-[56px]">
         {/* Brand with Logo and Mobile Menu */}
         <div className="flex items-center space-x-2">
+          <SidebarTrigger className="md:inline-flex" />
           <Link to="/" className="flex items-center space-x-2 md:space-x-3 hover:opacity-80 transition-opacity">
             <img 
               src={logoIcon} 
@@ -29,7 +30,6 @@ const Header: React.FC = () => {
               </h1>
             )}
           </Link>
-          {isMobile && <SidebarTrigger />}
         </div>
 
         {/* Auth Button */}

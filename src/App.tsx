@@ -64,7 +64,7 @@ const App = () => {
           <SubscriptionProvider>
             <CurrencyContext.Provider value={{ currency, setCurrency }}>
               <BrowserRouter>
-                <SidebarProvider defaultOpen={false}>
+                <SidebarProvider defaultOpen={isMobile ? false : false}>
                   <div className="min-h-screen w-full flex flex-col">
                     <Header />
                     <div className="flex flex-1">
