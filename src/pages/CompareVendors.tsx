@@ -58,7 +58,10 @@ interface VendorCardProps {
 
 const VendorCard: React.FC<VendorCardProps> = ({ quote, onUpdate, onRemove, showRemove, currency }) => {
   const [localQuote, setLocalQuote] = useState<VendorQuote>(quote);
-  const [isEditing, setIsEditing] = useState(false);
+  
+  // Check if this is a new/empty card to start in editing mode
+  const isEmpty = !quote.vendor_name && quote.estimate_amount === 0 && !quote.contact_info;
+  const [isEditing, setIsEditing] = useState(isEmpty);
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
@@ -87,11 +90,7 @@ const VendorCard: React.FC<VendorCardProps> = ({ quote, onUpdate, onRemove, show
 
   const starCount = getStarCount();
 
-  // Show editing mode if the card is completely empty (new card)
-  const isEmpty = !localQuote.vendor_name && localQuote.estimate_amount === 0 && !localQuote.contact_info;
-  const shouldShowEditing = isEditing || isEmpty;
-
-  if (shouldShowEditing) {
+  if (isEditing) {
     return (
       <Card className="w-full max-w-md mx-auto shadow-lg border border-border">
         <CardHeader className="pb-4">

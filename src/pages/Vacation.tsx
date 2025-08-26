@@ -56,7 +56,10 @@ interface VacationCardProps {
 
 const VacationCard: React.FC<VacationCardProps> = ({ option, onUpdate, onRemove, showRemove, currency }) => {
   const [localOption, setLocalOption] = useState(option);
-  const [isEditing, setIsEditing] = useState(false);
+  
+  // Check if this is a new/empty card to start in editing mode
+  const isEmpty = !option.destination && option.estimated_cost === 0 && !option.travel_mode;
+  const [isEditing, setIsEditing] = useState(isEmpty);
 
   const updateField = useCallback((field: keyof VacationOption, value: any) => {
     const updated = { ...localOption, [field]: value };
@@ -75,10 +78,6 @@ const VacationCard: React.FC<VacationCardProps> = ({ option, onUpdate, onRemove,
     return evaluationFields.filter(Boolean).length;
   };
 
-  // Show editing mode if the card is completely empty (new card)
-  const isEmpty = !localOption.destination && localOption.estimated_cost === 0 && !localOption.travel_mode;
-  const shouldShowEditing = isEditing || isEmpty;
-
 
   const questions = [
     { key: 'favorable_travel' as const, label: 'Is the mode of travel favorable?' },
@@ -88,7 +87,7 @@ const VacationCard: React.FC<VacationCardProps> = ({ option, onUpdate, onRemove,
     { key: 'memorable' as const, label: 'Memorable?' }
   ];
 
-  if (shouldShowEditing) {
+  if (isEditing) {
     return (
       <Card className="relative">
         <CardHeader>
