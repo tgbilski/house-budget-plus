@@ -134,24 +134,24 @@ export function GiftItem({ item, listId, onSave, onDelete, isNew = false }: Gift
 
   if (isEditing) {
     return (
-      <div className="border rounded-lg p-4 space-y-3 bg-card">
+      <div className="border border-gray-600 rounded-lg p-4 space-y-3 bg-gray-800/50">
         <div className="flex justify-between items-start">
           <div className="flex-1 space-y-3">
             <div>
-              <Label htmlFor={`gift-idea-${itemData.id || 'new'}`}>Gift Idea</Label>
+              <Label htmlFor={`gift-idea-${itemData.id || 'new'}`} className="text-gray-300">Gift Idea</Label>
               <Textarea
                 id={`gift-idea-${itemData.id || 'new'}`}
                 value={itemData.gift_idea}
                 onChange={(e) => handleInputChange('gift_idea', e.target.value)}
                 placeholder="Enter a gift idea..."
                 rows={2}
-                className="text-gray-900 dark:text-white"
+                className="text-white bg-gray-700 border-gray-600"
               />
             </div>
 
             <div className="space-y-3">
               <div>
-                <Label htmlFor={`price-${itemData.id || 'new'}`}>Price</Label>
+                <Label htmlFor={`price-${itemData.id || 'new'}`} className="text-gray-300">Price</Label>
                 <Input
                   id={`price-${itemData.id || 'new'}`}
                   type="number"
@@ -159,19 +159,19 @@ export function GiftItem({ item, listId, onSave, onDelete, isNew = false }: Gift
                   value={itemData.price}
                   onChange={(e) => handleInputChange('price', e.target.value)}
                   placeholder="0.00"
-                  className="w-full text-gray-900 dark:text-white"
+                  className="w-full text-white bg-gray-700 border-gray-600"
                 />
               </div>
 
               <div>
-                <Label htmlFor={`url-${itemData.id || 'new'}`}>URL (optional)</Label>
+                <Label htmlFor={`url-${itemData.id || 'new'}`} className="text-gray-300">URL (optional)</Label>
                 <div className="flex gap-2">
                   <Input
                     id={`url-${itemData.id || 'new'}`}
                     value={itemData.url}
                     onChange={(e) => handleInputChange('url', e.target.value)}
                     placeholder="https://example.com"
-                    className="flex-1 min-w-0 text-gray-900 dark:text-white"
+                    className="flex-1 min-w-0 text-white bg-gray-700 border-gray-600"
                   />
                   {itemData.url && (
                     <Button
@@ -221,15 +221,15 @@ export function GiftItem({ item, listId, onSave, onDelete, isNew = false }: Gift
   // Summary view
   return (
     <div 
-      className={`border rounded-lg p-3 bg-card flex items-center justify-between group transition-colors ${
-        itemData.url ? 'cursor-pointer hover:bg-muted/50' : ''
+      className={`border border-gray-600 rounded-lg p-3 bg-gray-800/50 flex items-center justify-between group transition-colors ${
+        itemData.url ? 'cursor-pointer hover:bg-gray-700/50' : ''
       }`}
       onClick={handleCardClick}
     >
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-3">
           <div className="flex-1 min-w-0">
-            <h4 className="font-medium text-sm truncate">
+            <h4 className="font-medium text-sm truncate text-white">
               {itemData.gift_idea || 'Untitled Gift'}
             </h4>
             <div className="flex items-center gap-2 mt-1">
@@ -239,7 +239,7 @@ export function GiftItem({ item, listId, onSave, onDelete, isNew = false }: Gift
                 </span>
               )}
               {itemData.url && (
-                <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                <div className="flex items-center gap-1 text-xs text-gray-300">
                   <ExternalLink className="h-3 w-3" />
                   <span className="truncate max-w-[100px]">
                     {itemData.url.replace(/^https?:\/\//, '')}
