@@ -612,7 +612,7 @@ const SavingsGoals = () => {
                             const value = parseFloat(e.target.value) || 0;
                             updateSavingsAmount(index, value);
                           }}
-                          placeholder="0"
+                          placeholder="0.00"
                           className="w-32 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                           min="0"
                           step="0.01"
