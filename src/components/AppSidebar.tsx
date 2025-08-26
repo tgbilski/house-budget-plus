@@ -44,14 +44,15 @@ export function AppSidebar() {
 
   const isCollapsed = state === "collapsed";
 
-  // The header height is sticky (min-h-[48px] md:min-h-[56px]), so use 56px for md+ and 48px for mobile.
-  // We'll use Tailwind's "mt-[56px]" for main, and custom inline style for sidebar offset.
-  // Also, make sure on mobile the sidebar overlays content.
+  // Offsets for header (56px desktop, 48px mobile)
+  const topOffset = window.innerWidth >= 768 ? 56 : 48;
+  const heightCalc = `calc(100vh - ${topOffset}px)`;
+
   return (
     <Sidebar
       variant="inset"
       className={cn(
-        "!fixed left-0 z-40 top-[48px] md:top-[56px]",
+        "fixed left-0 z-40",
         isMobile
           ? openMobile
             ? "translate-x-0"
@@ -59,8 +60,8 @@ export function AppSidebar() {
           : "translate-x-0"
       )}
       style={{
-        height: "calc(100vh - 48px)",
-        ...(window.innerWidth >= 768 && { height: "calc(100vh - 56px)" }),
+        top: topOffset,
+        height: heightCalc,
         transition: "width 0.3s",
       }}
       data-state={state}
