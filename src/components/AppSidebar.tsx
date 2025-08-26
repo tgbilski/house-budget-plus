@@ -43,95 +43,60 @@ export function AppSidebar() {
   const isActive = (path: string) => currentPath === path;
 
   return (
-    <div className="relative">
-      <Sidebar
-        className={cn(
-          "fixed left-0 top-16 h-[calc(100vh-4rem)] bg-sidebar border-r border-border transition-all duration-300 ease-in-out z-40",
-          "w-16"
-        )}
-        collapsible="icon"
-      >
-        <SidebarContent className="p-2">
-          {/* Toggle Button */}
-          <div className="flex justify-center mb-4">
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => setIsExpanded(!isExpanded)}
-              className="h-8 w-8 p-0"
-            >
+    <Sidebar
+      className={cn(
+        "fixed left-0 top-16 h-[calc(100vh-4rem)] bg-sidebar border-r border-border transition-all duration-300 ease-in-out z-40",
+        isExpanded ? "w-64" : "w-16"
+      )}
+      collapsible="icon"
+    >
+      <SidebarContent className="p-2">
+        {/* Toggle Button */}
+        <div className={cn("flex mb-4", isExpanded ? "justify-end" : "justify-center")}>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => setIsExpanded(!isExpanded)}
+            className="h-8 w-8 p-0"
+          >
+            {isExpanded ? (
+              <ChevronLeft className="h-4 w-4" />
+            ) : (
               <ChevronRight className="h-4 w-4" />
-            </Button>
-          </div>
+            )}
+          </Button>
+        </div>
 
-          <SidebarGroup>
-            <SidebarGroupContent>
-              <SidebarMenu className="space-y-2">
-                {navigationItems.map((item) => (
-                  <SidebarMenuItem key={item.title}>
-                    <SidebarMenuButton
-                      asChild
-                      className={cn(
-                        "w-full justify-center h-12 rounded-lg transition-colors",
-                        isActive(item.url)
-                          ? "bg-sidebar-accent text-sidebar-accent-foreground"
-                          : "hover:bg-sidebar-accent/50"
-                      )}
-                    >
-                      <NavLink to={item.url} className="flex items-center justify-center">
-                        <item.icon className="h-5 w-5" />
-                      </NavLink>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                ))}
-              </SidebarMenu>
-            </SidebarGroupContent>
-          </SidebarGroup>
-        </SidebarContent>
-      </Sidebar>
-
-      {/* Expanded Menu Overlay */}
-      {isExpanded && (
-        <>
-          <div 
-            className="fixed inset-0 bg-black/20 z-30"
-            onClick={() => setIsExpanded(false)}
-          />
-          <div className="fixed left-16 top-16 h-[calc(100vh-4rem)] w-48 bg-sidebar border-r border-border z-50 shadow-lg">
-            <div className="p-2">
-              <div className="flex justify-end mb-4">
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => setIsExpanded(false)}
-                  className="h-8 w-8 p-0"
-                >
-                  <ChevronLeft className="h-4 w-4" />
-                </Button>
-              </div>
-              
-              <div className="space-y-2">
-                {navigationItems.map((item) => (
-                  <NavLink
-                    key={item.title}
-                    to={item.url}
-                    onClick={() => setIsExpanded(false)}
+        <SidebarGroup>
+          <SidebarGroupContent>
+            <SidebarMenu className="space-y-2">
+              {navigationItems.map((item) => (
+                <SidebarMenuItem key={item.title}>
+                  <SidebarMenuButton
+                    asChild
                     className={cn(
-                      "flex items-center w-full h-12 px-3 rounded-lg transition-colors text-sm font-medium",
+                      "w-full h-12 rounded-lg transition-colors",
+                      isExpanded ? "justify-start" : "justify-center",
                       isActive(item.url)
                         ? "bg-sidebar-accent text-sidebar-accent-foreground"
-                        : "hover:bg-sidebar-accent/50 text-sidebar-foreground"
+                        : "hover:bg-sidebar-accent/50"
                     )}
                   >
-                    <item.icon className="h-5 w-5 mr-3 flex-shrink-0" />
-                    <span className="truncate">{item.title}</span>
-                  </NavLink>
-                ))}
-              </div>
-            </div>
-          </div>
-        </>
-      )}
-    </div>
+                    <NavLink to={item.url} className="flex items-center">
+                      <item.icon className="h-5 w-5 flex-shrink-0" />
+                      {isExpanded && (
+                        <span className="ml-3 text-sm font-medium truncate">
+                          {item.title}
+                        </span>
+                      )}
+                    </NavLink>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              ))}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+      </SidebarContent>
+    </Sidebar>
   );
 }

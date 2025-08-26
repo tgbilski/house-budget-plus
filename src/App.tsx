@@ -67,7 +67,7 @@ const App = () => {
                     <Header />
                     <div className="flex">
                       <AppSidebar />
-                      <main className="flex-1">
+                      <main className="flex-1 ml-16">
                         <Routes>
                           <Route path="/" element={<Home />} />
                           <Route path="/budget" element={<MonthlyBudget />} />
