@@ -64,7 +64,7 @@ const toolsData = [
 
 const HeroSection = () => (
   <section
-    className="relative py-8 md:py-16 lg:py-24 px-4 bg-gradient-to-br from-primary/5 via-secondary/10 to-accent/5 overflow-hidden"
+    className="relative py-6 md:py-12 lg:py-16 px-4 bg-gradient-to-br from-primary/5 via-secondary/10 to-accent/5 overflow-hidden"
     style={{
       backgroundImage: `url('https://res.cloudinary.com/dqh8kcdas/image/upload/v1754758366/Gemini_Generated_Image_40ga540ga540ga54_smkr18.png')`,
       backgroundSize: 'cover',
@@ -72,7 +72,7 @@ const HeroSection = () => (
       backgroundRepeat: 'no-repeat'
     }}
   >
-    <div className="w-full max-w-full lg:max-w-6xl mx-auto px-2 sm:px-4">
+    <div className="container mx-auto px-4">
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
         <div className="text-left animate-fade-in w-full">
           <div className="flex items-center mb-6">
@@ -135,10 +135,10 @@ const FeaturedToolsSection = () => {
   const featuredTools = toolsData.filter(tool => tool.featured);
   
   return (
-    <section className="py-16 px-4 bg-slate-900 text-white relative overflow-hidden" style={{
+    <section className="py-12 px-4 bg-slate-900 text-white relative overflow-hidden" style={{
       backgroundImage: `repeating-linear-gradient(45deg, transparent, transparent 40px, rgba(255,255,255,0.04) 40px, rgba(255,255,255,0.04) 42px)`
     }}>
-    <div className="w-full max-w-full lg:max-w-6xl mx-auto px-2 sm:px-4">
+    <div className="container mx-auto px-4">
       <div className="text-center mb-8 md:mb-12">
         <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold mb-4 text-white px-2">
           Start Saving Money Today
@@ -185,10 +185,10 @@ const FeaturedToolsSection = () => {
 };
 
 const AllToolsGrid = () => (
-  <section className="py-16 px-4 bg-slate-900 text-white relative overflow-hidden" style={{
+  <section className="py-12 px-4 bg-slate-900 text-white relative overflow-hidden" style={{
     backgroundImage: `repeating-linear-gradient(45deg, transparent, transparent 40px, rgba(255,255,255,0.04) 40px, rgba(255,255,255,0.04) 42px)`
   }}>
-    <div className="w-full max-w-full lg:max-w-6xl mx-auto px-2 sm:px-4">
+    <div className="container mx-auto px-4">
       <div className="text-center mb-8 md:mb-12">
         <h2 className="text-xl sm:text-2xl md:text-3xl font-bold mb-4 text-white px-2">
           Complete Financial Toolkit
@@ -227,8 +227,8 @@ const AllToolsGrid = () => (
 );
 
 const SocialProofSection = () => (
-  <section className="py-16 px-4 bg-gradient-to-r from-white via-primary/5 to-white relative overflow-hidden">
-    <div className="w-full max-w-full lg:max-w-4xl mx-auto text-center px-2 sm:px-4">
+  <section className="py-12 px-4 bg-gradient-to-r from-white via-primary/5 to-white relative overflow-hidden">
+    <div className="container mx-auto text-center px-4">
       <h2 className="text-xl sm:text-2xl md:text-3xl font-bold mb-6 md:mb-8 px-2">
         Join a Community of Smart Savers
       </h2>
@@ -266,10 +266,10 @@ const SocialProofSection = () => (
 );
 
 const CTASection = () => (
-  <section className="py-20 px-4 bg-slate-900 text-white relative overflow-hidden" style={{
+  <section className="py-12 px-4 bg-slate-900 text-white relative overflow-hidden" style={{
     backgroundImage: `repeating-linear-gradient(45deg, transparent, transparent 40px, rgba(255,255,255,0.04) 40px, rgba(255,255,255,0.04) 42px)`
   }}>
-    <div className="w-full max-w-full lg:max-w-4xl mx-auto text-center relative z-10 px-2 sm:px-4">
+    <div className="container mx-auto text-center relative z-10 px-4">
       <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold mb-4 md:mb-6 animate-fade-in px-2">
         Ready to Save Money Every Month?
       </h2>
@@ -320,7 +320,7 @@ const Home = () => {
         
         {/* AdSense Ad Unit */}
         <div className="py-6 md:py-8 bg-background overflow-hidden">
-          <div className="w-full max-w-full lg:max-w-6xl mx-auto px-2 sm:px-4">
+          <div className="container mx-auto px-4">
             <AdSense 
               adSlot="5669663372" 
               adFormat="fluid"
@@ -334,7 +334,7 @@ const Home = () => {
         <CTASection />
         
         {/* Badge Display Section - Bottom */}
-        <div className="w-full max-w-full lg:max-w-6xl mx-auto px-2 sm:px-4 py-6 md:py-8">
+        <div className="container mx-auto px-4 py-6 md:py-8">
           <BadgeDisplay />
         </div>
       </div>

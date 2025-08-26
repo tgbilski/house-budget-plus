@@ -128,7 +128,7 @@ const VacationCard: React.FC<VacationCardProps> = ({ option, onUpdate, onRemove,
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 gap-4">
             <div>
               <Label htmlFor={`destination-${option.id}`}>Destination</Label>
               <Input
@@ -152,7 +152,7 @@ const VacationCard: React.FC<VacationCardProps> = ({ option, onUpdate, onRemove,
           {/* Cost Fields */}
           <div className="space-y-4">
             <h4 className="font-medium text-sm">Cost Breakdown</h4>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 gap-4">
               <div>
                 <Label htmlFor={`travel-cost-${option.id}`}>Travel Mode Cost ({currency.symbol})</Label>
                 <div className="relative">
@@ -207,16 +207,14 @@ const VacationCard: React.FC<VacationCardProps> = ({ option, onUpdate, onRemove,
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <Label htmlFor={`contact-${option.id}`}>Contact Info</Label>
-              <Input
-                id={`contact-${option.id}`}
-                value={localOption.contact}
-                onChange={(e) => updateField('contact', e.target.value)}
-                placeholder="Travel agent, website, etc."
-              />
-            </div>
+          <div>
+            <Label htmlFor={`contact-${option.id}`}>Contact Info</Label>
+            <Input
+              id={`contact-${option.id}`}
+              value={localOption.contact}
+              onChange={(e) => updateField('contact', e.target.value)}
+              placeholder="Travel agent, website, etc."
+            />
           </div>
 
           <div>
@@ -680,15 +678,15 @@ const Vacation: React.FC = () => {
       <SEO {...seoData.vacation} />
       
       {/* Hero Section with Dark Gradient */}
-      <div className="relative bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 text-white py-16">
+      <div className="relative bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 text-white py-8">
         <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHZpZXdCb3g9IjAgMCAyMCAyMCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3QgeD0iMCIgeT0iMCIgd2lkdGg9IjEiIGhlaWdodD0iMjAiIGZpbGw9InJnYmEoMjU1LDI1NSwyNTUsMC4xKSIvPgo8L3N2Zz4K')] opacity-20"></div>
         <div className="container mx-auto px-4 relative z-10">
           <div className="text-center">
-            <svg className="h-16 w-16 mx-auto mb-6 text-primary" fill="currentColor" viewBox="0 0 24 24">
+            <svg className="h-12 w-12 mx-auto mb-4 text-primary" fill="currentColor" viewBox="0 0 24 24">
               <path d="M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z"/>
             </svg>
-            <h1 className="text-4xl font-bold mb-4">Vacation Planning</h1>
-            <p className="text-xl text-white/90 mb-6">Compare destinations, costs, and travel options for your perfect getaway</p>
+            <h1 className="text-2xl md:text-3xl font-bold mb-3">Vacation Planning</h1>
+            <p className="text-base md:text-lg text-white/90 mb-4">Compare destinations, costs, and travel options for your perfect getaway</p>
           </div>
         </div>
       </div>
@@ -839,10 +837,10 @@ const Vacation: React.FC = () => {
           )}
         </div>
 
-        <section className="py-16 px-4 bg-slate-900 text-white relative mt-16" style={{
+        <section className="py-12 px-4 bg-slate-900 text-white relative mt-12" style={{
           backgroundImage: `repeating-linear-gradient(45deg, transparent, transparent 40px, rgba(255,255,255,0.04) 40px, rgba(255,255,255,0.04) 42px)`
         }}>
-          <div className="max-w-4xl mx-auto text-center relative z-10">
+          <div className="container mx-auto text-center relative z-10">
             <h2 className="text-2xl md:text-3xl font-bold mb-6 text-white">
               Plan Your Perfect Vacation
             </h2>

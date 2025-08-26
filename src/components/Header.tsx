@@ -14,10 +14,9 @@ const Header: React.FC = () => {
 
   return (
     <header className="w-full bg-muted border-b border-border sticky top-0 z-50">
-      <div className="w-full px-4 md:px-6 py-3 md:py-4 flex items-center justify-between min-h-[56px] md:min-h-[64px]">
+      <div className="w-full px-4 md:px-6 py-2 md:py-3 flex items-center justify-between min-h-[48px] md:min-h-[56px]">
         {/* Brand with Logo and Mobile Menu */}
         <div className="flex items-center space-x-2">
-          {isMobile && <SidebarTrigger />}
           <Link to="/" className="flex items-center space-x-2 md:space-x-3 hover:opacity-80 transition-opacity">
             <img 
               src={logoIcon} 
@@ -30,6 +29,7 @@ const Header: React.FC = () => {
               </h1>
             )}
           </Link>
+          {isMobile && <SidebarTrigger />}
         </div>
 
         {/* Auth Button */}
