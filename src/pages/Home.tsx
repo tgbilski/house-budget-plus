@@ -63,8 +63,8 @@ const toolsData = [
 ];
 
 const HeroSection = () => (
-  <section className="py-8 md:py-16 px-4 bg-gradient-to-br from-primary/5 via-secondary/10 to-accent/5 overflow-hidden">
-    <div className="container mx-auto max-w-4xl">
+  <section className="py-8 md:py-16 px-4 bg-gradient-to-br from-primary/5 via-secondary/10 to-accent/5 overflow-x-hidden">
+    <div className="w-full max-w-sm sm:max-w-md md:max-w-4xl mx-auto">
       <div className="text-center">
         <div className="flex flex-col items-center mb-6">
           <img
@@ -81,29 +81,28 @@ const HeroSection = () => (
           </div>
         </div>
         
-        <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-4 md:mb-6 text-gray-900 leading-tight px-2">
+        <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-4 md:mb-6 text-gray-900 leading-tight">
           Own Your <span className="text-primary">House Budget</span>
         </h1>
         
-        <p className="text-base md:text-lg text-muted-foreground mb-6 md:mb-8 max-w-2xl mx-auto leading-relaxed px-2">
+        <p className="text-base md:text-lg text-muted-foreground mb-6 md:mb-8 leading-relaxed">
           Smart financial planning tools with AI insights. Track expenses, compare vendors, and make informed decisions that save you money.
         </p>
         
-        <div className="flex flex-col gap-3 md:gap-4 mb-6 md:mb-8 max-w-sm mx-auto px-4">
-          <Button asChild size="lg" className="w-full text-base md:text-lg px-6 md:px-8 py-3 md:py-4 shadow-lg hover:shadow-xl transition-shadow">
+        <div className="flex flex-col gap-3 md:gap-4 mb-6 md:mb-8 w-full max-w-xs mx-auto">
+          <Button asChild size="lg" className="w-full text-sm md:text-base px-4 md:px-6 py-3 md:py-4 shadow-lg hover:shadow-xl transition-shadow">
             <Link to="/budget">
-              <span className="block md:inline">Free Budget Calculator</span>
-              <ArrowRight className="ml-2 h-4 w-4 md:h-5 md:w-5" />
+              Budget Calculator <ArrowRight className="ml-2 h-4 w-4" />
             </Link>
           </Button>
-          <Button asChild variant="outline" size="lg" className="w-full text-base md:text-lg px-6 md:px-8 py-3 md:py-4 border-2">
+          <Button asChild variant="outline" size="lg" className="w-full text-sm md:text-base px-4 md:px-6 py-3 md:py-4 border-2">
             <Link to="/ai-insights">
-              Try AI Insights
+              AI Insights
             </Link>
           </Button>
         </div>
         
-        <div className="flex flex-col gap-3 md:gap-4 text-sm text-muted-foreground max-w-xs mx-auto px-2">
+        <div className="flex flex-col gap-3 text-sm text-muted-foreground">
           <div className="flex items-center justify-center gap-2">
             <TrendingUp className="h-4 w-4 text-green-600 flex-shrink-0" />
             <span>100% Free Tools</span>
@@ -122,12 +121,10 @@ const FeaturedToolsSection = () => {
   const featuredTools = toolsData.filter(tool => tool.featured);
   
   return (
-    <section className="py-8 md:py-12 px-4 bg-slate-900 text-white relative overflow-hidden" style={{
-      backgroundImage: `repeating-linear-gradient(45deg, transparent, transparent 40px, rgba(255,255,255,0.04) 40px, rgba(255,255,255,0.04) 42px)`
-    }}>
-      <div className="container mx-auto max-w-6xl">
+    <section className="py-8 md:py-12 px-4 bg-slate-900 text-white relative overflow-x-hidden">
+      <div className="w-full max-w-sm sm:max-w-md md:max-w-6xl mx-auto">
         <div className="text-center mb-6 md:mb-8">
-          <h2 className="text-xl md:text-2xl lg:text-3xl font-bold mb-3 text-white px-2">
+          <h2 className="text-xl md:text-2xl lg:text-3xl font-bold mb-3 text-white">
             Start Saving Money Today
           </h2>
         </div>
@@ -294,7 +291,7 @@ const Home = () => {
         structuredData={seoData.home.structuredData}
         canonical="https://www.housebudgetcalculator.com/"
       />
-      <div className="min-h-screen">
+      <div className="min-h-screen overflow-x-hidden">
         <HeroSection />
         <FeaturedToolsSection />
         <RSSFeed 
@@ -305,7 +302,7 @@ const Home = () => {
         
         {/* AdSense Ad Unit */}
         <div className="py-6 md:py-8 bg-background overflow-hidden">
-          <div className="container mx-auto px-4">
+          <div className="container mx-auto px-4 max-w-4xl">
             <AdSense 
               adSlot="5669663372" 
               adFormat="fluid"
@@ -319,7 +316,7 @@ const Home = () => {
         <CTASection />
         
         {/* Badge Display Section - Bottom */}
-        <div className="container mx-auto px-4 py-6 md:py-8">
+        <div className="container mx-auto px-4 py-6 md:py-8 max-w-4xl">
           <BadgeDisplay />
         </div>
       </div>
