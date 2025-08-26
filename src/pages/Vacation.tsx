@@ -396,6 +396,41 @@ const Vacation: React.FC = () => {
     }
   };
 
+  const deleteProject = async (projectToDelete: string) => {
+    if (projects.length <= 1) return; // Don't delete the last project
+    
+    try {
+      // Remove from projects array
+      const updatedProjects = projects.filter(p => p !== projectToDelete);
+      setProjects(updatedProjects);
+      
+      // If we're deleting the currently selected project, switch to another one
+      if (selectedProject === projectToDelete) {
+        setSelectedProject(updatedProjects[0]);
+      }
+      
+      // Remove from database if user is logged in
+      if (user) {
+        const { error } = await supabase
+          .from('budget_data')
+          .delete()
+          .eq('user_id', user.id)
+          .eq('page_type', 'vacation')
+          .eq('calculator_id', projectToDelete);
+          
+        if (error) throw error;
+      }
+      
+      // Clear options if we deleted the currently selected project
+      if (selectedProject === projectToDelete) {
+        setOptions([]);
+      }
+      
+    } catch (error) {
+      console.error('Error deleting project:', error);
+    }
+  };
+
   const getLowestCost = () => {
     if (options.length === 0) return 0;
     return Math.min(...options.map(option => option.estimatedCost || Infinity));
@@ -456,20 +491,34 @@ const Vacation: React.FC = () => {
                           variant={selectedProject === project ? "default" : "outline"}
                           size="sm"
                           onClick={() => setSelectedProject(project)}
-                          className="pr-8"
+                          className="pr-16"
                         >
                           {project}
                         </Button>
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            startEditingProject(project);
-                          }}
-                          className="absolute right-1 top-1/2 -translate-y-1/2 h-6 w-6 p-0 opacity-0 group-hover:opacity-100 transition-opacity hover:bg-white/20 rounded flex items-center justify-center"
-                          title="Edit project name"
-                        >
-                          <Edit2 className="h-3 w-3" />
-                        </button>
+                        <div className="absolute right-1 top-1/2 -translate-y-1/2 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              startEditingProject(project);
+                            }}
+                            className="h-6 w-6 p-0 hover:bg-white/20 rounded flex items-center justify-center"
+                            title="Edit project name"
+                          >
+                            <Edit2 className="h-3 w-3" />
+                          </button>
+                          {projects.length > 1 && (
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                deleteProject(project);
+                              }}
+                              className="h-6 w-6 p-0 hover:bg-red-500/20 rounded flex items-center justify-center text-red-500"
+                              title="Delete project"
+                            >
+                              <Trash2 className="h-3 w-3" />
+                            </button>
+                          )}
+                        </div>
                       </div>
                     </div>
                   )}
