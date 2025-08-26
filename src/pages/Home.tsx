@@ -136,9 +136,9 @@ const FeaturedToolsSection = () => {
                 <div className="absolute top-3 right-3 bg-primary text-primary-foreground text-xs px-2 py-1 rounded-full">
                   POPULAR
                 </div>
-                <CardHeader className="pb-3 p-4 md:p-6">
-                  <div className={`w-12 h-12 md:w-16 md:h-16 rounded-xl ${tool.color} flex items-center justify-center mb-3 md:mb-4 group-hover:scale-110 transition-transform duration-300`}>
-                    <tool.icon className="h-6 w-6 md:h-8 md:w-8" />
+                <CardHeader className="pb-3 p-3 md:p-4">
+                  <div className={`w-10 h-10 md:w-12 md:h-12 rounded-xl ${tool.color} flex items-center justify-center mb-2 md:mb-3 group-hover:scale-110 transition-transform duration-300`}>
+                    <tool.icon className="h-5 w-5 md:h-6 md:w-6" />
                   </div>
                   <CardTitle className="text-lg md:text-xl group-hover:text-primary transition-colors mb-2">
                     {tool.title}
