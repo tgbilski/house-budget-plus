@@ -6,9 +6,8 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Plus } from 'lucide-react';
+import { Plus, Target, Edit2, Check, X, AlertTriangle, Trash2 } from 'lucide-react';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Target, Edit2, Check, X, AlertTriangle, Trash2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { SEO } from '@/components/SEO';
 import { Alert, AlertDescription } from '@/components/ui/alert';
@@ -34,9 +33,8 @@ const SavingsGoals = () => {
   const { user } = useAuth();
   const [savingsGoals, setSavingsGoals] = useState<SavingsGoal[]>([]);
   const [currentGoalId, setCurrentGoalId] = useState<string | null>(null);
-  const [goalTitle, setGoalTitle] = useState('My Savings Goal');
-  const [isEditingTitle, setIsEditingTitle] = useState(false);
-  const [editTitle, setEditTitle] = useState(goalTitle);
+  const [editingGoalId, setEditingGoalId] = useState<string | null>(null);
+  const [editingTitle, setEditingTitle] = useState('');
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear().toString());
   const [savingsData, setSavingsData] = useState<Record<string, number>>({});
   const [loading, setLoading] = useState(true);
@@ -60,8 +58,6 @@ const SavingsGoals = () => {
       };
       setSavingsGoals([defaultGoal]);
       setCurrentGoalId(defaultGoal.id);
-      setGoalTitle(defaultGoal.title);
-      setEditTitle(defaultGoal.title);
       setLoading(false);
     }
   }, [user]);
@@ -85,8 +81,6 @@ const SavingsGoals = () => {
       if (goals && goals.length > 0) {
         setSavingsGoals(goals);
         setCurrentGoalId(goals[0].id);
-        setGoalTitle(goals[0].title);
-        setEditTitle(goals[0].title);
       } else {
         // Create a default goal for the user
         const { data: newGoal, error: createError } = await supabase
@@ -104,8 +98,6 @@ const SavingsGoals = () => {
 
         setSavingsGoals([newGoal]);
         setCurrentGoalId(newGoal.id);
-        setGoalTitle(newGoal.title);
-        setEditTitle(newGoal.title);
       }
     } catch (error) {
       console.error('Error loading savings goals:', error);
@@ -126,8 +118,6 @@ const SavingsGoals = () => {
       };
       setSavingsGoals([...savingsGoals, tempGoal]);
       setCurrentGoalId(tempGoal.id);
-      setGoalTitle(tempGoal.title);
-      setEditTitle(tempGoal.title);
       toast.success('New savings goal created! Sign in to save your progress.');
       return;
     }
@@ -148,8 +138,6 @@ const SavingsGoals = () => {
 
       setSavingsGoals([...savingsGoals, newGoal]);
       setCurrentGoalId(newGoal.id);
-      setGoalTitle(newGoal.title);
-      setEditTitle(newGoal.title);
       toast.success('New savings goal created!');
     } catch (error) {
       console.error('Error creating goal:', error);
@@ -171,8 +159,6 @@ const SavingsGoals = () => {
       // Select first remaining goal
       if (updatedGoals.length > 0) {
         setCurrentGoalId(updatedGoals[0].id);
-        setGoalTitle(updatedGoals[0].title);
-        setEditTitle(updatedGoals[0].title);
       }
       
       // Clear savings data for this goal
@@ -200,8 +186,6 @@ const SavingsGoals = () => {
       // Select first remaining goal
       if (updatedGoals.length > 0) {
         setCurrentGoalId(updatedGoals[0].id);
-        setGoalTitle(updatedGoals[0].title);
-        setEditTitle(updatedGoals[0].title);
       }
 
       // Clear savings data for this goal
@@ -220,8 +204,6 @@ const SavingsGoals = () => {
     const goal = savingsGoals.find(g => g.id === goalId);
     if (goal) {
       setCurrentGoalId(goal.id);
-      setGoalTitle(goal.title);
-      setEditTitle(goal.title);
     }
   };
 
@@ -326,37 +308,46 @@ const SavingsGoals = () => {
     }
   };
 
-  const updateGoalTitle = async () => {
-    if (!editTitle.trim()) return;
+  const updateGoalTitle = async (goalId: string, newTitle: string) => {
+    if (!newTitle.trim()) return;
 
     if (!user) {
       // For non-authenticated users, just update local state
       const updatedGoals = savingsGoals.map(goal => 
-        goal.id === currentGoalId ? { ...goal, title: editTitle.trim() } : goal
+        goal.id === goalId ? { ...goal, title: newTitle.trim() } : goal
       );
       setSavingsGoals(updatedGoals);
-      setGoalTitle(editTitle.trim());
-      setIsEditingTitle(false);
+      setEditingGoalId(null);
       toast.success('Goal title updated! Sign in to save your progress.');
       return;
     }
 
-    if (!currentGoalId) return;
-
     try {
       const { error } = await supabase
         .from('savings_goals')
-        .update({ title: editTitle.trim() })
-        .eq('id', currentGoalId);
+        .update({ title: newTitle.trim() })
+        .eq('id', goalId);
 
       if (error) throw error;
 
-      setGoalTitle(editTitle.trim());
-      setIsEditingTitle(false);
+      // Update local state
+      const updatedGoals = savingsGoals.map(goal => 
+        goal.id === goalId ? { ...goal, title: newTitle.trim() } : goal
+      );
+      setSavingsGoals(updatedGoals);
+      setEditingGoalId(null);
       toast.success('Goal title updated!');
     } catch (error) {
       console.error('Error updating title:', error);
       toast.error('Failed to update goal title');
+    }
+  };
+
+  const startEditingGoal = (goalId: string) => {
+    const goal = savingsGoals.find(g => g.id === goalId);
+    if (goal) {
+      setEditingGoalId(goalId);
+      setEditingTitle(goal.title);
     }
   };
 
@@ -411,82 +402,74 @@ const SavingsGoals = () => {
             </AlertDescription>
           </Alert>
         )}
-        {/* Savings Goals Management */}
+        
+        {/* Savings Goals Tabs */}
         <div className="mb-6">
-          <div className="flex items-center gap-4 mb-4">
-            <h2 className="text-xl font-semibold">Savings Goals</h2>
-            <Button onClick={createNewGoal} size="sm" className="flex items-center gap-2">
-              <Plus className="h-4 w-4" />
-              Add Goal
-            </Button>
-          </div>
-          
-          <div className="flex flex-wrap gap-2 mb-4">
+          <div className="flex items-center gap-2 mb-4 flex-wrap">
             {savingsGoals.map((goal) => (
               <div key={goal.id} className="flex items-center gap-1">
-                <Button
-                  variant={currentGoalId === goal.id ? "default" : "outline"}
-                  size="sm"
-                  onClick={() => selectGoal(goal.id)}
-                >
-                  {goal.title}
-                </Button>
-                {savingsGoals.length > 1 && (
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => deleteGoal(goal.id)}
-                    className="text-destructive hover:text-destructive p-1 h-8 w-8"
-                  >
-                    <Trash2 className="h-3 w-3" />
-                  </Button>
+                {editingGoalId === goal.id ? (
+                  <div className="flex items-center gap-1">
+                    <Input
+                      value={editingTitle}
+                      onChange={(e) => setEditingTitle(e.target.value)}
+                      className="h-8 w-32 text-sm"
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') updateGoalTitle(goal.id, editingTitle);
+                        if (e.key === 'Escape') setEditingGoalId(null);
+                      }}
+                      onBlur={() => updateGoalTitle(goal.id, editingTitle)}
+                      autoFocus
+                    />
+                    <Button size="sm" variant="ghost" onClick={() => updateGoalTitle(goal.id, editingTitle)} className="h-8 w-8 p-0">
+                      <Check className="h-3 w-3" />
+                    </Button>
+                    <Button size="sm" variant="ghost" onClick={() => setEditingGoalId(null)} className="h-8 w-8 p-0">
+                      <X className="h-3 w-3" />
+                    </Button>
+                  </div>
+                ) : (
+                  <div className="flex items-center gap-1">
+                    <Button
+                      variant={currentGoalId === goal.id ? "default" : "outline"}
+                      size="sm"
+                      onClick={() => selectGoal(goal.id)}
+                      className="relative group"
+                    >
+                      {goal.title}
+                      <Edit2 
+                        className="h-3 w-3 ml-1 opacity-0 group-hover:opacity-100 transition-opacity" 
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          startEditingGoal(goal.id);
+                        }}
+                      />
+                    </Button>
+                    {savingsGoals.length > 1 && (
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => deleteGoal(goal.id)}
+                        className="text-destructive hover:text-destructive p-1 h-8 w-8"
+                      >
+                        <Trash2 className="h-3 w-3" />
+                      </Button>
+                    )}
+                  </div>
                 )}
               </div>
             ))}
+            
+            {/* Add Goal Plus Button */}
+            <Button 
+              onClick={createNewGoal} 
+              size="sm" 
+              variant="outline"
+              className="h-8 w-8 p-0 rounded-full border-dashed"
+            >
+              <Plus className="h-3 w-3" />
+            </Button>
           </div>
-
-          {/* Editable Title for Current Goal */}
-          {isEditingTitle ? (
-            <div className="flex items-center gap-2">
-              <Input
-                value={editTitle}
-                onChange={(e) => setEditTitle(e.target.value)}
-                className="text-lg font-medium"
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter') updateGoalTitle();
-                  if (e.key === 'Escape') {
-                    setEditTitle(goalTitle);
-                    setIsEditingTitle(false);
-                  }
-                }}
-                autoFocus
-              />
-              <Button size="sm" onClick={updateGoalTitle}>
-                <Check className="h-4 w-4" />
-              </Button>
-              <Button 
-                size="sm" 
-                variant="outline" 
-                onClick={() => {
-                  setEditTitle(goalTitle);
-                  setIsEditingTitle(false);
-                }}
-              >
-                <X className="h-4 w-4" />
-              </Button>
-            </div>
-          ) : (
-            <div className="flex items-center gap-2">
-              <h3 className="text-lg font-medium">{goalTitle}</h3>
-              <Button
-                size="sm"
-                variant="ghost"
-                onClick={() => setIsEditingTitle(true)}
-              >
-                <Edit2 className="h-4 w-4" />
-              </Button>
-            </div>
-          )}
         </div>
 
         {/* Total Saved */}
