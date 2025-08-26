@@ -201,6 +201,7 @@ const Vacation: React.FC = () => {
   const [editingProjectId, setEditingProjectId] = useState<string | null>(null);
   const [editingTitle, setEditingTitle] = useState('');
   const [deletingProject, setDeletingProject] = useState<string | null>(null);
+  const [savingProject, setSavingProject] = useState(false);
   
   const { user } = useAuth();
   const { currency } = useCurrency();
@@ -539,11 +540,7 @@ const Vacation: React.FC = () => {
                       }
                     }}
                     onBlur={() => {
-                      if (newProjectName.trim()) {
-                        createNewProject();
-                      } else {
-                        setIsCreatingProject(false);
-                      }
+                      // Don't save on blur to avoid conflicts with button clicks
                     }}
                     autoFocus
                   />

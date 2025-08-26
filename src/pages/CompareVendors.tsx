@@ -294,6 +294,7 @@ const CompareVendors: React.FC = () => {
   const [editingTitle, setEditingTitle] = useState('');
   const [newProjectName, setNewProjectName] = useState('');
   const [deletingProject, setDeletingProject] = useState<string | null>(null);
+  const [savingProject, setSavingProject] = useState(false);
   const { user } = useAuth();
   const { currency } = useCurrency();
   const { toast } = useToast();
@@ -378,7 +379,11 @@ const CompareVendors: React.FC = () => {
   };
 
   const saveNewProject = async (projectName: string) => {
-    if (projectName.trim()) {
+    if (!projectName.trim() || savingProject) return;
+    
+    setSavingProject(true);
+    
+    try {
       const newProjects = [...allProjects, projectName.trim()];
       setAllProjects(newProjects);
       
@@ -417,6 +422,8 @@ const CompareVendors: React.FC = () => {
           console.error('Error saving new project:', error);
         }
       }
+    } finally {
+      setSavingProject(false);
     }
   };
 
@@ -668,11 +675,7 @@ const CompareVendors: React.FC = () => {
                       }
                     }}
                     onBlur={() => {
-                      if (newProjectName.trim()) {
-                        saveNewProject(newProjectName);
-                      } else {
-                        setIsNewProject(false);
-                      }
+                      // Don't save on blur to avoid conflicts with button clicks
                     }}
                     autoFocus
                   />
