@@ -302,13 +302,15 @@ const Home = () => {
         
         {/* AdSense Ad Unit */}
         <div className="py-6 md:py-8 bg-background overflow-hidden">
-          <div className="container mx-auto px-4 max-w-4xl">
-            <AdSense 
-              adSlot="5669663372" 
-              adFormat="fluid"
-              style={{ display: 'block' }}
-              responsive={false}
-            />
+          <div className="w-full max-w-sm sm:max-w-md md:max-w-4xl mx-auto px-4">
+            <div className="max-w-full overflow-hidden">
+              <AdSense 
+                adSlot="5669663372" 
+                adFormat="fluid"
+                style={{ display: 'block', width: '100%', maxWidth: '100%' }}
+                responsive={true}
+              />
+            </div>
           </div>
         </div>
         

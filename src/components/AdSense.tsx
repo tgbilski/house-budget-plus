@@ -30,10 +30,10 @@ export const AdSense: React.FC<AdSenseProps> = ({
   }, []);
 
   return (
-    <div className="adsense-container">
+    <div className="adsense-container w-full max-w-full overflow-hidden">
       <ins
-        className="adsbygoogle"
-        style={style}
+        className="adsbygoogle w-full"
+        style={{ ...style, maxWidth: '100%', overflow: 'hidden' }}
         data-ad-client="ca-pub-5656855326953521"
         data-ad-slot={adSlot}
         data-ad-format={responsive ? 'auto' : adFormat}
