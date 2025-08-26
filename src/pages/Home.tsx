@@ -64,7 +64,7 @@ const toolsData = [
 
 const HeroSection = () => (
   <section className="py-8 md:py-16 px-4 bg-gradient-to-br from-primary/5 via-secondary/10 to-accent/5 overflow-x-hidden">
-    <div className="w-full max-w-sm sm:max-w-md md:max-w-4xl mx-auto">
+    <div className="w-full max-w-sm sm:max-w-md md:max-w-2xl mx-auto">
       <div className="text-center">
         <div className="flex flex-col items-center mb-6">
           <img
@@ -122,7 +122,7 @@ const FeaturedToolsSection = () => {
   
   return (
     <section className="py-8 md:py-12 px-4 bg-slate-900 text-white relative overflow-x-hidden">
-      <div className="w-full max-w-xs sm:max-w-md md:max-w-4xl mx-auto">
+      <div className="w-full max-w-sm sm:max-w-md md:max-w-2xl mx-auto">
         <div className="text-center mb-6 md:mb-8">
           <h2 className="text-xl md:text-2xl lg:text-3xl font-bold mb-3 text-white">
             Start Saving Money Today
@@ -169,7 +169,7 @@ const AllToolsGrid = () => (
   <section className="py-8 md:py-12 px-4 bg-slate-900 text-white relative overflow-hidden" style={{
     backgroundImage: `repeating-linear-gradient(45deg, transparent, transparent 40px, rgba(255,255,255,0.04) 40px, rgba(255,255,255,0.04) 42px)`
   }}>
-    <div className="w-full max-w-xs sm:max-w-md md:max-w-4xl mx-auto">
+    <div className="w-full max-w-sm sm:max-w-md md:max-w-2xl mx-auto">
       <div className="text-center mb-6 md:mb-8">
         <h2 className="text-xl md:text-2xl font-bold mb-3 text-white px-2">
           Complete Financial Toolkit
@@ -209,7 +209,7 @@ const AllToolsGrid = () => (
 
 const SocialProofSection = () => (
   <section className="py-8 md:py-12 px-4 bg-gradient-to-r from-white via-primary/5 to-white relative overflow-hidden">
-    <div className="w-full max-w-xs sm:max-w-md md:max-w-4xl mx-auto text-center">
+    <div className="w-full max-w-sm sm:max-w-md md:max-w-2xl mx-auto text-center">
       <h2 className="text-xl md:text-2xl font-bold mb-6 md:mb-8 px-2">
         Join a Community of Smart Savers
       </h2>
@@ -250,7 +250,7 @@ const CTASection = () => (
   <section className="py-8 md:py-12 px-4 bg-slate-900 text-white relative overflow-hidden" style={{
     backgroundImage: `repeating-linear-gradient(45deg, transparent, transparent 40px, rgba(255,255,255,0.04) 40px, rgba(255,255,255,0.04) 42px)`
   }}>
-    <div className="w-full max-w-xs sm:max-w-md md:max-w-4xl mx-auto text-center relative z-10">
+    <div className="w-full max-w-sm sm:max-w-md md:max-w-2xl mx-auto text-center relative z-10">
       <h2 className="text-xl md:text-2xl lg:text-3xl font-bold mb-4 md:mb-6 animate-fade-in px-2">
         Ready to Save Money Every Month?
       </h2>
@@ -302,7 +302,7 @@ const Home = () => {
         
         {/* AdSense Ad Unit */}
         <div className="py-6 md:py-8 bg-background overflow-hidden">
-          <div className="w-full max-w-sm sm:max-w-md md:max-w-4xl mx-auto px-4">
+          <div className="w-full max-w-sm sm:max-w-md md:max-w-2xl mx-auto px-4">
             <div className="max-w-full overflow-hidden">
               <AdSense 
                 adSlot="5669663372" 
@@ -318,7 +318,7 @@ const Home = () => {
         <CTASection />
         
         {/* Badge Display Section - Bottom */}
-        <div className="w-full max-w-xs sm:max-w-md md:max-w-4xl mx-auto px-4 py-6 md:py-8">
+        <div className="w-full max-w-sm sm:max-w-md md:max-w-2xl mx-auto px-4 py-6 md:py-8">
           <BadgeDisplay />
         </div>
       </div>
