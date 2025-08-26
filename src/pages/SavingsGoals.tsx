@@ -9,6 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Progress } from '@/components/ui/progress';
 import { Plus, Target, Edit2, Check, X, AlertTriangle, Trash2 } from 'lucide-react';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { AIChatbot } from '@/components/AIChatbot';
 import { toast } from 'sonner';
 import { SEO } from '@/components/SEO';
 import { Alert, AlertDescription } from '@/components/ui/alert';
@@ -655,6 +656,11 @@ const SavingsGoals = () => {
           </CardContent>
         </Card>
       </div>
+
+      <AIChatbot 
+        pageContext="This is the Savings Goals page where users can set and track their savings goals for different years. Users can create multiple savings goals, set target amounts, and track their monthly savings progress in a table format. The page shows total saved amounts and calculates progress toward goals."
+        pageName="Savings Goals"
+      />
     </div>
   );
 };

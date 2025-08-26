@@ -20,6 +20,7 @@ import { InternalLinks } from '@/components/InternalLinks';
 import { SocialShare } from '@/components/SocialShare';
 import { FAQ } from '@/components/FAQ';
 import { vendorComparisonFAQs } from '@/utils/faqData';
+import { AIChatbot } from '@/components/AIChatbot';
 import { WarningBanner } from '@/components/WarningBanner';
 
 interface VendorQuote {
@@ -656,6 +657,11 @@ const CompareVendors: React.FC = () => {
         <FAQ faqs={vendorComparisonFAQs} />
         <InternalLinks currentPage="/compare-prices" category="comparison" />
       </div>
+
+      <AIChatbot 
+        pageContext="This is the Compare Vendors page where users can compare quotes and vendors for various services. Users can add vendor information, quotes, ratings, and track important details like financing options, timing, trustworthiness, and responsiveness. This helps users make informed decisions when choosing service providers."
+        pageName="Compare Vendors"
+      />
     </div>
   );
 };

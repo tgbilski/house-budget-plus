@@ -10,6 +10,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { useCurrency } from '@/hooks/useCurrency';
 import { useBadges } from '@/hooks/useBadges';
 import { supabase } from '@/integrations/supabase/client';
+import { AIChatbot } from '@/components/AIChatbot';
 
 import { useToast } from '@/hooks/use-toast';
 import { SEO } from '@/components/SEO';
@@ -533,6 +534,11 @@ const Vacation: React.FC = () => {
         <FAQ faqs={vacationPlanningFAQs} />
         <InternalLinks currentPage="/vacation" category="planning" />
       </div>
+
+      <AIChatbot 
+        pageContext="This is the Vacation Planning page where users can plan and budget for their vacations. Users can create different vacation projects, add various expense categories like flights, hotels, activities, and track their vacation budget. The page helps users organize all vacation-related expenses in one place."
+        pageName="Vacation Planning"
+      />
     </div>
   );
 };
