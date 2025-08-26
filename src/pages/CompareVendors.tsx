@@ -300,6 +300,27 @@ const VendorCard: React.FC<VendorCardProps> = ({ quote, onUpdate, onRemove, show
               className="mt-1"
             />
           </div>
+
+          <div className="flex justify-center gap-2 pt-4 border-t mt-4">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setIsEditing(false)}
+            >
+              <Check className="h-4 w-4 mr-1" />
+              Save
+            </Button>
+            {showRemove && (
+              <Button
+                variant="destructive"
+                size="sm"
+                onClick={onRemove}
+              >
+                <Trash2 className="h-4 w-4 mr-1" />
+                Delete
+              </Button>
+            )}
+          </div>
         </CardContent>
       </Card>
     );

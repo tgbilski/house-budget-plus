@@ -63,55 +63,53 @@ const toolsData = [
 ];
 
 const HeroSection = () => (
-  <section className="relative py-12 px-4 bg-gradient-to-br from-primary/5 via-secondary/10 to-accent/5 overflow-hidden">
-    <div className="container mx-auto px-4">
-      <div className="max-w-4xl mx-auto">
-        <div className="text-center animate-fade-in">
-          <div className="flex flex-col items-center mb-6">
-            <img
-              src="/lovable-uploads/ed809955-ef71-4d81-b072-945082f4380a.png"
-              alt="Budget Calculator mascot"
-              className="w-16 h-16 object-contain mb-4 hover:scale-110 transition-transform duration-300"
-            />
-            <div className="flex items-center gap-1">
-              <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-              <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-              <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-              <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-              <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-            </div>
+  <section className="py-16 px-4 bg-gradient-to-br from-primary/5 via-secondary/10 to-accent/5">
+    <div className="w-full max-w-4xl mx-auto px-4">
+      <div className="text-center">
+        <div className="flex flex-col items-center mb-6">
+          <img
+            src="/lovable-uploads/ed809955-ef71-4d81-b072-945082f4380a.png"
+            alt="Budget Calculator mascot"
+            className="w-16 h-16 object-contain mb-4 hover:scale-110 transition-transform duration-300"
+          />
+          <div className="flex items-center gap-1">
+            <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+            <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+            <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+            <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+            <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
           </div>
-          
-          <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4 text-gray-900 leading-tight">
-            Own Your <span className="text-primary">House Budget</span>
-          </h1>
-          
-          <p className="text-lg text-muted-foreground mb-8 max-w-2xl mx-auto leading-relaxed">
-            Smart financial planning tools with AI insights. Track expenses, compare vendors, and make informed decisions that save you money.
-          </p>
-          
-          <div className="flex flex-col gap-3 mb-6">
-            <Button asChild size="lg" className="w-full sm:w-auto text-base px-6 py-3 shadow-lg hover:shadow-xl transition-shadow">
-              <Link to="/budget">
-                Free Budget Calculator <ArrowRight className="ml-2 h-5 w-5" />
-              </Link>
-            </Button>
-            <Button asChild variant="outline" size="lg" className="w-full sm:w-auto text-base px-6 py-3 border-2">
-              <Link to="/ai-insights">
-                Try AI Insights
-              </Link>
-            </Button>
+        </div>
+        
+        <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-6 text-gray-900 leading-tight">
+          Own Your <span className="text-primary">House Budget</span>
+        </h1>
+        
+        <p className="text-lg text-muted-foreground mb-8 max-w-2xl mx-auto leading-relaxed">
+          Smart financial planning tools with AI insights. Track expenses, compare vendors, and make informed decisions that save you money.
+        </p>
+        
+        <div className="flex flex-col gap-4 mb-8 max-w-md mx-auto">
+          <Button asChild size="lg" className="w-full text-lg px-8 py-4 shadow-lg hover:shadow-xl transition-shadow">
+            <Link to="/budget">
+              Free Budget Calculator <ArrowRight className="ml-2 h-5 w-5" />
+            </Link>
+          </Button>
+          <Button asChild variant="outline" size="lg" className="w-full text-lg px-8 py-4 border-2">
+            <Link to="/ai-insights">
+              Try AI Insights
+            </Link>
+          </Button>
+        </div>
+        
+        <div className="flex flex-col gap-4 text-sm text-muted-foreground max-w-xs mx-auto">
+          <div className="flex items-center justify-center gap-2">
+            <TrendingUp className="h-4 w-4 text-green-600" />
+            <span>100% Free Tools</span>
           </div>
-          
-          <div className="flex flex-col gap-4 text-sm text-muted-foreground">
-            <div className="flex items-center gap-2">
-              <TrendingUp className="h-4 w-4 text-green-600" />
-              <span>100% Free Tools</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <Users className="h-4 w-4 text-blue-600" />
-              <span>No Sign-up Required</span>
-            </div>
+          <div className="flex items-center justify-center gap-2">
+            <Users className="h-4 w-4 text-blue-600" />
+            <span>No Sign-up Required</span>
           </div>
         </div>
       </div>
