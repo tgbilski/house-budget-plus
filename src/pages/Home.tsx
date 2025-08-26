@@ -90,7 +90,7 @@ const HeroSection = () => (
             </div>
           </div>
           
-          <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-4 md:mb-6 text-gray-900 leading-tight">
+          <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold mb-3 md:mb-5 text-gray-900 leading-tight">
             Own Your 
             <span className="text-primary block">House Budget</span>
           </h1>
@@ -140,7 +140,7 @@ const FeaturedToolsSection = () => {
     }}>
     <div className="container mx-auto px-4">
       <div className="text-center mb-8 md:mb-12">
-        <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold mb-4 text-white px-2">
+        <h2 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold mb-3 text-white px-2">
           Start Saving Money Today
         </h2>
       </div>
@@ -190,7 +190,7 @@ const AllToolsGrid = () => (
   }}>
     <div className="container mx-auto px-4">
       <div className="text-center mb-8 md:mb-12">
-        <h2 className="text-xl sm:text-2xl md:text-3xl font-bold mb-4 text-white px-2">
+        <h2 className="text-lg sm:text-xl md:text-2xl font-bold mb-3 text-white px-2">
           Complete Financial Toolkit
         </h2>
         <p className="text-sm sm:text-base text-gray-300 max-w-2xl mx-auto px-2">
@@ -229,7 +229,7 @@ const AllToolsGrid = () => (
 const SocialProofSection = () => (
   <section className="py-12 px-4 bg-gradient-to-r from-white via-primary/5 to-white relative overflow-hidden">
     <div className="container mx-auto text-center px-4">
-      <h2 className="text-xl sm:text-2xl md:text-3xl font-bold mb-6 md:mb-8 px-2">
+      <h2 className="text-lg sm:text-xl md:text-2xl font-bold mb-4 md:mb-6 px-2">
         Join a Community of Smart Savers
       </h2>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 mb-8 md:mb-12 relative z-10">
@@ -270,7 +270,7 @@ const CTASection = () => (
     backgroundImage: `repeating-linear-gradient(45deg, transparent, transparent 40px, rgba(255,255,255,0.04) 40px, rgba(255,255,255,0.04) 42px)`
   }}>
     <div className="container mx-auto text-center relative z-10 px-4">
-      <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold mb-4 md:mb-6 animate-fade-in px-2">
+      <h2 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold mb-3 md:mb-5 animate-fade-in px-2">
         Ready to Save Money Every Month?
       </h2>
       <p className="text-base sm:text-lg md:text-xl mb-6 md:mb-8 opacity-90 animate-fade-in px-2" style={{ animationDelay: '0.2s' }}>

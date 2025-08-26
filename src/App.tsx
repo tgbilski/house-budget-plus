@@ -64,12 +64,12 @@ const App = () => {
           <SubscriptionProvider>
             <CurrencyContext.Provider value={{ currency, setCurrency }}>
               <BrowserRouter>
-                <SidebarProvider defaultOpen={!isMobile}>
+                <SidebarProvider defaultOpen={false}>
                   <div className="min-h-screen w-full flex flex-col">
                     <Header />
                     <div className="flex flex-1">
                       <AppSidebar />
-                      <SidebarInset>
+                      <SidebarInset className="flex-1">
                         <main className="flex-1 p-4 md:p-6">
                           <Routes>
                             <Route path="/" element={<Home />} />

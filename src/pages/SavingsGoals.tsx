@@ -440,20 +440,20 @@ const SavingsGoals = () => {
       />
       
       {/* Hero Section with Dark Gradient */}
-      <div className="relative bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 text-white py-8">
+      <div className="relative bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 text-white py-4 md:py-6">
         <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHZpZXdCb3g9IjAgMCAyMCAyMCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3QgeD0iMCIgeT0iMCIgd2lkdGg9IjEiIGhlaWdodD0iMjAiIGZpbGw9InJnYmEoMjU1LDI1NSwyNTUsMC4xKSIvPgo8L3N2Zz4K')] opacity-20"></div>
-        <div className="container mx-auto px-4 relative z-10">
+        <div className="w-full max-w-none px-4 relative z-10">
           <div className="text-center">
-            <Target className="h-12 w-12 mx-auto mb-4 text-primary" />
-            <h1 className="text-2xl md:text-3xl font-bold mb-3">Savings Tracker</h1>
-            <p className="text-base md:text-lg text-gray-300">
+            <Target className="h-8 w-8 md:h-10 md:w-10 mx-auto mb-2 md:mb-3 text-primary" />
+            <h1 className="text-lg md:text-2xl font-bold mb-2">Savings Tracker</h1>
+            <p className="text-sm md:text-base text-gray-300">
               Track your monthly savings progress with an easy-to-use yearly table
             </p>
           </div>
         </div>
       </div>
 
-      <div className="container mx-auto px-4 py-6">
+      <div className="w-full max-w-none px-4 py-4 md:py-6">
         {/* Warning Banner for Non-Authenticated Users */}
         {!user && (
           <Alert className="mb-6 border-yellow-200 bg-yellow-50 dark:border-yellow-800 dark:bg-yellow-950">
