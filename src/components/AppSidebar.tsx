@@ -24,6 +24,10 @@ import {
 } from "@/components/ui/sidebar";
 import { cn } from "@/lib/utils";
 
+// Use these constants for sidebar width
+const SIDEBAR_COLLAPSED = 56;
+const SIDEBAR_EXPANDED = 240;
+
 const navigationItems = [
   { title: "Home", url: "/", icon: Home },
   { title: "Monthly Budget", url: "/budget", icon: Calculator },
@@ -37,13 +41,12 @@ const navigationItems = [
 export function AppSidebar() {
   const location = useLocation();
   const { open, setOpen, isMobile, openMobile, setOpenMobile, state } = useSidebar();
-  const [headerHeight, setHeaderHeight] = useState(56); // default to desktop
+  const [headerHeight, setHeaderHeight] = useState(window.innerWidth < 768 ? 48 : 56);
 
   useEffect(() => {
     const updateHeaderHeight = () => {
       setHeaderHeight(window.innerWidth < 768 ? 48 : 56);
     };
-    updateHeaderHeight();
     window.addEventListener("resize", updateHeaderHeight);
     return () => window.removeEventListener("resize", updateHeaderHeight);
   }, []);
@@ -68,9 +71,9 @@ export function AppSidebar() {
       style={{
         top: headerHeight,
         height: `calc(100vh - ${headerHeight}px)`,
-        width: isCollapsed ? 56 : 240, // adjust these values as needed!
-        minWidth: isCollapsed ? 56 : 240,
-        maxWidth: isCollapsed ? 56 : 240,
+        width: isCollapsed ? SIDEBAR_COLLAPSED : SIDEBAR_EXPANDED,
+        minWidth: isCollapsed ? SIDEBAR_COLLAPSED : SIDEBAR_EXPANDED,
+        maxWidth: isCollapsed ? SIDEBAR_COLLAPSED : SIDEBAR_EXPANDED,
         transition: "width 0.2s",
         overflowX: "hidden",
       }}
