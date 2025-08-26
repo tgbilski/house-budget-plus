@@ -498,51 +498,57 @@ export type Database = {
       }
       vacation_options: {
         Row: {
+          car_rental_cost: number | null
           contact: string | null
           created_at: string
           destination: string | null
           destination_safe: boolean | null
-          estimated_cost: number | null
           everyone_enjoy: boolean | null
           exciting_option: boolean | null
           favorable_travel: boolean | null
           id: string
+          lodging_cost: number | null
           memorable: boolean | null
           notes: string | null
           project_id: string
           travel_mode: string | null
+          travel_mode_cost: number | null
           updated_at: string
         }
         Insert: {
+          car_rental_cost?: number | null
           contact?: string | null
           created_at?: string
           destination?: string | null
           destination_safe?: boolean | null
-          estimated_cost?: number | null
           everyone_enjoy?: boolean | null
           exciting_option?: boolean | null
           favorable_travel?: boolean | null
           id?: string
+          lodging_cost?: number | null
           memorable?: boolean | null
           notes?: string | null
           project_id: string
           travel_mode?: string | null
+          travel_mode_cost?: number | null
           updated_at?: string
         }
         Update: {
+          car_rental_cost?: number | null
           contact?: string | null
           created_at?: string
           destination?: string | null
           destination_safe?: boolean | null
-          estimated_cost?: number | null
           everyone_enjoy?: boolean | null
           exciting_option?: boolean | null
           favorable_travel?: boolean | null
           id?: string
+          lodging_cost?: number | null
           memorable?: boolean | null
           notes?: string | null
           project_id?: string
           travel_mode?: string | null
+          travel_mode_cost?: number | null
           updated_at?: string
         }
         Relationships: [

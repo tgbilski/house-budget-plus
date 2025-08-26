@@ -34,7 +34,9 @@ interface VacationOption {
   project_id: string;
   destination: string;
   travel_mode: string;
-  estimated_cost: number;
+  travel_mode_cost: number;
+  lodging_cost: number;
+  car_rental_cost: number;
   notes: string;
   contact: string;
   favorable_travel: boolean;
@@ -77,6 +79,10 @@ const VacationCard: React.FC<VacationCardProps> = ({ option, onUpdate, onRemove,
     return evaluationFields.filter(Boolean).length;
   };
 
+  const getTotalCost = () => {
+    return (localOption.travel_mode_cost || 0) + (localOption.lodging_cost || 0) + (localOption.car_rental_cost || 0);
+  };
+
 
   const questions = [
     { key: 'favorable_travel' as const, label: 'Is the mode of travel favorable?' },
@@ -114,6 +120,14 @@ const VacationCard: React.FC<VacationCardProps> = ({ option, onUpdate, onRemove,
           </div>
         </CardHeader>
         <CardContent className="space-y-4">
+          {/* Total Cost Display */}
+          <div className="bg-primary/5 border border-primary/20 rounded-lg p-4 mb-4">
+            <Label className="text-sm font-medium text-muted-foreground">Total Cost</Label>
+            <div className="text-2xl font-bold text-primary">
+              {currency.symbol}{getTotalCost().toFixed(2)}
+            </div>
+          </div>
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <Label htmlFor={`destination-${option.id}`}>Destination</Label>
@@ -135,18 +149,65 @@ const VacationCard: React.FC<VacationCardProps> = ({ option, onUpdate, onRemove,
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <Label htmlFor={`cost-${option.id}`}>Estimated Cost ({currency.symbol})</Label>
-              <Input
-                id={`cost-${option.id}`}
-                type="number"
-                step="0.01"
-                value={localOption.estimated_cost || ''}
-                onChange={(e) => updateField('estimated_cost', parseFloat(e.target.value) || 0)}
-                placeholder="0.00"
-              />
+          {/* Cost Fields */}
+          <div className="space-y-4">
+            <h4 className="font-medium text-sm">Cost Breakdown</h4>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div>
+                <Label htmlFor={`travel-cost-${option.id}`}>Travel Mode Cost ({currency.symbol})</Label>
+                <div className="relative">
+                  <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground text-sm">
+                    {currency.symbol}
+                  </span>
+                  <Input
+                    id={`travel-cost-${option.id}`}
+                    type="number"
+                    step="0.01"
+                    value={localOption.travel_mode_cost || ''}
+                    onChange={(e) => updateField('travel_mode_cost', parseFloat(e.target.value) || 0)}
+                    placeholder="0.00"
+                    className="pl-8"
+                  />
+                </div>
+              </div>
+              <div>
+                <Label htmlFor={`lodging-cost-${option.id}`}>Lodging Cost ({currency.symbol})</Label>
+                <div className="relative">
+                  <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground text-sm">
+                    {currency.symbol}
+                  </span>
+                  <Input
+                    id={`lodging-cost-${option.id}`}
+                    type="number"
+                    step="0.01"
+                    value={localOption.lodging_cost || ''}
+                    onChange={(e) => updateField('lodging_cost', parseFloat(e.target.value) || 0)}
+                    placeholder="0.00"
+                    className="pl-8"
+                  />
+                </div>
+              </div>
+              <div>
+                <Label htmlFor={`rental-cost-${option.id}`}>Car Rental Cost ({currency.symbol})</Label>
+                <div className="relative">
+                  <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground text-sm">
+                    {currency.symbol}
+                  </span>
+                  <Input
+                    id={`rental-cost-${option.id}`}
+                    type="number"
+                    step="0.01"
+                    value={localOption.car_rental_cost || ''}
+                    onChange={(e) => updateField('car_rental_cost', parseFloat(e.target.value) || 0)}
+                    placeholder="0.00"
+                    className="pl-8"
+                  />
+                </div>
+              </div>
             </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <Label htmlFor={`contact-${option.id}`}>Contact Info</Label>
               <Input
@@ -220,7 +281,7 @@ const VacationCard: React.FC<VacationCardProps> = ({ option, onUpdate, onRemove,
               {localOption.destination || 'Untitled Destination'}
             </h3>
             <div className="text-2xl font-bold text-primary">
-              {currency.symbol}{localOption.estimated_cost?.toFixed(2) || '0.00'}
+              {currency.symbol}{getTotalCost().toFixed(2)}
             </div>
             {localOption.travel_mode && (
               <div className="text-sm text-muted-foreground mt-1">
@@ -320,7 +381,9 @@ const Vacation: React.FC = () => {
       project_id: project.id,
       destination: '',
       travel_mode: '',
-      estimated_cost: 0,
+      travel_mode_cost: 0,
+      lodging_cost: 0,
+      car_rental_cost: 0,
       notes: '',
       contact: '',
       favorable_travel: false,
@@ -407,7 +470,9 @@ const Vacation: React.FC = () => {
         project_id: option.project_id,
         destination: option.destination,
         travel_mode: option.travel_mode,
-        estimated_cost: option.estimated_cost,
+        travel_mode_cost: option.travel_mode_cost,
+        lodging_cost: option.lodging_cost,
+        car_rental_cost: option.car_rental_cost,
         notes: option.notes,
         contact: option.contact,
         favorable_travel: option.favorable_travel,
@@ -587,7 +652,9 @@ const Vacation: React.FC = () => {
         project_id: selectedProject.id,
         destination: '',
         travel_mode: '',
-        estimated_cost: 0,
+        travel_mode_cost: 0,
+        lodging_cost: 0,
+        car_rental_cost: 0,
         notes: '',
         contact: '',
         favorable_travel: false,
@@ -602,8 +669,10 @@ const Vacation: React.FC = () => {
 
   const getLowestCost = () => {
     if (options.length === 0) return 0;
-    const costs = options.map(option => option.estimated_cost).filter(cost => cost > 0);
-    return costs.length > 0 ? Math.min(...costs) : 0;
+    const costs = options.map(option => 
+      (option.travel_mode_cost || 0) + (option.lodging_cost || 0) + (option.car_rental_cost || 0)
+    );
+    return Math.min(...costs);
   };
 
   return (
