@@ -121,8 +121,8 @@ const MonthlyBudget: React.FC = () => {
                   className="w-16 h-16 object-contain"
                 />
               </div>
-              <h1 className="text-4xl font-bold mb-4">Monthly Budget Calculator</h1>
-              <p className="text-xl text-white max-w-2xl mx-auto">
+              <h1 className="text-2xl md:text-4xl font-bold mb-3 md:mb-4">Monthly Budget Calculator</h1>
+              <p className="text-base md:text-xl text-white/90 mb-4 md:mb-6 max-w-2xl mx-auto">
                 Plan your household finances with precision
               </p>
             </div>

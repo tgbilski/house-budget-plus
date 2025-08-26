@@ -43,8 +43,8 @@ export default function Engagement() {
           <div className="container mx-auto px-4 relative z-10">
             <div className="text-center">
               <Trophy className="h-16 w-16 mx-auto mb-6 text-primary" />
-              <h1 className="text-4xl font-bold mb-4">Engagement Hub</h1>
-              <p className="text-xl text-gray-300 max-w-2xl mx-auto">
+              <h1 className="text-2xl md:text-4xl font-bold mb-3 md:mb-4">Engagement Hub</h1>
+              <p className="text-base md:text-xl text-white/90 mb-4 md:mb-6 max-w-2xl mx-auto">
                 Build lasting financial habits with daily check-ins, exciting challenges, and personalized insights
               </p>
             </div>

@@ -94,8 +94,8 @@ export default function AIInsights() {
                 <path d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/>
               </svg>
             </div>
-            <h1 className="text-4xl font-bold mb-4">AI Financial Insights</h1>
-            <p className="text-xl text-gray-300 max-w-2xl mx-auto">
+            <h1 className="text-2xl md:text-4xl font-bold mb-3 md:mb-4">AI Financial Insights</h1>
+            <p className="text-base md:text-xl text-white/90 mb-4 md:mb-6 max-w-2xl mx-auto">
               Get personalized financial advice powered by artificial intelligence
             </p>
           </div>

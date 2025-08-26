@@ -750,8 +750,8 @@ const CompareVendors: React.FC = () => {
         <div className="container mx-auto px-4 relative z-10">
           <div className="text-center">
             <Star className="h-16 w-16 mx-auto mb-6 text-primary" />
-            <h1 className="text-4xl font-bold mb-4">Compare Vendors</h1>
-            <p className="text-xl text-white/90 mb-6">Get quotes, compare prices, and evaluate vendors side by side</p>
+            <h1 className="text-2xl md:text-4xl font-bold mb-3 md:mb-4">Compare Vendors</h1>
+            <p className="text-base md:text-xl text-white/90 mb-4 md:mb-6">Get quotes, compare prices, and evaluate vendors side by side</p>
           </div>
         </div>
       </div>

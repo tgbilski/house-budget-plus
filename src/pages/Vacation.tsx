@@ -685,8 +685,8 @@ const Vacation: React.FC = () => {
             <svg className="h-12 w-12 mx-auto mb-4 text-primary" fill="currentColor" viewBox="0 0 24 24">
               <path d="M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z"/>
             </svg>
-            <h1 className="text-2xl md:text-3xl font-bold mb-3">Vacation Planning</h1>
-            <p className="text-base md:text-lg text-white/90 mb-4">Compare destinations, costs, and travel options for your perfect getaway</p>
+            <h1 className="text-2xl md:text-4xl font-bold mb-3 md:mb-4">Vacation Planning</h1>
+            <p className="text-base md:text-xl text-white/90 mb-4 md:mb-6">Compare destinations, costs, and travel options for your perfect getaway</p>
           </div>
         </div>
       </div>
