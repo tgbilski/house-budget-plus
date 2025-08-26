@@ -27,6 +27,11 @@ interface GiftItemProps {
 export function GiftItem({ item, listId, onSave, onDelete, isNew = false }: GiftItemProps) {
   const { user } = useAuth();
   const { toast } = useToast();
+  
+  // Check if this is a new/empty item to start in editing mode
+  const isEmpty = !item?.gift_idea && !item?.price && !item?.url;
+  const [isEditing, setIsEditing] = useState(isNew || isEmpty);
+  
   const [itemData, setItemData] = useState<GiftItemData>({
     list_id: listId,
     gift_idea: item?.gift_idea || '',
@@ -68,6 +73,7 @@ export function GiftItem({ item, listId, onSave, onDelete, isNew = false }: Gift
         setItemData(prev => ({ ...prev, id: data.id }));
       }
 
+      setIsEditing(false);
       onSave?.();
       toast({
         title: "Gift item saved",
@@ -120,77 +126,156 @@ export function GiftItem({ item, listId, onSave, onDelete, isNew = false }: Gift
     }
   };
 
-  return (
-    <div className="border rounded-lg p-4 space-y-3 bg-card">
-      <div className="flex justify-between items-start">
-        <div className="flex-1 space-y-3">
-          <div>
-            <Label htmlFor={`gift-idea-${itemData.id || 'new'}`}>Gift Idea</Label>
-            <Textarea
-              id={`gift-idea-${itemData.id || 'new'}`}
-              value={itemData.gift_idea}
-              onChange={(e) => handleInputChange('gift_idea', e.target.value)}
-              placeholder="Enter a gift idea..."
-              rows={2}
-              className="text-gray-900 dark:text-white"
-            />
-          </div>
+  const handleCardClick = () => {
+    if (!isEditing && itemData.url) {
+      openUrl();
+    }
+  };
 
-          <div className="space-y-3">
+  if (isEditing) {
+    return (
+      <div className="border rounded-lg p-4 space-y-3 bg-card">
+        <div className="flex justify-between items-start">
+          <div className="flex-1 space-y-3">
             <div>
-              <Label htmlFor={`price-${itemData.id || 'new'}`}>Price</Label>
-              <Input
-                id={`price-${itemData.id || 'new'}`}
-                type="number"
-                step="0.01"
-                value={itemData.price}
-                onChange={(e) => handleInputChange('price', e.target.value)}
-                placeholder="0.00"
-                className="w-full text-gray-900 dark:text-white"
+              <Label htmlFor={`gift-idea-${itemData.id || 'new'}`}>Gift Idea</Label>
+              <Textarea
+                id={`gift-idea-${itemData.id || 'new'}`}
+                value={itemData.gift_idea}
+                onChange={(e) => handleInputChange('gift_idea', e.target.value)}
+                placeholder="Enter a gift idea..."
+                rows={2}
+                className="text-gray-900 dark:text-white"
               />
             </div>
 
-            <div>
-              <Label htmlFor={`url-${itemData.id || 'new'}`}>URL (optional)</Label>
-              <div className="flex gap-2">
+            <div className="space-y-3">
+              <div>
+                <Label htmlFor={`price-${itemData.id || 'new'}`}>Price</Label>
                 <Input
-                  id={`url-${itemData.id || 'new'}`}
-                  value={itemData.url}
-                  onChange={(e) => handleInputChange('url', e.target.value)}
-                  placeholder="https://example.com"
-                  className="flex-1 min-w-0 text-gray-900 dark:text-white"
+                  id={`price-${itemData.id || 'new'}`}
+                  type="number"
+                  step="0.01"
+                  value={itemData.price}
+                  onChange={(e) => handleInputChange('price', e.target.value)}
+                  placeholder="0.00"
+                  className="w-full text-gray-900 dark:text-white"
                 />
-                {itemData.url && (
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    onClick={openUrl}
-                    className="shrink-0"
-                  >
-                    <ExternalLink className="h-4 w-4" />
-                  </Button>
-                )}
+              </div>
+
+              <div>
+                <Label htmlFor={`url-${itemData.id || 'new'}`}>URL (optional)</Label>
+                <div className="flex gap-2">
+                  <Input
+                    id={`url-${itemData.id || 'new'}`}
+                    value={itemData.url}
+                    onChange={(e) => handleInputChange('url', e.target.value)}
+                    placeholder="https://example.com"
+                    className="flex-1 min-w-0 text-gray-900 dark:text-white"
+                  />
+                  {itemData.url && (
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={openUrl}
+                      className="shrink-0"
+                    >
+                      <ExternalLink className="h-4 w-4" />
+                    </Button>
+                  )}
+                </div>
               </div>
             </div>
           </div>
+
+          {itemData.id && (
+            <Button
+              size="sm"
+              variant="ghost"
+              onClick={handleDelete}
+              className="text-destructive hover:text-destructive ml-2"
+            >
+              <Trash2 className="h-4 w-4" />
+            </Button>
+          )}
         </div>
 
+        <div className="flex gap-2">
+          <Button onClick={saveItem} size="sm">
+            Save Gift
+          </Button>
+          {!isNew && (
+            <Button 
+              onClick={() => setIsEditing(false)} 
+              variant="outline" 
+              size="sm"
+            >
+              Cancel
+            </Button>
+          )}
+        </div>
+      </div>
+    );
+  }
+
+  // Summary view
+  return (
+    <div 
+      className={`border rounded-lg p-3 bg-card flex items-center justify-between group transition-colors ${
+        itemData.url ? 'cursor-pointer hover:bg-muted/50' : ''
+      }`}
+      onClick={handleCardClick}
+    >
+      <div className="flex-1 min-w-0">
+        <div className="flex items-center gap-3">
+          <div className="flex-1 min-w-0">
+            <h4 className="font-medium text-sm truncate">
+              {itemData.gift_idea || 'Untitled Gift'}
+            </h4>
+            <div className="flex items-center gap-2 mt-1">
+              {itemData.price && (
+                <span className="text-sm font-semibold text-green-600 dark:text-green-400">
+                  ${Number(itemData.price).toFixed(2)}
+                </span>
+              )}
+              {itemData.url && (
+                <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                  <ExternalLink className="h-3 w-3" />
+                  <span className="truncate max-w-[100px]">
+                    {itemData.url.replace(/^https?:\/\//, '')}
+                  </span>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+        <Button
+          size="sm"
+          variant="ghost"
+          onClick={(e) => {
+            e.stopPropagation();
+            setIsEditing(true);
+          }}
+          className="h-8 w-8 p-0"
+        >
+          <Plus className="h-4 w-4" />
+        </Button>
         {itemData.id && (
           <Button
             size="sm"
             variant="ghost"
-            onClick={handleDelete}
-            className="text-destructive hover:text-destructive ml-2"
+            onClick={(e) => {
+              e.stopPropagation();
+              handleDelete();
+            }}
+            className="h-8 w-8 p-0 text-destructive hover:text-destructive"
           >
             <Trash2 className="h-4 w-4" />
           </Button>
         )}
-      </div>
-
-      <div className="flex gap-2">
-        <Button onClick={saveItem} size="sm">
-          Save Gift
-        </Button>
       </div>
     </div>
   );
