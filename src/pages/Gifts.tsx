@@ -5,7 +5,7 @@ import { GiftCard } from '@/components/GiftCard';
 import { useAuth } from '@/hooks/useAuth';
 import { useBadges } from '@/hooks/useBadges';
 import { supabase } from '@/integrations/supabase/client';
-import { Breadcrumbs } from '@/components/Breadcrumbs';
+
 import { AIChatbot } from '@/components/AIChatbot';
 import { SEO } from '@/components/SEO';
 import { WarningBanner } from '@/components/WarningBanner';
@@ -63,10 +63,6 @@ export function Gifts() {
     setShowNewCard(true);
   };
 
-  const breadcrumbItems = [
-    { label: 'Home', href: '/' },
-    { label: 'Gifts', href: '/gifts' }
-  ];
 
   const pageContext = "This is the Gifts page where users can create multiple gift list cards for different holidays or birthdays. Each card allows users to enter a gift idea, price, and URL that opens in a new tab. Users can edit the title of each card and all data is saved to their account. The AI assistant can help fill out gift information.";
 
@@ -95,7 +91,6 @@ export function Gifts() {
       </div>
       
       <div className="container mx-auto px-4 py-8">
-        <Breadcrumbs />
         <WarningBanner />
         
         <div className="mb-6">
@@ -135,9 +130,6 @@ export function Gifts() {
             <p className="text-muted-foreground mb-4">
               No gift lists yet. Create your first one to get started!
             </p>
-            <Button onClick={addNewCard} variant="outline">
-              Create Your First Gift List
-            </Button>
           </div>
         )}
 
