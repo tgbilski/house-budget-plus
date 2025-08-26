@@ -23,9 +23,17 @@ import { vendorComparisonFAQs } from '@/utils/faqData';
 import { AIChatbot } from '@/components/AIChatbot';
 import { WarningBanner } from '@/components/WarningBanner';
 
+interface VendorProject {
+  id: string;
+  user_id: string;
+  title: string;
+  created_at: string;
+  updated_at: string;
+}
+
 interface VendorQuote {
   id: string;
-  projectName: string;
+  projectId: string;
   vendorName: string;
   estimateAmount: number;
   contactInfo: string;
@@ -287,8 +295,8 @@ const VendorCard: React.FC<VendorCardProps> = ({ quote, onUpdate, onRemove, show
 
 const CompareVendors: React.FC = () => {
   const [quotes, setQuotes] = useState<VendorQuote[]>([]);
-  const [selectedProject, setSelectedProject] = useState<string>('My Project');
-  const [allProjects, setAllProjects] = useState<string[]>(['My Project']);
+  const [selectedProject, setSelectedProject] = useState<VendorProject | null>(null);
+  const [allProjects, setAllProjects] = useState<VendorProject[]>([]);
   const [isNewProject, setIsNewProject] = useState(false);
   const [editingProjectId, setEditingProjectId] = useState<string | null>(null);
   const [editingTitle, setEditingTitle] = useState('');
@@ -302,52 +310,82 @@ const CompareVendors: React.FC = () => {
 
   useEffect(() => {
     if (user) {
-      loadData();
+      loadProjects();
     } else {
       // Initialize with a default project for non-authenticated users
-      const defaultProject = 'My Project';
+      const defaultProject: VendorProject = {
+        id: 'default',
+        user_id: 'guest',
+        title: 'My Project',
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString()
+      };
       setAllProjects([defaultProject]);
       setSelectedProject(defaultProject);
       setQuotes([]);
     }
-  }, [user, selectedProject]);
+  }, [user]);
 
-  const loadData = async () => {
+  useEffect(() => {
+    if (selectedProject) {
+      loadQuotes();
+    }
+  }, [selectedProject]);
+
+  const loadProjects = async () => {
     if (!user) return;
 
-    const { data: allData } = await supabase
-      .from('budget_data')
+    const { data: projects } = await supabase
+      .from('vendor_projects')
       .select('*')
       .eq('user_id', user.id)
-      .eq('page_type', 'compare_prices');
+      .order('created_at', { ascending: true });
 
-    const projects = allData ? [...new Set(allData.map(item => item.calculator_id))] : [];
-    
-    // Only create default project if no projects exist
-    let projectList = projects.length > 0 ? projects : ['My Project'];
-    
-    setAllProjects(projectList);
-
-    if (selectedProject && projectList.includes(selectedProject)) {
-      const projectData = allData?.find(item => item.calculator_id === selectedProject);
-      if (projectData && projectData.expenses) {
-        const expensesData = projectData.expenses as any;
-        if (expensesData.quotes) {
-          setQuotes(expensesData.quotes.map((quote: any) => ({
-            ...quote,
-            projectName: selectedProject
-          })));
-        }
+    if (projects && projects.length > 0) {
+      setAllProjects(projects);
+      if (!selectedProject) {
+        setSelectedProject(projects[0]);
       }
-    } else if (projectList.length > 0 && !selectedProject) {
-      setSelectedProject(projectList[0]);
-    } else if (!selectedProject) {
-      setSelectedProject('My Project');
-      setIsNewProject(false);
+    } else {
+      // Create default project if none exist
+      const { data: newProject } = await supabase
+        .from('vendor_projects')
+        .insert({ user_id: user.id, title: 'My Project' })
+        .select()
+        .single();
+
+      if (newProject) {
+        setAllProjects([newProject]);
+        setSelectedProject(newProject);
+      }
     }
   };
 
-  const saveData = async () => {
+  const loadQuotes = async () => {
+    if (!user || !selectedProject) return;
+
+    const { data } = await supabase
+      .from('budget_data')
+      .select('*')
+      .eq('user_id', user.id)
+      .eq('page_type', 'compare_prices')
+      .eq('project_id', selectedProject.id);
+
+    if (data && data.length > 0) {
+      const budgetData = data[0];
+      const expensesData = budgetData.expenses as any;
+      if (expensesData.quotes) {
+        setQuotes(expensesData.quotes.map((quote: any) => ({
+          ...quote,
+          projectId: selectedProject.id
+        })));
+      }
+    } else {
+      setQuotes([]);
+    }
+  };
+
+  const saveQuotes = async () => {
     if (!user || !selectedProject) return;
 
     const { error } = await supabase
@@ -355,7 +393,7 @@ const CompareVendors: React.FC = () => {
       .upsert({
         user_id: user.id,
         page_type: 'compare_prices',
-        calculator_id: selectedProject,
+        project_id: selectedProject.id,
         expenses: { quotes } as any
       });
 
@@ -368,13 +406,13 @@ const CompareVendors: React.FC = () => {
 
   useEffect(() => {
     if (user && quotes.length > 0 && selectedProject) {
-      saveData();
+      saveQuotes();
     }
   }, [quotes, user, selectedProject]);
 
   const createNewProject = () => {
     setIsNewProject(true);
-    setSelectedProject('');
+    setSelectedProject(null);
     setNewProjectName('');
   };
 
@@ -384,43 +422,53 @@ const CompareVendors: React.FC = () => {
     setSavingProject(true);
     
     try {
-      const newProjects = [...allProjects, projectName.trim()];
-      setAllProjects(newProjects);
-      
-      setSelectedProject(projectName.trim());
-      setIsNewProject(false);
-      setNewProjectName('');
-      
-      const newQuote: VendorQuote = {
-        id: Date.now().toString(),
-        projectName: projectName.trim(),
-        vendorName: '',
-        estimateAmount: 0,
-        contactInfo: '',
-        notes: '',
-        likedSalesRep: false,
-        offersFinancing: false,
-        goodTiming: false,
-        trustworthy: false,
-        responsive: false,
-        dateReceived: new Date().toISOString().split('T')[0]
-      };
-      
-      setQuotes([newQuote]);
-      
       if (user) {
-        const { error } = await supabase
-          .from('budget_data')
-          .upsert({
-            user_id: user.id,
-            page_type: 'compare_prices',
-            calculator_id: projectName.trim(),
-            expenses: { quotes: [newQuote] } as any
-          });
+        const { data: newProject } = await supabase
+          .from('vendor_projects')
+          .insert({ user_id: user.id, title: projectName.trim() })
+          .select()
+          .single();
 
-        if (error) {
-          console.error('Error saving new project:', error);
+        if (newProject) {
+          const updatedProjects = [...allProjects, newProject];
+          setAllProjects(updatedProjects);
+          setSelectedProject(newProject);
+          setIsNewProject(false);
+          setNewProjectName('');
+          
+          const newQuote: VendorQuote = {
+            id: Date.now().toString(),
+            projectId: newProject.id,
+            vendorName: '',
+            estimateAmount: 0,
+            contactInfo: '',
+            notes: '',
+            likedSalesRep: false,
+            offersFinancing: false,
+            goodTiming: false,
+            trustworthy: false,
+            responsive: false,
+            dateReceived: new Date().toISOString().split('T')[0]
+          };
+          
+          setQuotes([newQuote]);
         }
+      } else {
+        // For non-authenticated users
+        const newProject: VendorProject = {
+          id: Date.now().toString(),
+          user_id: 'guest',
+          title: projectName.trim(),
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString()
+        };
+        
+        const updatedProjects = [...allProjects, newProject];
+        setAllProjects(updatedProjects);
+        setSelectedProject(newProject);
+        setIsNewProject(false);
+        setNewProjectName('');
+        setQuotes([]);
       }
     } finally {
       setSavingProject(false);
@@ -428,41 +476,36 @@ const CompareVendors: React.FC = () => {
   };
 
   const startEditingProject = (projectId: string) => {
-    setEditingProjectId(projectId);
-    setEditingTitle(projectId);
+    const project = allProjects.find(p => p.id === projectId);
+    if (project) {
+      setEditingProjectId(projectId);
+      setEditingTitle(project.title);
+    }
   };
 
-  const updateProjectTitle = async (oldTitle: string, newTitle: string) => {
-    if (!newTitle.trim() || newTitle === oldTitle) {
+  const updateProjectTitle = async (projectId: string, newTitle: string) => {
+    if (!newTitle.trim()) {
       setEditingProjectId(null);
       return;
     }
 
     try {
-      const updatedProjects = allProjects.map(p => p === oldTitle ? newTitle.trim() : p);
-      setAllProjects(updatedProjects);
-      
-      if (selectedProject === oldTitle) {
-        setSelectedProject(newTitle.trim());
-      }
-
-      // Update quotes for this project
-      const updatedQuotes = quotes.map(quote => 
-        quote.projectName === oldTitle 
-          ? { ...quote, projectName: newTitle.trim() }
-          : quote
-      );
-      setQuotes(updatedQuotes);
-
       if (user) {
         const { error } = await supabase
-          .from('budget_data')
-          .update({ calculator_id: newTitle.trim() })
-          .eq('user_id', user.id)
-          .eq('page_type', 'compare_prices')
-          .eq('calculator_id', oldTitle);
+          .from('vendor_projects')
+          .update({ title: newTitle.trim() })
+          .eq('id', projectId);
 
         if (error) throw error;
+      }
+
+      const updatedProjects = allProjects.map(p => 
+        p.id === projectId ? { ...p, title: newTitle.trim() } : p
+      );
+      setAllProjects(updatedProjects);
+      
+      if (selectedProject?.id === projectId) {
+        setSelectedProject({ ...selectedProject, title: newTitle.trim() });
       }
       
       setEditingProjectId(null);
@@ -473,36 +516,34 @@ const CompareVendors: React.FC = () => {
     }
   };
 
-  const deleteProject = async (projectToDelete: string) => {
+  const deleteProject = async (projectId: string) => {
     if (allProjects.length <= 1 || deletingProject) return;
     
-    setDeletingProject(projectToDelete);
+    setDeletingProject(projectId);
     
     try {
-      // Remove from projects array
-      const updatedProjects = allProjects.filter(p => p !== projectToDelete);
-      setAllProjects(updatedProjects);
-      
-      // If we're deleting the currently selected project, switch to another one
-      if (selectedProject === projectToDelete) {
-        setSelectedProject(updatedProjects[0]);
-        setIsNewProject(false);
-      }
-      
-      // Remove quotes for this project
-      const updatedQuotes = quotes.filter(quote => quote.projectName !== projectToDelete);
-      setQuotes(updatedQuotes);
-      
-      // Remove from database if user is logged in
       if (user) {
-        const { error } = await supabase
+        const { error: projectError } = await supabase
+          .from('vendor_projects')
+          .delete()
+          .eq('id', projectId);
+
+        const { error: budgetError } = await supabase
           .from('budget_data')
           .delete()
           .eq('user_id', user.id)
           .eq('page_type', 'compare_prices')
-          .eq('calculator_id', projectToDelete);
-          
-        if (error) throw error;
+          .eq('project_id', projectId);
+
+        if (projectError || budgetError) throw projectError || budgetError;
+      }
+
+      const updatedProjects = allProjects.filter(p => p.id !== projectId);
+      setAllProjects(updatedProjects);
+      
+      if (selectedProject?.id === projectId) {
+        setSelectedProject(updatedProjects.length > 0 ? updatedProjects[0] : null);
+        setIsNewProject(false);
       }
       
     } catch (error) {
@@ -513,9 +554,11 @@ const CompareVendors: React.FC = () => {
   };
 
   const addVendorCard = () => {
+    if (!selectedProject) return;
+
     const newQuote: VendorQuote = {
       id: Date.now().toString(),
-      projectName: selectedProject,
+      projectId: selectedProject.id,
       vendorName: '',
       estimateAmount: 0,
       contactInfo: '',
@@ -540,20 +583,10 @@ const CompareVendors: React.FC = () => {
   const removeVendorCard = (quoteId: string) => {
     const filteredQuotes = quotes.filter(quote => quote.id !== quoteId);
     setQuotes(filteredQuotes);
-    
-    const currentProjectQuotes = filteredQuotes.filter(quote => quote.projectName === selectedProject);
-    if (currentProjectQuotes.length === 0 && filteredQuotes.length > 0) {
-      const remainingProject = filteredQuotes[0].projectName;
-      setSelectedProject(remainingProject);
-      setIsNewProject(false);
-    } else if (filteredQuotes.length === 0) {
-      setSelectedProject('');
-      setIsNewProject(false);
-    }
   };
 
   const displayedQuotes = selectedProject && !isNewProject 
-    ? quotes.filter(quote => quote.projectName === selectedProject)
+    ? quotes.filter(quote => quote.projectId === selectedProject.id)
     : [];
 
   const getLowestEstimate = () => {
@@ -587,23 +620,20 @@ const CompareVendors: React.FC = () => {
           <div className="mb-6">
             <div className="flex items-center gap-2 mb-4 flex-wrap">
               {allProjects.map((project) => (
-                <div key={project} className="flex items-center gap-1">
-                  {editingProjectId === project ? (
+                <div key={project.id} className="flex items-center gap-1">
+                  {editingProjectId === project.id ? (
                     <div className="flex items-center gap-1">
                       <Input
                         value={editingTitle}
                         onChange={(e) => setEditingTitle(e.target.value)}
                         className="h-8 w-32 text-sm"
                         onKeyDown={(e) => {
-                          if (e.key === 'Enter') updateProjectTitle(project, editingTitle);
+                          if (e.key === 'Enter') updateProjectTitle(project.id, editingTitle);
                           if (e.key === 'Escape') setEditingProjectId(null);
-                        }}
-                        onBlur={() => {
-                          // Don't update on blur to avoid conflicts with delete
                         }}
                         autoFocus
                       />
-                      <Button size="sm" variant="ghost" onClick={() => updateProjectTitle(project, editingTitle)} className="h-8 w-8 p-0">
+                      <Button size="sm" variant="ghost" onClick={() => updateProjectTitle(project.id, editingTitle)} className="h-8 w-8 p-0">
                         <Check className="h-3 w-3" />
                       </Button>
                       <Button size="sm" variant="ghost" onClick={() => setEditingProjectId(null)} className="h-8 w-8 p-0">
@@ -614,12 +644,8 @@ const CompareVendors: React.FC = () => {
                           onClick={(e) => {
                             e.preventDefault();
                             e.stopPropagation();
-                            deleteProject(project);
+                            deleteProject(project.id);
                             setEditingProjectId(null);
-                          }}
-                          onMouseDown={(e) => {
-                            e.preventDefault();
-                            e.stopPropagation();
                           }}
                           className="h-8 w-8 text-red-500 hover:text-red-700 hover:bg-red-50 rounded flex items-center justify-center"
                           title="Delete project"
@@ -633,7 +659,7 @@ const CompareVendors: React.FC = () => {
                     <div className="flex items-center gap-1">
                       <div className="relative group">
                         <Button
-                          variant={selectedProject === project ? "default" : "outline"}
+                          variant={selectedProject?.id === project.id ? "default" : "outline"}
                           size="sm"
                           onClick={() => {
                             setSelectedProject(project);
@@ -641,12 +667,12 @@ const CompareVendors: React.FC = () => {
                           }}
                           className="pr-8"
                         >
-                          {project}
+                          {project.title}
                         </Button>
                         <button
                           onClick={(e) => {
                             e.stopPropagation();
-                            startEditingProject(project);
+                            startEditingProject(project.id);
                           }}
                           className="absolute right-1 top-1/2 -translate-y-1/2 h-6 w-6 p-0 opacity-0 group-hover:opacity-100 transition-opacity hover:bg-white/20 rounded flex items-center justify-center"
                           title="Edit project name"
@@ -673,9 +699,6 @@ const CompareVendors: React.FC = () => {
                         setIsNewProject(false);
                         setNewProjectName('');
                       }
-                    }}
-                    onBlur={() => {
-                      // Don't save on blur to avoid conflicts with button clicks
                     }}
                     autoFocus
                   />
@@ -739,12 +762,12 @@ const CompareVendors: React.FC = () => {
           {!isNewProject && displayedQuotes.length === 0 && selectedProject && (
             <div className="text-center py-8">
               <p className="text-muted-foreground">
-                No vendor quotes for "{selectedProject}" yet. Click the + button to add your first vendor!
+                No vendor quotes for "{selectedProject.title}" yet. Click the + button to add your first vendor!
               </p>
             </div>
           )}
           
-          {!selectedProject && !isNewProject && quotes.length === 0 && (
+          {!selectedProject && !isNewProject && allProjects.length === 0 && (
             <div className="text-center py-8">
               <p className="text-muted-foreground">
                 Click "New Project" above to create your first project and start comparing vendors!

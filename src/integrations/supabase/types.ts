@@ -22,6 +22,7 @@ export type Database = {
           id: string
           income: number | null
           page_type: string
+          project_id: string | null
           updated_at: string
           user_id: string
         }
@@ -32,6 +33,7 @@ export type Database = {
           id?: string
           income?: number | null
           page_type: string
+          project_id?: string | null
           updated_at?: string
           user_id: string
         }
@@ -42,6 +44,7 @@ export type Database = {
           id?: string
           income?: number | null
           page_type?: string
+          project_id?: string | null
           updated_at?: string
           user_id?: string
         }
@@ -488,6 +491,54 @@ export type Database = {
           last_activity_date?: string | null
           longest_streak?: number | null
           streak_type?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      vacation_projects: {
+        Row: {
+          created_at: string
+          id: string
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          title: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          title?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      vendor_projects: {
+        Row: {
+          created_at: string
+          id: string
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          title: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          title?: string
           updated_at?: string
           user_id?: string
         }

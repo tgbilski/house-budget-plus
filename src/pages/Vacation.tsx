@@ -21,6 +21,14 @@ import { FAQ } from '@/components/FAQ';
 import { vacationPlanningFAQs } from '@/utils/faqData';
 import { WarningBanner } from '@/components/WarningBanner';
 
+interface VacationProject {
+  id: string;
+  user_id: string;
+  title: string;
+  created_at: string;
+  updated_at: string;
+}
+
 interface VacationOption {
   id: string;
   destination: string;
@@ -194,8 +202,8 @@ const VacationCard: React.FC<VacationCardProps> = ({ option, onUpdate, onRemove,
 
 const Vacation: React.FC = () => {
   const [options, setOptions] = useState<VacationOption[]>([]);
-  const [selectedProject, setSelectedProject] = useState<string>('My Vacation');
-  const [projects, setProjects] = useState<string[]>(['My Vacation']);
+  const [selectedProject, setSelectedProject] = useState<VacationProject | null>(null);
+  const [allProjects, setAllProjects] = useState<VacationProject[]>([]);
   const [isCreatingProject, setIsCreatingProject] = useState(false);
   const [newProjectName, setNewProjectName] = useState('');
   const [editingProjectId, setEditingProjectId] = useState<string | null>(null);
@@ -210,29 +218,75 @@ const Vacation: React.FC = () => {
 
   useEffect(() => {
     if (user) {
-      loadData();
+      loadProjects();
+    } else {
+      // Initialize with a default project for non-authenticated users
+      const defaultProject: VacationProject = {
+        id: 'default',
+        user_id: 'guest',
+        title: 'My Vacation',
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString()
+      };
+      setAllProjects([defaultProject]);
+      setSelectedProject(defaultProject);
+      setOptions([]);
     }
-  }, [user, selectedProject]);
+  }, [user]);
 
   useEffect(() => {
-    if (user && options.length > 0) {
+    if (selectedProject) {
+      loadOptions();
+    }
+  }, [selectedProject]);
+
+  useEffect(() => {
+    if (user && options.length > 0 && selectedProject) {
       const timeoutId = setTimeout(() => {
-        saveData();
+        saveOptions();
       }, 1000);
       return () => clearTimeout(timeoutId);
     }
-  }, [options, user]);
+  }, [options, user, selectedProject]);
 
-  const loadData = async () => {
+  const loadProjects = async () => {
     if (!user) return;
+
+    const { data: projects } = await supabase
+      .from('vacation_projects')
+      .select('*')
+      .eq('user_id', user.id)
+      .order('created_at', { ascending: true });
+
+    if (projects && projects.length > 0) {
+      setAllProjects(projects);
+      if (!selectedProject) {
+        setSelectedProject(projects[0]);
+      }
+    } else {
+      // Create default project if none exist
+      const { data: newProject } = await supabase
+        .from('vacation_projects')
+        .insert({ user_id: user.id, title: 'My Vacation' })
+        .select()
+        .single();
+
+      if (newProject) {
+        setAllProjects([newProject]);
+        setSelectedProject(newProject);
+      }
+    }
+  };
+
+  const loadOptions = async () => {
+    if (!user || !selectedProject) return;
 
     const { data } = await supabase
       .from('budget_data')
       .select('*')
       .eq('user_id', user.id)
       .eq('page_type', 'vacation')
-      .eq('calculator_id', selectedProject)
-      .order('created_at', { ascending: false });
+      .eq('project_id', selectedProject.id);
 
     if (data && data.length > 0) {
       const budgetData = data[0];
@@ -243,34 +297,17 @@ const Vacation: React.FC = () => {
     } else {
       setOptions([]);
     }
-
-    const { data: allData } = await supabase
-      .from('budget_data')
-      .select('calculator_id')
-      .eq('user_id', user.id)
-      .eq('page_type', 'vacation');
-
-    if (allData) {
-      const uniqueProjects = [...new Set(allData.map(item => item.calculator_id))];
-      let projectList = uniqueProjects.length > 0 ? uniqueProjects : ['My Vacation'];
-      
-      setProjects(projectList);
-      
-      if (!selectedProject && projectList.length > 0) {
-        setSelectedProject(projectList[0]);
-      }
-    }
   };
 
-  const saveData = async () => {
-    if (!user) return;
+  const saveOptions = async () => {
+    if (!user || !selectedProject) return;
 
     const { error } = await supabase
       .from('budget_data')
       .upsert({
         user_id: user.id,
         page_type: 'vacation',
-        calculator_id: selectedProject,
+        project_id: selectedProject.id,
         income: 0,
         expenses: { options } as any
       });
@@ -312,77 +349,96 @@ const Vacation: React.FC = () => {
   };
 
   const createNewProject = async () => {
-    if (newProjectName.trim()) {
-      const newProjects = [...projects, newProjectName.trim()];
-      setProjects(newProjects);
-      setSelectedProject(newProjectName.trim());
-      setNewProjectName('');
-      setIsCreatingProject(false);
-      
-      const newOption: VacationOption = {
-        id: Date.now().toString(),
-        destination: '',
-        travelMode: '',
-        estimatedCost: 0,
-        notes: '',
-        contact: '',
-        evaluation: {
-          favorableTravel: false,
-          destinationSafe: false,
-          excitingOption: false,
-          everyoneEnjoy: false,
-          memorable: false
-        }
-      };
-      
-      setOptions([newOption]);
-      
+    if (!newProjectName.trim() || savingProject) return;
+    
+    setSavingProject(true);
+    
+    try {
       if (user) {
-        const { error } = await supabase
-          .from('budget_data')
-          .upsert({
-            user_id: user.id,
-            page_type: 'vacation',
-            calculator_id: newProjectName.trim(),
-            income: 0,
-            expenses: { options: [newOption] } as any
-          });
+        const { data: newProject } = await supabase
+          .from('vacation_projects')
+          .insert({ user_id: user.id, title: newProjectName.trim() })
+          .select()
+          .single();
 
-        if (error) {
-          console.error('Error saving new vacation project:', error);
+        if (newProject) {
+          const updatedProjects = [...allProjects, newProject];
+          setAllProjects(updatedProjects);
+          setSelectedProject(newProject);
+          setNewProjectName('');
+          setIsCreatingProject(false);
+          
+          const newOption: VacationOption = {
+            id: Date.now().toString(),
+            destination: '',
+            travelMode: '',
+            estimatedCost: 0,
+            notes: '',
+            contact: '',
+            evaluation: {
+              favorableTravel: false,
+              destinationSafe: false,
+              excitingOption: false,
+              everyoneEnjoy: false,
+              memorable: false
+            }
+          };
+          
+          setOptions([newOption]);
         }
+      } else {
+        // For non-authenticated users
+        const newProject: VacationProject = {
+          id: Date.now().toString(),
+          user_id: 'guest',
+          title: newProjectName.trim(),
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString()
+        };
+        
+        const updatedProjects = [...allProjects, newProject];
+        setAllProjects(updatedProjects);
+        setSelectedProject(newProject);
+        setNewProjectName('');
+        setIsCreatingProject(false);
+        setOptions([]);
       }
+    } finally {
+      setSavingProject(false);
     }
   };
 
   const startEditingProject = (projectId: string) => {
-    setEditingProjectId(projectId);
-    setEditingTitle(projectId);
+    const project = allProjects.find(p => p.id === projectId);
+    if (project) {
+      setEditingProjectId(projectId);
+      setEditingTitle(project.title);
+    }
   };
 
-  const updateProjectTitle = async (oldTitle: string, newTitle: string) => {
-    if (!newTitle.trim() || newTitle === oldTitle) {
+  const updateProjectTitle = async (projectId: string, newTitle: string) => {
+    if (!newTitle.trim()) {
       setEditingProjectId(null);
       return;
     }
 
     try {
-      const updatedProjects = projects.map(p => p === oldTitle ? newTitle.trim() : p);
-      setProjects(updatedProjects);
-      
-      if (selectedProject === oldTitle) {
-        setSelectedProject(newTitle.trim());
-      }
-
       if (user) {
         const { error } = await supabase
-          .from('budget_data')
-          .update({ calculator_id: newTitle.trim() })
-          .eq('user_id', user.id)
-          .eq('page_type', 'vacation')
-          .eq('calculator_id', oldTitle);
+          .from('vacation_projects')
+          .update({ title: newTitle.trim() })
+          .eq('id', projectId);
 
         if (error) throw error;
+      }
+
+      const updatedProjects = allProjects.map(p => 
+        p.id === projectId ? { ...p, title: newTitle.trim() } : p
+      );
+      setAllProjects(updatedProjects);
+      
+      if (selectedProject?.id === projectId) {
+        setSelectedProject({ ...selectedProject, title: newTitle.trim() });
       }
       
       setEditingProjectId(null);
@@ -393,27 +449,34 @@ const Vacation: React.FC = () => {
     }
   };
 
-  const deleteProject = async (projectToDelete: string) => {
-    if (projects.length <= 1 || deletingProject) return;
+  const deleteProject = async (projectId: string) => {
+    if (allProjects.length <= 1 || deletingProject) return;
     
-    setDeletingProject(projectToDelete);
+    setDeletingProject(projectId);
     
     try {
-      const updatedProjects = projects.filter(p => p !== projectToDelete);
-      setProjects(updatedProjects);
-      
-      if (selectedProject === projectToDelete) {
-        setSelectedProject(updatedProjects[0]);
-        setOptions([]);
-      }
-      
       if (user) {
-        await supabase
+        const { error: projectError } = await supabase
+          .from('vacation_projects')
+          .delete()
+          .eq('id', projectId);
+
+        const { error: budgetError } = await supabase
           .from('budget_data')
           .delete()
           .eq('user_id', user.id)
           .eq('page_type', 'vacation')
-          .eq('calculator_id', projectToDelete);
+          .eq('project_id', projectId);
+
+        if (projectError || budgetError) throw projectError || budgetError;
+      }
+
+      const updatedProjects = allProjects.filter(p => p.id !== projectId);
+      setAllProjects(updatedProjects);
+      
+      if (selectedProject?.id === projectId) {
+        setSelectedProject(updatedProjects.length > 0 ? updatedProjects[0] : null);
+        setOptions([]);
       }
       
     } catch (error) {
@@ -454,40 +517,33 @@ const Vacation: React.FC = () => {
           {/* Project Tabs */}
           <div className="mb-6">
             <div className="flex items-center gap-2 mb-4 flex-wrap">
-              {projects.map((project) => (
-                <div key={project} className="flex items-center gap-1">
-                  {editingProjectId === project ? (
+              {allProjects.map((project) => (
+                <div key={project.id} className="flex items-center gap-1">
+                  {editingProjectId === project.id ? (
                     <div className="flex items-center gap-1">
                       <Input
                         value={editingTitle}
                         onChange={(e) => setEditingTitle(e.target.value)}
                         className="h-8 w-32 text-sm"
                         onKeyDown={(e) => {
-                          if (e.key === 'Enter') updateProjectTitle(project, editingTitle);
+                          if (e.key === 'Enter') updateProjectTitle(project.id, editingTitle);
                           if (e.key === 'Escape') setEditingProjectId(null);
-                        }}
-                        onBlur={() => {
-                          // Don't update on blur to avoid conflicts with delete
                         }}
                         autoFocus
                       />
-                      <Button size="sm" variant="ghost" onClick={() => updateProjectTitle(project, editingTitle)} className="h-8 w-8 p-0">
+                      <Button size="sm" variant="ghost" onClick={() => updateProjectTitle(project.id, editingTitle)} className="h-8 w-8 p-0">
                         <Check className="h-3 w-3" />
                       </Button>
                       <Button size="sm" variant="ghost" onClick={() => setEditingProjectId(null)} className="h-8 w-8 p-0">
                         <X className="h-3 w-3" />
                       </Button>
-                      {projects.length > 1 && (
+                      {allProjects.length > 1 && (
                         <button 
                           onClick={(e) => {
                             e.preventDefault();
                             e.stopPropagation();
-                            deleteProject(project);
+                            deleteProject(project.id);
                             setEditingProjectId(null);
-                          }}
-                          onMouseDown={(e) => {
-                            e.preventDefault();
-                            e.stopPropagation();
                           }}
                           className="h-8 w-8 text-red-500 hover:text-red-700 hover:bg-red-50 rounded flex items-center justify-center"
                           title="Delete project"
@@ -501,17 +557,17 @@ const Vacation: React.FC = () => {
                     <div className="flex items-center gap-1">
                       <div className="relative group">
                         <Button
-                          variant={selectedProject === project ? "default" : "outline"}
+                          variant={selectedProject?.id === project.id ? "default" : "outline"}
                           size="sm"
                           onClick={() => setSelectedProject(project)}
                           className="pr-8"
                         >
-                          {project}
+                          {project.title}
                         </Button>
                         <button
                           onClick={(e) => {
                             e.stopPropagation();
-                            startEditingProject(project);
+                            startEditingProject(project.id);
                           }}
                           className="absolute right-1 top-1/2 -translate-y-1/2 h-6 w-6 p-0 opacity-0 group-hover:opacity-100 transition-opacity hover:bg-white/20 rounded flex items-center justify-center"
                           title="Edit project name"
@@ -538,9 +594,6 @@ const Vacation: React.FC = () => {
                         setIsCreatingProject(false);
                         setNewProjectName('');
                       }
-                    }}
-                    onBlur={() => {
-                      // Don't save on blur to avoid conflicts with button clicks
                     }}
                     autoFocus
                   />
@@ -603,7 +656,7 @@ const Vacation: React.FC = () => {
           {!isCreatingProject && options.length === 0 && selectedProject && (
             <div className="text-center py-8">
               <p className="text-muted-foreground">
-                No vacation options for "{selectedProject}" yet. Click the + button to add your first option!
+                No vacation options for "{selectedProject.title}" yet. Click the + button to add your first option!
               </p>
             </div>
           )}
