@@ -1,94 +1,104 @@
-import React, { useState, useEffect } from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import AppSidebar from "./components/AppSidebar";
+import { Toaster } from "@/components/ui/toaster";
+import { Toaster as Sonner } from "@/components/ui/sonner";
+import { TooltipProvider } from "@/components/ui/tooltip";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { HelmetProvider } from 'react-helmet-async';
+import { AuthProvider } from "@/hooks/useAuth";
+import { SubscriptionProvider } from "@/hooks/useSubscription";
+import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar";
+import Header from "@/components/Header";
+import { AppSidebar } from "@/components/AppSidebar";
+import { useIsMobile } from "@/hooks/use-mobile";
+import Home from "@/pages/Home";
+import MonthlyBudget from "@/pages/MonthlyBudget";
+import CompareVendors from "@/pages/CompareVendors";
+import SavingsGoals from "@/pages/SavingsGoals";
+import Vacation from "@/pages/Vacation";
+import Auth from "@/pages/Auth";
+import NotFound from "@/pages/NotFound";
+import SubscriptionSuccess from "@/pages/SubscriptionSuccess";
+import UserSettings from "@/pages/UserSettings";
+import Engagement from "@/pages/Engagement";
+import AIInsights from "@/pages/AIInsights";
+import { Gifts } from "@/pages/Gifts";
+import { useState, createContext } from "react";
 
-const SIDEBAR_COLLAPSED = 56;
-const SIDEBAR_EXPANDED = 240;
-const HEADER_HEIGHT_DESKTOP = 56;
-const HEADER_HEIGHT_MOBILE = 48;
-
-// Dummy header
-function Header() {
-  const [height, setHeight] = useState(
-    window.innerWidth < 768 ? HEADER_HEIGHT_MOBILE : HEADER_HEIGHT_DESKTOP
-  );
-  useEffect(() => {
-    const onResize = () =>
-      setHeight(window.innerWidth < 768 ? HEADER_HEIGHT_MOBILE : HEADER_HEIGHT_DESKTOP);
-    window.addEventListener("resize", onResize);
-    return () => window.removeEventListener("resize", onResize);
-  }, []);
-  return (
-    <header
-      className="w-full bg-blue-600 text-white flex items-center px-6"
-      style={{
-        height,
-        position: "sticky",
-        top: 0,
-        zIndex: 50,
-      }}
-    >
-      <h1 className="text-2xl font-bold">Lovable Demo Header</h1>
-    </header>
-  );
+interface Currency {
+  code: string;
+  symbol: string;
+  name: string;
 }
 
-// Dummy pages
-function Page({ title }) {
-  return (
-    <div>
-      <h2 className="text-3xl font-bold mb-4">{title}</h2>
-      <p>This is the {title} page content.</p>
-    </div>
-  );
+interface CurrencyContextType {
+  currency: Currency;
+  setCurrency: (currency: Currency) => void;
 }
 
-export default function App() {
-  const [collapsed, setCollapsed] = useState(true);
-  const [headerHeight, setHeaderHeight] = useState(
-    window.innerWidth < 768 ? HEADER_HEIGHT_MOBILE : HEADER_HEIGHT_DESKTOP
-  );
+const defaultCurrency = { code: 'USD', symbol: '$', name: 'US Dollar' };
 
-  useEffect(() => {
-    const onResize = () =>
-      setHeaderHeight(window.innerWidth < 768 ? HEADER_HEIGHT_MOBILE : HEADER_HEIGHT_DESKTOP);
-    window.addEventListener("resize", onResize);
-    return () => window.removeEventListener("resize", onResize);
-  }, []);
+export const CurrencyContext = createContext<CurrencyContextType>({
+  currency: defaultCurrency,
+  setCurrency: () => {}
+});
 
-  // Keep sidebar width in sync with collapse state
-  const sidebarWidth = collapsed ? SIDEBAR_COLLAPSED : SIDEBAR_EXPANDED;
+const queryClient = new QueryClient();
+
+const currencies = [
+  { code: 'USD', symbol: '$', name: 'US Dollar' },
+  { code: 'EUR', symbol: '€', name: 'Euro' },
+  { code: 'GBP', symbol: '£', name: 'British Pound' },
+];
+
+const App = () => {
+  const [currency, setCurrency] = useState(defaultCurrency);
+  const isMobile = useIsMobile();
 
   return (
-    <Router>
-      <div className="min-h-screen w-full flex flex-col bg-gray-50">
-        <Header />
-        <div className="flex-1 flex flex-row min-h-0">
-          <AppSidebar
-            collapsed={collapsed}
-            onToggle={() => setCollapsed((c) => !c)}
-            headerHeight={headerHeight}
-          />
-          <main
-            className="flex-1 p-6"
-            style={{
-              marginLeft: sidebarWidth,
-              marginTop: headerHeight,
-              transition: "margin-left 0.2s",
-            }}
-          >
-            <Routes>
-              <Route path="/" element={<Page title="Home" />} />
-              <Route path="/budget" element={<Page title="Monthly Budget" />} />
-              <Route path="/savings" element={<Page title="Savings" />} />
-              <Route path="/compare-prices" element={<Page title="Compare Vendors" />} />
-              <Route path="/vacation" element={<Page title="Vacation" />} />
-              <Route path="/gifts" element={<Page title="Gifts" />} />
-              <Route path="/ai-insights" element={<Page title="AI Insights" />} />
-            </Routes>
-          </main>
-        </div>
-      </div>
-    </Router>
+    <HelmetProvider>
+      <QueryClientProvider client={queryClient}>
+      <TooltipProvider>
+        <Toaster />
+        <Sonner />
+        <AuthProvider>
+          <SubscriptionProvider>
+            <CurrencyContext.Provider value={{ currency, setCurrency }}>
+              <BrowserRouter>
+                <SidebarProvider defaultOpen={!isMobile}>
+                  <div className="min-h-screen w-full flex flex-col">
+                    <Header />
+                    <div className="flex flex-1">
+                      <AppSidebar />
+                      <SidebarInset>
+                        <main className="flex-1 p-4 md:p-6">
+                          <Routes>
+                            <Route path="/" element={<Home />} />
+                            <Route path="/budget" element={<MonthlyBudget />} />
+                            <Route path="/savings" element={<SavingsGoals />} />
+                            <Route path="/home" element={<Home />} />
+                            <Route path="/compare-prices" element={<CompareVendors />} />
+                            <Route path="/vacation" element={<Vacation />} />
+                            <Route path="/engagement" element={<Engagement />} />
+                            <Route path="/auth" element={<Auth />} />
+                            <Route path="/settings" element={<UserSettings />} />
+                            <Route path="/gifts" element={<Gifts />} />
+                            <Route path="/ai-insights" element={<AIInsights />} />
+                            <Route path="/subscription-success" element={<SubscriptionSuccess />} />
+                            <Route path="*" element={<NotFound />} />
+                          </Routes>
+                        </main>
+                      </SidebarInset>
+                    </div>
+                  </div>
+                </SidebarProvider>
+              </BrowserRouter>
+            </CurrencyContext.Provider>
+          </SubscriptionProvider>
+        </AuthProvider>
+      </TooltipProvider>
+    </QueryClientProvider>
+    </HelmetProvider>
   );
-}
+};
+
+export default App;
