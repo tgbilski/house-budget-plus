@@ -9,7 +9,7 @@ export type BadgeType =
   | 'financial_resources'
   | 'gifts'
   | 'monthly_budget'
-  | 'takeout_calendar'
+  | 'savings_tracker'
   | 'vacation';
 
 export interface Badge {
@@ -62,12 +62,12 @@ export const BADGE_INFO: Record<BadgeType, BadgeInfo> = {
     icon: '💰',
     color: 'from-yellow-500 to-orange-500'
   },
-  takeout_calendar: {
-    type: 'takeout_calendar',
-    name: 'Dining Tracker',
-    description: 'Tracked dining expenses with the calendar',
-    icon: '🍽️',
-    color: 'from-indigo-500 to-purple-500'
+  savings_tracker: {
+    type: 'savings_tracker',
+    name: 'Savings Champion',
+    description: 'Started tracking savings goals and progress',
+    icon: '🎯',
+    color: 'from-green-500 to-emerald-500'
   },
   vacation: {
     type: 'vacation',
