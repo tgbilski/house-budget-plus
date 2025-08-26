@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { User } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import ProfileDropdown from './ProfileDropdown';
-import logoIcon from '@/assets/logo-icon.png';
+const logoIcon = '/lovable-uploads/f2d56e66-518b-4a91-8172-551b1a54ef32.png';
 
 const Header: React.FC = () => {
   const { user } = useAuth();
