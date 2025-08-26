@@ -6,9 +6,10 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { HelmetProvider } from 'react-helmet-async';
 import { AuthProvider } from "@/hooks/useAuth";
 import { SubscriptionProvider } from "@/hooks/useSubscription";
-import { SidebarProvider } from "@/components/ui/sidebar";
+import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar";
 import Header from "@/components/Header";
 import { AppSidebar } from "@/components/AppSidebar";
+import { useIsMobile } from "@/hooks/use-mobile";
 import Home from "@/pages/Home";
 import MonthlyBudget from "@/pages/MonthlyBudget";
 import CompareVendors from "@/pages/CompareVendors";
@@ -51,6 +52,7 @@ const currencies = [
 
 const App = () => {
   const [currency, setCurrency] = useState(defaultCurrency);
+  const isMobile = useIsMobile();
 
   return (
     <HelmetProvider>
@@ -62,29 +64,33 @@ const App = () => {
           <SubscriptionProvider>
             <CurrencyContext.Provider value={{ currency, setCurrency }}>
               <BrowserRouter>
-                <div className="min-h-screen w-full">
-                  <Header />
-                  <div className="flex">
-                    <AppSidebar />
-                    <main className="flex-1 ml-16">
-                      <Routes>
-                        <Route path="/" element={<Home />} />
-                        <Route path="/budget" element={<MonthlyBudget />} />
-                        <Route path="/savings" element={<SavingsGoals />} />
-                        <Route path="/home" element={<Home />} />
-                        <Route path="/compare-prices" element={<CompareVendors />} />
-                        <Route path="/vacation" element={<Vacation />} />
-                        <Route path="/engagement" element={<Engagement />} />
-                        <Route path="/auth" element={<Auth />} />
-                        <Route path="/settings" element={<UserSettings />} />
-                        <Route path="/gifts" element={<Gifts />} />
-                        <Route path="/ai-insights" element={<AIInsights />} />
-                        <Route path="/subscription-success" element={<SubscriptionSuccess />} />
-                        <Route path="*" element={<NotFound />} />
-                      </Routes>
-                    </main>
+                <SidebarProvider defaultOpen={!isMobile}>
+                  <div className="min-h-screen w-full flex flex-col">
+                    <Header />
+                    <div className="flex flex-1">
+                      <AppSidebar />
+                      <SidebarInset>
+                        <main className="flex-1 p-4 md:p-6">
+                          <Routes>
+                            <Route path="/" element={<Home />} />
+                            <Route path="/budget" element={<MonthlyBudget />} />
+                            <Route path="/savings" element={<SavingsGoals />} />
+                            <Route path="/home" element={<Home />} />
+                            <Route path="/compare-prices" element={<CompareVendors />} />
+                            <Route path="/vacation" element={<Vacation />} />
+                            <Route path="/engagement" element={<Engagement />} />
+                            <Route path="/auth" element={<Auth />} />
+                            <Route path="/settings" element={<UserSettings />} />
+                            <Route path="/gifts" element={<Gifts />} />
+                            <Route path="/ai-insights" element={<AIInsights />} />
+                            <Route path="/subscription-success" element={<SubscriptionSuccess />} />
+                            <Route path="*" element={<NotFound />} />
+                          </Routes>
+                        </main>
+                      </SidebarInset>
+                    </div>
                   </div>
-                </div>
+                </SidebarProvider>
               </BrowserRouter>
             </CurrencyContext.Provider>
           </SubscriptionProvider>
