@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { User } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import ProfileDropdown from './ProfileDropdown';
-import logo from '@/assets/logo.png';
+import logoIcon from '@/assets/logo-icon.png';
 
 const Header: React.FC = () => {
   const { user } = useAuth();
@@ -16,9 +16,9 @@ const Header: React.FC = () => {
         <div className="flex items-center">
           <Link to="/" className="flex items-center space-x-3 hover:opacity-80 transition-opacity">
             <img 
-              src={logo} 
-              alt="House Budget Calculator Logo"
-              className="h-8 w-8"
+              src={logoIcon} 
+              alt="House Budget Calculator"
+              className="h-8 w-8 rounded"
             />
             <h1 className="text-xl font-semibold text-primary">
               House Budget Calculator
