@@ -32,7 +32,12 @@ interface CurrencyContextType {
   setCurrency: (currency: Currency) => void;
 }
 
-export const CurrencyContext = createContext<CurrencyContextType | undefined>(undefined);
+const defaultCurrency = { code: 'USD', symbol: '$', name: 'US Dollar' };
+
+export const CurrencyContext = createContext<CurrencyContextType>({
+  currency: defaultCurrency,
+  setCurrency: () => {}
+});
 
 const queryClient = new QueryClient();
 
@@ -43,7 +48,7 @@ const currencies = [
 ];
 
 const App = () => {
-  const [currency, setCurrency] = useState(currencies[0]);
+  const [currency, setCurrency] = useState(defaultCurrency);
 
   return (
     <HelmetProvider>
