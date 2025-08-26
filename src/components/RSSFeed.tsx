@@ -166,7 +166,7 @@ export const RSSFeed: React.FC<RSSFeedProps> = ({
   if (loading) {
     return (
     <section className="py-8 md:py-16">
-        <div className="w-full max-w-xs md:max-w-md mx-auto px-2">
+        <div className="w-full max-w-sm mx-auto px-2">
           <h2 className="text-lg md:text-2xl font-bold mb-6 text-center">
             {title}
           </h2>
@@ -194,7 +194,7 @@ export const RSSFeed: React.FC<RSSFeedProps> = ({
   if (error) {
     return (
       <section className="py-8 md:py-16">
-        <div className="w-full max-w-xs md:max-w-md mx-auto text-center px-2">
+        <div className="w-full max-w-sm mx-auto text-center px-2">
           <h2 className="text-lg md:text-2xl font-bold mb-4">
             {title}
           </h2>
@@ -208,7 +208,7 @@ export const RSSFeed: React.FC<RSSFeedProps> = ({
 
   return (
     <section className="py-8 md:py-16 bg-secondary/20 overflow-x-hidden">
-      <div className="w-full max-w-xs md:max-w-md mx-auto px-2">
+      <div className="w-full max-w-sm mx-auto px-2">
         <div className="text-center mb-6 md:mb-8">
           <h2 className="text-lg md:text-2xl font-bold mb-3">
             {title}
@@ -223,11 +223,11 @@ export const RSSFeed: React.FC<RSSFeedProps> = ({
             <p className="text-muted-foreground">Loading financial news...</p>
           </div>
         ) : (
-          <div className="relative max-w-xs mx-auto">
+          <div className="relative max-w-sm mx-auto">
             {/* Single Card Display */}
             <div className="overflow-hidden">
               {articles.length > 0 && (
-                <Card className="hover:shadow-lg transition-all duration-300 cursor-pointer group max-w-xs mx-auto">
+                <Card className="hover:shadow-lg transition-all duration-300 cursor-pointer group max-w-sm mx-auto">
                   <div className="relative h-24 md:h-32 overflow-hidden">
                     <img 
                       src={financialImages[currentIndex % financialImages.length]} 
