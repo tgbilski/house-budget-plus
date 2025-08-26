@@ -210,12 +210,12 @@ export const RSSFeed: React.FC<RSSFeedProps> = ({
 
   return (
     <section className="py-8 md:py-16 px-4 bg-secondary/20 overflow-x-hidden">
-      <div className="w-full max-w-sm sm:max-w-md md:max-w-2xl mx-auto">
+      <div className="w-full max-w-xs md:max-w-md mx-auto">
         <div className="text-center mb-6 md:mb-8">
-          <h2 className="text-xl md:text-2xl font-bold mb-3">
+          <h2 className="text-lg md:text-2xl font-bold mb-3">
             {title}
           </h2>
-          <p className="text-sm md:text-base text-muted-foreground">
+          <p className="text-xs md:text-base text-muted-foreground">
             Stay informed with the latest financial news
           </p>
         </div>
@@ -225,12 +225,12 @@ export const RSSFeed: React.FC<RSSFeedProps> = ({
             <p className="text-muted-foreground">Loading financial news...</p>
           </div>
         ) : (
-          <div className="relative max-w-sm mx-auto">
+          <div className="relative max-w-xs mx-auto">
             {/* Single Card Display */}
             <div className="overflow-hidden">
               {articles.length > 0 && (
-                <Card className="hover:shadow-lg transition-all duration-300 cursor-pointer group">
-                  <div className="relative h-32 md:h-40 overflow-hidden">
+                <Card className="hover:shadow-lg transition-all duration-300 cursor-pointer group max-w-xs mx-auto">
+                  <div className="relative h-24 md:h-32 overflow-hidden">
                     <img 
                       src={financialImages[currentIndex % financialImages.length]} 
                       alt={`Financial news illustration ${currentIndex + 1}`}
@@ -238,20 +238,20 @@ export const RSSFeed: React.FC<RSSFeedProps> = ({
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
                   </div>
-                  <CardHeader className="pb-2 p-4">
-                    <div className="flex items-center gap-2 text-xs text-muted-foreground mb-2">
+                  <CardHeader className="pb-2 p-3">
+                    <div className="flex items-center gap-1 text-xs text-muted-foreground mb-1">
                       <Calendar className="h-3 w-3" />
-                      <span>{formatDate(articles[currentIndex].pubDate)}</span>
+                      <span className="text-xs">{formatDate(articles[currentIndex].pubDate)}</span>
                       <span>•</span>
-                      <span className="truncate">{articles[currentIndex].source}</span>
+                      <span className="truncate text-xs">{articles[currentIndex].source}</span>
                     </div>
-                    <CardTitle className="text-sm md:text-base line-clamp-2 group-hover:text-primary transition-colors">
+                    <CardTitle className="text-sm line-clamp-2 group-hover:text-primary transition-colors leading-tight">
                       {articles[currentIndex].title}
                     </CardTitle>
                   </CardHeader>
-                  <CardContent className="pt-0 p-4">
-                    <CardDescription className="text-xs md:text-sm line-clamp-3 mb-4">
-                      {truncateDescription(articles[currentIndex].description)}
+                  <CardContent className="pt-0 p-3">
+                    <CardDescription className="text-xs line-clamp-2 mb-3">
+                      {truncateDescription(articles[currentIndex].description, 60)}
                     </CardDescription>
                     <Button 
                       variant="outline" 
