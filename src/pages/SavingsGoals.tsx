@@ -450,16 +450,6 @@ const SavingsGoals = () => {
                         <Edit2 className="h-3 w-3" />
                       </button>
                     </div>
-                    {savingsGoals.length > 1 && (
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => deleteGoal(goal.id)}
-                        className="text-destructive hover:text-destructive p-1 h-8 w-8"
-                      >
-                        <Trash2 className="h-3 w-3" />
-                      </Button>
-                    )}
                   </div>
                 )}
               </div>
@@ -492,7 +482,7 @@ const SavingsGoals = () => {
         {/* Year Selection and Savings Table */}
         <Card>
           <CardContent className="pt-6">
-            <div className="mb-6">
+            <div className="flex items-center justify-between">
               <div className="flex items-center gap-4">
                 <label className="text-sm font-medium">Year:</label>
                 <Select value={selectedYear} onValueChange={setSelectedYear}>
@@ -508,6 +498,19 @@ const SavingsGoals = () => {
                   </SelectContent>
                 </Select>
               </div>
+              
+              {/* Delete Goal Button */}
+              {savingsGoals.length > 1 && currentGoalId && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => deleteGoal(currentGoalId)}
+                  className="text-destructive hover:text-destructive border-destructive/30 hover:border-destructive"
+                >
+                  <Trash2 className="h-4 w-4 mr-1" />
+                  Delete Goal
+                </Button>
+              )}
             </div>
 
             <Table>
