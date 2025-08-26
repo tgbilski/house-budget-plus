@@ -5,6 +5,18 @@ import { ExternalLink, Calendar, Clock } from "lucide-react";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { supabase } from "@/integrations/supabase/client";
 
+// Import financial news placeholder images
+import financialNews1 from '../assets/financial-placeholder-1.svg';
+import financialNews2 from '../assets/financial-placeholder-2.svg';
+import financialNews3 from '../assets/financial-placeholder-3.svg';
+import financialNews4 from '../assets/financial-placeholder-4.svg';
+import financialNews5 from '../assets/financial-placeholder-5.svg';
+import financialNews6 from '../assets/financial-placeholder-6.svg';
+import financialNews7 from '../assets/financial-placeholder-7.svg';
+import financialNews8 from '../assets/financial-placeholder-8.svg';
+import financialNews9 from '../assets/financial-placeholder-9.svg';
+import financialNews10 from '../assets/financial-placeholder-10.svg';
+
 interface RSSItem {
   title: string;
   description: string;
@@ -13,6 +25,20 @@ interface RSSItem {
   source: string;
   imageUrl?: string;
 }
+
+// Array of financial news images that will cycle through articles
+const financialImages = [
+  financialNews1,
+  financialNews2,
+  financialNews3,
+  financialNews4,
+  financialNews5,
+  financialNews6,
+  financialNews7,
+  financialNews8,
+  financialNews9,
+  financialNews10,
+];
 
 interface RSSFeedProps {
   feedUrl?: string;
@@ -189,45 +215,56 @@ export const RSSFeed: React.FC<RSSFeedProps> = ({
         ) : (
           <ScrollArea className="w-full whitespace-nowrap">
             <div className="flex gap-6 pb-4">
-            {articles.map((article, index) => (
-              <Card 
-                key={index} 
-                className="min-w-[320px] max-w-[320px] hover:shadow-lg transition-all duration-300 cursor-pointer group overflow-hidden"
-              >
-                
-                <CardHeader className="pb-3">
-                  <div className="flex items-center gap-2 text-xs text-muted-foreground mb-2">
-                    <Calendar className="h-3 w-3" />
-                    <span>{formatDate(article.pubDate)}</span>
-                    <span>•</span>
-                    <span>{article.source}</span>
+            {articles.map((article, index) => {
+              const cycleImage = financialImages[index % financialImages.length];
+              
+              return (
+                <Card 
+                  key={index} 
+                  className="min-w-[320px] max-w-[320px] hover:shadow-lg transition-all duration-300 cursor-pointer group overflow-hidden"
+                >
+                  <div className="relative h-32 overflow-hidden">
+                    <img 
+                      src={cycleImage} 
+                      alt={`Financial news illustration ${index + 1}`}
+                      className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
                   </div>
-                  <CardTitle className="text-base line-clamp-2 group-hover:text-primary transition-colors">
-                    {article.title}
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="pt-0">
-                  <CardDescription className="text-sm line-clamp-3 mb-4">
-                    {truncateDescription(article.description)}
-                  </CardDescription>
-                  <Button 
-                    variant="outline" 
-                    size="sm" 
-                    className="w-full text-xs"
-                    asChild
-                  >
-                    <a 
-                      href={article.link} 
-                      target="_blank" 
-                      rel="noopener noreferrer"
-                      className="flex items-center justify-center gap-1"
+                  <CardHeader className="pb-3">
+                    <div className="flex items-center gap-2 text-xs text-muted-foreground mb-2">
+                      <Calendar className="h-3 w-3" />
+                      <span>{formatDate(article.pubDate)}</span>
+                      <span>•</span>
+                      <span>{article.source}</span>
+                    </div>
+                    <CardTitle className="text-base line-clamp-2 group-hover:text-primary transition-colors">
+                      {article.title}
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="pt-0">
+                    <CardDescription className="text-sm line-clamp-3 mb-4">
+                      {truncateDescription(article.description)}
+                    </CardDescription>
+                    <Button 
+                      variant="outline" 
+                      size="sm" 
+                      className="w-full text-xs"
+                      asChild
                     >
-                      Read More <ExternalLink className="h-3 w-3" />
-                    </a>
-                  </Button>
-                </CardContent>
-              </Card>
-            ))}
+                      <a 
+                        href={article.link} 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="flex items-center justify-center gap-1"
+                      >
+                        Read More <ExternalLink className="h-3 w-3" />
+                      </a>
+                    </Button>
+                  </CardContent>
+                </Card>
+              );
+            })}
             </div>
             <ScrollBar orientation="horizontal" />
           </ScrollArea>

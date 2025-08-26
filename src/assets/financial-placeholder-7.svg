@@ -1,0 +1,11 @@
+<svg width="400" height="240" viewBox="0 0 400 240" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="400" height="240" fill="#059669"/>
+  <rect x="20" y="20" width="360" height="200" fill="#10B981" rx="8"/>
+  <path d="M100 60 Q120 40 140 60 Q160 80 180 60 Q200 40 220 60" stroke="#ffffff" stroke-width="6" opacity="0.8"/>
+  <circle cx="200" cy="120" r="40" fill="#ffffff" opacity="0.3"/>
+  <polygon points="180,100 220,100 200,140" fill="#ffffff" opacity="0.6"/>
+  <rect x="260" y="80" width="80" height="80" fill="#ffffff" rx="8" opacity="0.4"/>
+  <rect x="280" y="100" width="40" height="40" fill="#059669" rx="4"/>
+  <rect x="40" y="160" width="200" height="40" fill="#ffffff" rx="4" opacity="0.2"/>
+  <text x="200" y="230" font-family="Arial, sans-serif" font-size="12" fill="#ffffff" text-anchor="middle" opacity="0.8">Financial Security</text>
+</svg>
