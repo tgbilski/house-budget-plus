@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Plus, Edit3, Star, Trash2 } from 'lucide-react';
+import { Plus, Edit3, Star, Trash2, Edit2, Check, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -199,8 +199,8 @@ const Vacation: React.FC = () => {
   const [projects, setProjects] = useState<string[]>(['default']);
   const [isCreatingProject, setIsCreatingProject] = useState(false);
   const [newProjectName, setNewProjectName] = useState('');
-  const [isEditingProjectName, setIsEditingProjectName] = useState(false);
-  const [editProjectName, setEditProjectName] = useState('');
+  const [editingProjectId, setEditingProjectId] = useState<string | null>(null);
+  const [editingTitle, setEditingTitle] = useState('');
   
   const { user } = useAuth();
   const { currency } = useCurrency();
@@ -353,6 +353,44 @@ const Vacation: React.FC = () => {
     }
   };
 
+  const startEditingProject = (projectId: string) => {
+    setEditingProjectId(projectId);
+    setEditingTitle(projectId);
+  };
+
+  const updateProjectTitle = async (oldTitle: string, newTitle: string) => {
+    if (!newTitle.trim() || newTitle === oldTitle) {
+      setEditingProjectId(null);
+      return;
+    }
+
+    try {
+      const updatedProjects = projects.map(p => p === oldTitle ? newTitle.trim() : p);
+      setProjects(updatedProjects);
+      
+      if (selectedProject === oldTitle) {
+        setSelectedProject(newTitle.trim());
+      }
+
+      if (user) {
+        const { error } = await supabase
+          .from('budget_data')
+          .update({ calculator_id: newTitle.trim() })
+          .eq('user_id', user.id)
+          .eq('page_type', 'vacation')
+          .eq('calculator_id', oldTitle);
+
+        if (error) throw error;
+      }
+      
+      setEditingProjectId(null);
+      setEditingTitle('');
+    } catch (error) {
+      console.error('Error updating project title:', error);
+      setEditingProjectId(null);
+    }
+  };
+
   const getLowestCost = () => {
     if (options.length === 0) return 0;
     return Math.min(...options.map(option => option.estimatedCost || Infinity));
@@ -392,71 +430,109 @@ const Vacation: React.FC = () => {
             />
           </div>
           
-          <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between max-w-6xl mx-auto">            
-            <div className="flex flex-col sm:flex-row gap-2 items-start sm:items-center">
-              <Button 
-                onClick={() => setIsCreatingProject(true)}
-                className="whitespace-nowrap bg-accent hover:bg-accent-hover text-accent-foreground"
-              >
-                <Plus className="h-4 w-4 mr-2" />
-                New Vacation
-              </Button>
-              
-              {!isCreatingProject && projects.filter(p => p !== 'default').length > 0 && (
-                <div className="flex items-center gap-2">
-                  <Select value={selectedProject} onValueChange={setSelectedProject}>
-                    <SelectTrigger className="w-[200px]">
-                      <SelectValue placeholder="Select vacation">
-                        {selectedProject && selectedProject !== 'default' ? selectedProject : "Select vacation"}
-                      </SelectValue>
-                    </SelectTrigger>
-                    <SelectContent className="z-50 bg-background border shadow-lg">
-                      {projects.filter(project => project !== 'default').map((project) => (
-                        <SelectItem key={project} value={project}>
+          
+          {/* Project Tabs */}
+          <div className="mb-6">
+            <div className="flex items-center gap-2 mb-4 flex-wrap">
+              {projects.filter(p => p !== 'default').map((project) => (
+                <div key={project} className="flex items-center gap-1">
+                  {editingProjectId === project ? (
+                    <div className="flex items-center gap-1">
+                      <Input
+                        value={editingTitle}
+                        onChange={(e) => setEditingTitle(e.target.value)}
+                        className="h-8 w-32 text-sm"
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter') updateProjectTitle(project, editingTitle);
+                          if (e.key === 'Escape') setEditingProjectId(null);
+                        }}
+                        onBlur={() => updateProjectTitle(project, editingTitle)}
+                        autoFocus
+                      />
+                      <Button size="sm" variant="ghost" onClick={() => updateProjectTitle(project, editingTitle)} className="h-8 w-8 p-0">
+                        <Check className="h-3 w-3" />
+                      </Button>
+                      <Button size="sm" variant="ghost" onClick={() => setEditingProjectId(null)} className="h-8 w-8 p-0">
+                        <X className="h-3 w-3" />
+                      </Button>
+                    </div>
+                  ) : (
+                    <div className="flex items-center gap-1">
+                      <div className="relative group">
+                        <Button
+                          variant={selectedProject === project ? "default" : "outline"}
+                          size="sm"
+                          onClick={() => setSelectedProject(project)}
+                          className="pr-8"
+                        >
                           {project}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                        </Button>
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            startEditingProject(project);
+                          }}
+                          className="absolute right-1 top-1/2 -translate-y-1/2 h-6 w-6 p-0 opacity-0 group-hover:opacity-100 transition-opacity hover:bg-white/20 rounded flex items-center justify-center"
+                          title="Edit project name"
+                        >
+                          <Edit2 className="h-3 w-3" />
+                        </button>
+                      </div>
+                    </div>
+                  )}
                 </div>
-              )}
-            </div>
-            
-            {!isCreatingProject && options.length > 0 && (
-              <div className="text-sm text-muted-foreground">
-                Lowest estimate: {currency.symbol}{getLowestCost().toFixed(2)}
-              </div>
-            )}
-          </div>
-
-          {isCreatingProject && (
-            <div className="max-w-6xl mx-auto mb-8">
-              <Card>
-                <CardHeader>
-                  <CardTitle>Create New Vacation</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="flex gap-2">
-                    <Input
-                      value={newProjectName}
-                      onChange={(e) => setNewProjectName(e.target.value)}
-                      placeholder="Enter vacation name"
-                      onKeyPress={(e) => e.key === 'Enter' && createNewProject()}
-                      autoFocus
-                    />
-                    <Button onClick={createNewProject}>Create</Button>
-                    <Button 
-                      variant="outline" 
-                      onClick={() => {
+              ))}
+              
+              {/* Add Project Plus Button */}
+              {isCreatingProject ? (
+                <div className="flex items-center gap-1">
+                  <Input
+                    value={newProjectName}
+                    onChange={(e) => setNewProjectName(e.target.value)}
+                    placeholder="Project name"
+                    className="h-8 w-32 text-sm"
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') createNewProject();
+                      if (e.key === 'Escape') {
                         setIsCreatingProject(false);
                         setNewProjectName('');
-                      }}
-                    >
-                      Cancel
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
+                      }
+                    }}
+                    onBlur={() => {
+                      if (newProjectName.trim()) {
+                        createNewProject();
+                      } else {
+                        setIsCreatingProject(false);
+                      }
+                    }}
+                    autoFocus
+                  />
+                  <Button size="sm" variant="ghost" onClick={createNewProject} className="h-8 w-8 p-0">
+                    <Check className="h-3 w-3" />
+                  </Button>
+                  <Button size="sm" variant="ghost" onClick={() => {
+                    setIsCreatingProject(false);
+                    setNewProjectName('');
+                  }} className="h-8 w-8 p-0">
+                    <X className="h-3 w-3" />
+                  </Button>
+                </div>
+              ) : (
+                <Button 
+                  onClick={() => setIsCreatingProject(true)} 
+                  size="sm" 
+                  variant="outline"
+                  className="h-8 w-8 p-0 rounded-full border-dashed"
+                >
+                  <Plus className="h-3 w-3" />
+                </Button>
+              )}
+            </div>
+          </div>
+
+          {selectedProject && selectedProject !== 'default' && options.length > 0 && (
+            <div className="text-sm text-muted-foreground mb-4">
+              Lowest estimate: {currency.symbol}{getLowestCost().toFixed(2)}
             </div>
           )}
         </div>

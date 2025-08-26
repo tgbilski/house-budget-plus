@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Plus, Star, Trash2, Edit3 } from 'lucide-react';
+import { Star, Plus, Edit3, Trash2, Edit2, Check, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -290,8 +290,9 @@ const CompareVendors: React.FC = () => {
   const [selectedProject, setSelectedProject] = useState<string>('');
   const [allProjects, setAllProjects] = useState<string[]>([]);
   const [isNewProject, setIsNewProject] = useState(false);
-  const [isEditingProjectName, setIsEditingProjectName] = useState(false);
-  const [editProjectName, setEditProjectName] = useState('');
+  const [editingProjectId, setEditingProjectId] = useState<string | null>(null);
+  const [editingTitle, setEditingTitle] = useState('');
+  const [newProjectName, setNewProjectName] = useState('');
   const { user } = useAuth();
   const { currency } = useCurrency();
   const { toast } = useToast();
@@ -371,7 +372,7 @@ const CompareVendors: React.FC = () => {
   const createNewProject = () => {
     setIsNewProject(true);
     setSelectedProject('');
-    setIsEditingProjectName(true);
+    setNewProjectName('');
   };
 
   const saveNewProject = async (projectName: string) => {
@@ -381,7 +382,7 @@ const CompareVendors: React.FC = () => {
       
       setSelectedProject(projectName.trim());
       setIsNewProject(false);
-      setIsEditingProjectName(false);
+      setNewProjectName('');
       
       const newQuote: VendorQuote = {
         id: Date.now().toString(),
@@ -414,6 +415,52 @@ const CompareVendors: React.FC = () => {
           console.error('Error saving new project:', error);
         }
       }
+    }
+  };
+
+  const startEditingProject = (projectId: string) => {
+    setEditingProjectId(projectId);
+    setEditingTitle(projectId);
+  };
+
+  const updateProjectTitle = async (oldTitle: string, newTitle: string) => {
+    if (!newTitle.trim() || newTitle === oldTitle) {
+      setEditingProjectId(null);
+      return;
+    }
+
+    try {
+      const updatedProjects = allProjects.map(p => p === oldTitle ? newTitle.trim() : p);
+      setAllProjects(updatedProjects);
+      
+      if (selectedProject === oldTitle) {
+        setSelectedProject(newTitle.trim());
+      }
+
+      // Update quotes for this project
+      const updatedQuotes = quotes.map(quote => 
+        quote.projectName === oldTitle 
+          ? { ...quote, projectName: newTitle.trim() }
+          : quote
+      );
+      setQuotes(updatedQuotes);
+
+      if (user) {
+        const { error } = await supabase
+          .from('budget_data')
+          .update({ calculator_id: newTitle.trim() })
+          .eq('user_id', user.id)
+          .eq('page_type', 'compare_prices')
+          .eq('calculator_id', oldTitle);
+
+        if (error) throw error;
+      }
+      
+      setEditingProjectId(null);
+      setEditingTitle('');
+    } catch (error) {
+      console.error('Error updating project title:', error);
+      setEditingProjectId(null);
     }
   };
 
@@ -500,87 +547,113 @@ const CompareVendors: React.FC = () => {
             />
           </div>
           
-          <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between max-w-6xl mx-auto mb-8">            
-            <div className="flex flex-col sm:flex-row gap-2 items-start sm:items-center">
-              <Button
-                onClick={createNewProject}
-                className="whitespace-nowrap bg-accent hover:bg-accent-hover text-accent-foreground"
-              >
-                <Plus className="h-4 w-4 mr-2" />
-                New Project
-              </Button>
-              
-              {!isNewProject && allProjects.length > 0 && (
-                <div className="flex items-center gap-2">
-                  <Select
-                    value={selectedProject}
-                    onValueChange={(value) => {
-                      setSelectedProject(value);
-                      setIsNewProject(false);
-                      setIsEditingProjectName(false);
-                    }}
-                  >
-                    <SelectTrigger className="w-[200px]">
-                      <SelectValue placeholder="Select project">
-                        {selectedProject || "Select project"}
-                      </SelectValue>
-                    </SelectTrigger>
-                    <SelectContent className="z-50 bg-background border shadow-lg">
-                      {allProjects.map((project) => (
-                        <SelectItem key={project} value={project}>
+          {/* Project Tabs */}
+          <div className="mb-6">
+            <div className="flex items-center gap-2 mb-4 flex-wrap">
+              {allProjects.map((project) => (
+                <div key={project} className="flex items-center gap-1">
+                  {editingProjectId === project ? (
+                    <div className="flex items-center gap-1">
+                      <Input
+                        value={editingTitle}
+                        onChange={(e) => setEditingTitle(e.target.value)}
+                        className="h-8 w-32 text-sm"
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter') updateProjectTitle(project, editingTitle);
+                          if (e.key === 'Escape') setEditingProjectId(null);
+                        }}
+                        onBlur={() => updateProjectTitle(project, editingTitle)}
+                        autoFocus
+                      />
+                      <Button size="sm" variant="ghost" onClick={() => updateProjectTitle(project, editingTitle)} className="h-8 w-8 p-0">
+                        <Check className="h-3 w-3" />
+                      </Button>
+                      <Button size="sm" variant="ghost" onClick={() => setEditingProjectId(null)} className="h-8 w-8 p-0">
+                        <X className="h-3 w-3" />
+                      </Button>
+                    </div>
+                  ) : (
+                    <div className="flex items-center gap-1">
+                      <div className="relative group">
+                        <Button
+                          variant={selectedProject === project ? "default" : "outline"}
+                          size="sm"
+                          onClick={() => {
+                            setSelectedProject(project);
+                            setIsNewProject(false);
+                          }}
+                          className="pr-8"
+                        >
                           {project}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                        </Button>
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            startEditingProject(project);
+                          }}
+                          className="absolute right-1 top-1/2 -translate-y-1/2 h-6 w-6 p-0 opacity-0 group-hover:opacity-100 transition-opacity hover:bg-white/20 rounded flex items-center justify-center"
+                          title="Edit project name"
+                        >
+                          <Edit2 className="h-3 w-3" />
+                        </button>
+                      </div>
+                    </div>
+                  )}
                 </div>
+              ))}
+              
+              {/* Add Project Plus Button */}
+              {isNewProject ? (
+                <div className="flex items-center gap-1">
+                  <Input
+                    value={newProjectName}
+                    onChange={(e) => setNewProjectName(e.target.value)}
+                    placeholder="Project name"
+                    className="h-8 w-32 text-sm"
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') saveNewProject(newProjectName);
+                      if (e.key === 'Escape') {
+                        setIsNewProject(false);
+                        setNewProjectName('');
+                      }
+                    }}
+                    onBlur={() => {
+                      if (newProjectName.trim()) {
+                        saveNewProject(newProjectName);
+                      } else {
+                        setIsNewProject(false);
+                      }
+                    }}
+                    autoFocus
+                  />
+                  <Button size="sm" variant="ghost" onClick={() => saveNewProject(newProjectName)} className="h-8 w-8 p-0">
+                    <Check className="h-3 w-3" />
+                  </Button>
+                  <Button size="sm" variant="ghost" onClick={() => {
+                    setIsNewProject(false);
+                    setNewProjectName('');
+                  }} className="h-8 w-8 p-0">
+                    <X className="h-3 w-3" />
+                  </Button>
+                </div>
+              ) : (
+                <Button 
+                  onClick={createNewProject} 
+                  size="sm" 
+                  variant="outline"
+                  className="h-8 w-8 p-0 rounded-full border-dashed"
+                >
+                  <Plus className="h-3 w-3" />
+                </Button>
               )}
             </div>
             
             {!isNewProject && displayedQuotes.length > 0 && lowestEstimate && (
-              <div className="text-sm text-muted-foreground">
+              <div className="text-sm text-muted-foreground mb-4">
                 Lowest estimate: {currency.symbol}{lowestEstimate.toFixed(2)}
               </div>
             )}
           </div>
-
-          {isNewProject && (
-            <div className="max-w-6xl mx-auto mb-8">
-              <Card>
-                <CardHeader>
-                  <CardTitle>Create New Project</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="flex gap-2">
-                    <Input
-                      placeholder="Enter project name (e.g., Kitchen Remodel)"
-                      onKeyDown={(e) => {
-                        if (e.key === 'Enter') {
-                          const target = e.target as HTMLInputElement;
-                          saveNewProject(target.value);
-                        }
-                      }}
-                      autoFocus
-                    />
-                    <Button
-                      onClick={(e) => {
-                        const input = e.currentTarget.parentElement?.querySelector('input') as HTMLInputElement;
-                        if (input) saveNewProject(input.value);
-                      }}
-                    >
-                      Create
-                    </Button>
-                    <Button 
-                      variant="outline" 
-                      onClick={() => setIsNewProject(false)}
-                    >
-                      Cancel
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-          )}
         </div>
 
         <div className="max-w-6xl mx-auto">
