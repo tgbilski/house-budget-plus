@@ -720,6 +720,7 @@ const CompareVendors: React.FC = () => {
           <div className="text-center">
             <Star className="h-16 w-16 mx-auto mb-6 text-primary" />
             <h1 className="text-4xl font-bold mb-4">Compare Vendors</h1>
+            <p className="text-xl text-white/90 mb-6">Get quotes, compare prices, and evaluate vendors side by side</p>
           </div>
         </div>
       </div>
