@@ -432,7 +432,7 @@ const SavingsGoals = () => {
   }
 
   return (
-    <div className="min-h-screen overflow-x-hidden">
+    <div className="min-h-screen">
       <SEO 
         title="Savings Goals - Track Your Monthly Savings"
         description="Track your monthly savings with an interactive yearly table and editable goals."
@@ -440,20 +440,18 @@ const SavingsGoals = () => {
       />
       
       {/* Hero Section with Dark Gradient */}
-      <div className="relative bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 text-white py-16 mb-8">
+      <div className="relative bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 text-white py-16">
         <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHZpZXdCb3g9IjAgMCAyMCAyMCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3QgeD0iMCIgeT0iMCIgd2lkdGg9IjEiIGhlaWdodD0iMjAiIGZpbGw9InJnYmEoMjU1LDI1NSwyNTUsMC4xKSIvPgo8L3N2Zz4K')] opacity-20"></div>
-        <div className="w-full max-w-6xl mx-auto px-4 relative z-10">
+        <div className="container mx-auto px-4 relative z-10">
           <div className="text-center">
-            <Target className="h-12 w-12 mx-auto mb-4 text-primary" />
+            <Target className="h-16 w-16 mx-auto mb-6 text-primary" />
             <h1 className="text-4xl font-bold mb-4">Savings Tracker</h1>
-            <p className="text-xl text-white max-w-2xl mx-auto">
-              Track your monthly savings progress with an easy-to-use yearly table
-            </p>
+            <p className="text-xl text-white/90 mb-6">Track your monthly savings progress with an easy-to-use yearly table</p>
           </div>
         </div>
       </div>
 
-      <div className="w-full max-w-6xl mx-auto px-4 py-8">
+      <div className="container mx-auto px-4 py-8">
         {/* Warning Banner for Non-Authenticated Users */}
         {!user && (
           <Alert className="mb-6 border-yellow-200 bg-yellow-50 dark:border-yellow-800 dark:bg-yellow-950">

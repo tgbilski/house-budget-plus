@@ -82,7 +82,7 @@ const HeroSection = () => (
             </div>
           </div>
           
-          <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold mb-3 md:mb-5 text-gray-900 leading-tight">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-4 md:mb-6 text-gray-900 leading-tight">
             Own Your 
             <span className="text-primary block">House Budget</span>
           </h1>
@@ -301,7 +301,7 @@ const Home = () => {
         structuredData={seoData.home.structuredData}
         canonical="https://www.housebudgetcalculator.com/"
       />
-      <div className="min-h-screen relative w-full overflow-x-hidden">
+      <div className="min-h-screen">
         <HeroSection />
         <FeaturedToolsSection />
         <RSSFeed 
