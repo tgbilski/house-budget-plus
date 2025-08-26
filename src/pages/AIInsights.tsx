@@ -80,27 +80,31 @@ export default function AIInsights() {
         description="Get personalized financial advice using AI. Analyze your budget data and receive expert insights to optimize your spending and savings."
         keywords="AI financial advisor, budget insights, personal finance, money management, financial optimization"
       />
-      <Breadcrumbs />
+      
+      {/* Hero Section with Dark Gradient */}
+      <div className="relative bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 text-white py-16">
+        <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHZpZXdCb3g9IjAgMCAyMCAyMCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3QgeD0iMCIgeT0iMCIgd2lkdGg9IjEiIGhlaWdodD0iMjAiIGZpbGw9InJnYmEoMjU1LDI1NSwyNTUsMC4xKSIvPgo8L3N2Zz4K')] opacity-20"></div>
+        <div className="container mx-auto px-4 relative z-10">
+          <div className="text-center">
+            <div className="flex items-center justify-center gap-4 mb-6">
+              <svg className="h-16 w-16 text-primary" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+              </svg>
+              <svg className="h-16 w-16 text-yellow-400" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/>
+              </svg>
+            </div>
+            <h1 className="text-4xl font-bold mb-4">AI Financial Insights</h1>
+            <p className="text-xl text-gray-300 max-w-2xl mx-auto">
+              Get personalized financial advice powered by artificial intelligence
+            </p>
+          </div>
+        </div>
+      </div>
+
       <div className="container mx-auto px-3 sm:px-4 py-4 sm:py-8">
         <div className="max-w-6xl mx-auto">
           {/* The debugState <pre> block has been removed */}
-
-          {/* Hero Section with Dark Gradient */}
-          <div className="relative bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 text-white py-16 mb-8">
-            <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHZpZXdCb3g9IjAgMCAyMCAyMCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3QgeD0iMCIgeT0iMCIgd2lkdGg9IjEiIGhlaWdodD0iMjAiIGZpbGw9InJnYmEoMjU1LDI1NSwyNTUsMC4xKSIvPgo8L3N2Zz4K')] opacity-20"></div>
-            <div className="container mx-auto px-4 relative z-10">
-              <div className="text-center">
-                <div className="flex items-center justify-center mb-6">
-                  <Brain className="h-16 w-16 text-primary mr-3" />
-                  <Crown className="h-8 w-8 text-yellow-500 ml-2" />
-                </div>
-                <h1 className="text-4xl font-bold mb-4">AI Budget Insights</h1>
-                <p className="text-xl text-gray-300 max-w-2xl mx-auto">
-                  Get personalized financial advice powered by AI
-                </p>
-              </div>
-            </div>
-          </div>
 
           {subLoading && (
             <div className="flex justify-center items-center h-40">

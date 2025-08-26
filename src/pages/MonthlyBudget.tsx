@@ -109,10 +109,8 @@ const MonthlyBudget: React.FC = () => {
         structuredData={seoData.monthlyBudget.structuredData}
         canonical="https://www.housebudgetcalculator.com/budget"
       />
-      <Breadcrumbs />
-      <div className="container mx-auto px-4 py-8">
-        {/* Hero Section with Dark Gradient */}
-        <div className="relative bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 text-white py-16 mb-8">
+      {/* Hero Section with Dark Gradient */}
+      <div className="relative bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 text-white py-16 mb-8">
           <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHZpZXdCb3g9IjAgMCAyMCAyMCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3QgeD0iMCIgeT0iMCIgd2lkdGg9IjEiIGhlaWdodD0iMjAiIGZpbGw9InJnYmEoMjU1LDI1NSwyNTUsMC4xKSIvPgo8L3N2Zz4K')] opacity-20"></div>
           <div className="container mx-auto px-4 relative z-10">
             <div className="text-center">
@@ -131,7 +129,8 @@ const MonthlyBudget: React.FC = () => {
           </div>
         </div>
 
-        <div className="text-center mb-8">
+        <div className="container mx-auto px-4 py-8">
+          <div className="text-center mb-8">
           <p className="text-muted-foreground text-lg mb-6">
             Plan your household finances with precision{!user && ' (sign up to save)'}
           </p>
@@ -306,13 +305,13 @@ const MonthlyBudget: React.FC = () => {
           </div>
         </section>
 
-        {/* AI Chatbot */}
-        <AIChatbot 
-          pageContext="This is the Monthly Budget Calculator page where users can input their monthly income and expenses to calculate their net budget. Users can add multiple calculators for different household members or scenarios, select different currencies, and save their data if logged in. The page includes pre-configured expense categories and the ability to add custom expenses."
-          pageName="Monthly Budget Calculator"
-        />
+          {/* AI Chatbot */}
+          <AIChatbot 
+            pageContext="This is the Monthly Budget Calculator page where users can input their monthly income and expenses to calculate their net budget. Users can add multiple calculators for different household members or scenarios, select different currencies, and save their data if logged in. The page includes pre-configured expense categories and the ability to add custom expenses."
+            pageName="Monthly Budget Calculator"
+          />
+        </div>
       </div>
-    </div>
   );
 };
 

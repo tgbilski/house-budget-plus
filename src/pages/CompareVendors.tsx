@@ -470,7 +470,6 @@ const CompareVendors: React.FC = () => {
   return (
     <div className="min-h-screen">
       <SEO {...seoData.compareVendors} />
-      <Breadcrumbs />
       
       {/* Hero Section with Dark Gradient */}
       <div className="relative bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 text-white py-16">
