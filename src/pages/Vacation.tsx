@@ -252,11 +252,6 @@ const Vacation: React.FC = () => {
       const uniqueProjects = [...new Set(allData.map(item => item.calculator_id))];
       let projectList = uniqueProjects.length > 0 ? uniqueProjects : ['My Vacation'];
       
-      // Ensure "My Vacation" is always included for authenticated users
-      if (!projectList.includes('My Vacation')) {
-        projectList = ['My Vacation', ...projectList];
-      }
-      
       setProjects(projectList);
       
       if (!selectedProject && projectList.length > 0) {
