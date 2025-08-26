@@ -496,6 +496,65 @@ export type Database = {
         }
         Relationships: []
       }
+      vacation_options: {
+        Row: {
+          contact: string | null
+          created_at: string
+          destination: string | null
+          destination_safe: boolean | null
+          estimated_cost: number | null
+          everyone_enjoy: boolean | null
+          exciting_option: boolean | null
+          favorable_travel: boolean | null
+          id: string
+          memorable: boolean | null
+          notes: string | null
+          project_id: string
+          travel_mode: string | null
+          updated_at: string
+        }
+        Insert: {
+          contact?: string | null
+          created_at?: string
+          destination?: string | null
+          destination_safe?: boolean | null
+          estimated_cost?: number | null
+          everyone_enjoy?: boolean | null
+          exciting_option?: boolean | null
+          favorable_travel?: boolean | null
+          id?: string
+          memorable?: boolean | null
+          notes?: string | null
+          project_id: string
+          travel_mode?: string | null
+          updated_at?: string
+        }
+        Update: {
+          contact?: string | null
+          created_at?: string
+          destination?: string | null
+          destination_safe?: boolean | null
+          estimated_cost?: number | null
+          everyone_enjoy?: boolean | null
+          exciting_option?: boolean | null
+          favorable_travel?: boolean | null
+          id?: string
+          memorable?: boolean | null
+          notes?: string | null
+          project_id?: string
+          travel_mode?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "vacation_options_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "vacation_projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       vacation_projects: {
         Row: {
           created_at: string
@@ -543,6 +602,65 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      vendor_quotes: {
+        Row: {
+          contact_info: string | null
+          created_at: string
+          date_received: string | null
+          estimate_amount: number | null
+          good_timing: boolean | null
+          id: string
+          liked_sales_rep: boolean | null
+          notes: string | null
+          offers_financing: boolean | null
+          project_id: string
+          responsive: boolean | null
+          trustworthy: boolean | null
+          updated_at: string
+          vendor_name: string | null
+        }
+        Insert: {
+          contact_info?: string | null
+          created_at?: string
+          date_received?: string | null
+          estimate_amount?: number | null
+          good_timing?: boolean | null
+          id?: string
+          liked_sales_rep?: boolean | null
+          notes?: string | null
+          offers_financing?: boolean | null
+          project_id: string
+          responsive?: boolean | null
+          trustworthy?: boolean | null
+          updated_at?: string
+          vendor_name?: string | null
+        }
+        Update: {
+          contact_info?: string | null
+          created_at?: string
+          date_received?: string | null
+          estimate_amount?: number | null
+          good_timing?: boolean | null
+          id?: string
+          liked_sales_rep?: boolean | null
+          notes?: string | null
+          offers_financing?: boolean | null
+          project_id?: string
+          responsive?: boolean | null
+          trustworthy?: boolean | null
+          updated_at?: string
+          vendor_name?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "vendor_quotes_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "vendor_projects"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Views: {

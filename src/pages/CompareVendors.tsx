@@ -33,17 +33,19 @@ interface VendorProject {
 
 interface VendorQuote {
   id: string;
-  projectId: string;
-  vendorName: string;
-  estimateAmount: number;
-  contactInfo: string;
+  project_id: string;
+  vendor_name: string;
+  estimate_amount: number;
+  contact_info: string;
   notes: string;
-  likedSalesRep: boolean;
-  offersFinancing: boolean;
-  goodTiming: boolean;
+  liked_sales_rep: boolean;
+  offers_financing: boolean;
+  good_timing: boolean;
   trustworthy: boolean;
   responsive: boolean;
-  dateReceived: string;
+  date_received: string;
+  created_at?: string;
+  updated_at?: string;
 }
 
 interface VendorCardProps {
@@ -73,9 +75,9 @@ const VendorCard: React.FC<VendorCardProps> = ({ quote, onUpdate, onRemove, show
 
   const getStarCount = () => {
     const factors = [
-      localQuote.likedSalesRep,
-      localQuote.offersFinancing,
-      localQuote.goodTiming,
+      localQuote.liked_sales_rep,
+      localQuote.offers_financing,
+      localQuote.good_timing,
       localQuote.trustworthy,
       localQuote.responsive
     ];
@@ -95,8 +97,8 @@ const VendorCard: React.FC<VendorCardProps> = ({ quote, onUpdate, onRemove, show
             <Input
               id={`vendor-${quote.id}`}
               placeholder="Company name..."
-              value={localQuote.vendorName}
-              onChange={(e) => updateField('vendorName', e.target.value)}
+              value={localQuote.vendor_name}
+              onChange={(e) => updateField('vendor_name', e.target.value)}
               className="mt-1 font-semibold"
             />
           </div>
@@ -138,8 +140,8 @@ const VendorCard: React.FC<VendorCardProps> = ({ quote, onUpdate, onRemove, show
             <Input
               type="number"
               step="0.01"
-              value={localQuote.estimateAmount || ''}
-              onChange={(e) => updateField('estimateAmount', parseFloat(e.target.value) || 0)}
+              value={localQuote.estimate_amount || ''}
+              onChange={(e) => updateField('estimate_amount', parseFloat(e.target.value) || 0)}
               className="pl-8 text-lg font-bold text-primary"
               placeholder="0.00"
             />
@@ -151,8 +153,8 @@ const VendorCard: React.FC<VendorCardProps> = ({ quote, onUpdate, onRemove, show
             Contact Info
           </Label>
           <Input
-            value={localQuote.contactInfo}
-            onChange={(e) => updateField('contactInfo', e.target.value)}
+            value={localQuote.contact_info}
+            onChange={(e) => updateField('contact_info', e.target.value)}
             placeholder="Phone, email, etc."
             className="mt-1"
           />
@@ -164,8 +166,8 @@ const VendorCard: React.FC<VendorCardProps> = ({ quote, onUpdate, onRemove, show
           </Label>
           <Input
             type="date"
-            value={localQuote.dateReceived}
-            onChange={(e) => updateField('dateReceived', e.target.value)}
+            value={localQuote.date_received}
+            onChange={(e) => updateField('date_received', e.target.value)}
             className="mt-1"
           />
         </div>
@@ -178,16 +180,16 @@ const VendorCard: React.FC<VendorCardProps> = ({ quote, onUpdate, onRemove, show
               <span className="text-sm">Did you like the sales rep?</span>
               <div className="flex gap-2">
                 <Button
-                  variant={localQuote.likedSalesRep === true ? "default" : "outline"}
+                  variant={localQuote.liked_sales_rep === true ? "default" : "outline"}
                   size="sm"
-                  onClick={() => updateField('likedSalesRep', true)}
+                  onClick={() => updateField('liked_sales_rep', true)}
                 >
                   Yes
                 </Button>
                 <Button
-                  variant={localQuote.likedSalesRep === false ? "destructive" : "outline"}
+                  variant={localQuote.liked_sales_rep === false ? "destructive" : "outline"}
                   size="sm"
-                  onClick={() => updateField('likedSalesRep', false)}
+                  onClick={() => updateField('liked_sales_rep', false)}
                 >
                   No
                 </Button>
@@ -198,16 +200,16 @@ const VendorCard: React.FC<VendorCardProps> = ({ quote, onUpdate, onRemove, show
               <span className="text-sm">Do they offer financing?</span>
               <div className="flex gap-2">
                 <Button
-                  variant={localQuote.offersFinancing === true ? "default" : "outline"}
+                  variant={localQuote.offers_financing === true ? "default" : "outline"}
                   size="sm"
-                  onClick={() => updateField('offersFinancing', true)}
+                  onClick={() => updateField('offers_financing', true)}
                 >
                   Yes
                 </Button>
                 <Button
-                  variant={localQuote.offersFinancing === false ? "destructive" : "outline"}
+                  variant={localQuote.offers_financing === false ? "destructive" : "outline"}
                   size="sm"
-                  onClick={() => updateField('offersFinancing', false)}
+                  onClick={() => updateField('offers_financing', false)}
                 >
                   No
                 </Button>
@@ -218,16 +220,16 @@ const VendorCard: React.FC<VendorCardProps> = ({ quote, onUpdate, onRemove, show
               <span className="text-sm">Is timing good?</span>
               <div className="flex gap-2">
                 <Button
-                  variant={localQuote.goodTiming === true ? "default" : "outline"}
+                  variant={localQuote.good_timing === true ? "default" : "outline"}
                   size="sm"
-                  onClick={() => updateField('goodTiming', true)}
+                  onClick={() => updateField('good_timing', true)}
                 >
                   Yes
                 </Button>
                 <Button
-                  variant={localQuote.goodTiming === false ? "destructive" : "outline"}
+                  variant={localQuote.good_timing === false ? "destructive" : "outline"}
                   size="sm"
-                  onClick={() => updateField('goodTiming', false)}
+                  onClick={() => updateField('good_timing', false)}
                 >
                   No
                 </Button>
@@ -322,7 +324,7 @@ const CompareVendors: React.FC = () => {
       };
       setAllProjects([defaultProject]);
       setSelectedProject(defaultProject);
-      setQuotes([]);
+      createDefaultQuote(defaultProject);
     }
   }, [user]);
 
@@ -331,6 +333,24 @@ const CompareVendors: React.FC = () => {
       loadQuotes();
     }
   }, [selectedProject]);
+
+  const createDefaultQuote = (project: VendorProject) => {
+    const defaultQuote: VendorQuote = {
+      id: 'default-quote',
+      project_id: project.id,
+      vendor_name: '',
+      estimate_amount: 0,
+      contact_info: '',
+      notes: '',
+      liked_sales_rep: false,
+      offers_financing: false,
+      good_timing: false,
+      trustworthy: false,
+      responsive: false,
+      date_received: new Date().toISOString().split('T')[0]
+    };
+    setQuotes([defaultQuote]);
+  };
 
   const loadProjects = async () => {
     if (!user) return;
@@ -362,53 +382,77 @@ const CompareVendors: React.FC = () => {
   };
 
   const loadQuotes = async () => {
-    if (!user || !selectedProject) return;
+    if (!user || !selectedProject) {
+      if (!user && selectedProject) {
+        createDefaultQuote(selectedProject);
+      }
+      return;
+    }
 
     const { data } = await supabase
-      .from('budget_data')
+      .from('vendor_quotes')
       .select('*')
-      .eq('user_id', user.id)
-      .eq('page_type', 'compare_prices')
-      .eq('project_id', selectedProject.id);
+      .eq('project_id', selectedProject.id)
+      .order('created_at', { ascending: true });
 
     if (data && data.length > 0) {
-      const budgetData = data[0];
-      const expensesData = budgetData.expenses as any;
-      if (expensesData.quotes) {
-        setQuotes(expensesData.quotes.map((quote: any) => ({
-          ...quote,
-          projectId: selectedProject.id
-        })));
-      }
+      setQuotes(data);
     } else {
-      setQuotes([]);
+      // Create default blank quote for new projects
+      await createBlankQuote(selectedProject.id);
     }
   };
 
-  const saveQuotes = async () => {
+  const createBlankQuote = async (projectId: string) => {
+    if (!user) return;
+
+    const { data: newQuote } = await supabase
+      .from('vendor_quotes')
+      .insert({ project_id: projectId })
+      .select()
+      .single();
+
+    if (newQuote) {
+      setQuotes([newQuote]);
+    }
+  };
+
+  const saveQuote = async (quote: VendorQuote) => {
     if (!user || !selectedProject) return;
 
     const { error } = await supabase
-      .from('budget_data')
+      .from('vendor_quotes')
       .upsert({
-        user_id: user.id,
-        page_type: 'compare_prices',
-        project_id: selectedProject.id,
-        expenses: { quotes } as any
+        id: quote.id,
+        project_id: quote.project_id,
+        vendor_name: quote.vendor_name,
+        estimate_amount: quote.estimate_amount,
+        contact_info: quote.contact_info,
+        notes: quote.notes,
+        liked_sales_rep: quote.liked_sales_rep,
+        offers_financing: quote.offers_financing,
+        good_timing: quote.good_timing,
+        trustworthy: quote.trustworthy,
+        responsive: quote.responsive,
+        date_received: quote.date_received
       });
 
     if (error) {
-      console.error('Error saving data:', error);
+      console.error('Error saving quote:', error);
     } else {
       earnBadge('compare_vendors');
     }
   };
 
-  useEffect(() => {
-    if (user && quotes.length > 0 && selectedProject) {
-      saveQuotes();
+  const updateVendorCard = (updatedQuote: VendorQuote) => {
+    setQuotes(quotes.map(quote => 
+      quote.id === updatedQuote.id ? updatedQuote : quote
+    ));
+    
+    if (user) {
+      saveQuote(updatedQuote);
     }
-  }, [quotes, user, selectedProject]);
+  };
 
   const createNewProject = () => {
     setIsNewProject(true);
@@ -436,22 +480,8 @@ const CompareVendors: React.FC = () => {
           setIsNewProject(false);
           setNewProjectName('');
           
-          const newQuote: VendorQuote = {
-            id: Date.now().toString(),
-            projectId: newProject.id,
-            vendorName: '',
-            estimateAmount: 0,
-            contactInfo: '',
-            notes: '',
-            likedSalesRep: false,
-            offersFinancing: false,
-            goodTiming: false,
-            trustworthy: false,
-            responsive: false,
-            dateReceived: new Date().toISOString().split('T')[0]
-          };
-          
-          setQuotes([newQuote]);
+          // Create default blank quote for new project
+          await createBlankQuote(newProject.id);
         }
       } else {
         // For non-authenticated users
@@ -468,7 +498,7 @@ const CompareVendors: React.FC = () => {
         setSelectedProject(newProject);
         setIsNewProject(false);
         setNewProjectName('');
-        setQuotes([]);
+        createDefaultQuote(newProject);
       }
     } finally {
       setSavingProject(false);
@@ -523,19 +553,12 @@ const CompareVendors: React.FC = () => {
     
     try {
       if (user) {
-        const { error: projectError } = await supabase
+        const { error } = await supabase
           .from('vendor_projects')
           .delete()
           .eq('id', projectId);
 
-        const { error: budgetError } = await supabase
-          .from('budget_data')
-          .delete()
-          .eq('user_id', user.id)
-          .eq('page_type', 'compare_prices')
-          .eq('project_id', projectId);
-
-        if (projectError || budgetError) throw projectError || budgetError;
+        if (error) throw error;
       }
 
       const updatedProjects = allProjects.filter(p => p.id !== projectId);
@@ -553,45 +576,60 @@ const CompareVendors: React.FC = () => {
     }
   };
 
-  const addVendorCard = () => {
+  const addVendorCard = async () => {
     if (!selectedProject) return;
 
-    const newQuote: VendorQuote = {
-      id: Date.now().toString(),
-      projectId: selectedProject.id,
-      vendorName: '',
-      estimateAmount: 0,
-      contactInfo: '',
-      notes: '',
-      likedSalesRep: false,
-      offersFinancing: false,
-      goodTiming: false,
-      trustworthy: false,
-      responsive: false,
-      dateReceived: new Date().toISOString().split('T')[0]
-    };
+    if (user) {
+      const { data: newQuote } = await supabase
+        .from('vendor_quotes')
+        .insert({ project_id: selectedProject.id })
+        .select()
+        .single();
+
+      if (newQuote) {
+        setQuotes([...quotes, newQuote]);
+      }
+    } else {
+      const newQuote: VendorQuote = {
+        id: Date.now().toString(),
+        project_id: selectedProject.id,
+        vendor_name: '',
+        estimate_amount: 0,
+        contact_info: '',
+        notes: '',
+        liked_sales_rep: false,
+        offers_financing: false,
+        good_timing: false,
+        trustworthy: false,
+        responsive: false,
+        date_received: new Date().toISOString().split('T')[0]
+      };
+      setQuotes([...quotes, newQuote]);
+    }
+  };
+
+  const removeVendorCard = async (quoteId: string) => {
+    if (quotes.length <= 1) return; // Always keep at least one card
     
-    setQuotes([...quotes, newQuote]);
-  };
+    if (user) {
+      const { error } = await supabase
+        .from('vendor_quotes')
+        .delete()
+        .eq('id', quoteId);
 
-  const updateVendorCard = (updatedQuote: VendorQuote) => {
-    setQuotes(quotes.map(quote => 
-      quote.id === updatedQuote.id ? updatedQuote : quote
-    ));
-  };
+      if (error) {
+        console.error('Error deleting quote:', error);
+        return;
+      }
+    }
 
-  const removeVendorCard = (quoteId: string) => {
-    const filteredQuotes = quotes.filter(quote => quote.id !== quoteId);
-    setQuotes(filteredQuotes);
+    setQuotes(quotes.filter(quote => quote.id !== quoteId));
   };
-
-  const displayedQuotes = selectedProject && !isNewProject 
-    ? quotes.filter(quote => quote.projectId === selectedProject.id)
-    : [];
 
   const getLowestEstimate = () => {
-    if (displayedQuotes.length === 0) return null;
-    return Math.min(...displayedQuotes.map(quote => quote.estimateAmount).filter(amount => amount > 0));
+    if (quotes.length === 0) return null;
+    const estimates = quotes.map(quote => quote.estimate_amount).filter(amount => amount > 0);
+    return estimates.length > 0 ? Math.min(...estimates) : null;
   };
 
   const lowestEstimate = getLowestEstimate();
@@ -724,7 +762,7 @@ const CompareVendors: React.FC = () => {
               )}
             </div>
             
-            {!isNewProject && displayedQuotes.length > 0 && lowestEstimate && (
+            {!isNewProject && quotes.length > 0 && lowestEstimate && (
               <div className="text-sm text-muted-foreground mb-4">
                 Lowest estimate: {currency.symbol}{lowestEstimate.toFixed(2)}
               </div>
@@ -734,13 +772,13 @@ const CompareVendors: React.FC = () => {
 
         <div className="max-w-6xl mx-auto">
           <div className="flex flex-wrap gap-6 justify-center mb-8">
-            {displayedQuotes.map((quote) => (
+            {quotes.map((quote) => (
               <VendorCard
                 key={quote.id}
                 quote={quote}
                 onUpdate={updateVendorCard}
                 onRemove={() => removeVendorCard(quote.id)}
-                showRemove={displayedQuotes.length > 1}
+                showRemove={quotes.length > 1}
                 currency={currency}
               />
             ))}
@@ -748,7 +786,7 @@ const CompareVendors: React.FC = () => {
             {!isNewProject && selectedProject && (
               <div className="flex items-center justify-center">
                 <Button
-                  onClick={() => addVendorCard()}
+                  onClick={addVendorCard}
                   variant="outline"
                   size="lg"
                   className="h-20 w-20 rounded-full border-2 border-dashed border-primary hover:bg-primary/5"
@@ -758,22 +796,6 @@ const CompareVendors: React.FC = () => {
               </div>
             )}
           </div>
-
-          {!isNewProject && displayedQuotes.length === 0 && selectedProject && (
-            <div className="text-center py-8">
-              <p className="text-muted-foreground">
-                No vendor quotes for "{selectedProject.title}" yet. Click the + button to add your first vendor!
-              </p>
-            </div>
-          )}
-          
-          {!selectedProject && !isNewProject && allProjects.length === 0 && (
-            <div className="text-center py-8">
-              <p className="text-muted-foreground">
-                Click "New Project" above to create your first project and start comparing vendors!
-              </p>
-            </div>
-          )}
         </div>
 
         <section className="py-16 px-4 bg-slate-900 text-white relative mt-16" style={{

@@ -31,28 +31,30 @@ interface VacationProject {
 
 interface VacationOption {
   id: string;
+  project_id: string;
   destination: string;
-  travelMode: string;
-  estimatedCost: number;
+  travel_mode: string;
+  estimated_cost: number;
   notes: string;
   contact: string;
-  evaluation: {
-    favorableTravel: boolean;
-    destinationSafe: boolean;
-    excitingOption: boolean;
-    everyoneEnjoy: boolean;
-    memorable: boolean;
-  };
+  favorable_travel: boolean;
+  destination_safe: boolean;
+  exciting_option: boolean;
+  everyone_enjoy: boolean;
+  memorable: boolean;
+  created_at?: string;
+  updated_at?: string;
 }
 
 interface VacationCardProps {
   option: VacationOption;
   onUpdate: (option: VacationOption) => void;
   onRemove: () => void;
+  showRemove: boolean;
   currency: any;
 }
 
-const VacationCard: React.FC<VacationCardProps> = ({ option, onUpdate, onRemove, currency }) => {
+const VacationCard: React.FC<VacationCardProps> = ({ option, onUpdate, onRemove, showRemove, currency }) => {
   const [localOption, setLocalOption] = useState(option);
 
   const updateField = useCallback((field: keyof VacationOption, value: any) => {
@@ -61,18 +63,15 @@ const VacationCard: React.FC<VacationCardProps> = ({ option, onUpdate, onRemove,
     onUpdate(updated);
   }, [localOption, onUpdate]);
 
-  const updateEvaluation = useCallback((field: keyof VacationOption['evaluation'], value: boolean) => {
-    const updated = {
-      ...localOption,
-      evaluation: { ...localOption.evaluation, [field]: value }
-    };
-    setLocalOption(updated);
-    onUpdate(updated);
-  }, [localOption, onUpdate]);
-
   const getStarCount = () => {
-    const evaluation = localOption.evaluation;
-    return Object.values(evaluation).filter(value => value === true).length;
+    const evaluationFields = [
+      localOption.favorable_travel,
+      localOption.destination_safe,
+      localOption.exciting_option,
+      localOption.everyone_enjoy,
+      localOption.memorable
+    ];
+    return evaluationFields.filter(Boolean).length;
   };
 
   const renderStars = () => {
@@ -88,10 +87,10 @@ const VacationCard: React.FC<VacationCardProps> = ({ option, onUpdate, onRemove,
   };
 
   const questions = [
-    { key: 'favorableTravel' as const, label: 'Is the mode of travel favorable?' },
-    { key: 'destinationSafe' as const, label: 'Is the destination safe?' },
-    { key: 'excitingOption' as const, label: 'Does this option excite you?' },
-    { key: 'everyoneEnjoy' as const, label: 'Will everyone enjoy it?' },
+    { key: 'favorable_travel' as const, label: 'Is the mode of travel favorable?' },
+    { key: 'destination_safe' as const, label: 'Is the destination safe?' },
+    { key: 'exciting_option' as const, label: 'Does this option excite you?' },
+    { key: 'everyone_enjoy' as const, label: 'Will everyone enjoy it?' },
     { key: 'memorable' as const, label: 'Memorable?' }
   ];
 
@@ -104,14 +103,16 @@ const VacationCard: React.FC<VacationCardProps> = ({ option, onUpdate, onRemove,
             <div className="flex">
               {renderStars()}
             </div>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={onRemove}
-              className="text-destructive hover:text-destructive"
-            >
-              <Trash2 className="h-4 w-4" />
-            </Button>
+            {showRemove && (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={onRemove}
+                className="text-destructive hover:text-destructive"
+              >
+                <Trash2 className="h-4 w-4" />
+              </Button>
+            )}
           </div>
         </div>
       </CardHeader>
@@ -130,8 +131,8 @@ const VacationCard: React.FC<VacationCardProps> = ({ option, onUpdate, onRemove,
             <Label htmlFor={`travel-mode-${option.id}`}>Travel Mode</Label>
             <Input
               id={`travel-mode-${option.id}`}
-              value={localOption.travelMode}
-              onChange={(e) => updateField('travelMode', e.target.value)}
+              value={localOption.travel_mode}
+              onChange={(e) => updateField('travel_mode', e.target.value)}
               placeholder="Flight, drive, cruise, etc."
             />
           </div>
@@ -144,8 +145,8 @@ const VacationCard: React.FC<VacationCardProps> = ({ option, onUpdate, onRemove,
               id={`cost-${option.id}`}
               type="number"
               step="0.01"
-              value={localOption.estimatedCost || ''}
-              onChange={(e) => updateField('estimatedCost', parseFloat(e.target.value) || 0)}
+              value={localOption.estimated_cost || ''}
+              onChange={(e) => updateField('estimated_cost', parseFloat(e.target.value) || 0)}
               placeholder="0.00"
             />
           </div>
@@ -178,16 +179,16 @@ const VacationCard: React.FC<VacationCardProps> = ({ option, onUpdate, onRemove,
               <span className="text-sm">{question.label}</span>
               <div className="flex gap-2">
                 <Button
-                  variant={localOption.evaluation[question.key] === true ? "default" : "outline"}
+                  variant={localOption[question.key] === true ? "default" : "outline"}
                   size="sm"
-                  onClick={() => updateEvaluation(question.key, true)}
+                  onClick={() => updateField(question.key, true)}
                 >
                   Yes
                 </Button>
                 <Button
-                  variant={localOption.evaluation[question.key] === false ? "destructive" : "outline"}
+                  variant={localOption[question.key] === false ? "destructive" : "outline"}
                   size="sm"
-                  onClick={() => updateEvaluation(question.key, false)}
+                  onClick={() => updateField(question.key, false)}
                 >
                   No
                 </Button>
@@ -230,7 +231,7 @@ const Vacation: React.FC = () => {
       };
       setAllProjects([defaultProject]);
       setSelectedProject(defaultProject);
-      setOptions([]);
+      createDefaultOption(defaultProject);
     }
   }, [user]);
 
@@ -240,14 +241,23 @@ const Vacation: React.FC = () => {
     }
   }, [selectedProject]);
 
-  useEffect(() => {
-    if (user && options.length > 0 && selectedProject) {
-      const timeoutId = setTimeout(() => {
-        saveOptions();
-      }, 1000);
-      return () => clearTimeout(timeoutId);
-    }
-  }, [options, user, selectedProject]);
+  const createDefaultOption = (project: VacationProject) => {
+    const defaultOption: VacationOption = {
+      id: 'default-option',
+      project_id: project.id,
+      destination: '',
+      travel_mode: '',
+      estimated_cost: 0,
+      notes: '',
+      contact: '',
+      favorable_travel: false,
+      destination_safe: false,
+      exciting_option: false,
+      everyone_enjoy: false,
+      memorable: false
+    };
+    setOptions([defaultOption]);
+  };
 
   const loadProjects = async () => {
     if (!user) return;
@@ -279,73 +289,94 @@ const Vacation: React.FC = () => {
   };
 
   const loadOptions = async () => {
-    if (!user || !selectedProject) return;
+    if (!user || !selectedProject) {
+      if (!user && selectedProject) {
+        createDefaultOption(selectedProject);
+      }
+      return;
+    }
 
     const { data } = await supabase
-      .from('budget_data')
+      .from('vacation_options')
       .select('*')
-      .eq('user_id', user.id)
-      .eq('page_type', 'vacation')
-      .eq('project_id', selectedProject.id);
+      .eq('project_id', selectedProject.id)
+      .order('created_at', { ascending: true });
 
     if (data && data.length > 0) {
-      const budgetData = data[0];
-      const optionsData = budgetData.expenses as any;
-      if (optionsData.options) {
-        setOptions(optionsData.options);
-      }
+      setOptions(data);
     } else {
-      setOptions([]);
+      // Create default blank option for new projects
+      await createBlankOption(selectedProject.id);
     }
   };
 
-  const saveOptions = async () => {
+  const createBlankOption = async (projectId: string) => {
+    if (!user) return;
+
+    const { data: newOption } = await supabase
+      .from('vacation_options')
+      .insert({ project_id: projectId })
+      .select()
+      .single();
+
+    if (newOption) {
+      setOptions([newOption]);
+    }
+  };
+
+  const saveOption = async (option: VacationOption) => {
     if (!user || !selectedProject) return;
 
     const { error } = await supabase
-      .from('budget_data')
+      .from('vacation_options')
       .upsert({
-        user_id: user.id,
-        page_type: 'vacation',
-        project_id: selectedProject.id,
-        income: 0,
-        expenses: { options } as any
+        id: option.id,
+        project_id: option.project_id,
+        destination: option.destination,
+        travel_mode: option.travel_mode,
+        estimated_cost: option.estimated_cost,
+        notes: option.notes,
+        contact: option.contact,
+        favorable_travel: option.favorable_travel,
+        destination_safe: option.destination_safe,
+        exciting_option: option.exciting_option,
+        everyone_enjoy: option.everyone_enjoy,
+        memorable: option.memorable
       });
 
     if (error) {
-      console.error('Error saving data:', error);
+      console.error('Error saving option:', error);
     } else {
       earnBadge('vacation');
     }
-  };
-
-  const addVacationCard = () => {
-    const newOption: VacationOption = {
-      id: Date.now().toString(),
-      destination: '',
-      travelMode: '',
-      estimatedCost: 0,
-      notes: '',
-      contact: '',
-      evaluation: {
-        favorableTravel: false,
-        destinationSafe: false,
-        excitingOption: false,
-        everyoneEnjoy: false,
-        memorable: false
-      }
-    };
-    setOptions([...options, newOption]);
   };
 
   const updateVacationCard = (updatedOption: VacationOption) => {
     setOptions(options.map(option => 
       option.id === updatedOption.id ? updatedOption : option
     ));
+    
+    if (user) {
+      saveOption(updatedOption);
+    }
   };
 
-  const removeVacationCard = (id: string) => {
-    setOptions(options.filter(option => option.id !== id));
+  const removeVacationCard = async (optionId: string) => {
+    if (options.length <= 1) return; // Always keep at least one card
+    
+    if (user) {
+      const { error } = await supabase
+        .from('vacation_options')
+        .delete()
+        .eq('id', optionId);
+
+      if (error) {
+        console.error('Error deleting option:', error);
+        return;
+      }
+    }
+
+    setOptions(options.filter(option => option.id !== optionId));
   };
 
   const createNewProject = async () => {
@@ -368,23 +399,8 @@ const Vacation: React.FC = () => {
           setNewProjectName('');
           setIsCreatingProject(false);
           
-          const newOption: VacationOption = {
-            id: Date.now().toString(),
-            destination: '',
-            travelMode: '',
-            estimatedCost: 0,
-            notes: '',
-            contact: '',
-            evaluation: {
-              favorableTravel: false,
-              destinationSafe: false,
-              excitingOption: false,
-              everyoneEnjoy: false,
-              memorable: false
-            }
-          };
-          
-          setOptions([newOption]);
+          // Create default blank option for new project
+          await createBlankOption(newProject.id);
         }
       } else {
         // For non-authenticated users
@@ -401,7 +417,7 @@ const Vacation: React.FC = () => {
         setSelectedProject(newProject);
         setNewProjectName('');
         setIsCreatingProject(false);
-        setOptions([]);
+        createDefaultOption(newProject);
       }
     } finally {
       setSavingProject(false);
@@ -456,19 +472,12 @@ const Vacation: React.FC = () => {
     
     try {
       if (user) {
-        const { error: projectError } = await supabase
+        const { error } = await supabase
           .from('vacation_projects')
           .delete()
           .eq('id', projectId);
 
-        const { error: budgetError } = await supabase
-          .from('budget_data')
-          .delete()
-          .eq('user_id', user.id)
-          .eq('page_type', 'vacation')
-          .eq('project_id', projectId);
-
-        if (projectError || budgetError) throw projectError || budgetError;
+        if (error) throw error;
       }
 
       const updatedProjects = allProjects.filter(p => p.id !== projectId);
@@ -486,9 +495,42 @@ const Vacation: React.FC = () => {
     }
   };
 
+  const addVacationCard = async () => {
+    if (!selectedProject) return;
+
+    if (user) {
+      const { data: newOption } = await supabase
+        .from('vacation_options')
+        .insert({ project_id: selectedProject.id })
+        .select()
+        .single();
+
+      if (newOption) {
+        setOptions([...options, newOption]);
+      }
+    } else {
+      const newOption: VacationOption = {
+        id: Date.now().toString(),
+        project_id: selectedProject.id,
+        destination: '',
+        travel_mode: '',
+        estimated_cost: 0,
+        notes: '',
+        contact: '',
+        favorable_travel: false,
+        destination_safe: false,
+        exciting_option: false,
+        everyone_enjoy: false,
+        memorable: false
+      };
+      setOptions([...options, newOption]);
+    }
+  };
+
   const getLowestCost = () => {
     if (options.length === 0) return 0;
-    return Math.min(...options.map(option => option.estimatedCost || Infinity));
+    const costs = options.map(option => option.estimated_cost).filter(cost => cost > 0);
+    return costs.length > 0 ? Math.min(...costs) : 0;
   };
 
   return (
@@ -512,7 +554,6 @@ const Vacation: React.FC = () => {
         <WarningBanner />
 
         <div className="text-center mb-8">
-          
           
           {/* Project Tabs */}
           <div className="mb-6">
@@ -618,13 +659,13 @@ const Vacation: React.FC = () => {
                 </Button>
               )}
             </div>
-          </div>
 
-          {selectedProject && options.length > 0 && (
-            <div className="text-sm text-muted-foreground mb-4">
-              Lowest estimate: {currency.symbol}{getLowestCost().toFixed(2)}
-            </div>
-          )}
+            {selectedProject && options.length > 0 && getLowestCost() > 0 && (
+              <div className="text-sm text-muted-foreground mb-4">
+                Lowest estimate: {currency.symbol}{getLowestCost().toFixed(2)}
+              </div>
+            )}
+          </div>
         </div>
 
         <div className="max-w-6xl mx-auto">
@@ -635,6 +676,7 @@ const Vacation: React.FC = () => {
                 option={option}
                 onUpdate={updateVacationCard}
                 onRemove={() => removeVacationCard(option.id)}
+                showRemove={options.length > 1}
                 currency={currency}
               />
             ))}
@@ -650,14 +692,6 @@ const Vacation: React.FC = () => {
               >
                 <Plus className="h-8 w-8 text-primary" />
               </Button>
-            </div>
-          )}
-
-          {!isCreatingProject && options.length === 0 && selectedProject && (
-            <div className="text-center py-8">
-              <p className="text-muted-foreground">
-                No vacation options for "{selectedProject.title}" yet. Click the + button to add your first option!
-              </p>
             </div>
           )}
         </div>
