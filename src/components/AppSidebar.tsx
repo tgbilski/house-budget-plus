@@ -58,7 +58,7 @@ export function AppSidebar() {
     <Sidebar
       variant="inset"
       className={cn(
-        "border-r bg-white shadow transition-all duration-300",
+        "border-r bg-white shadow transition-all duration-300 h-full",
         isMobile
           ? openMobile
             ? "translate-x-0"
