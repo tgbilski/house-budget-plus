@@ -501,9 +501,11 @@ const Vacation: React.FC = () => {
                           size="sm" 
                           variant="ghost" 
                           onClick={() => {
+                            console.log('Delete button clicked!');
+                            alert('Delete button clicked for: ' + project);
                             deleteProject(project);
                             setEditingProjectId(null);
-                          }} 
+                          }}
                           className="h-8 w-8 p-0 text-red-500 hover:bg-red-500/20"
                           title="Delete project"
                         >
