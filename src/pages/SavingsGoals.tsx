@@ -38,6 +38,7 @@ const SavingsGoals = () => {
   const [editingTitle, setEditingTitle] = useState('');
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear().toString());
   const [savingsData, setSavingsData] = useState<Record<string, number>>({});
+  const [localInputValues, setLocalInputValues] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(true);
 
   const years = Array.from({ length: 11 }, (_, i) => (2025 + i).toString());
@@ -222,16 +223,33 @@ const SavingsGoals = () => {
       if (error) throw error;
 
       const dataMap: Record<string, number> = {};
+      const inputMap: Record<string, string> = {};
       data?.forEach((entry: SavingsEntry) => {
         const monthKey = entry.entry_month.slice(0, 7); // YYYY-MM format
         dataMap[monthKey] = entry.amount;
+        inputMap[monthKey] = entry.amount.toString();
       });
 
       setSavingsData(dataMap);
+      setLocalInputValues(inputMap);
     } catch (error) {
       console.error('Error fetching savings data:', error);
       toast.error('Failed to load savings data');
     }
+  };
+
+  const handleInputChange = (monthIndex: number, inputValue: string) => {
+    const monthKey = `${selectedYear}-${(monthIndex + 1).toString().padStart(2, '0')}`;
+    
+    // Update local input value immediately for responsive UI
+    setLocalInputValues(prev => ({
+      ...prev,
+      [monthKey]: inputValue
+    }));
+    
+    // Parse and update the actual savings data
+    const numericValue = parseFloat(inputValue) || 0;
+    updateSavingsAmount(monthIndex, numericValue);
   };
 
   const updateSavingsAmount = async (monthIndex: number, amount: number) => {
@@ -600,6 +618,7 @@ const SavingsGoals = () => {
                 {months.map((month, index) => {
                   const monthKey = `${selectedYear}-${(index + 1).toString().padStart(2, '0')}`;
                   const currentAmount = savingsData[monthKey] || 0;
+                  const inputValue = localInputValues[monthKey] || '';
                   
                   return (
                     <TableRow key={month}>
@@ -607,11 +626,8 @@ const SavingsGoals = () => {
                       <TableCell>
                         <Input
                           type="number"
-                          value={currentAmount || ''}
-                          onChange={(e) => {
-                            const value = parseFloat(e.target.value) || 0;
-                            updateSavingsAmount(index, value);
-                          }}
+                          value={inputValue}
+                          onChange={(e) => handleInputChange(index, e.target.value)}
                           placeholder="0.00"
                           className="w-32 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                           min="0"
