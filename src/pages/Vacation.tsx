@@ -397,46 +397,24 @@ const Vacation: React.FC = () => {
   };
 
   const deleteProject = async (projectToDelete: string) => {
-    console.log('Delete project called with:', projectToDelete);
-    console.log('Current projects:', projects);
-    console.log('Projects length:', projects.length);
-    
-    if (projects.length <= 1) {
-      console.log('Cannot delete - only one project left');
-      return; // Don't delete the last project
-    }
+    if (projects.length <= 1) return;
     
     try {
-      console.log('Proceeding with deletion...');
-      // Remove from projects array
       const updatedProjects = projects.filter(p => p !== projectToDelete);
-      console.log('Updated projects after filter:', updatedProjects);
       setProjects(updatedProjects);
       
-      // If we're deleting the currently selected project, switch to another one
       if (selectedProject === projectToDelete) {
-        console.log('Switching selected project to:', updatedProjects[0]);
         setSelectedProject(updatedProjects[0]);
+        setOptions([]);
       }
       
-      // Remove from database if user is logged in
       if (user) {
-        console.log('Deleting from database for user:', user.id);
-        const { error } = await supabase
+        await supabase
           .from('budget_data')
           .delete()
           .eq('user_id', user.id)
           .eq('page_type', 'vacation')
           .eq('calculator_id', projectToDelete);
-          
-        if (error) throw error;
-        console.log('Database deletion successful');
-      }
-      
-      // Clear options if we deleted the currently selected project
-      if (selectedProject === projectToDelete) {
-        console.log('Clearing options for deleted project');
-        setOptions([]);
       }
       
     } catch (error) {
@@ -497,19 +475,14 @@ const Vacation: React.FC = () => {
                         <X className="h-3 w-3" />
                       </Button>
                       {projects.length > 1 && (
-                        <div 
-                          onClick={() => {
-                            const shouldDelete = window.confirm(`Delete "${project}"?`);
-                            if (shouldDelete) {
-                              deleteProject(project);
-                              setEditingProjectId(null);
-                            }
-                          }}
-                          className="h-8 w-8 p-0 text-red-500 hover:bg-red-500/20 rounded border border-red-500 flex items-center justify-center cursor-pointer"
+                        <button 
+                          onClick={() => deleteProject(project)}
+                          className="h-8 w-8 text-red-500 hover:text-red-700 hover:bg-red-50 rounded"
                           title="Delete project"
+                          style={{ zIndex: 1000 }}
                         >
-                          ❌
-                        </div>
+                          <Trash2 className="h-4 w-4" />
+                        </button>
                       )}
                     </div>
                   ) : (
