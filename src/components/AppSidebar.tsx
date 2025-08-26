@@ -42,7 +42,10 @@ export function AppSidebar() {
 
   const handleLinkClick = () => {
     if (isMobile) {
-      setOpen(false);
+      // Use a small delay to ensure navigation happens first
+      setTimeout(() => {
+        setOpen(false);
+      }, 100);
     }
   };
 
