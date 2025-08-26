@@ -483,6 +483,20 @@ const Vacation: React.FC = () => {
                       <Button size="sm" variant="ghost" onClick={() => setEditingProjectId(null)} className="h-8 w-8 p-0">
                         <X className="h-3 w-3" />
                       </Button>
+                      {projects.length > 1 && (
+                        <Button 
+                          size="sm" 
+                          variant="ghost" 
+                          onClick={() => {
+                            deleteProject(project);
+                            setEditingProjectId(null);
+                          }} 
+                          className="h-8 w-8 p-0 text-red-500 hover:bg-red-500/20"
+                          title="Delete project"
+                        >
+                          <Trash2 className="h-3 w-3" />
+                        </Button>
+                      )}
                     </div>
                   ) : (
                     <div className="flex items-center gap-1">
@@ -491,34 +505,20 @@ const Vacation: React.FC = () => {
                           variant={selectedProject === project ? "default" : "outline"}
                           size="sm"
                           onClick={() => setSelectedProject(project)}
-                          className="pr-16"
+                          className="pr-8"
                         >
                           {project}
                         </Button>
-                        <div className="absolute right-1 top-1/2 -translate-y-1/2 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              startEditingProject(project);
-                            }}
-                            className="h-6 w-6 p-0 hover:bg-white/20 rounded flex items-center justify-center"
-                            title="Edit project name"
-                          >
-                            <Edit2 className="h-3 w-3" />
-                          </button>
-                          {projects.length > 1 && (
-                            <button
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                deleteProject(project);
-                              }}
-                              className="h-6 w-6 p-0 hover:bg-red-500/20 rounded flex items-center justify-center text-red-500"
-                              title="Delete project"
-                            >
-                              <Trash2 className="h-3 w-3" />
-                            </button>
-                          )}
-                        </div>
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            startEditingProject(project);
+                          }}
+                          className="absolute right-1 top-1/2 -translate-y-1/2 h-6 w-6 p-0 opacity-0 group-hover:opacity-100 transition-opacity hover:bg-white/20 rounded flex items-center justify-center"
+                          title="Edit project name"
+                        >
+                          <Edit2 className="h-3 w-3" />
+                        </button>
                       </div>
                     </div>
                   )}
