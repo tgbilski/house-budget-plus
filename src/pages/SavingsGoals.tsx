@@ -432,7 +432,7 @@ const SavingsGoals = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background to-background/80 overflow-x-hidden">
+    <div className="min-h-screen bg-gradient-to-br from-background via-background to-background/80">
       <SEO 
         title="Savings Goals - Track Your Monthly Savings"
         description="Track your monthly savings with an interactive yearly table and editable goals."

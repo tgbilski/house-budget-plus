@@ -35,15 +35,15 @@ const navigationItems = [
 export function AppSidebar() {
   const location = useLocation();
   const currentPath = location.pathname;
-  const { setOpen } = useSidebar();
+  const { setOpen, setOpenMobile, isMobile: sidebarIsMobile } = useSidebar();
   const isMobile = useIsMobile();
 
   const isActive = (path: string) => currentPath === path;
 
   const handleLinkClick = (e: React.MouseEvent) => {
     if (isMobile) {
-      // Close sidebar immediately on mobile
-      setOpen(false);
+      // Close mobile sidebar properly
+      setOpenMobile(false);
     }
   };
 
