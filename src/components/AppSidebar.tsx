@@ -24,7 +24,7 @@ import {
 } from "@/components/ui/sidebar";
 import { cn } from "@/lib/utils";
 
-// Use these constants for sidebar width
+// Sidebar widths in px
 const SIDEBAR_COLLAPSED = 56;
 const SIDEBAR_EXPANDED = 240;
 
@@ -41,27 +41,28 @@ const navigationItems = [
 export function AppSidebar() {
   const location = useLocation();
   const { open, setOpen, isMobile, openMobile, setOpenMobile, state } = useSidebar();
-  const [headerHeight, setHeaderHeight] = useState(window.innerWidth < 768 ? 48 : 56);
 
+  // Dynamically calculate header height
+  const [headerHeight, setHeaderHeight] = useState(window.innerWidth < 768 ? 48 : 56);
   useEffect(() => {
-    const updateHeaderHeight = () => {
-      setHeaderHeight(window.innerWidth < 768 ? 48 : 56);
-    };
+    const updateHeaderHeight = () => setHeaderHeight(window.innerWidth < 768 ? 48 : 56);
     window.addEventListener("resize", updateHeaderHeight);
     return () => window.removeEventListener("resize", updateHeaderHeight);
   }, []);
 
+  // Always collapsed by default
+  const isCollapsed = state === "collapsed";
+
+  // On mobile, close sidebar when nav is clicked
   const handleNavClick = () => {
     if (isMobile) setOpenMobile(false);
   };
-
-  const isCollapsed = state === "collapsed";
 
   return (
     <Sidebar
       variant="inset"
       className={cn(
-        "fixed left-0 z-40 transition-all duration-300 bg-white border-r shadow",
+        "fixed left-0 z-40 bg-white border-r shadow transition-all duration-300",
         isMobile
           ? openMobile
             ? "translate-x-0"
