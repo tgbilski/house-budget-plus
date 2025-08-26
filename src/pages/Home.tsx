@@ -2,7 +2,7 @@
 import React from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Calculator, Scale, Calendar, Plane, Brain, ArrowRight, Gift, Star, TrendingUp, Users } from "lucide-react";
+import { Calculator, Scale, Target, Plane, Brain, ArrowRight, Gift, Star, TrendingUp, Users } from "lucide-react";
 import { Link } from "react-router-dom";
 import { SEO } from "@/components/SEO";
 import { seoData } from "@/utils/seoData";
@@ -38,12 +38,12 @@ const toolsData = [
     benefit: "Save 20% on projects"
   },
   {
-    title: "Takeout Tracker",
-    description: "Monitor dining expenses within calendar view.",
-    icon: Calendar,
-    href: "/takeout",
+    title: "Savings Tracker",
+    description: "Track your monthly savings progress with yearly goals.",
+    icon: Target,
+    href: "/savings",
     color: "bg-green-500/10 text-green-600",
-    benefit: "Cut dining costs"
+    benefit: "Reach financial goals"
   },
   {
     title: "Vacation Planner",
