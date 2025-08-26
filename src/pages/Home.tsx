@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -73,10 +72,9 @@ const HeroSection = () => (
       backgroundRepeat: 'no-repeat'
     }}
   >
-    
-    <div className="max-w-6xl mx-auto">
+    <div className="w-full max-w-6xl mx-auto px-4">
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
-        <div className="text-left animate-fade-in">
+        <div className="text-left animate-fade-in w-full">
           <div className="flex items-center mb-6">
             <img
               src="/lovable-uploads/ed809955-ef71-4d81-b072-945082f4380a.png"
@@ -137,10 +135,10 @@ const FeaturedToolsSection = () => {
   const featuredTools = toolsData.filter(tool => tool.featured);
   
   return (
-    <section className="py-16 px-4 bg-slate-900 text-white relative" style={{
+    <section className="py-16 px-4 bg-slate-900 text-white relative overflow-hidden" style={{
       backgroundImage: `repeating-linear-gradient(45deg, transparent, transparent 40px, rgba(255,255,255,0.04) 40px, rgba(255,255,255,0.04) 42px)`
     }}>
-      <div className="max-w-6xl mx-auto">
+      <div className="w-full max-w-6xl mx-auto px-4">
         <div className="text-center mb-12">
           <h2 className="text-2xl md:text-4xl font-bold mb-4 text-white">
             Start Saving Money Today
@@ -190,7 +188,7 @@ const AllToolsGrid = () => (
   <section className="py-16 px-4 bg-slate-900 text-white relative overflow-hidden" style={{
     backgroundImage: `repeating-linear-gradient(45deg, transparent, transparent 40px, rgba(255,255,255,0.04) 40px, rgba(255,255,255,0.04) 42px)`
   }}>
-    <div className="max-w-6xl mx-auto">
+    <div className="w-full max-w-6xl mx-auto px-4">
       <div className="text-center mb-12">
         <h2 className="text-2xl md:text-3xl font-bold mb-4 text-white">
           Complete Financial Toolkit
@@ -229,8 +227,8 @@ const AllToolsGrid = () => (
 );
 
 const SocialProofSection = () => (
-  <section className="py-16 px-4 bg-gradient-to-r from-white via-primary/5 to-white relative">
-    <div className="max-w-4xl mx-auto text-center">
+  <section className="py-16 px-4 bg-gradient-to-r from-white via-primary/5 to-white relative overflow-hidden">
+    <div className="w-full max-w-4xl mx-auto text-center px-4">
       <h2 className="text-2xl md:text-3xl font-bold mb-8">
         Join a Community of Smart Savers
       </h2>
@@ -271,7 +269,7 @@ const CTASection = () => (
   <section className="py-20 px-4 bg-slate-900 text-white relative overflow-hidden" style={{
     backgroundImage: `repeating-linear-gradient(45deg, transparent, transparent 40px, rgba(255,255,255,0.04) 40px, rgba(255,255,255,0.04) 42px)`
   }}>
-    <div className="max-w-4xl mx-auto text-center relative z-10">
+    <div className="w-full max-w-4xl mx-auto text-center relative z-10 px-4">
       <h2 className="text-3xl md:text-4xl font-bold mb-6 animate-fade-in">
         Ready to Save Money Every Month?
       </h2>
@@ -311,7 +309,7 @@ const Home = () => {
         structuredData={seoData.home.structuredData}
         canonical="https://www.housebudgetcalculator.com/"
       />
-      <div className="min-h-screen relative">
+      <div className="min-h-screen relative overflow-x-hidden">
         <HeroSection />
         <FeaturedToolsSection />
         <RSSFeed 
@@ -321,8 +319,8 @@ const Home = () => {
         <AllToolsGrid />
         
         {/* AdSense Ad Unit */}
-        <div className="py-8 bg-background">
-          <div className="max-w-6xl mx-auto px-4">
+        <div className="py-8 bg-background overflow-hidden">
+          <div className="w-full max-w-6xl mx-auto px-4">
             <AdSense 
               adSlot="5669663372" 
               adFormat="fluid"
@@ -336,7 +334,7 @@ const Home = () => {
         <CTASection />
         
         {/* Badge Display Section - Bottom */}
-        <div className="container mx-auto px-4 py-8">
+        <div className="w-full max-w-6xl mx-auto px-4 py-8">
           <BadgeDisplay />
         </div>
       </div>

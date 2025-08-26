@@ -846,8 +846,8 @@ const CompareVendors: React.FC = () => {
           </div>
         </div>
 
-        <div className="max-w-6xl mx-auto">
-          <div className="flex flex-wrap gap-6 justify-center mb-8">
+        <div className="w-full max-w-6xl mx-auto px-4">
+          <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6 mb-8 w-full">
             {quotes.map((quote) => (
               <VendorCard
                 key={quote.id}
@@ -860,7 +860,7 @@ const CompareVendors: React.FC = () => {
             ))}
 
             {!isNewProject && selectedProject && (
-              <div className="flex items-center justify-center">
+              <div className="w-full flex items-center justify-center col-span-1 lg:col-span-2 xl:col-span-3">
                 <Button
                   onClick={addVendorCard}
                   variant="outline"
@@ -877,7 +877,7 @@ const CompareVendors: React.FC = () => {
         <section className="py-16 px-4 bg-slate-900 text-white relative mt-16" style={{
           backgroundImage: `repeating-linear-gradient(45deg, transparent, transparent 40px, rgba(255,255,255,0.04) 40px, rgba(255,255,255,0.04) 42px)`
         }}>
-          <div className="max-w-4xl mx-auto text-center relative z-10">
+          <div className="w-full max-w-4xl mx-auto text-center relative z-10 px-4">
             <h2 className="text-2xl md:text-3xl font-bold mb-6 text-white">
               Make Smarter Vendor Decisions
             </h2>

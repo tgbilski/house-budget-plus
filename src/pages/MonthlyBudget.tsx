@@ -101,7 +101,7 @@ const MonthlyBudget: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen overflow-x-hidden">
       <SEO 
         title={seoData.monthlyBudget.title}
         description={seoData.monthlyBudget.description}
@@ -112,7 +112,7 @@ const MonthlyBudget: React.FC = () => {
       {/* Hero Section with Dark Gradient */}
       <div className="relative bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 text-white py-16 mb-8">
           <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHZpZXdCb3g9IjAgMCAyMCAyMCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3QgeD0iMCIgeT0iMCIgd2lkdGg9IjEiIGhlaWdodD0iMjAiIGZpbGw9InJnYmEoMjU1LDI1NSwyNTUsMC4xKSIvPgo8L3N2Zz4K')] opacity-20"></div>
-          <div className="container mx-auto px-4 relative z-10">
+          <div className="w-full max-w-6xl mx-auto px-4 relative z-10">
             <div className="text-center">
               <div className="flex items-center justify-center gap-4 mb-6">
                 <img 
@@ -129,7 +129,7 @@ const MonthlyBudget: React.FC = () => {
           </div>
         </div>
 
-        <div className="container mx-auto px-4 py-8">
+        <div className="w-full max-w-6xl mx-auto px-4 py-8">
           <div className="text-center mb-8">
           
           {/* Currency Selector */}
@@ -162,10 +162,10 @@ const MonthlyBudget: React.FC = () => {
         </div>
 
         {/* Main Content */}
-        <div className="flex flex-wrap gap-6 justify-center mb-16">
+        <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6 mb-16 w-full max-w-none">
           {/* Calculator Containers */}
           {calculators.map((calculator) => (
-            <div key={calculator.id} className="relative">
+            <div key={calculator.id} className="w-full">
               <BudgetCalculator
                 id={calculator.id}
                 onRemove={() => removeCalculator(calculator.id)}
@@ -176,7 +176,7 @@ const MonthlyBudget: React.FC = () => {
           ))}
 
           {/* Add New Calculator Button */}
-          <div className="flex items-center justify-center">
+          <div className="w-full flex items-center justify-center col-span-1 lg:col-span-2 xl:col-span-3">
             <Button
               onClick={addCalculator}
               variant="outline"
@@ -192,7 +192,7 @@ const MonthlyBudget: React.FC = () => {
         <section className="py-16 px-4 bg-slate-900 text-white relative" style={{
           backgroundImage: `repeating-linear-gradient(45deg, transparent, transparent 40px, rgba(255,255,255,0.04) 40px, rgba(255,255,255,0.04) 42px)`
         }}>
-          <div className="max-w-4xl mx-auto text-center relative z-10">
+          <div className="w-full max-w-4xl mx-auto text-center relative z-10 px-4">
             <h2 className="text-2xl md:text-3xl font-bold mb-6 text-white">
               Take Control of Your Finances
             </h2>
@@ -218,7 +218,7 @@ const MonthlyBudget: React.FC = () => {
 
 
         {/* AdSense Optimization Content */}
-        <section className="mt-16 max-w-4xl mx-auto">
+        <section className="mt-16 w-full max-w-4xl mx-auto px-4">
           <div className="bg-card border border-border rounded-lg p-6">
             <h2 className="text-2xl font-semibold text-foreground mb-4">
               How to Use the Monthly Budget Calculator
