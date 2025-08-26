@@ -537,7 +537,7 @@ const SavingsGoals = () => {
                             updateSavingsAmount(index, value);
                           }}
                           placeholder="0"
-                          className="w-32"
+                          className="w-32 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                           min="0"
                           step="0.01"
                         />
