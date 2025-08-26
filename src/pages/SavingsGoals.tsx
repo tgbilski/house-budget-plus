@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Progress } from '@/components/ui/progress';
 import { Plus, Target, Edit2, Check, X, AlertTriangle, Trash2 } from 'lucide-react';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { toast } from 'sonner';
@@ -351,6 +352,50 @@ const SavingsGoals = () => {
     }
   };
 
+  const getCurrentGoal = () => {
+    return savingsGoals.find(goal => goal.id === currentGoalId);
+  };
+
+  const getProgressPercentage = () => {
+    const currentGoal = getCurrentGoal();
+    const totalSaved = getTotalSaved();
+    const targetAmount = currentGoal?.target_amount || 0;
+    
+    if (targetAmount === 0) return 0;
+    return Math.min((totalSaved / targetAmount) * 100, 100);
+  };
+
+  const updateGoalTarget = async (targetAmount: number) => {
+    if (!currentGoalId) return;
+
+    if (!user) {
+      // For non-authenticated users, just update local state
+      const updatedGoals = savingsGoals.map(goal => 
+        goal.id === currentGoalId ? { ...goal, target_amount: targetAmount } : goal
+      );
+      setSavingsGoals(updatedGoals);
+      return;
+    }
+
+    try {
+      const { error } = await supabase
+        .from('savings_goals')
+        .update({ target_amount: targetAmount })
+        .eq('id', currentGoalId);
+
+      if (error) throw error;
+
+      // Update local state
+      const updatedGoals = savingsGoals.map(goal => 
+        goal.id === currentGoalId ? { ...goal, target_amount: targetAmount } : goal
+      );
+      setSavingsGoals(updatedGoals);
+    } catch (error) {
+      console.error('Error updating goal target:', error);
+      toast.error('Failed to update goal target');
+    }
+  };
+
   const getTotalSaved = () => {
     return Object.values(savingsData).reduce((sum, amount) => sum + amount, 0);
   };
@@ -467,9 +512,20 @@ const SavingsGoals = () => {
           </div>
         </div>
 
-        {/* Total Saved */}
+        {/* Total Saved with Progress Bar */}
         <Card className="mb-6">
           <CardContent className="pt-6">
+            {/* Progress Bar */}
+            <div className="mb-4">
+              <div className="flex justify-between items-center mb-2">
+                <span className="text-sm font-medium text-muted-foreground">Progress towards goal</span>
+                <span className="text-sm font-medium text-muted-foreground">
+                  {getProgressPercentage().toFixed(1)}%
+                </span>
+              </div>
+              <Progress value={getProgressPercentage()} className="h-2" />
+            </div>
+            
             <div className="text-center">
               <h3 className="text-lg font-semibold text-muted-foreground mb-2">Total Saved</h3>
               <p className="text-4xl font-bold text-primary">
@@ -483,20 +539,40 @@ const SavingsGoals = () => {
         <Card>
           <CardContent className="pt-6">
             <div className="flex items-center justify-between">
-              <div className="flex items-center gap-4">
-                <label className="text-sm font-medium">Year:</label>
-                <Select value={selectedYear} onValueChange={setSelectedYear}>
-                  <SelectTrigger className="w-32">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {years.map((year) => (
-                      <SelectItem key={year} value={year}>
-                        {year}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+              <div className="flex items-center gap-6">
+                {/* Total Goal Amount */}
+                <div className="flex items-center gap-2">
+                  <label className="text-sm font-medium whitespace-nowrap">Total Goal:</label>
+                  <div className="relative">
+                    <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground text-sm">$</span>
+                    <Input
+                      type="number"
+                      value={getCurrentGoal()?.target_amount || ''}
+                      onChange={(e) => updateGoalTarget(parseFloat(e.target.value) || 0)}
+                      placeholder="0"
+                      className="w-32 pl-6 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                      min="0"
+                      step="0.01"
+                    />
+                  </div>
+                </div>
+                
+                {/* Year Selector */}
+                <div className="flex items-center gap-2">
+                  <label className="text-sm font-medium">Year:</label>
+                  <Select value={selectedYear} onValueChange={setSelectedYear}>
+                    <SelectTrigger className="w-32">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {years.map((year) => (
+                        <SelectItem key={year} value={year}>
+                          {year}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
               </div>
               
               {/* Delete Goal Button */}
