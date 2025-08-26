@@ -530,9 +530,6 @@ const CompareVendors: React.FC = () => {
           <div className="text-center">
             <Star className="h-16 w-16 mx-auto mb-6 text-primary" />
             <h1 className="text-4xl font-bold mb-4">Compare Vendors</h1>
-            <p className="text-xl text-gray-300 max-w-2xl mx-auto">
-              Compare contractor quotes and vendor proposals side by side
-            </p>
           </div>
         </div>
       </div>
@@ -541,15 +538,6 @@ const CompareVendors: React.FC = () => {
         <WarningBanner />
 
         <div className="text-center mb-8">
-          <p className="text-muted-foreground text-lg mb-4">
-            Compare vendor quotes and make informed decisions for your projects
-          </p>
-          <div className="flex justify-center mb-6">
-            <SocialShare 
-              title="Free Vendor Quote Comparison Tool"
-              description="Compare contractor quotes, prices, and services easily. Make informed decisions for your home improvement projects."
-            />
-          </div>
           
           {/* Project Tabs */}
           <div className="mb-6">
