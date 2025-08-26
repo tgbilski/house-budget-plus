@@ -430,21 +430,26 @@ const SavingsGoals = () => {
                   </div>
                 ) : (
                   <div className="flex items-center gap-1">
-                    <Button
-                      variant={currentGoalId === goal.id ? "default" : "outline"}
-                      size="sm"
-                      onClick={() => selectGoal(goal.id)}
-                      className="relative group"
-                    >
-                      {goal.title}
-                      <Edit2 
-                        className="h-3 w-3 ml-1 opacity-0 group-hover:opacity-100 transition-opacity" 
+                    <div className="relative group">
+                      <Button
+                        variant={currentGoalId === goal.id ? "default" : "outline"}
+                        size="sm"
+                        onClick={() => selectGoal(goal.id)}
+                        className="pr-8"
+                      >
+                        {goal.title}
+                      </Button>
+                      <button
                         onClick={(e) => {
                           e.stopPropagation();
                           startEditingGoal(goal.id);
                         }}
-                      />
-                    </Button>
+                        className="absolute right-1 top-1/2 -translate-y-1/2 h-6 w-6 p-0 opacity-0 group-hover:opacity-100 transition-opacity hover:bg-white/20 rounded flex items-center justify-center"
+                        title="Edit goal name"
+                      >
+                        <Edit2 className="h-3 w-3" />
+                      </button>
+                    </div>
                     {savingsGoals.length > 1 && (
                       <Button
                         variant="ghost"
