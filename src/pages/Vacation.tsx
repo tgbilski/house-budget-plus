@@ -56,6 +56,7 @@ interface VacationCardProps {
 
 const VacationCard: React.FC<VacationCardProps> = ({ option, onUpdate, onRemove, showRemove, currency }) => {
   const [localOption, setLocalOption] = useState(option);
+  const [isEditing, setIsEditing] = useState(false);
 
   const updateField = useCallback((field: keyof VacationOption, value: any) => {
     const updated = { ...localOption, [field]: value };
@@ -74,6 +75,132 @@ const VacationCard: React.FC<VacationCardProps> = ({ option, onUpdate, onRemove,
     return evaluationFields.filter(Boolean).length;
   };
 
+  // Show editing mode if the card is completely empty (new card)
+  const isEmpty = !localOption.destination && localOption.estimated_cost === 0 && !localOption.travel_mode;
+  const shouldShowEditing = isEditing || isEmpty;
+
+
+  const questions = [
+    { key: 'favorable_travel' as const, label: 'Is the mode of travel favorable?' },
+    { key: 'destination_safe' as const, label: 'Is the destination safe?' },
+    { key: 'exciting_option' as const, label: 'Does this option excite you?' },
+    { key: 'everyone_enjoy' as const, label: 'Will everyone enjoy it?' },
+    { key: 'memorable' as const, label: 'Memorable?' }
+  ];
+
+  if (shouldShowEditing) {
+    return (
+      <Card className="relative">
+        <CardHeader>
+          <div className="flex justify-between items-start">
+            <CardTitle className="text-lg">Vacation Option</CardTitle>
+            <div className="flex items-center gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setIsEditing(false)}
+              >
+                <Check className="h-4 w-4" />
+              </Button>
+              {showRemove && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={onRemove}
+                  className="text-destructive hover:text-destructive"
+                >
+                  <Trash2 className="h-4 w-4" />
+                </Button>
+              )}
+            </div>
+          </div>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <Label htmlFor={`destination-${option.id}`}>Destination</Label>
+              <Input
+                id={`destination-${option.id}`}
+                value={localOption.destination}
+                onChange={(e) => updateField('destination', e.target.value)}
+                placeholder="Where are you going?"
+              />
+            </div>
+            <div>
+              <Label htmlFor={`travel-mode-${option.id}`}>Travel Mode</Label>
+              <Input
+                id={`travel-mode-${option.id}`}
+                value={localOption.travel_mode}
+                onChange={(e) => updateField('travel_mode', e.target.value)}
+                placeholder="Flight, drive, cruise, etc."
+              />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <Label htmlFor={`cost-${option.id}`}>Estimated Cost ({currency.symbol})</Label>
+              <Input
+                id={`cost-${option.id}`}
+                type="number"
+                step="0.01"
+                value={localOption.estimated_cost || ''}
+                onChange={(e) => updateField('estimated_cost', parseFloat(e.target.value) || 0)}
+                placeholder="0.00"
+              />
+            </div>
+            <div>
+              <Label htmlFor={`contact-${option.id}`}>Contact Info</Label>
+              <Input
+                id={`contact-${option.id}`}
+                value={localOption.contact}
+                onChange={(e) => updateField('contact', e.target.value)}
+                placeholder="Travel agent, website, etc."
+              />
+            </div>
+          </div>
+
+          <div>
+            <Label htmlFor={`notes-${option.id}`}>Notes</Label>
+            <Textarea
+              id={`notes-${option.id}`}
+              value={localOption.notes}
+              onChange={(e) => updateField('notes', e.target.value)}
+              placeholder="Additional details about this vacation option..."
+              rows={3}
+            />
+          </div>
+
+          <div className="space-y-3">
+            <h4 className="font-medium text-sm">Evaluation Questions</h4>
+            {questions.map((question) => (
+              <div key={question.key} className="flex items-center justify-between p-3 border border-border rounded-lg">
+                <span className="text-sm">{question.label}</span>
+                <div className="flex gap-2">
+                  <Button
+                    variant={localOption[question.key] === true ? "default" : "outline"}
+                    size="sm"
+                    onClick={() => updateField(question.key, true)}
+                  >
+                    Yes
+                  </Button>
+                  <Button
+                    variant={localOption[question.key] === false ? "destructive" : "outline"}
+                    size="sm"
+                    onClick={() => updateField(question.key, false)}
+                  >
+                    No
+                  </Button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  // Summary view
   const renderStars = () => {
     const filledStars = getStarCount();
     return Array.from({ length: 5 }, (_, index) => (
@@ -86,115 +213,63 @@ const VacationCard: React.FC<VacationCardProps> = ({ option, onUpdate, onRemove,
     ));
   };
 
-  const questions = [
-    { key: 'favorable_travel' as const, label: 'Is the mode of travel favorable?' },
-    { key: 'destination_safe' as const, label: 'Is the destination safe?' },
-    { key: 'exciting_option' as const, label: 'Does this option excite you?' },
-    { key: 'everyone_enjoy' as const, label: 'Will everyone enjoy it?' },
-    { key: 'memorable' as const, label: 'Memorable?' }
-  ];
-
   return (
-    <Card className="relative">
-      <CardHeader>
-        <div className="flex justify-between items-start">
-          <CardTitle className="text-lg">Vacation Option</CardTitle>
+    <Card className="relative hover:shadow-lg transition-shadow">
+      <CardContent className="p-6">
+        <div className="flex justify-between items-start mb-4">
+          <div className="flex-1">
+            <h3 className="font-semibold text-lg mb-1">
+              {localOption.destination || 'Untitled Destination'}
+            </h3>
+            <div className="text-2xl font-bold text-primary">
+              {currency.symbol}{localOption.estimated_cost?.toFixed(2) || '0.00'}
+            </div>
+            {localOption.travel_mode && (
+              <div className="text-sm text-muted-foreground mt-1">
+                Travel: {localOption.travel_mode}
+              </div>
+            )}
+          </div>
           <div className="flex items-center gap-2">
             <div className="flex">
               {renderStars()}
             </div>
-            {showRemove && (
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={onRemove}
-                className="text-destructive hover:text-destructive"
-              >
-                <Trash2 className="h-4 w-4" />
-              </Button>
-            )}
-          </div>
-        </div>
-      </CardHeader>
-      <CardContent className="space-y-4">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <Label htmlFor={`destination-${option.id}`}>Destination</Label>
-            <Input
-              id={`destination-${option.id}`}
-              value={localOption.destination}
-              onChange={(e) => updateField('destination', e.target.value)}
-              placeholder="Where are you going?"
-            />
-          </div>
-          <div>
-            <Label htmlFor={`travel-mode-${option.id}`}>Travel Mode</Label>
-            <Input
-              id={`travel-mode-${option.id}`}
-              value={localOption.travel_mode}
-              onChange={(e) => updateField('travel_mode', e.target.value)}
-              placeholder="Flight, drive, cruise, etc."
-            />
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <Label htmlFor={`cost-${option.id}`}>Estimated Cost ({currency.symbol})</Label>
-            <Input
-              id={`cost-${option.id}`}
-              type="number"
-              step="0.01"
-              value={localOption.estimated_cost || ''}
-              onChange={(e) => updateField('estimated_cost', parseFloat(e.target.value) || 0)}
-              placeholder="0.00"
-            />
+        {localOption.contact && (
+          <div className="mb-3">
+            <span className="text-sm text-muted-foreground">Contact: </span>
+            <span className="text-sm">{localOption.contact}</span>
           </div>
-          <div>
-            <Label htmlFor={`contact-${option.id}`}>Contact Info</Label>
-            <Input
-              id={`contact-${option.id}`}
-              value={localOption.contact}
-              onChange={(e) => updateField('contact', e.target.value)}
-              placeholder="Travel agent, website, etc."
-            />
+        )}
+
+        {localOption.notes && (
+          <div className="mb-4">
+            <p className="text-sm text-muted-foreground line-clamp-2">{localOption.notes}</p>
           </div>
-        </div>
+        )}
 
-        <div>
-          <Label htmlFor={`notes-${option.id}`}>Notes</Label>
-          <Textarea
-            id={`notes-${option.id}`}
-            value={localOption.notes}
-            onChange={(e) => updateField('notes', e.target.value)}
-            placeholder="Additional details about this vacation option..."
-            rows={3}
-          />
-        </div>
-
-        <div className="space-y-3">
-          <h4 className="font-medium text-sm">Evaluation Questions</h4>
-          {questions.map((question) => (
-            <div key={question.key} className="flex items-center justify-between p-3 border border-border rounded-lg">
-              <span className="text-sm">{question.label}</span>
-              <div className="flex gap-2">
-                <Button
-                  variant={localOption[question.key] === true ? "default" : "outline"}
-                  size="sm"
-                  onClick={() => updateField(question.key, true)}
-                >
-                  Yes
-                </Button>
-                <Button
-                  variant={localOption[question.key] === false ? "destructive" : "outline"}
-                  size="sm"
-                  onClick={() => updateField(question.key, false)}
-                >
-                  No
-                </Button>
-              </div>
-            </div>
-          ))}
+        <div className="flex items-center justify-between">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setIsEditing(true)}
+            className="flex items-center gap-2"
+          >
+            <Edit3 className="h-4 w-4" />
+            Edit Details
+          </Button>
+          {showRemove && (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={onRemove}
+              className="text-destructive hover:text-destructive"
+            >
+              <Trash2 className="h-4 w-4" />
+            </Button>
+          )}
         </div>
       </CardContent>
     </Card>

@@ -58,6 +58,7 @@ interface VendorCardProps {
 
 const VendorCard: React.FC<VendorCardProps> = ({ quote, onUpdate, onRemove, showRemove, currency }) => {
   const [localQuote, setLocalQuote] = useState<VendorQuote>(quote);
+  const [isEditing, setIsEditing] = useState(false);
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
@@ -86,23 +87,229 @@ const VendorCard: React.FC<VendorCardProps> = ({ quote, onUpdate, onRemove, show
 
   const starCount = getStarCount();
 
-  return (
-    <Card className="w-full max-w-md mx-auto shadow-lg border border-border">
-      <CardHeader className="pb-4">
-        <div className="flex items-start justify-between">
-          <div className="flex-1">
-            <Label htmlFor={`vendor-${quote.id}`} className="text-sm font-medium text-muted-foreground">
-              Vendor/Company
+  // Show editing mode if the card is completely empty (new card)
+  const isEmpty = !localQuote.vendor_name && localQuote.estimate_amount === 0 && !localQuote.contact_info;
+  const shouldShowEditing = isEditing || isEmpty;
+
+  if (shouldShowEditing) {
+    return (
+      <Card className="w-full max-w-md mx-auto shadow-lg border border-border">
+        <CardHeader className="pb-4">
+          <div className="flex items-start justify-between">
+            <div className="flex-1">
+              <Label htmlFor={`vendor-${quote.id}`} className="text-sm font-medium text-muted-foreground">
+                Vendor/Company
+              </Label>
+              <Input
+                id={`vendor-${quote.id}`}
+                placeholder="Company name..."
+                value={localQuote.vendor_name}
+                onChange={(e) => updateField('vendor_name', e.target.value)}
+                className="mt-1 font-semibold"
+              />
+            </div>
+            <div className="ml-4 flex items-center gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setIsEditing(false)}
+              >
+                <Check className="h-4 w-4" />
+              </Button>
+              {showRemove && (
+                <Button
+                  variant="destructive"
+                  size="sm"
+                  onClick={onRemove}
+                >
+                  <Trash2 className="h-4 w-4" />
+                </Button>
+              )}
+            </div>
+          </div>
+        </CardHeader>
+
+        <CardContent className="space-y-4">
+          <div>
+            <Label className="text-sm font-semibold text-foreground">
+              Estimate Amount
+            </Label>
+            <div className="relative mt-1">
+              <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground">
+                {currency.symbol}
+              </span>
+              <Input
+                type="number"
+                step="0.01"
+                value={localQuote.estimate_amount || ''}
+                onChange={(e) => updateField('estimate_amount', parseFloat(e.target.value) || 0)}
+                className="pl-8 text-lg font-bold text-primary"
+                placeholder="0.00"
+              />
+            </div>
+          </div>
+
+          <div>
+            <Label className="text-sm font-medium text-muted-foreground">
+              Contact Info
             </Label>
             <Input
-              id={`vendor-${quote.id}`}
-              placeholder="Company name..."
-              value={localQuote.vendor_name}
-              onChange={(e) => updateField('vendor_name', e.target.value)}
-              className="mt-1 font-semibold"
+              value={localQuote.contact_info}
+              onChange={(e) => updateField('contact_info', e.target.value)}
+              placeholder="Phone, email, etc."
+              className="mt-1"
             />
           </div>
-          <div className="ml-4 flex items-center gap-2">
+
+          <div>
+            <Label className="text-sm font-medium text-muted-foreground">
+              Date Received
+            </Label>
+            <Input
+              type="date"
+              value={localQuote.date_received}
+              onChange={(e) => updateField('date_received', e.target.value)}
+              className="mt-1"
+            />
+          </div>
+
+          <div className="pt-4 border-t">
+            <h3 className="text-sm font-semibold text-foreground mb-3">Vendor Evaluation</h3>
+            
+            <div className="space-y-3">
+              <div className="flex items-center justify-between p-3 border border-border rounded-lg">
+                <span className="text-sm">Did you like the sales rep?</span>
+                <div className="flex gap-2">
+                  <Button
+                    variant={localQuote.liked_sales_rep === true ? "default" : "outline"}
+                    size="sm"
+                    onClick={() => updateField('liked_sales_rep', true)}
+                  >
+                    Yes
+                  </Button>
+                  <Button
+                    variant={localQuote.liked_sales_rep === false ? "destructive" : "outline"}
+                    size="sm"
+                    onClick={() => updateField('liked_sales_rep', false)}
+                  >
+                    No
+                  </Button>
+                </div>
+              </div>
+
+              <div className="flex items-center justify-between p-3 border border-border rounded-lg">
+                <span className="text-sm">Do they offer financing?</span>
+                <div className="flex gap-2">
+                  <Button
+                    variant={localQuote.offers_financing === true ? "default" : "outline"}
+                    size="sm"
+                    onClick={() => updateField('offers_financing', true)}
+                  >
+                    Yes
+                  </Button>
+                  <Button
+                    variant={localQuote.offers_financing === false ? "destructive" : "outline"}
+                    size="sm"
+                    onClick={() => updateField('offers_financing', false)}
+                  >
+                    No
+                  </Button>
+                </div>
+              </div>
+
+              <div className="flex items-center justify-between p-3 border border-border rounded-lg">
+                <span className="text-sm">Is timing good?</span>
+                <div className="flex gap-2">
+                  <Button
+                    variant={localQuote.good_timing === true ? "default" : "outline"}
+                    size="sm"
+                    onClick={() => updateField('good_timing', true)}
+                  >
+                    Yes
+                  </Button>
+                  <Button
+                    variant={localQuote.good_timing === false ? "destructive" : "outline"}
+                    size="sm"
+                    onClick={() => updateField('good_timing', false)}
+                  >
+                    No
+                  </Button>
+                </div>
+              </div>
+
+              <div className="flex items-center justify-between p-3 border border-border rounded-lg">
+                <span className="text-sm">Are they trustworthy?</span>
+                <div className="flex gap-2">
+                  <Button
+                    variant={localQuote.trustworthy === true ? "default" : "outline"}
+                    size="sm"
+                    onClick={() => updateField('trustworthy', true)}
+                  >
+                    Yes
+                  </Button>
+                  <Button
+                    variant={localQuote.trustworthy === false ? "destructive" : "outline"}
+                    size="sm"
+                    onClick={() => updateField('trustworthy', false)}
+                  >
+                    No
+                  </Button>
+                </div>
+              </div>
+
+              <div className="flex items-center justify-between p-3 border border-border rounded-lg">
+                <span className="text-sm">Responsive?</span>
+                <div className="flex gap-2">
+                  <Button
+                    variant={localQuote.responsive === true ? "default" : "outline"}
+                    size="sm"
+                    onClick={() => updateField('responsive', true)}
+                  >
+                    Yes
+                  </Button>
+                  <Button
+                    variant={localQuote.responsive === false ? "destructive" : "outline"}
+                    size="sm"
+                    onClick={() => updateField('responsive', false)}
+                  >
+                    No
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <Label className="text-sm font-medium text-muted-foreground">
+              Notes
+            </Label>
+            <Textarea
+              value={localQuote.notes}
+              onChange={(e) => updateField('notes', e.target.value)}
+              placeholder="Additional notes about the vendor or quote..."
+              rows={2}
+              className="mt-1"
+            />
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  // Summary view
+  return (
+    <Card className="w-full max-w-md mx-auto shadow-lg border border-border hover:shadow-xl transition-shadow">
+      <CardContent className="p-6">
+        <div className="flex items-start justify-between mb-4">
+          <div className="flex-1">
+            <h3 className="font-semibold text-lg mb-1">
+              {localQuote.vendor_name || 'Untitled Vendor'}
+            </h3>
+            <div className="text-2xl font-bold text-primary">
+              {currency.symbol}{localQuote.estimate_amount?.toFixed(2) || '0.00'}
+            </div>
+          </div>
+          <div className="flex items-center gap-2">
             <div className="flex items-center gap-1">
               {[1, 2, 3, 4, 5].map((starIndex) => (
                 <Star
@@ -115,180 +322,49 @@ const VendorCard: React.FC<VendorCardProps> = ({ quote, onUpdate, onRemove, show
                 />
               ))}
             </div>
-            {showRemove && (
-              <Button
-                variant="destructive"
-                size="sm"
-                onClick={onRemove}
-              >
-                <Trash2 className="h-4 w-4" />
-              </Button>
-            )}
-          </div>
-        </div>
-      </CardHeader>
-
-      <CardContent className="space-y-4">
-        <div>
-          <Label className="text-sm font-semibold text-foreground">
-            Estimate Amount
-          </Label>
-          <div className="relative mt-1">
-            <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground">
-              {currency.symbol}
-            </span>
-            <Input
-              type="number"
-              step="0.01"
-              value={localQuote.estimate_amount || ''}
-              onChange={(e) => updateField('estimate_amount', parseFloat(e.target.value) || 0)}
-              className="pl-8 text-lg font-bold text-primary"
-              placeholder="0.00"
-            />
           </div>
         </div>
 
-        <div>
-          <Label className="text-sm font-medium text-muted-foreground">
-            Contact Info
-          </Label>
-          <Input
-            value={localQuote.contact_info}
-            onChange={(e) => updateField('contact_info', e.target.value)}
-            placeholder="Phone, email, etc."
-            className="mt-1"
-          />
-        </div>
-
-        <div>
-          <Label className="text-sm font-medium text-muted-foreground">
-            Date Received
-          </Label>
-          <Input
-            type="date"
-            value={localQuote.date_received}
-            onChange={(e) => updateField('date_received', e.target.value)}
-            className="mt-1"
-          />
-        </div>
-
-        <div className="pt-4 border-t">
-          <h3 className="text-sm font-semibold text-foreground mb-3">Vendor Evaluation</h3>
-          
-          <div className="space-y-3">
-            <div className="flex items-center justify-between p-3 border border-border rounded-lg">
-              <span className="text-sm">Did you like the sales rep?</span>
-              <div className="flex gap-2">
-                <Button
-                  variant={localQuote.liked_sales_rep === true ? "default" : "outline"}
-                  size="sm"
-                  onClick={() => updateField('liked_sales_rep', true)}
-                >
-                  Yes
-                </Button>
-                <Button
-                  variant={localQuote.liked_sales_rep === false ? "destructive" : "outline"}
-                  size="sm"
-                  onClick={() => updateField('liked_sales_rep', false)}
-                >
-                  No
-                </Button>
-              </div>
-            </div>
-
-            <div className="flex items-center justify-between p-3 border border-border rounded-lg">
-              <span className="text-sm">Do they offer financing?</span>
-              <div className="flex gap-2">
-                <Button
-                  variant={localQuote.offers_financing === true ? "default" : "outline"}
-                  size="sm"
-                  onClick={() => updateField('offers_financing', true)}
-                >
-                  Yes
-                </Button>
-                <Button
-                  variant={localQuote.offers_financing === false ? "destructive" : "outline"}
-                  size="sm"
-                  onClick={() => updateField('offers_financing', false)}
-                >
-                  No
-                </Button>
-              </div>
-            </div>
-
-            <div className="flex items-center justify-between p-3 border border-border rounded-lg">
-              <span className="text-sm">Is timing good?</span>
-              <div className="flex gap-2">
-                <Button
-                  variant={localQuote.good_timing === true ? "default" : "outline"}
-                  size="sm"
-                  onClick={() => updateField('good_timing', true)}
-                >
-                  Yes
-                </Button>
-                <Button
-                  variant={localQuote.good_timing === false ? "destructive" : "outline"}
-                  size="sm"
-                  onClick={() => updateField('good_timing', false)}
-                >
-                  No
-                </Button>
-              </div>
-            </div>
-
-            <div className="flex items-center justify-between p-3 border border-border rounded-lg">
-              <span className="text-sm">Are they trustworthy?</span>
-              <div className="flex gap-2">
-                <Button
-                  variant={localQuote.trustworthy === true ? "default" : "outline"}
-                  size="sm"
-                  onClick={() => updateField('trustworthy', true)}
-                >
-                  Yes
-                </Button>
-                <Button
-                  variant={localQuote.trustworthy === false ? "destructive" : "outline"}
-                  size="sm"
-                  onClick={() => updateField('trustworthy', false)}
-                >
-                  No
-                </Button>
-              </div>
-            </div>
-
-            <div className="flex items-center justify-between p-3 border border-border rounded-lg">
-              <span className="text-sm">Responsive?</span>
-              <div className="flex gap-2">
-                <Button
-                  variant={localQuote.responsive === true ? "default" : "outline"}
-                  size="sm"
-                  onClick={() => updateField('responsive', true)}
-                >
-                  Yes
-                </Button>
-                <Button
-                  variant={localQuote.responsive === false ? "destructive" : "outline"}
-                  size="sm"
-                  onClick={() => updateField('responsive', false)}
-                >
-                  No
-                </Button>
-              </div>
-            </div>
+        {localQuote.contact_info && (
+          <div className="mb-3">
+            <span className="text-sm text-muted-foreground">Contact: </span>
+            <span className="text-sm">{localQuote.contact_info}</span>
           </div>
-        </div>
+        )}
 
-        <div>
-          <Label className="text-sm font-medium text-muted-foreground">
-            Notes
-          </Label>
-          <Textarea
-            value={localQuote.notes}
-            onChange={(e) => updateField('notes', e.target.value)}
-            placeholder="Additional notes about the vendor or quote..."
-            rows={2}
-            className="mt-1"
-          />
+        {localQuote.date_received && (
+          <div className="mb-4">
+            <span className="text-sm text-muted-foreground">Date: </span>
+            <span className="text-sm">{new Date(localQuote.date_received).toLocaleDateString()}</span>
+          </div>
+        )}
+
+        {localQuote.notes && (
+          <div className="mb-4">
+            <p className="text-sm text-muted-foreground line-clamp-2">{localQuote.notes}</p>
+          </div>
+        )}
+
+        <div className="flex items-center justify-between">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setIsEditing(true)}
+            className="flex items-center gap-2"
+          >
+            <Edit3 className="h-4 w-4" />
+            Edit Details
+          </Button>
+          {showRemove && (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={onRemove}
+              className="text-destructive hover:text-destructive"
+            >
+              <Trash2 className="h-4 w-4" />
+            </Button>
+          )}
         </div>
       </CardContent>
     </Card>
