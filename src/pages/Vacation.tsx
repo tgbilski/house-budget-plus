@@ -475,7 +475,6 @@ const Vacation: React.FC = () => {
           {/* Project Tabs */}
           <div className="mb-6">
             <div className="flex items-center gap-2 mb-4 flex-wrap">
-              <div>Debug: Projects length = {projects.length}, Projects = {JSON.stringify(projects)}</div>
               {projects.map((project) => (
                 <div key={project} className="flex items-center gap-1">
                   {editingProjectId === project ? (
@@ -498,20 +497,21 @@ const Vacation: React.FC = () => {
                         <X className="h-3 w-3" />
                       </Button>
                       {projects.length > 1 && (
-                        <Button 
-                          size="sm" 
-                          variant="ghost" 
-                          onClick={() => {
-                            console.log('Delete button clicked!');
-                            alert('Delete button clicked for: ' + project);
-                            deleteProject(project);
-                            setEditingProjectId(null);
+                        <button 
+                          onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            if (confirm(`Are you sure you want to delete "${project}"?`)) {
+                              deleteProject(project);
+                              setEditingProjectId(null);
+                            }
                           }}
-                          className="h-8 w-8 p-0 text-red-500 hover:bg-red-500/20"
+                          className="h-8 w-8 p-0 text-red-500 hover:bg-red-500/20 rounded border border-red-500"
                           title="Delete project"
+                          type="button"
                         >
                           <Trash2 className="h-3 w-3" />
-                        </Button>
+                        </button>
                       )}
                     </div>
                   ) : (
