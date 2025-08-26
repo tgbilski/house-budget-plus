@@ -11,14 +11,12 @@ const Header: React.FC = () => {
   return (
     <header className="w-full bg-muted border-b border-border sticky top-0 z-50">
       <div className="w-full px-6 py-4 flex items-center justify-between min-h-[64px]">
-        {/* Logo */}
+        {/* Brand Text */}
         <div className="flex items-center">
           <Link to="/" className="hover:opacity-80 transition-opacity">
-            <img 
-              src="/lovable-uploads/5377daa4-3f84-4748-a91b-081403394030.png" 
-              alt="House Budget Calculator"
-              className="h-8 w-auto cursor-pointer"
-            />
+            <h1 className="text-xl font-semibold text-primary">
+              House Budget Calculator
+            </h1>
           </Link>
         </div>
 
