@@ -65,46 +65,45 @@ const toolsData = [
 const HeroSection = () => (
   <section className="relative py-12 px-4 bg-gradient-to-br from-primary/5 via-secondary/10 to-accent/5 overflow-hidden">
     <div className="container mx-auto px-4">
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
-        <div className="text-left animate-fade-in w-full">
-          <div className="flex items-center mb-6">
+      <div className="max-w-4xl mx-auto">
+        <div className="text-center animate-fade-in">
+          <div className="flex flex-col items-center mb-6">
             <img
               src="/lovable-uploads/ed809955-ef71-4d81-b072-945082f4380a.png"
               alt="Budget Calculator mascot"
-              className="w-16 h-16 md:w-20 md:h-20 object-contain mr-4 hover:scale-110 transition-transform duration-300"
+              className="w-16 h-16 object-contain mb-4 hover:scale-110 transition-transform duration-300"
             />
-            <div className="flex items-center gap-2 text-sm text-muted-foreground">
-              <Star className="h-4 w-4 fill-yellow-400 text-yellow-400 animate-pulse" style={{ animationDelay: '0.1s' }} />
-              <Star className="h-4 w-4 fill-yellow-400 text-yellow-400 animate-pulse" style={{ animationDelay: '0.2s' }} />
-              <Star className="h-4 w-4 fill-yellow-400 text-yellow-400 animate-pulse" style={{ animationDelay: '0.3s' }} />
-              <Star className="h-4 w-4 fill-yellow-400 text-yellow-400 animate-pulse" style={{ animationDelay: '0.4s' }} />
-              <Star className="h-4 w-4 fill-yellow-400 text-yellow-400 animate-pulse" style={{ animationDelay: '0.5s' }} />
+            <div className="flex items-center gap-1">
+              <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+              <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+              <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+              <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+              <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
             </div>
           </div>
           
-          <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-4 md:mb-6 text-gray-900 leading-tight">
-            Own Your 
-            <span className="text-primary block">House Budget</span>
+          <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4 text-gray-900 leading-tight">
+            Own Your <span className="text-primary">House Budget</span>
           </h1>
           
-          <p className="text-base sm:text-lg md:text-xl text-muted-foreground mb-6 md:mb-8 leading-relaxed">
+          <p className="text-lg text-muted-foreground mb-8 max-w-2xl mx-auto leading-relaxed">
             Smart financial planning tools with AI insights. Track expenses, compare vendors, and make informed decisions that save you money.
           </p>
           
-          <div className="flex flex-col sm:flex-row gap-3 md:gap-4 mb-6 md:mb-8">
-            <Button asChild size="lg" className="text-sm sm:text-base md:text-lg px-4 sm:px-6 md:px-8 py-3 shadow-lg hover:shadow-xl transition-shadow">
+          <div className="flex flex-col gap-3 mb-6">
+            <Button asChild size="lg" className="w-full sm:w-auto text-base px-6 py-3 shadow-lg hover:shadow-xl transition-shadow">
               <Link to="/budget">
-                Free Budget Calculator <ArrowRight className="ml-2 h-4 w-4 md:h-5 md:w-5" />
+                Free Budget Calculator <ArrowRight className="ml-2 h-5 w-5" />
               </Link>
             </Button>
-            <Button asChild variant="outline" size="lg" className="text-sm sm:text-base md:text-lg px-4 sm:px-6 md:px-8 py-3 border-2">
+            <Button asChild variant="outline" size="lg" className="w-full sm:w-auto text-base px-6 py-3 border-2">
               <Link to="/ai-insights">
                 Try AI Insights
               </Link>
             </Button>
           </div>
           
-          <div className="flex items-center gap-6 text-sm text-muted-foreground">
+          <div className="flex flex-col gap-4 text-sm text-muted-foreground">
             <div className="flex items-center gap-2">
               <TrendingUp className="h-4 w-4 text-green-600" />
               <span>100% Free Tools</span>
@@ -115,9 +114,6 @@ const HeroSection = () => (
             </div>
           </div>
         </div>
-        
-        {/* Visual space for background image */}
-        <div className="hidden lg:block"></div>
       </div>
     </div>
   </section>

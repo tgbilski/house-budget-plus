@@ -175,14 +175,15 @@ const VendorCard: React.FC<VendorCardProps> = ({ quote, onUpdate, onRemove, show
           <div className="pt-4 border-t">
             <h3 className="text-sm font-semibold text-foreground mb-3">Vendor Evaluation</h3>
             
-            <div className="space-y-3">
-              <div className="flex items-center justify-between p-3 border border-border rounded-lg">
-                <span className="text-sm">Did you like the sales rep?</span>
+            <div className="space-y-4">
+              <div className="p-3 border border-border rounded-lg">
+                <div className="text-sm mb-3">Did you like the sales rep?</div>
                 <div className="flex gap-2">
                   <Button
                     variant={localQuote.liked_sales_rep === true ? "default" : "outline"}
                     size="sm"
                     onClick={() => updateField('liked_sales_rep', true)}
+                    className="flex-1"
                   >
                     Yes
                   </Button>
@@ -190,19 +191,21 @@ const VendorCard: React.FC<VendorCardProps> = ({ quote, onUpdate, onRemove, show
                     variant={localQuote.liked_sales_rep === false ? "destructive" : "outline"}
                     size="sm"
                     onClick={() => updateField('liked_sales_rep', false)}
+                    className="flex-1"
                   >
                     No
                   </Button>
                 </div>
               </div>
 
-              <div className="flex items-center justify-between p-3 border border-border rounded-lg">
-                <span className="text-sm">Do they offer financing?</span>
+              <div className="p-3 border border-border rounded-lg">
+                <div className="text-sm mb-3">Do they offer financing?</div>
                 <div className="flex gap-2">
                   <Button
                     variant={localQuote.offers_financing === true ? "default" : "outline"}
                     size="sm"
                     onClick={() => updateField('offers_financing', true)}
+                    className="flex-1"
                   >
                     Yes
                   </Button>
@@ -210,19 +213,21 @@ const VendorCard: React.FC<VendorCardProps> = ({ quote, onUpdate, onRemove, show
                     variant={localQuote.offers_financing === false ? "destructive" : "outline"}
                     size="sm"
                     onClick={() => updateField('offers_financing', false)}
+                    className="flex-1"
                   >
                     No
                   </Button>
                 </div>
               </div>
 
-              <div className="flex items-center justify-between p-3 border border-border rounded-lg">
-                <span className="text-sm">Is timing good?</span>
+              <div className="p-3 border border-border rounded-lg">
+                <div className="text-sm mb-3">Is timing good?</div>
                 <div className="flex gap-2">
                   <Button
                     variant={localQuote.good_timing === true ? "default" : "outline"}
                     size="sm"
                     onClick={() => updateField('good_timing', true)}
+                    className="flex-1"
                   >
                     Yes
                   </Button>
@@ -230,19 +235,21 @@ const VendorCard: React.FC<VendorCardProps> = ({ quote, onUpdate, onRemove, show
                     variant={localQuote.good_timing === false ? "destructive" : "outline"}
                     size="sm"
                     onClick={() => updateField('good_timing', false)}
+                    className="flex-1"
                   >
                     No
                   </Button>
                 </div>
               </div>
 
-              <div className="flex items-center justify-between p-3 border border-border rounded-lg">
-                <span className="text-sm">Are they trustworthy?</span>
+              <div className="p-3 border border-border rounded-lg">
+                <div className="text-sm mb-3">Are they trustworthy?</div>
                 <div className="flex gap-2">
                   <Button
                     variant={localQuote.trustworthy === true ? "default" : "outline"}
                     size="sm"
                     onClick={() => updateField('trustworthy', true)}
+                    className="flex-1"
                   >
                     Yes
                   </Button>
@@ -250,19 +257,21 @@ const VendorCard: React.FC<VendorCardProps> = ({ quote, onUpdate, onRemove, show
                     variant={localQuote.trustworthy === false ? "destructive" : "outline"}
                     size="sm"
                     onClick={() => updateField('trustworthy', false)}
+                    className="flex-1"
                   >
                     No
                   </Button>
                 </div>
               </div>
 
-              <div className="flex items-center justify-between p-3 border border-border rounded-lg">
-                <span className="text-sm">Responsive?</span>
+              <div className="p-3 border border-border rounded-lg">
+                <div className="text-sm mb-3">Responsive?</div>
                 <div className="flex gap-2">
                   <Button
                     variant={localQuote.responsive === true ? "default" : "outline"}
                     size="sm"
                     onClick={() => updateField('responsive', true)}
+                    className="flex-1"
                   >
                     Yes
                   </Button>
@@ -270,6 +279,7 @@ const VendorCard: React.FC<VendorCardProps> = ({ quote, onUpdate, onRemove, show
                     variant={localQuote.responsive === false ? "destructive" : "outline"}
                     size="sm"
                     onClick={() => updateField('responsive', false)}
+                    className="flex-1"
                   >
                     No
                   </Button>
