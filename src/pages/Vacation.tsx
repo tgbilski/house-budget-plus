@@ -497,21 +497,19 @@ const Vacation: React.FC = () => {
                         <X className="h-3 w-3" />
                       </Button>
                       {projects.length > 1 && (
-                        <button 
-                          onClick={(e) => {
-                            e.preventDefault();
-                            e.stopPropagation();
-                            if (confirm(`Are you sure you want to delete "${project}"?`)) {
+                        <div 
+                          onClick={() => {
+                            const shouldDelete = window.confirm(`Delete "${project}"?`);
+                            if (shouldDelete) {
                               deleteProject(project);
                               setEditingProjectId(null);
                             }
                           }}
-                          className="h-8 w-8 p-0 text-red-500 hover:bg-red-500/20 rounded border border-red-500"
+                          className="h-8 w-8 p-0 text-red-500 hover:bg-red-500/20 rounded border border-red-500 flex items-center justify-center cursor-pointer"
                           title="Delete project"
-                          type="button"
                         >
-                          <Trash2 className="h-3 w-3" />
-                        </button>
+                          ❌
+                        </div>
                       )}
                     </div>
                   ) : (
