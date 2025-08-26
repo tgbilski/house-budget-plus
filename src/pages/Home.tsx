@@ -319,6 +319,19 @@ const Home = () => {
           title="Latest Financial News"
         />
         <AllToolsGrid />
+        
+        {/* AdSense Ad Unit */}
+        <div className="py-8 bg-background">
+          <div className="max-w-6xl mx-auto px-4">
+            <AdSense 
+              adSlot="5669663372" 
+              adFormat="fluid"
+              style={{ display: 'block' }}
+              responsive={false}
+            />
+          </div>
+        </div>
+        
         <SocialProofSection />
         <CTASection />
         
