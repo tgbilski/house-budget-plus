@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import {
   Home,
   Calculator,
@@ -24,7 +24,6 @@ import {
 } from "@/components/ui/sidebar";
 import { cn } from "@/lib/utils";
 
-// Sidebar widths in px
 const SIDEBAR_COLLAPSED = 56;
 const SIDEBAR_EXPANDED = 240;
 
@@ -48,15 +47,6 @@ export function AppSidebar() {
     toggleSidebar,
   } = useSidebar();
 
-  const [headerHeight, setHeaderHeight] = useState(window.innerWidth < 768 ? 48 : 56);
-
-  useEffect(() => {
-    const updateHeaderHeight = () =>
-      setHeaderHeight(window.innerWidth < 768 ? 48 : 56);
-    window.addEventListener("resize", updateHeaderHeight);
-    return () => window.removeEventListener("resize", updateHeaderHeight);
-  }, []);
-
   const isCollapsed = state === "collapsed";
 
   // On mobile, close sidebar when nav is clicked
@@ -68,7 +58,7 @@ export function AppSidebar() {
     <Sidebar
       variant="inset"
       className={cn(
-        "fixed left-0 z-40 bg-white border-r shadow transition-all duration-300",
+        "border-r bg-white shadow transition-all duration-300",
         isMobile
           ? openMobile
             ? "translate-x-0"
@@ -76,8 +66,6 @@ export function AppSidebar() {
           : "translate-x-0"
       )}
       style={{
-        top: headerHeight,
-        height: `calc(100vh - ${headerHeight}px)`,
         width: isCollapsed ? SIDEBAR_COLLAPSED : SIDEBAR_EXPANDED,
         minWidth: isCollapsed ? SIDEBAR_COLLAPSED : SIDEBAR_EXPANDED,
         maxWidth: isCollapsed ? SIDEBAR_COLLAPSED : SIDEBAR_EXPANDED,
