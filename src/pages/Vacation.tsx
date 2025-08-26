@@ -200,6 +200,7 @@ const Vacation: React.FC = () => {
   const [newProjectName, setNewProjectName] = useState('');
   const [editingProjectId, setEditingProjectId] = useState<string | null>(null);
   const [editingTitle, setEditingTitle] = useState('');
+  const [deletingProject, setDeletingProject] = useState<string | null>(null);
   
   const { user } = useAuth();
   const { currency } = useCurrency();
@@ -392,7 +393,9 @@ const Vacation: React.FC = () => {
   };
 
   const deleteProject = async (projectToDelete: string) => {
-    if (projects.length <= 1) return;
+    if (projects.length <= 1 || deletingProject === projectToDelete) return;
+    
+    setDeletingProject(projectToDelete);
     
     try {
       const updatedProjects = projects.filter(p => p !== projectToDelete);
@@ -414,6 +417,8 @@ const Vacation: React.FC = () => {
       
     } catch (error) {
       console.error('Error deleting project:', error);
+    } finally {
+      setDeletingProject(null);
     }
   };
 

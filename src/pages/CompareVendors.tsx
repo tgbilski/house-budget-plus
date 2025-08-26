@@ -293,6 +293,7 @@ const CompareVendors: React.FC = () => {
   const [editingProjectId, setEditingProjectId] = useState<string | null>(null);
   const [editingTitle, setEditingTitle] = useState('');
   const [newProjectName, setNewProjectName] = useState('');
+  const [deletingProject, setDeletingProject] = useState<string | null>(null);
   const { user } = useAuth();
   const { currency } = useCurrency();
   const { toast } = useToast();
@@ -321,11 +322,8 @@ const CompareVendors: React.FC = () => {
 
     const projects = allData ? [...new Set(allData.map(item => item.calculator_id))] : [];
     
-    // Ensure "My Project" is always included for authenticated users
+    // Only create default project if no projects exist
     let projectList = projects.length > 0 ? projects : ['My Project'];
-    if (!projectList.includes('My Project')) {
-      projectList = ['My Project', ...projectList];
-    }
     
     setAllProjects(projectList);
 
@@ -469,7 +467,9 @@ const CompareVendors: React.FC = () => {
   };
 
   const deleteProject = async (projectToDelete: string) => {
-    if (allProjects.length <= 1) return; // Don't delete the last project
+    if (allProjects.length <= 1 || deletingProject === projectToDelete) return;
+    
+    setDeletingProject(projectToDelete);
     
     try {
       // Remove from projects array
@@ -500,6 +500,8 @@ const CompareVendors: React.FC = () => {
       
     } catch (error) {
       console.error('Error deleting project:', error);
+    } finally {
+      setDeletingProject(null);
     }
   };
 
