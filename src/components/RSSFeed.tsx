@@ -197,13 +197,13 @@ export const RSSFeed: React.FC<RSSFeedProps> = ({
   console.log('RSSFeed render - articles:', articles.length, articles);
 
   return (
-    <section className="py-16 px-4 bg-secondary/20">
-      <div className="max-w-6xl mx-auto">
-        <div className="text-center mb-12">
-          <h2 className="text-2xl md:text-3xl font-bold mb-4">
+    <section className="py-8 md:py-16 px-4 bg-secondary/20 overflow-x-hidden">
+      <div className="w-full max-w-sm sm:max-w-md md:max-w-6xl mx-auto">
+        <div className="text-center mb-6 md:mb-12">
+          <h2 className="text-xl md:text-2xl lg:text-3xl font-bold mb-3 md:mb-4">
             {title}
           </h2>
-          <p className="text-base text-muted-foreground max-w-2xl mx-auto">
+          <p className="text-sm md:text-base text-muted-foreground max-w-2xl mx-auto">
             Stay informed with the latest financial news and insights to make better budgeting decisions.
           </p>
         </div>
@@ -213,61 +213,63 @@ export const RSSFeed: React.FC<RSSFeedProps> = ({
             <p className="text-muted-foreground">No articles found. Using fallback content...</p>
           </div>
         ) : (
-          <ScrollArea className="w-full whitespace-nowrap">
-            <div className="flex gap-6 pb-4">
-            {articles.map((article, index) => {
-              const cycleImage = financialImages[index % financialImages.length];
-              
-              return (
-                <Card 
-                  key={index} 
-                  className="min-w-[320px] max-w-[320px] hover:shadow-lg transition-all duration-300 cursor-pointer group overflow-hidden"
-                >
-                  <div className="relative h-32 overflow-hidden">
-                    <img 
-                      src={cycleImage} 
-                      alt={`Financial news illustration ${index + 1}`}
-                      className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
-                  </div>
-                  <CardHeader className="pb-3">
-                    <div className="flex items-center gap-2 text-xs text-muted-foreground mb-2">
-                      <Calendar className="h-3 w-3" />
-                      <span>{formatDate(article.pubDate)}</span>
-                      <span>•</span>
-                      <span>{article.source}</span>
-                    </div>
-                    <CardTitle className="text-base line-clamp-2 group-hover:text-primary transition-colors">
-                      {article.title}
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="pt-0">
-                    <CardDescription className="text-sm line-clamp-3 mb-4">
-                      {truncateDescription(article.description)}
-                    </CardDescription>
-                    <Button 
-                      variant="outline" 
-                      size="sm" 
-                      className="w-full text-xs"
-                      asChild
+          <div className="relative overflow-hidden">
+            <ScrollArea className="w-full">
+              <div className="flex gap-3 md:gap-6 pb-4 px-1">
+                {articles.map((article, index) => {
+                  const cycleImage = financialImages[index % financialImages.length];
+                  
+                  return (
+                    <Card 
+                      key={index} 
+                      className="min-w-[280px] max-w-[280px] md:min-w-[320px] md:max-w-[320px] hover:shadow-lg transition-all duration-300 cursor-pointer group overflow-hidden flex-shrink-0"
                     >
-                      <a 
-                        href={article.link} 
-                        target="_blank" 
-                        rel="noopener noreferrer"
-                        className="flex items-center justify-center gap-1"
-                      >
-                        Read More <ExternalLink className="h-3 w-3" />
-                      </a>
-                    </Button>
-                  </CardContent>
-                </Card>
-              );
-            })}
-            </div>
-            <ScrollBar orientation="horizontal" />
-          </ScrollArea>
+                      <div className="relative h-24 md:h-32 overflow-hidden">
+                        <img 
+                          src={cycleImage} 
+                          alt={`Financial news illustration ${index + 1}`}
+                          className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
+                      </div>
+                      <CardHeader className="pb-2 md:pb-3 p-3 md:p-6">
+                        <div className="flex items-center gap-2 text-xs text-muted-foreground mb-2">
+                          <Calendar className="h-3 w-3" />
+                          <span>{formatDate(article.pubDate)}</span>
+                          <span>•</span>
+                          <span className="truncate">{article.source}</span>
+                        </div>
+                        <CardTitle className="text-sm md:text-base line-clamp-2 group-hover:text-primary transition-colors">
+                          {article.title}
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent className="pt-0 p-3 md:p-6">
+                        <CardDescription className="text-xs md:text-sm line-clamp-2 md:line-clamp-3 mb-3 md:mb-4">
+                          {truncateDescription(article.description, window.innerWidth < 768 ? 80 : 120)}
+                        </CardDescription>
+                        <Button 
+                          variant="outline" 
+                          size="sm" 
+                          className="w-full text-xs"
+                          asChild
+                        >
+                          <a 
+                            href={article.link} 
+                            target="_blank" 
+                            rel="noopener noreferrer"
+                            className="flex items-center justify-center gap-1"
+                          >
+                            Read More <ExternalLink className="h-3 w-3" />
+                          </a>
+                        </Button>
+                      </CardContent>
+                    </Card>
+                  );
+                })}
+              </div>
+              <ScrollBar orientation="horizontal" />
+            </ScrollArea>
+          </div>
         )}
       </div>
     </section>
