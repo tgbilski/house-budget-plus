@@ -40,17 +40,23 @@ const navigationItems = [
 
 export function AppSidebar() {
   const location = useLocation();
-  const { open, setOpen, isMobile, openMobile, setOpenMobile, state } = useSidebar();
+  const {
+    state,
+    isMobile,
+    openMobile,
+    setOpenMobile,
+    toggleSidebar,
+  } = useSidebar();
 
-  // Dynamically calculate header height
   const [headerHeight, setHeaderHeight] = useState(window.innerWidth < 768 ? 48 : 56);
+
   useEffect(() => {
-    const updateHeaderHeight = () => setHeaderHeight(window.innerWidth < 768 ? 48 : 56);
+    const updateHeaderHeight = () =>
+      setHeaderHeight(window.innerWidth < 768 ? 48 : 56);
     window.addEventListener("resize", updateHeaderHeight);
     return () => window.removeEventListener("resize", updateHeaderHeight);
   }, []);
 
-  // Always collapsed by default
   const isCollapsed = state === "collapsed";
 
   // On mobile, close sidebar when nav is clicked
@@ -84,7 +90,7 @@ export function AppSidebar() {
       <div className="flex items-center justify-end px-2 py-2 border-b">
         <button
           aria-label={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
-          onClick={() => setOpen((prev: boolean) => !prev)}
+          onClick={toggleSidebar}
           className="rounded p-1 hover:bg-accent transition"
         >
           {isCollapsed ? <ChevronRight /> : <ChevronLeft />}
