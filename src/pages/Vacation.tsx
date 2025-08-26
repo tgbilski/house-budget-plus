@@ -475,6 +475,7 @@ const Vacation: React.FC = () => {
           {/* Project Tabs */}
           <div className="mb-6">
             <div className="flex items-center gap-2 mb-4 flex-wrap">
+              <div>Debug: Projects length = {projects.length}, Projects = {JSON.stringify(projects)}</div>
               {projects.map((project) => (
                 <div key={project} className="flex items-center gap-1">
                   {editingProjectId === project ? (
