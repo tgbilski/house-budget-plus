@@ -122,6 +122,9 @@ const MonthlyBudget: React.FC = () => {
                 />
               </div>
               <h1 className="text-4xl font-bold mb-4">Monthly Budget Calculator</h1>
+              <p className="text-xl text-white max-w-2xl mx-auto">
+                Plan your household finances with precision
+              </p>
             </div>
           </div>
         </div>
