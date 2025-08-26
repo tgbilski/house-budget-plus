@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   Home,
   Calculator,
@@ -47,6 +47,14 @@ export function AppSidebar() {
     toggleSidebar,
   } = useSidebar();
 
+  // Responsive header height
+  const [headerHeight, setHeaderHeight] = useState(window.innerWidth < 768 ? 48 : 56);
+  useEffect(() => {
+    const updateHeaderHeight = () => setHeaderHeight(window.innerWidth < 768 ? 48 : 56);
+    window.addEventListener("resize", updateHeaderHeight);
+    return () => window.removeEventListener("resize", updateHeaderHeight);
+  }, []);
+
   const isCollapsed = state === "collapsed";
 
   // On mobile, close sidebar when nav is clicked
@@ -58,7 +66,7 @@ export function AppSidebar() {
     <Sidebar
       variant="inset"
       className={cn(
-        "border-r bg-white shadow transition-all duration-300 h-full",
+        "fixed left-0 z-50 bg-white border-r shadow transition-all duration-300",
         isMobile
           ? openMobile
             ? "translate-x-0"
@@ -66,6 +74,8 @@ export function AppSidebar() {
           : "translate-x-0"
       )}
       style={{
+        top: headerHeight,
+        height: `calc(100vh - ${headerHeight}px)`,
         width: isCollapsed ? SIDEBAR_COLLAPSED : SIDEBAR_EXPANDED,
         minWidth: isCollapsed ? SIDEBAR_COLLAPSED : SIDEBAR_EXPANDED,
         maxWidth: isCollapsed ? SIDEBAR_COLLAPSED : SIDEBAR_EXPANDED,
