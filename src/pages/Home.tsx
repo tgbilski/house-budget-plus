@@ -63,8 +63,8 @@ const toolsData = [
 ];
 
 const HeroSection = () => (
-  <section className="relative py-12 px-4 bg-gradient-to-br from-primary/5 via-secondary/10 to-accent/5 w-full overflow-hidden">
-    <div className="container mx-auto px-4 max-w-7xl">
+  <section className="relative py-12 px-4 bg-gradient-to-br from-primary/5 via-secondary/10 to-accent/5 overflow-hidden">
+    <div className="container mx-auto px-4">
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
         <div className="text-left animate-fade-in w-full">
           <div className="flex items-center mb-6">

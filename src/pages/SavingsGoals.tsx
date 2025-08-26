@@ -432,28 +432,28 @@ const SavingsGoals = () => {
   }
 
   return (
-    <div className="min-h-screen w-full overflow-x-hidden">
+    <div className="min-h-screen overflow-x-hidden">
       <SEO 
         title="Savings Goals - Track Your Monthly Savings"
         description="Track your monthly savings with an interactive yearly table and editable goals."
         keywords="savings goals, monthly savings, financial planning, money tracker"
       />
       
-      {/* Hero Section */}
-      <div className="relative bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 text-white py-8 w-full">
+      {/* Hero Section with Dark Gradient */}
+      <div className="relative bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 text-white py-16 mb-8">
         <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHZpZXdCb3g9IjAgMCAyMCAyMCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3QgeD0iMCIgeT0iMCIgd2lkdGg9IjEiIGhlaWdodD0iMjAiIGZpbGw9InJnYmEoMjU1LDI1NSwyNTUsMC4xKSIvPgo8L3N2Zz4K')] opacity-20"></div>
-        <div className="container mx-auto px-4 relative z-10">
+        <div className="w-full max-w-6xl mx-auto px-4 relative z-10">
           <div className="text-center">
             <Target className="h-12 w-12 mx-auto mb-4 text-primary" />
-            <h1 className="text-3xl font-bold mb-3">Savings Tracker</h1>
-            <p className="text-lg text-gray-300">
+            <h1 className="text-4xl font-bold mb-4">Savings Tracker</h1>
+            <p className="text-xl text-white max-w-2xl mx-auto">
               Track your monthly savings progress with an easy-to-use yearly table
             </p>
           </div>
         </div>
       </div>
 
-      <div className="container mx-auto px-4 py-8">
+      <div className="w-full max-w-6xl mx-auto px-4 py-8">
         {/* Warning Banner for Non-Authenticated Users */}
         {!user && (
           <Alert className="mb-6 border-yellow-200 bg-yellow-50 dark:border-yellow-800 dark:bg-yellow-950">
@@ -469,7 +469,7 @@ const SavingsGoals = () => {
         
         {/* Savings Goals Tabs */}
         <div className="mb-6">
-          <div className="flex items-center gap-2 mb-4 flex-wrap overflow-x-auto pb-2">
+          <div className="flex items-center gap-2 mb-4 flex-wrap">
             {savingsGoals.map((goal) => (
               <div key={goal.id} className="flex items-center gap-1">
                 {editingGoalId === goal.id ? (
@@ -519,7 +519,6 @@ const SavingsGoals = () => {
               </div>
             ))}
             
-            {/* Add Goal Plus Button */}
             <Button 
               onClick={createNewGoal} 
               size="sm" 
@@ -534,7 +533,6 @@ const SavingsGoals = () => {
         {/* Total Saved with Progress Bar */}
         <Card className="mb-6">
           <CardContent className="pt-6">
-            {/* Progress Bar */}
             <div className="mb-4">
               <div className="flex justify-between items-center mb-2">
                 <span className="text-sm font-medium text-muted-foreground">Progress towards goal</span>
@@ -557,30 +555,28 @@ const SavingsGoals = () => {
         {/* Year Selection and Savings Table */}
         <Card>
           <CardContent className="pt-6">
-            <div className="space-y-4">
-              <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
-                {/* Total Goal Amount */}
-                <div className="flex items-center gap-2 w-full sm:w-auto">
+            <div className="flex items-center justify-between mb-6">
+              <div className="flex items-center gap-6">
+                <div className="flex items-center gap-2">
                   <label className="text-sm font-medium whitespace-nowrap">Total Goal:</label>
-                  <div className="relative flex-1 sm:flex-none">
+                  <div className="relative">
                     <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground text-sm">$</span>
                     <Input
                       type="number"
                       value={getCurrentGoal()?.target_amount || ''}
                       onChange={(e) => updateGoalTarget(parseFloat(e.target.value) || 0)}
                       placeholder="0"
-                      className="w-full sm:w-32 pl-6 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                      className="w-32 pl-6 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                       min="0"
                       step="0.01"
                     />
                   </div>
                 </div>
                 
-                {/* Year Selector */}
-                <div className="flex items-center gap-2 w-full sm:w-auto">
+                <div className="flex items-center gap-2">
                   <label className="text-sm font-medium">Year:</label>
                   <Select value={selectedYear} onValueChange={setSelectedYear}>
-                    <SelectTrigger className="w-full sm:w-32">
+                    <SelectTrigger className="w-32">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
@@ -594,58 +590,52 @@ const SavingsGoals = () => {
                 </div>
               </div>
               
-              {/* Delete Goal Button */}
               {savingsGoals.length > 1 && currentGoalId && (
-                <div className="flex justify-end">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => deleteGoal(currentGoalId)}
-                    className="text-destructive hover:text-destructive border-destructive/30 hover:border-destructive"
-                  >
-                    <Trash2 className="h-4 w-4 mr-1" />
-                    Delete Goal
-                  </Button>
-                </div>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => deleteGoal(currentGoalId)}
+                  className="text-destructive hover:text-destructive border-destructive/30 hover:border-destructive"
+                >
+                  <Trash2 className="h-4 w-4 mr-1" />
+                  Delete Goal
+                </Button>
               )}
             </div>
 
-            <div className="overflow-x-auto">
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead className="min-w-[120px]">Month</TableHead>
-                    <TableHead className="min-w-[140px]">Amount Saved</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {months.map((month, index) => {
-                    const monthKey = `${selectedYear}-${(index + 1).toString().padStart(2, '0')}`;
-                    const currentAmount = savingsData[monthKey] || 0;
-                    const inputValue = localInputValues[monthKey] || '';
-                    
-                    return (
-                      <TableRow key={month}>
-                        <TableCell className="font-medium">{month}</TableCell>
-                        <TableCell>
-                          <Input
-                            type="number"
-                            value={inputValue}
-                            onChange={(e) => handleInputChange(index, e.target.value)}
-                            placeholder="0.00"
-                            className="w-full max-w-[120px] [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                            min="0"
-                            step="0.01"
-                          />
-                        </TableCell>
-                      </TableRow>
-                    );
-                  })}
-                </TableBody>
-              </Table>
-            </div>
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead className="w-1/2">Month</TableHead>
+                  <TableHead>Amount Saved</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {months.map((month, index) => {
+                  const monthKey = `${selectedYear}-${(index + 1).toString().padStart(2, '0')}`;
+                  const currentAmount = savingsData[monthKey] || 0;
+                  const inputValue = localInputValues[monthKey] || '';
+                  
+                  return (
+                    <TableRow key={month}>
+                      <TableCell className="font-medium">{month}</TableCell>
+                      <TableCell>
+                        <Input
+                          type="number"
+                          value={inputValue}
+                          onChange={(e) => handleInputChange(index, e.target.value)}
+                          placeholder="0.00"
+                          className="w-32 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                          min="0"
+                          step="0.01"
+                        />
+                      </TableCell>
+                    </TableRow>
+                  );
+                })}
+              </TableBody>
+            </Table>
             
-            {/* Year Total */}
             <div className="mt-4 p-4 bg-muted rounded-lg">
               <div className="flex justify-between items-center">
                 <span className="font-semibold">Total for {selectedYear}:</span>
