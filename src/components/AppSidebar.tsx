@@ -1,0 +1,101 @@
+import { useState } from "react";
+import { 
+  Home, 
+  Calculator, 
+  PiggyBank, 
+  ShoppingCart, 
+  Plane, 
+  Gift, 
+  Brain,
+  ChevronRight,
+  ChevronLeft 
+} from "lucide-react";
+import { NavLink, useLocation } from "react-router-dom";
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarGroup,
+  SidebarGroupContent,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+  useSidebar,
+} from "@/components/ui/sidebar";
+import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
+
+const navigationItems = [
+  { title: "Home", url: "/", icon: Home },
+  { title: "Monthly Budget", url: "/budget", icon: Calculator },
+  { title: "Savings", url: "/savings", icon: PiggyBank },
+  { title: "Compare Vendors", url: "/compare-prices", icon: ShoppingCart },
+  { title: "Vacation", url: "/vacation", icon: Plane },
+  { title: "Gifts", url: "/gifts", icon: Gift },
+  { title: "AI Insights", url: "/ai-insights", icon: Brain },
+];
+
+export function AppSidebar() {
+  const { open, setOpen, isMobile } = useSidebar();
+  const location = useLocation();
+  const currentPath = location.pathname;
+  const [isExpanded, setIsExpanded] = useState(false);
+
+  const isActive = (path: string) => currentPath === path;
+
+  return (
+    <Sidebar
+      className={cn(
+        "transition-all duration-300 ease-in-out border-r border-border bg-sidebar",
+        isExpanded ? "w-64" : "w-16"
+      )}
+      collapsible="icon"
+    >
+      <SidebarContent className="p-2">
+        {/* Toggle Button */}
+        <div className="flex justify-end mb-4">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => setIsExpanded(!isExpanded)}
+            className="h-8 w-8 p-0"
+          >
+            {isExpanded ? (
+              <ChevronLeft className="h-4 w-4" />
+            ) : (
+              <ChevronRight className="h-4 w-4" />
+            )}
+          </Button>
+        </div>
+
+        <SidebarGroup>
+          <SidebarGroupContent>
+            <SidebarMenu className="space-y-2">
+              {navigationItems.map((item) => (
+                <SidebarMenuItem key={item.title}>
+                  <SidebarMenuButton
+                    asChild
+                    className={cn(
+                      "w-full justify-start h-12 rounded-lg transition-colors",
+                      isActive(item.url)
+                        ? "bg-sidebar-accent text-sidebar-accent-foreground"
+                        : "hover:bg-sidebar-accent/50"
+                    )}
+                  >
+                    <NavLink to={item.url} className="flex items-center">
+                      <item.icon className="h-5 w-5 flex-shrink-0" />
+                      {isExpanded && (
+                        <span className="ml-3 text-sm font-medium truncate">
+                          {item.title}
+                        </span>
+                      )}
+                    </NavLink>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              ))}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+      </SidebarContent>
+    </Sidebar>
+  );
+}

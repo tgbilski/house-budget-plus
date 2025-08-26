@@ -6,7 +6,9 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { HelmetProvider } from 'react-helmet-async';
 import { AuthProvider } from "@/hooks/useAuth";
 import { SubscriptionProvider } from "@/hooks/useSubscription";
+import { SidebarProvider } from "@/components/ui/sidebar";
 import Header from "@/components/Header";
+import { AppSidebar } from "@/components/AppSidebar";
 import Home from "@/pages/Home";
 import MonthlyBudget from "@/pages/MonthlyBudget";
 import CompareVendors from "@/pages/CompareVendors";
@@ -60,24 +62,31 @@ const App = () => {
           <SubscriptionProvider>
             <CurrencyContext.Provider value={{ currency, setCurrency }}>
               <BrowserRouter>
-              <div className="min-h-screen">
-                <Header />
-                <Routes>
-                  <Route path="/" element={<Home />} />
-                  <Route path="/budget" element={<MonthlyBudget />} />
-                  <Route path="/savings" element={<SavingsGoals />} />
-                  <Route path="/home" element={<Home />} />
-                  <Route path="/compare-prices" element={<CompareVendors />} />
-                  <Route path="/vacation" element={<Vacation />} />
-                  <Route path="/engagement" element={<Engagement />} />
-                  <Route path="/auth" element={<Auth />} />
-                  <Route path="/settings" element={<UserSettings />} />
-                  <Route path="/gifts" element={<Gifts />} />
-                  <Route path="/ai-insights" element={<AIInsights />} />
-                  <Route path="/subscription-success" element={<SubscriptionSuccess />} />
-                  <Route path="*" element={<NotFound />} />
-                </Routes>
-              </div>
+                <SidebarProvider defaultOpen={false}>
+                  <div className="min-h-screen flex w-full">
+                    <AppSidebar />
+                    <div className="flex-1 flex flex-col">
+                      <Header />
+                      <main className="flex-1">
+                        <Routes>
+                          <Route path="/" element={<Home />} />
+                          <Route path="/budget" element={<MonthlyBudget />} />
+                          <Route path="/savings" element={<SavingsGoals />} />
+                          <Route path="/home" element={<Home />} />
+                          <Route path="/compare-prices" element={<CompareVendors />} />
+                          <Route path="/vacation" element={<Vacation />} />
+                          <Route path="/engagement" element={<Engagement />} />
+                          <Route path="/auth" element={<Auth />} />
+                          <Route path="/settings" element={<UserSettings />} />
+                          <Route path="/gifts" element={<Gifts />} />
+                          <Route path="/ai-insights" element={<AIInsights />} />
+                          <Route path="/subscription-success" element={<SubscriptionSuccess />} />
+                          <Route path="*" element={<NotFound />} />
+                        </Routes>
+                      </main>
+                    </div>
+                  </div>
+                </SidebarProvider>
               </BrowserRouter>
             </CurrencyContext.Provider>
           </SubscriptionProvider>
