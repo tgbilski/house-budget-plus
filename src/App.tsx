@@ -63,10 +63,10 @@ const App = () => {
             <CurrencyContext.Provider value={{ currency, setCurrency }}>
               <BrowserRouter>
                 <SidebarProvider defaultOpen={false}>
-                  <div className="min-h-screen flex w-full">
-                    <AppSidebar />
-                    <div className="flex-1 flex flex-col">
-                      <Header />
+                  <div className="min-h-screen w-full">
+                    <Header />
+                    <div className="flex">
+                      <AppSidebar />
                       <main className="flex-1">
                         <Routes>
                           <Route path="/" element={<Home />} />
