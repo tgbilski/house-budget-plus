@@ -165,8 +165,8 @@ export const RSSFeed: React.FC<RSSFeedProps> = ({
 
   if (loading) {
     return (
-      <section className="py-8 md:py-16 px-4">
-        <div className="w-full max-w-xs md:max-w-md mx-auto">
+    <section className="py-8 md:py-16">
+        <div className="w-full max-w-xs md:max-w-md mx-auto px-2">
           <h2 className="text-lg md:text-2xl font-bold mb-6 text-center">
             {title}
           </h2>
@@ -193,8 +193,8 @@ export const RSSFeed: React.FC<RSSFeedProps> = ({
 
   if (error) {
     return (
-      <section className="py-8 md:py-16 px-4">
-        <div className="w-full max-w-xs md:max-w-md mx-auto text-center">
+      <section className="py-8 md:py-16">
+        <div className="w-full max-w-xs md:max-w-md mx-auto text-center px-2">
           <h2 className="text-lg md:text-2xl font-bold mb-4">
             {title}
           </h2>
@@ -207,8 +207,8 @@ export const RSSFeed: React.FC<RSSFeedProps> = ({
   console.log('RSSFeed render - articles:', articles.length, articles);
 
   return (
-    <section className="py-8 md:py-16 px-4 bg-secondary/20 overflow-x-hidden">
-      <div className="w-full max-w-xs md:max-w-md mx-auto">
+    <section className="py-8 md:py-16 bg-secondary/20 overflow-x-hidden">
+      <div className="w-full max-w-xs md:max-w-md mx-auto px-2">
         <div className="text-center mb-6 md:mb-8">
           <h2 className="text-lg md:text-2xl font-bold mb-3">
             {title}
