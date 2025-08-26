@@ -465,7 +465,9 @@ const Vacation: React.FC = () => {
                           if (e.key === 'Enter') updateProjectTitle(project, editingTitle);
                           if (e.key === 'Escape') setEditingProjectId(null);
                         }}
-                        onBlur={() => updateProjectTitle(project, editingTitle)}
+                        onBlur={() => {
+                          // Don't update on blur to avoid conflicts with delete
+                        }}
                         autoFocus
                       />
                       <Button size="sm" variant="ghost" onClick={() => updateProjectTitle(project, editingTitle)} className="h-8 w-8 p-0">
@@ -476,10 +478,19 @@ const Vacation: React.FC = () => {
                       </Button>
                       {projects.length > 1 && (
                         <button 
-                          onClick={() => deleteProject(project)}
-                          className="h-8 w-8 text-red-500 hover:text-red-700 hover:bg-red-50 rounded"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            deleteProject(project);
+                            setEditingProjectId(null);
+                          }}
+                          onMouseDown={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                          }}
+                          className="h-8 w-8 text-red-500 hover:text-red-700 hover:bg-red-50 rounded flex items-center justify-center"
                           title="Delete project"
-                          style={{ zIndex: 1000 }}
+                          type="button"
                         >
                           <Trash2 className="h-4 w-4" />
                         </button>
