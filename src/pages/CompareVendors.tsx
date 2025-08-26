@@ -468,6 +468,41 @@ const CompareVendors: React.FC = () => {
     }
   };
 
+  const deleteProject = async (projectToDelete: string) => {
+    if (allProjects.length <= 1) return; // Don't delete the last project
+    
+    try {
+      // Remove from projects array
+      const updatedProjects = allProjects.filter(p => p !== projectToDelete);
+      setAllProjects(updatedProjects);
+      
+      // If we're deleting the currently selected project, switch to another one
+      if (selectedProject === projectToDelete) {
+        setSelectedProject(updatedProjects[0]);
+        setIsNewProject(false);
+      }
+      
+      // Remove quotes for this project
+      const updatedQuotes = quotes.filter(quote => quote.projectName !== projectToDelete);
+      setQuotes(updatedQuotes);
+      
+      // Remove from database if user is logged in
+      if (user) {
+        const { error } = await supabase
+          .from('budget_data')
+          .delete()
+          .eq('user_id', user.id)
+          .eq('page_type', 'compare_prices')
+          .eq('calculator_id', projectToDelete);
+          
+        if (error) throw error;
+      }
+      
+    } catch (error) {
+      console.error('Error deleting project:', error);
+    }
+  };
+
   const addVendorCard = () => {
     const newQuote: VendorQuote = {
       id: Date.now().toString(),
@@ -563,6 +598,20 @@ const CompareVendors: React.FC = () => {
                       <Button size="sm" variant="ghost" onClick={() => setEditingProjectId(null)} className="h-8 w-8 p-0">
                         <X className="h-3 w-3" />
                       </Button>
+                      {allProjects.length > 1 && (
+                        <Button 
+                          size="sm" 
+                          variant="ghost" 
+                          onClick={() => {
+                            deleteProject(project);
+                            setEditingProjectId(null);
+                          }} 
+                          className="h-8 w-8 p-0 text-red-500 hover:bg-red-500/20"
+                          title="Delete project"
+                        >
+                          <Trash2 className="h-3 w-3" />
+                        </Button>
+                      )}
                     </div>
                   ) : (
                     <div className="flex items-center gap-1">
