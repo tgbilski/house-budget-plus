@@ -203,10 +203,10 @@ export default function AIInsights() {
           {user && subscribed && !subLoading && (
             <section className="py-16 px-4 relative mt-8">
               <div className="max-w-4xl mx-auto text-center relative z-10">
-                <h2 className="text-2xl md:text-3xl font-bold mb-6 text-gray-900">
+                <h2 className="text-2xl md:text-3xl font-bold mb-6 text-white">
                   AI-Powered Financial Intelligence
                 </h2>
-                <p className="text-lg mb-8 text-gray-600">
+                <p className="text-lg mb-8 text-white">
                   Get personalized insights and recommendations based on your actual financial data
                 </p>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
