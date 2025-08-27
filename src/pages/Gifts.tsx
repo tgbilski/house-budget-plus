@@ -67,7 +67,7 @@ export function Gifts() {
   const pageContext = "This is the Gifts page where users can create multiple gift list cards for different holidays or birthdays. Each card allows users to enter a gift idea, price, and URL that opens in a new tab. Users can edit the title of each card and all data is saved to their account. The AI assistant can help fill out gift information.";
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background to-muted/20">
+    <div className="min-h-screen overflow-x-hidden">
       <SEO 
         title="Gift Lists"
         description="Organize your gift ideas for holidays and birthdays. Keep track of gift ideas, prices, and links all in one place."
@@ -89,76 +89,77 @@ export function Gifts() {
         </div>
       </div>
       
-      <div className="container mx-auto px-4 py-8">
-        <WarningBanner />
-        
-        <div className="mb-6">
-          <Button 
-            onClick={addNewCard}
-            className="gap-2"
-            size="lg"
-          >
-            <Plus className="h-5 w-5" />
-            Add New Gift List
-          </Button>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-          {/* Show new card form */}
-          {showNewCard && (
-            <GiftCard 
-              onDelete={() => {
-                setShowNewCard(false);
-                loadGiftLists();
-              }}
-            />
-          )}
-
-          {/* Existing gift lists */}
-          {giftLists.map((list) => (
-            <GiftCard
-              key={list.id}
-              initialData={list}
-              onDelete={handleDeleteList}
-            />
-          ))}
-        </div>
-
-        {giftLists.length === 0 && !showNewCard && (
-          <div className="text-center py-12">
-            <p className="text-muted-foreground mb-4">
-              No gift lists yet. Create your first one to get started!
-            </p>
+      {/* Main Content Container */}
+      <div className="bg-white rounded-2xl mx-4 my-6 shadow-xl p-6 md:p-8">
+        <div className="w-full max-w-6xl mx-auto">
+          <WarningBanner />
+          
+          <div className="mb-6">
+            <Button 
+              onClick={addNewCard}
+              className="gap-2"
+              size="lg"
+            >
+              <Plus className="h-5 w-5" />
+              Add New Gift List
+            </Button>
           </div>
-        )}
 
-        {/* Dark Section with Pin Stripes - Matching Home Page */}
-        <section className="py-16 px-4 bg-slate-900 text-white relative" style={{
-          backgroundImage: `repeating-linear-gradient(45deg, transparent, transparent 40px, rgba(255,255,255,0.04) 40px, rgba(255,255,255,0.04) 42px)`
-        }}>
-          <div className="max-w-4xl mx-auto text-center relative z-10">
-            <h2 className="text-2xl md:text-3xl font-bold mb-6 text-white">
-              Never Miss a Gift Opportunity
-            </h2>
-            <p className="text-lg mb-8 opacity-90">
-              Organize all your gift ideas and track spending for holidays, birthdays, and special occasions
-            </p>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-              <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6 border border-white/20">
-                <h3 className="font-semibold mb-2 text-white">Gift Organization</h3>
-                <p className="text-sm opacity-90">Create separate lists for different occasions and keep all your ideas organized</p>
-              </div>
-              <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6 border border-white/20">
-                <h3 className="font-semibold mb-2 text-white">Budget Tracking</h3>
-                <p className="text-sm opacity-90">Track prices and links to ensure you stay within your gift-giving budget</p>
-              </div>
-              <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6 border border-white/20">
-                <h3 className="font-semibold mb-2 text-white">Quick Access</h3>
-                <p className="text-sm opacity-90">Save direct links to gift items for easy purchasing when you're ready</p>
-              </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+            {/* Show new card form */}
+            {showNewCard && (
+              <GiftCard 
+                onDelete={() => {
+                  setShowNewCard(false);
+                  loadGiftLists();
+                }}
+              />
+            )}
+
+            {/* Existing gift lists */}
+            {giftLists.map((list) => (
+              <GiftCard
+                key={list.id}
+                initialData={list}
+                onDelete={handleDeleteList}
+              />
+            ))}
+          </div>
+
+          {giftLists.length === 0 && !showNewCard && (
+            <div className="text-center py-12">
+              <p className="text-gray-600 mb-4">
+                No gift lists yet. Create your first one to get started!
+              </p>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Features Section */}
+      <div className="bg-white rounded-2xl mx-4 my-6 shadow-xl p-6 md:p-8">
+        <div className="w-full max-w-4xl mx-auto text-center">
+          <h2 className="text-xl md:text-2xl font-bold mb-6 text-gray-900">
+            Never Miss a Gift Opportunity
+          </h2>
+          <p className="text-base text-gray-600 mb-8">
+            Organize all your gift ideas and track spending for holidays, birthdays, and special occasions
+          </p>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="bg-gray-50 rounded-lg p-6 border border-gray-100">
+              <h3 className="font-semibold mb-2 text-gray-900">Gift Organization</h3>
+              <p className="text-sm text-gray-600">Create separate lists for different occasions and keep all your ideas organized</p>
+            </div>
+            <div className="bg-gray-50 rounded-lg p-6 border border-gray-100">
+              <h3 className="font-semibold mb-2 text-gray-900">Budget Tracking</h3>
+              <p className="text-sm text-gray-600">Track prices and links to ensure you stay within your gift-giving budget</p>
+            </div>
+            <div className="bg-gray-50 rounded-lg p-6 border border-gray-100">
+              <h3 className="font-semibold mb-2 text-gray-900">Quick Access</h3>
+              <p className="text-sm text-gray-600">Save direct links to gift items for easy purchasing when you're ready</p>
             </div>
           </div>
-        </section>
+        </div>
       </div>
 
       <AIChatbot 
