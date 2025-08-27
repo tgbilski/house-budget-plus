@@ -70,17 +70,26 @@ const ScrollIndicator = () => (
 
 // Consolidated Hero and Social Proof section
 const HeroSectionContent = () => (
-  <section className="relative py-8 md:py-12 px-4 rounded-2xl mx-4 shadow-xl overflow-hidden bg-white">
+  <section className="relative py-8 md:py-12 px-4 rounded-2xl mx-4 shadow-xl overflow-visible bg-white mt-16 md:mt-20">
+    {/* Mascot Image - Absolutely positioned just above the stars */}
+    <div className="absolute top-[calc(-50px-1rem)] left-1/2 -translate-x-1/2 z-20"> {/* Adjust -50px as mascot height / 2 + some offset */}
+      <img
+        src="/lovable-uploads/ed809955-ef71-4d81-b072-945082f4380a.png"
+        alt="Budget Calculator mascot"
+        className="w-36 h-36 md:w-48 md:h-48 object-contain hover:scale-110 transition-transform duration-300"
+      />
+    </div>
+
     {/* Background house image */}
     <div className="absolute inset-0">
       <img
-        src="/lovable-uploads/d46481b3-e5b7-454b-b44e-e5e9eb93a00f.png"
+        src="/lovable-uploads/d46481b3-e5b7-454b-b44e-4e96eb93a00f.png" // Corrected image path
         alt="House background"
         className="w-full h-full object-cover rounded-2xl opacity-30"
       />
     </div>
     
-    <div className="w-full max-w-4xl mx-auto relative z-10 pt-16 md:pt-20"> {/* Add top padding to create space below mascot */}
+    <div className="w-full max-w-4xl mx-auto relative z-10 pt-4 md:pt-8"> {/* Adjusted padding to accommodate mascot */}
       <div className="text-center mb-10">
         <div className="flex items-center justify-center gap-1 mb-4">
           <Star className="h-4 w-4 md:h-5 md:w-5 fill-yellow-400 text-yellow-400" />
@@ -201,7 +210,7 @@ const CTASection = () => (
       </p>
       <div className="flex flex-col sm:flex-row gap-3 md:gap-4 justify-center mb-6 md:mb-8 max-w-md mx-auto">
         <Button asChild size="lg" className="w-full sm:w-auto text-base px-6 py-3">
-          <Link to="/signup">
+          <Link to="/auth"> {/* Corrected link to /auth */}
             <span className="block sm:inline">Sign up for free</span>
             <ArrowRight className="ml-2 h-4 w-4" />
           </Link>
@@ -234,17 +243,8 @@ const Home = () => {
         canonical="https://www.housebudgetcalculator.com/"
       />
       <div className="min-h-screen overflow-x-hidden relative">
-        {/* Mascot Image - Absolutely positioned and on top of everything */}
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 -mt-10 z-50"> {/* Adjust -mt- values as needed */}
-          <img
-            src="/lovable-uploads/ed809955-ef71-4d81-b072-945082f4380a.png"
-            alt="Budget Calculator mascot"
-            className="w-36 h-36 md:w-48 md:h-48 object-contain hover:scale-110 transition-transform duration-300"
-          />
-        </div>
-
-        {/* Main content sections, with a top margin to make space for the mascot */}
-        <div className="mt-20 md:mt-24"> {/* Adjust this margin to match the mascot's height and desired overlap */}
+        {/* Main content sections */}
+        <div>
           <HeroSectionContent />
           <ScrollIndicator />
           <AllToolsGrid />
