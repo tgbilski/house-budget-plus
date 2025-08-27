@@ -122,23 +122,23 @@ const FeaturedToolsSection = () => {
   
   return (
     <section className="py-8 md:py-12 px-4 bg-white rounded-2xl mx-4 my-6 shadow-xl relative overflow-x-hidden">
-      <div className="w-full max-w-sm mx-auto">
+      <div className="w-full max-w-sm md:max-w-4xl mx-auto">
         <div className="text-center mb-6 md:mb-8">
           <h2 className="text-xl md:text-2xl lg:text-3xl font-bold mb-3 text-gray-900">
             Start Saving Money Today
           </h2>
         </div>
         
-        <div className="grid grid-cols-1 gap-4 mb-6 md:mb-8 relative z-10">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 mb-6 md:mb-8 relative z-10">
           {featuredTools.map((tool, index) => (
             <Link to={tool.href} key={index} className="block">
               <Card className="group relative hover:shadow-xl transition-all duration-500 border-2 hover:border-primary/30 cursor-pointer h-full animate-fade-in hover:scale-105 transform bg-white" style={{ animationDelay: `${index * 0.2}s` }}>
                 <div className="absolute top-3 right-3 bg-primary text-primary-foreground text-xs px-2 py-1 rounded-full">
                   POPULAR
                 </div>
-                <CardHeader className="pb-3 p-3 md:p-4">
-                  <div className={`w-10 h-10 md:w-12 md:h-12 rounded-xl ${tool.color} flex items-center justify-center mb-2 md:mb-3 group-hover:scale-110 transition-transform duration-300`}>
-                    <tool.icon className="h-5 w-5 md:h-6 md:w-6" />
+                <CardHeader className="pb-3 p-3 md:p-6">
+                  <div className={`w-10 h-10 md:w-14 md:h-14 rounded-xl ${tool.color} flex items-center justify-center mb-2 md:mb-4 group-hover:scale-110 transition-transform duration-300`}>
+                    <tool.icon className="h-5 w-5 md:h-7 md:w-7" />
                   </div>
                   <CardTitle className="text-lg md:text-xl group-hover:text-primary transition-colors mb-2 text-gray-900">
                     {tool.title}
@@ -167,7 +167,7 @@ const FeaturedToolsSection = () => {
 
 const AllToolsGrid = () => (
   <section className="py-8 md:py-12 px-4 bg-white rounded-2xl mx-4 my-6 shadow-xl relative overflow-hidden">
-    <div className="w-full max-w-sm mx-auto">
+    <div className="w-full max-w-sm md:max-w-4xl mx-auto">
       <div className="text-center mb-6 md:mb-8">
         <h2 className="text-xl md:text-2xl font-bold mb-3 text-gray-900 px-2">
           Complete Financial Toolkit
@@ -176,27 +176,31 @@ const AllToolsGrid = () => (
           Everything you need to manage your household finances in one place
         </p>
       </div>
-      <div className="grid grid-cols-1 gap-4 relative z-10">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 relative z-10">
         {toolsData.map((tool, index) => (
           <Link to={tool.href} key={index} className="block">
             <Card
               className={`group relative hover:shadow-lg transition-all duration-500 border-2 hover:border-primary/20 cursor-pointer hover:scale-105 h-full animate-fade-in bg-white`}
               style={{ animationDelay: `${index * 0.1}s` }}
             >
-              <CardHeader className="pb-3 p-4">
-                <div className={`w-10 h-10 md:w-12 md:h-12 rounded-lg ${tool.color} flex items-center justify-center mb-3 md:mb-4 group-hover:scale-110 transition-transform duration-300`}>
-                  <tool.icon className="h-5 w-5 md:h-6 md:w-6" />
+              <CardHeader className="pb-3 p-4 md:p-5">
+                <div className="flex items-center gap-4">
+                  <div className={`w-10 h-10 md:w-12 md:h-12 rounded-lg ${tool.color} flex items-center justify-center group-hover:scale-110 transition-transform duration-300 flex-shrink-0`}>
+                    <tool.icon className="h-5 w-5 md:h-6 md:w-6" />
+                  </div>
+                  <div className="flex-1">
+                    <CardTitle className="text-base md:text-lg group-hover:text-primary transition-colors text-gray-900 mb-1">
+                      {tool.title}
+                    </CardTitle>
+                    <CardDescription className="text-sm text-gray-600 leading-tight">
+                      {tool.description}
+                    </CardDescription>
+                  </div>
+                  <div className="flex items-center text-xs md:text-sm text-primary group-hover:translate-x-1 transition-transform duration-300 flex-shrink-0">
+                    <ArrowRight className="h-4 w-4" />
+                  </div>
                 </div>
-                <CardTitle className="text-base md:text-lg group-hover:text-primary transition-colors text-gray-900">
-                  {tool.title}
-                </CardTitle>
-                <CardDescription className="text-sm text-gray-600">
-                  {tool.description}
-                </CardDescription>
               </CardHeader>
-              <div className="absolute top-3 right-3 flex items-center text-xs md:text-sm text-primary group-hover:translate-x-1 transition-transform duration-300">
-                try now <ArrowRight className="ml-1 h-3 w-3 md:h-4 md:w-4" />
-              </div>
             </Card>
           </Link>
         ))}
@@ -300,10 +304,12 @@ const Home = () => {
       <div className="min-h-screen overflow-x-hidden" style={{ backgroundColor: 'hsl(213, 50%, 22%)' }}>
         <HeroSection />
         <FeaturedToolsSection />
-        <RSSFeed 
-          feedUrl="https://rss.cnn.com/rss/money_news_international.rss"
-          title="Latest Financial News"
-        />
+        <div className="bg-gray-100 rounded-2xl mx-4 my-6 shadow-xl p-4 md:p-6">
+          <RSSFeed 
+            feedUrl="https://rss.cnn.com/rss/money_news_international.rss"
+            title="Latest Financial News"
+          />
+        </div>
         <AllToolsGrid />
         
         {/* AdSense Ad Unit */}

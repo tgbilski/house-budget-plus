@@ -207,108 +207,161 @@ export const RSSFeed: React.FC<RSSFeedProps> = ({
   console.log('RSSFeed render - articles:', articles.length, articles);
 
   return (
-    <section className="py-8 md:py-16 bg-secondary/20 overflow-x-hidden">
-      <div className="w-full max-w-sm mx-auto px-2">
+    <section className="py-8 md:py-12 overflow-x-hidden">
+      <div className="w-full max-w-sm md:max-w-4xl mx-auto px-2">
         <div className="text-center mb-6 md:mb-8">
-          <h2 className="text-lg md:text-2xl font-bold mb-3">
+          <h2 className="text-lg md:text-2xl font-bold mb-3 text-gray-900">
             {title}
           </h2>
-          <p className="text-xs md:text-base text-muted-foreground">
+          <p className="text-xs md:text-base text-gray-600">
             Stay informed with the latest financial news
           </p>
         </div>
         
         {articles.length === 0 ? (
           <div className="text-center py-8">
-            <p className="text-muted-foreground">Loading financial news...</p>
+            <p className="text-gray-600">Loading financial news...</p>
           </div>
         ) : (
-          <div className="relative max-w-sm mx-auto">
-            {/* Single Card Display */}
-            <div className="overflow-hidden">
-              {articles.length > 0 && (
-                <Card className="hover:shadow-lg transition-all duration-300 cursor-pointer group max-w-sm mx-auto">
-                  <div className="relative h-24 md:h-32 overflow-hidden">
-                    <img 
-                      src={financialImages[currentIndex % financialImages.length]} 
-                      alt={`Financial news illustration ${currentIndex + 1}`}
-                      className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
-                  </div>
-                  <CardHeader className="pb-2 p-3">
-                    <div className="flex items-center gap-1 text-xs text-muted-foreground mb-1">
-                      <Calendar className="h-3 w-3" />
-                      <span className="text-xs">{formatDate(articles[currentIndex].pubDate)}</span>
-                      <span>•</span>
-                      <span className="truncate text-xs">{articles[currentIndex].source}</span>
+          <>
+            {/* Mobile: Single Card Display with Navigation */}
+            <div className="block md:hidden relative max-w-sm mx-auto">
+              <div className="overflow-hidden">
+                {articles.length > 0 && (
+                  <Card className="hover:shadow-lg transition-all duration-300 cursor-pointer group max-w-sm mx-auto bg-white">
+                    <div className="relative h-24 md:h-32 overflow-hidden">
+                      <img 
+                        src={financialImages[currentIndex % financialImages.length]} 
+                        alt={`Financial news illustration ${currentIndex + 1}`}
+                        className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
                     </div>
-                    <CardTitle className="text-sm line-clamp-2 group-hover:text-primary transition-colors leading-tight">
-                      {articles[currentIndex].title}
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="pt-0 p-3">
-                    <CardDescription className="text-xs line-clamp-2 mb-3">
-                      {truncateDescription(articles[currentIndex].description, 60)}
-                    </CardDescription>
-                    <Button 
-                      variant="outline" 
-                      size="sm" 
-                      className="w-full text-xs"
-                      asChild
-                    >
-                      <a 
-                        href={articles[currentIndex].link} 
-                        target="_blank" 
-                        rel="noopener noreferrer"
-                        className="flex items-center justify-center gap-1"
+                    <CardHeader className="pb-2 p-3">
+                      <div className="flex items-center gap-1 text-xs text-gray-600 mb-1">
+                        <Calendar className="h-3 w-3" />
+                        <span className="text-xs">{formatDate(articles[currentIndex].pubDate)}</span>
+                        <span>•</span>
+                        <span className="truncate text-xs">{articles[currentIndex].source}</span>
+                      </div>
+                      <CardTitle className="text-sm line-clamp-2 group-hover:text-primary transition-colors leading-tight text-gray-900">
+                        {articles[currentIndex].title}
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent className="pt-0 p-3">
+                      <CardDescription className="text-xs line-clamp-2 mb-3 text-gray-600">
+                        {truncateDescription(articles[currentIndex].description, 60)}
+                      </CardDescription>
+                      <Button 
+                        variant="outline" 
+                        size="sm" 
+                        className="w-full text-xs"
+                        asChild
                       >
-                        Read More <ExternalLink className="h-3 w-3" />
-                      </a>
-                    </Button>
-                  </CardContent>
-                </Card>
+                        <a 
+                          href={articles[currentIndex].link} 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          className="flex items-center justify-center gap-1"
+                        >
+                          Read More <ExternalLink className="h-3 w-3" />
+                        </a>
+                      </Button>
+                    </CardContent>
+                  </Card>
+                )}
+              </div>
+
+              {/* Mobile Navigation Buttons */}
+              {articles.length > 1 && (
+                <div className="flex items-center justify-between mt-4">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={prevSlide}
+                    className="h-8 w-8 p-0"
+                    aria-label="Previous article"
+                  >
+                    <ChevronLeft className="h-4 w-4" />
+                  </Button>
+                  
+                  <div className="flex space-x-2">
+                    {articles.slice(0, 5).map((_, index) => (
+                      <button
+                        key={index}
+                        className={`w-2 h-2 rounded-full transition-colors ${
+                          index === currentIndex % 5 ? 'bg-primary' : 'bg-gray-300'
+                        }`}
+                        onClick={() => setCurrentIndex(index)}
+                        aria-label={`Go to article ${index + 1}`}
+                      />
+                    ))}
+                  </div>
+                  
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={nextSlide}
+                    className="h-8 w-8 p-0"
+                    aria-label="Next article"
+                  >
+                    <ChevronRight className="h-4 w-4" />
+                  </Button>
+                </div>
               )}
             </div>
 
-            {/* Navigation Buttons */}
-            {articles.length > 1 && (
-              <div className="flex items-center justify-between mt-4">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={prevSlide}
-                  className="h-8 w-8 p-0"
-                  aria-label="Previous article"
-                >
-                  <ChevronLeft className="h-4 w-4" />
-                </Button>
-                
-                <div className="flex space-x-2">
-                  {articles.slice(0, 5).map((_, index) => (
-                    <button
-                      key={index}
-                      className={`w-2 h-2 rounded-full transition-colors ${
-                        index === currentIndex % 5 ? 'bg-primary' : 'bg-gray-300'
-                      }`}
-                      onClick={() => setCurrentIndex(index)}
-                      aria-label={`Go to article ${index + 1}`}
-                    />
+            {/* Desktop: Horizontal Scroll Layout */}
+            <div className="hidden md:block">
+              <div className="overflow-x-auto pb-4">
+                <div className="flex gap-4 min-w-max">
+                  {articles.slice(0, 6).map((article, index) => (
+                    <Card key={index} className="hover:shadow-lg transition-all duration-300 cursor-pointer group w-80 flex-shrink-0 bg-white">
+                      <div className="relative h-32 overflow-hidden">
+                        <img 
+                          src={financialImages[index % financialImages.length]} 
+                          alt={`Financial news illustration ${index + 1}`}
+                          className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
+                      </div>
+                      <CardHeader className="pb-2 p-4">
+                        <div className="flex items-center gap-1 text-xs text-gray-600 mb-2">
+                          <Calendar className="h-3 w-3" />
+                          <span className="text-xs">{formatDate(article.pubDate)}</span>
+                          <span>•</span>
+                          <span className="truncate text-xs">{article.source}</span>
+                        </div>
+                        <CardTitle className="text-sm line-clamp-2 group-hover:text-primary transition-colors leading-tight text-gray-900">
+                          {article.title}
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent className="pt-0 p-4">
+                        <CardDescription className="text-xs line-clamp-2 mb-3 text-gray-600">
+                          {truncateDescription(article.description, 80)}
+                        </CardDescription>
+                        <Button 
+                          variant="outline" 
+                          size="sm" 
+                          className="w-full text-xs"
+                          asChild
+                        >
+                          <a 
+                            href={article.link} 
+                            target="_blank" 
+                            rel="noopener noreferrer"
+                            className="flex items-center justify-center gap-1"
+                          >
+                            Read More <ExternalLink className="h-3 w-3" />
+                          </a>
+                        </Button>
+                      </CardContent>
+                    </Card>
                   ))}
                 </div>
-                
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={nextSlide}
-                  className="h-8 w-8 p-0"
-                  aria-label="Next article"
-                >
-                  <ChevronRight className="h-4 w-4" />
-                </Button>
               </div>
-            )}
-          </div>
+            </div>
+          </>
         )}
       </div>
     </section>
