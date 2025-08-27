@@ -282,16 +282,6 @@ const CTASection = () => (
 );
 
 const Home = () => {
-  // Override body background for this page
-  React.useEffect(() => {
-    document.body.style.backgroundColor = 'hsl(213, 50%, 22%)';
-    document.body.style.backgroundImage = 'repeating-linear-gradient(45deg, transparent, transparent 40px, rgba(255,255,255,0.04) 40px, rgba(255,255,255,0.04) 42px)';
-    return () => {
-      document.body.style.backgroundColor = '';
-      document.body.style.backgroundImage = '';
-    };
-  }, []);
-
   return (
     <>
       <SEO
@@ -301,7 +291,7 @@ const Home = () => {
         structuredData={seoData.home.structuredData}
         canonical="https://www.housebudgetcalculator.com/"
       />
-      <div className="min-h-screen overflow-x-hidden" style={{ backgroundColor: 'hsl(213, 50%, 22%)' }}>
+      <div className="min-h-screen overflow-x-hidden">
         <HeroSection />
         <FeaturedToolsSection />
         <div className="bg-gray-100 rounded-2xl mx-4 my-6 shadow-xl p-4 md:p-6">

@@ -13,7 +13,7 @@ const Header: React.FC = () => {
   const isMobile = useIsMobile();
 
   return (
-    <header className="w-full bg-muted border-b border-border sticky top-0 z-50">
+    <header className="w-full bg-white border-b border-gray-200 sticky top-0 z-50 shadow-sm">
       <div className="w-full px-4 md:px-6 py-2 md:py-3 flex items-center justify-between min-h-[48px] md:min-h-[56px]">
         {/* Brand with Logo and Mobile Menu */}
         <div className="flex items-center space-x-2">
@@ -25,7 +25,7 @@ const Header: React.FC = () => {
               className="h-7 w-7 md:h-8 md:w-8 rounded"
             />
             {!isMobile && (
-              <h1 className="text-xl font-semibold text-primary">
+              <h1 className="text-xl font-semibold text-gray-900">
                 House Budget Calculator
               </h1>
             )}
