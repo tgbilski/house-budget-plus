@@ -79,16 +79,16 @@ const CombinedHeroSection = () => (
       />
     </div>
     
-    <div className="w-full max-w-4xl mx-auto relative z-10">
-      {/* Mascot Image - Larger and Overlapping */}
-      <div className="flex justify-center -mt-16 mb-8"> {/* Adjust -mt to control overlap */}
-        <img
-          src="/lovable-uploads/ed809955-ef71-4d81-b072-945082f4380a.png"
-          alt="Budget Calculator mascot"
-          className="w-28 h-28 md:w-36 md:h-36 object-contain hover:scale-110 transition-transform duration-300"
-        />
-      </div>
+    {/* Mascot Image - Absolutely positioned to overlap */}
+    <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20">
+      <img
+        src="/lovable-uploads/ed809955-ef71-4d81-b072-945082f4380a.png"
+        alt="Budget Calculator mascot"
+        className="w-32 h-32 md:w-40 md:h-40 object-contain hover:scale-110 transition-transform duration-300"
+      />
+    </div>
 
+    <div className="w-full max-w-4xl mx-auto relative z-10 pt-16 md:pt-20"> {/* Add top padding to compensate for mascot */}
       <div className="text-center mb-10">
         <div className="flex items-center justify-center gap-1 mb-4">
           <Star className="h-4 w-4 md:h-5 md:w-5 fill-yellow-400 text-yellow-400" />
@@ -271,8 +271,8 @@ const Home = () => {
               feedUrl="https://rss.cnn.com/rss/money_news_international.rss"
               title="Latest Financial News"
             />
-          </div>
         </div>
+      </div>
         <ScrollIndicator />
 
         {/* Badge Display Section - Bottom */}
