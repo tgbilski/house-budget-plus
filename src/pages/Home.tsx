@@ -304,8 +304,8 @@ const Home = () => {
       <div className="min-h-screen overflow-x-hidden">
         <HeroSection />
         <FeaturedToolsSection />
-      <div className="bg-gray-100 rounded-2xl mx-4 my-6 shadow-xl p-4 md:p-6 max-w-3xl lg:mx-auto overflow-hidden">
-        <div className="w-full overflow-hidden">
+      <div className="bg-gray-100 rounded-2xl mx-4 my-6 shadow-xl p-4 md:p-6 overflow-hidden">
+        <div className="w-full max-w-sm mx-auto md:max-w-4xl overflow-hidden">
           <RSSFeed 
             feedUrl="https://rss.cnn.com/rss/money_news_international.rss"
             title="Latest Financial News"
@@ -332,7 +332,7 @@ const Home = () => {
         <CTASection />
         
         {/* Badge Display Section - Bottom */}
-        <div className="w-full max-w-sm mx-auto px-4 py-6 md:py-8">
+        <div className="w-full max-w-sm mx-auto md:max-w-4xl px-4 py-6 md:py-8">
           <BadgeDisplay />
         </div>
       </div>
