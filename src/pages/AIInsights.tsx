@@ -210,17 +210,17 @@ export default function AIInsights() {
                   Get personalized insights and recommendations based on your actual financial data
                 </p>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                  <div className="rounded-lg p-6">
-                    <h3 className="font-semibold mb-2 text-white">Smart Analysis</h3>
-                    <p className="text-sm text-white opacity-90">AI analyzes your spending patterns and budget data to provide tailored advice</p>
+                  <div className="bg-gray-50 rounded-lg p-6 border border-gray-200">
+                    <h3 className="font-semibold mb-2 text-gray-900">Smart Analysis</h3>
+                    <p className="text-sm text-gray-600">AI analyzes your spending patterns and budget data to provide tailored advice</p>
                   </div>
-                  <div className="rounded-lg p-6">
-                    <h3 className="font-semibold mb-2 text-white">Real-Time Insights</h3>
-                    <p className="text-sm text-white opacity-90">Get instant answers to financial questions based on your current situation</p>
+                  <div className="bg-gray-50 rounded-lg p-6 border border-gray-200">
+                    <h3 className="font-semibold mb-2 text-gray-900">Real-Time Insights</h3>
+                    <p className="text-sm text-gray-600">Get instant answers to financial questions based on your current situation</p>
                   </div>
-                  <div className="rounded-lg p-6">
-                    <h3 className="font-semibold mb-2 text-white">Actionable Advice</h3>
-                    <p className="text-sm text-white opacity-90">Receive specific recommendations to improve your financial health</p>
+                  <div className="bg-gray-50 rounded-lg p-6 border border-gray-200">
+                    <h3 className="font-semibold mb-2 text-gray-900">Actionable Advice</h3>
+                    <p className="text-sm text-gray-600">Receive specific recommendations to improve your financial health</p>
                   </div>
                 </div>
               </div>
