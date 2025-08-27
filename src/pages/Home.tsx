@@ -220,11 +220,11 @@ const AllToolsGrid = () => (
 
 const SocialProofSection = () => (
   <section className="py-8 md:py-12 px-4 bg-white rounded-2xl mx-4 my-6 shadow-xl relative overflow-hidden">
-    <div className="w-full max-w-sm mx-auto text-center">
+    <div className="w-full max-w-sm mx-auto md:max-w-4xl text-center">
       <h2 className="text-xl md:text-2xl font-bold mb-6 md:mb-8 px-2 text-gray-900">
         Join a Community of Smart Savers
       </h2>
-      <div className="grid grid-cols-1 gap-6 relative z-10">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 relative z-10">
         <div className="space-y-3 md:space-y-4 animate-fade-in px-2" style={{ animationDelay: '0.2s' }}>
           <div className="w-12 h-12 md:w-16 md:h-16 bg-primary/10 text-primary rounded-full flex items-center justify-center mx-auto hover:scale-110 transition-transform duration-300 hover:bg-primary/20">
             <Calculator className="h-6 w-6 md:h-8 md:w-8" />

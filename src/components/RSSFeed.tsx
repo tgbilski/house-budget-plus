@@ -207,7 +207,7 @@ export const RSSFeed: React.FC<RSSFeedProps> = ({
   console.log('RSSFeed render - articles:', articles.length, articles);
 
   return (
-    <section className="py-8 md:py-12 overflow-x-hidden">
+    <section className="py-8 md:py-12 overflow-hidden">
       <div className="w-full max-w-sm md:max-w-4xl mx-auto px-2">
         <div className="text-center mb-6 md:mb-8">
           <h2 className="text-lg md:text-2xl font-bold mb-3 text-gray-900">
@@ -314,9 +314,9 @@ export const RSSFeed: React.FC<RSSFeedProps> = ({
             {/* Desktop: Responsive Horizontal Scroll Layout */}
             <div className="hidden md:block">
               <div className="overflow-x-auto pb-4 scrollbar-hide">
-                <div className="flex gap-4 w-max">
-                  {articles.slice(0, 6).map((article, index) => (
-                    <Card key={index} className="hover:shadow-lg transition-all duration-300 cursor-pointer group w-72 lg:w-80 xl:w-96 flex-shrink-0 bg-white">
+                <div className="flex gap-4" style={{ width: 'max-content' }}>
+                  {articles.slice(0, 4).map((article, index) => (
+                    <Card key={index} className="hover:shadow-lg transition-all duration-300 cursor-pointer group w-64 flex-shrink-0 bg-white">
                       <div className="relative h-24 overflow-hidden">
                         <img 
                           src={financialImages[index % financialImages.length]} 
