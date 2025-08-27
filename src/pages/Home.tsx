@@ -7,7 +7,6 @@ import { SEO } from "@/components/SEO";
 import { seoData } from "@/utils/seoData";
 import { AdSense } from "@/components/AdSense";
 import { BadgeDisplay } from "@/components/BadgeDisplay";
-import { RSSFeed } from "@/components/RSSFeed";
 
 const toolsData = [
   {
