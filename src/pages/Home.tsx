@@ -287,7 +287,7 @@ const Home = () => {
         structuredData={seoData.home.structuredData}
         canonical="https://www.housebudgetcalculator.com/"
       />
-      <div className="min-h-screen overflow-x-hidden bg-[hsl(213,50%,22%)]">
+      <div className="min-h-screen overflow-x-hidden" style={{ backgroundColor: 'hsl(213, 50%, 22%)' }}>
         <HeroSection />
         <FeaturedToolsSection />
         <RSSFeed 
