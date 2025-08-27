@@ -95,7 +95,7 @@ const VendorCard: React.FC<VendorCardProps> = ({ quote, onUpdate, onRemove, show
       <Card className="w-full max-w-md mx-auto shadow-lg border border-border">
         <CardHeader className="pb-4">
           <div className="flex items-start justify-between">
-            <div className="flex-1">
+            <div className="w-full">
               <Label htmlFor={`vendor-${quote.id}`} className="text-sm font-medium text-muted-foreground">
                 Vendor/Company
               </Label>
@@ -107,15 +107,8 @@ const VendorCard: React.FC<VendorCardProps> = ({ quote, onUpdate, onRemove, show
                 className="mt-1 font-semibold"
               />
             </div>
-            <div className="ml-4 flex items-center gap-2">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setIsEditing(false)}
-              >
-                <Check className="h-4 w-4" />
-              </Button>
-              {showRemove && (
+            {showRemove && (
+              <div className="ml-4 flex items-center">
                 <Button
                   variant="destructive"
                   size="sm"
@@ -123,8 +116,8 @@ const VendorCard: React.FC<VendorCardProps> = ({ quote, onUpdate, onRemove, show
                 >
                   <Trash2 className="h-4 w-4" />
                 </Button>
-              )}
-            </div>
+              </div>
+            )}
           </div>
         </CardHeader>
 
@@ -142,7 +135,7 @@ const VendorCard: React.FC<VendorCardProps> = ({ quote, onUpdate, onRemove, show
                 step="0.01"
                 value={localQuote.estimate_amount || ''}
                 onChange={(e) => updateField('estimate_amount', parseFloat(e.target.value) || 0)}
-                className="pl-8 text-lg font-bold text-primary"
+                className="pl-8 text-lg font-bold text-primary [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                 placeholder="0.00"
               />
             </div>
