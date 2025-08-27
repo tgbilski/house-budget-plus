@@ -63,7 +63,7 @@ const toolsData = [
 ];
 
 const HeroSection = () => (
-  <section className="py-8 md:py-16 px-4 rounded-2xl mx-4 mt-4 mb-6 shadow-xl overflow-x-hidden relative bg-white">
+  <section className="py-8 md:py-12 px-4 rounded-2xl mx-4 mt-4 mb-6 shadow-xl overflow-x-hidden relative bg-white">
     {/* Background house image */}
     <div className="absolute inset-0">
       <img
@@ -74,31 +74,71 @@ const HeroSection = () => (
     </div>
     
     <div className="w-full max-w-sm mx-auto lg:max-w-4xl lg:mx-0 lg:ml-8 relative z-10">
-      <div className="text-center lg:text-left lg:max-w-md">
-        <div className="flex flex-col items-center lg:items-start mb-6">
-          <img
-            src="/lovable-uploads/ed809955-ef71-4d81-b072-945082f4380a.png"
-            alt="Budget Calculator mascot"
-            className="w-12 h-12 md:w-16 md:h-16 object-contain mb-4 hover:scale-110 transition-transform duration-300"
-          />
-          <div className="flex items-center gap-1">
-            <Star className="h-3 w-3 md:h-4 md:w-4 fill-yellow-400 text-yellow-400" />
-            <Star className="h-3 w-3 md:h-4 md:w-4 fill-yellow-400 text-yellow-400" />
-            <Star className="h-3 w-3 md:h-4 md:w-4 fill-yellow-400 text-yellow-400" />
-            <Star className="h-3 w-3 md:h-4 md:w-4 fill-yellow-400 text-yellow-400" />
-            <Star className="h-3 w-3 md:h-4 md:w-4 fill-yellow-400 text-yellow-400" />
+      <div className="lg:flex lg:items-center lg:justify-between lg:gap-8">
+        {/* Left side - Text content */}
+        <div className="text-center lg:text-left lg:flex-1">
+          <div className="flex flex-col items-center lg:items-start mb-6">
+            <img
+              src="/lovable-uploads/ed809955-ef71-4d81-b072-945082f4380a.png"
+              alt="Budget Calculator mascot"
+              className="w-12 h-12 md:w-16 md:h-16 object-contain mb-4 hover:scale-110 transition-transform duration-300"
+            />
+            <div className="flex items-center gap-1">
+              <Star className="h-3 w-3 md:h-4 md:w-4 fill-yellow-400 text-yellow-400" />
+              <Star className="h-3 w-3 md:h-4 md:w-4 fill-yellow-400 text-yellow-400" />
+              <Star className="h-3 w-3 md:h-4 md:w-4 fill-yellow-400 text-yellow-400" />
+              <Star className="h-3 w-3 md:h-4 md:w-4 fill-yellow-400 text-yellow-400" />
+              <Star className="h-3 w-3 md:h-4 md:w-4 fill-yellow-400 text-yellow-400" />
+            </div>
+          </div>
+          
+          <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-4 md:mb-6 text-gray-900 leading-tight">
+            Own Your <span className="text-primary">House Budget</span>
+          </h1>
+          
+          <p className="text-base md:text-lg text-gray-600 mb-6 md:mb-8 lg:mb-6 leading-relaxed">
+            Smart financial planning tools with AI insights. Track expenses, compare vendors, and make informed decisions that save you money.
+          </p>
+          
+          <div className="flex flex-col gap-3 text-sm text-gray-600 lg:hidden">
+            <div className="flex items-center justify-center lg:justify-start gap-2">
+              <TrendingUp className="h-4 w-4 text-green-600 flex-shrink-0" />
+              <span>100% Free Tools</span>
+            </div>
+            <div className="flex items-center justify-center lg:justify-start gap-2">
+              <Users className="h-4 w-4 text-blue-600 flex-shrink-0" />
+              <span>No Sign-up Required</span>
+            </div>
           </div>
         </div>
-        
-        <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-4 md:mb-6 text-gray-900 leading-tight">
-          Own Your <span className="text-primary">House Budget</span>
-        </h1>
-        
-        <p className="text-base md:text-lg text-gray-600 mb-6 md:mb-8 leading-relaxed">
-          Smart financial planning tools with AI insights. Track expenses, compare vendors, and make informed decisions that save you money.
-        </p>
-        
-        <div className="flex flex-col gap-3 md:gap-4 mb-6 md:mb-8 w-full max-w-xs mx-auto lg:mx-0">
+
+        {/* Right side - Buttons (desktop only) */}
+        <div className="hidden lg:flex lg:flex-col lg:gap-4 lg:w-80">
+          <Button asChild size="lg" className="w-full text-base px-6 py-4 shadow-lg hover:shadow-xl transition-shadow">
+            <Link to="/budget">
+              Budget Calculator <ArrowRight className="ml-2 h-4 w-4" />
+            </Link>
+          </Button>
+          <Button asChild variant="outline" size="lg" className="w-full text-base px-6 py-4 border-2">
+            <Link to="/ai-insights">
+              AI Insights
+            </Link>
+          </Button>
+          
+          <div className="flex flex-col gap-3 text-sm text-gray-600 mt-4">
+            <div className="flex items-center gap-2">
+              <TrendingUp className="h-4 w-4 text-green-600 flex-shrink-0" />
+              <span>100% Free Tools</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <Users className="h-4 w-4 text-blue-600 flex-shrink-0" />
+              <span>No Sign-up Required</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Mobile buttons */}
+        <div className="flex flex-col gap-3 md:gap-4 mb-6 md:mb-8 lg:hidden w-full max-w-xs mx-auto">
           <Button asChild size="lg" className="w-full text-sm md:text-base px-4 md:px-6 py-3 md:py-4 shadow-lg hover:shadow-xl transition-shadow">
             <Link to="/budget">
               Budget Calculator <ArrowRight className="ml-2 h-4 w-4" />
@@ -109,17 +149,6 @@ const HeroSection = () => (
               AI Insights
             </Link>
           </Button>
-        </div>
-        
-        <div className="flex flex-col gap-3 text-sm text-gray-600">
-          <div className="flex items-center justify-center lg:justify-start gap-2">
-            <TrendingUp className="h-4 w-4 text-green-600 flex-shrink-0" />
-            <span>100% Free Tools</span>
-          </div>
-          <div className="flex items-center justify-center lg:justify-start gap-2">
-            <Users className="h-4 w-4 text-blue-600 flex-shrink-0" />
-            <span>No Sign-up Required</span>
-          </div>
         </div>
       </div>
     </div>
