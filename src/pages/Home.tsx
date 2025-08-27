@@ -63,15 +63,14 @@ const toolsData = [
 ];
 
 const HeroSection = () => (
-  <section className="py-8 md:py-16 px-4 rounded-2xl mx-4 mt-4 mb-6 shadow-xl overflow-x-hidden relative bg-white lg:bg-transparent">
-    {/* Desktop background house image */}
-    <div className="absolute inset-0 hidden lg:block">
+  <section className="py-8 md:py-16 px-4 rounded-2xl mx-4 mt-4 mb-6 shadow-xl overflow-x-hidden relative bg-white">
+    {/* Background house image */}
+    <div className="absolute inset-0">
       <img
-        src="/lovable-uploads/5377daa4-3f84-4748-a91b-081403394030.png"
+        src="/lovable-uploads/d46481b3-e5b7-454b-b44e-4e96eb93a00f.png"
         alt="House background"
-        className="w-full h-full object-cover rounded-2xl opacity-80"
+        className="w-full h-full object-cover rounded-2xl opacity-30"
       />
-      <div className="absolute inset-0 bg-black/20 rounded-2xl"></div>
     </div>
     
     <div className="w-full max-w-sm mx-auto lg:max-w-4xl lg:mx-0 lg:ml-8 relative z-10">
@@ -91,11 +90,11 @@ const HeroSection = () => (
           </div>
         </div>
         
-        <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-4 md:mb-6 text-gray-900 lg:text-white leading-tight">
-          Own Your <span className="text-primary lg:text-yellow-400">House Budget</span>
+        <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-4 md:mb-6 text-gray-900 leading-tight">
+          Own Your <span className="text-primary">House Budget</span>
         </h1>
         
-        <p className="text-base md:text-lg text-gray-600 lg:text-gray-100 mb-6 md:mb-8 leading-relaxed">
+        <p className="text-base md:text-lg text-gray-600 mb-6 md:mb-8 leading-relaxed">
           Smart financial planning tools with AI insights. Track expenses, compare vendors, and make informed decisions that save you money.
         </p>
         
@@ -105,20 +104,20 @@ const HeroSection = () => (
               Budget Calculator <ArrowRight className="ml-2 h-4 w-4" />
             </Link>
           </Button>
-          <Button asChild variant="outline" size="lg" className="w-full text-sm md:text-base px-4 md:px-6 py-3 md:py-4 border-2 lg:bg-white/10 lg:text-white lg:border-white/30 lg:hover:bg-white/20">
+          <Button asChild variant="outline" size="lg" className="w-full text-sm md:text-base px-4 md:px-6 py-3 md:py-4 border-2">
             <Link to="/ai-insights">
               AI Insights
             </Link>
           </Button>
         </div>
         
-        <div className="flex flex-col gap-3 text-sm text-gray-600 lg:text-gray-200">
+        <div className="flex flex-col gap-3 text-sm text-gray-600">
           <div className="flex items-center justify-center lg:justify-start gap-2">
-            <TrendingUp className="h-4 w-4 text-green-600 lg:text-green-400 flex-shrink-0" />
+            <TrendingUp className="h-4 w-4 text-green-600 flex-shrink-0" />
             <span>100% Free Tools</span>
           </div>
           <div className="flex items-center justify-center lg:justify-start gap-2">
-            <Users className="h-4 w-4 text-blue-600 lg:text-blue-400 flex-shrink-0" />
+            <Users className="h-4 w-4 text-blue-600 flex-shrink-0" />
             <span>No Sign-up Required</span>
           </div>
         </div>
