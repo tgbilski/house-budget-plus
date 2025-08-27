@@ -65,7 +65,7 @@ export function AppSidebar() {
         <SidebarGroup>
           {(open || isMobile) && <SidebarGroupLabel>Navigation</SidebarGroupLabel>}
           <SidebarGroupContent>
-            <SidebarMenu className={cn(!isMobile && !open && "flex flex-col items-center space-y-2")}>
+            <SidebarMenu className={cn(!isMobile && !open && "flex flex-col items-center space-y-1")}>
               {navigationItems.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton asChild isActive={isActive(item.url)}>
