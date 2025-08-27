@@ -65,29 +65,27 @@ const App = () => {
             <CurrencyContext.Provider value={{ currency, setCurrency }}>
               <BrowserRouter>
                 <SidebarProvider defaultOpen={isMobile ? false : false}>
-                  <div className="min-h-screen w-full flex flex-col">
+                  <div className="min-h-screen w-full flex flex-col relative">
                     <Header />
-                    <div className="flex flex-1">
+                    <div className="flex flex-1 relative">
                       <AppSidebar />
-                      <SidebarInset className="flex-1">
-                        <main className="flex-1 p-2 sm:p-4 md:p-6">
-                          <Routes>
-                            <Route path="/" element={<Home />} />
-                            <Route path="/budget" element={<MonthlyBudget />} />
-                            <Route path="/savings" element={<SavingsGoals />} />
-                            <Route path="/home" element={<Home />} />
-                            <Route path="/compare-prices" element={<CompareVendors />} />
-                            <Route path="/vacation" element={<Vacation />} />
-                            <Route path="/engagement" element={<Engagement />} />
-                            <Route path="/auth" element={<Auth />} />
-                            <Route path="/settings" element={<UserSettings />} />
-                            <Route path="/gifts" element={<Gifts />} />
-                            <Route path="/ai-insights" element={<AIInsights />} />
-                            <Route path="/subscription-success" element={<SubscriptionSuccess />} />
-                            <Route path="*" element={<NotFound />} />
-                          </Routes>
-                        </main>
-                      </SidebarInset>
+                      <main className="flex-1 p-2 sm:p-4 md:p-6 w-full">
+                        <Routes>
+                          <Route path="/" element={<Home />} />
+                          <Route path="/budget" element={<MonthlyBudget />} />
+                          <Route path="/savings" element={<SavingsGoals />} />
+                          <Route path="/home" element={<Home />} />
+                          <Route path="/compare-prices" element={<CompareVendors />} />
+                          <Route path="/vacation" element={<Vacation />} />
+                          <Route path="/engagement" element={<Engagement />} />
+                          <Route path="/auth" element={<Auth />} />
+                          <Route path="/settings" element={<UserSettings />} />
+                          <Route path="/gifts" element={<Gifts />} />
+                          <Route path="/ai-insights" element={<AIInsights />} />
+                          <Route path="/subscription-success" element={<SubscriptionSuccess />} />
+                          <Route path="*" element={<NotFound />} />
+                        </Routes>
+                      </main>
                     </div>
                   </div>
                 </SidebarProvider>

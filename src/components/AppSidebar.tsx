@@ -35,7 +35,7 @@ const navigationItems = [
 export function AppSidebar() {
   const location = useLocation();
   const currentPath = location.pathname;
-  const { setOpen, setOpenMobile, isMobile: sidebarIsMobile } = useSidebar();
+  const { setOpen, setOpenMobile, isMobile: sidebarIsMobile, open } = useSidebar();
   const isMobile = useIsMobile();
 
   const isActive = (path: string) => currentPath === path;
@@ -48,18 +48,36 @@ export function AppSidebar() {
   };
 
   return (
-    <Sidebar>
-      <SidebarContent>
+    <Sidebar 
+      className={cn(
+        // Mobile: standard sidebar behavior
+        isMobile ? "relative" : 
+        // Desktop: floating sidebar positioned fixed
+        "fixed left-4 top-1/2 -translate-y-1/2 z-40 shadow-2xl rounded-xl border backdrop-blur-sm bg-background/95",
+        // Width based on open state - desktop only
+        !isMobile && (open ? "w-64" : "w-14")
+      )}
+      variant={isMobile ? "sidebar" : "floating"}
+    >
+      <SidebarContent className={cn(!isMobile && "p-2")}>
         <SidebarGroup>
-          <SidebarGroupLabel>Navigation</SidebarGroupLabel>
+          {(open || isMobile) && <SidebarGroupLabel>Navigation</SidebarGroupLabel>}
           <SidebarGroupContent>
             <SidebarMenu>
               {navigationItems.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton asChild isActive={isActive(item.url)}>
-                    <NavLink to={item.url} onClick={handleLinkClick}>
-                      <item.icon />
-                      <span>{item.title}</span>
+                    <NavLink 
+                      to={item.url} 
+                      onClick={handleLinkClick}
+                      className={cn(
+                        "flex items-center gap-3 rounded-lg px-3 py-2 transition-all",
+                        !isMobile && !open && "justify-center px-2"
+                      )}
+                      title={!open && !isMobile ? item.title : undefined}
+                    >
+                      <item.icon className="h-5 w-5 flex-shrink-0" />
+                      {(open || isMobile) && <span>{item.title}</span>}
                     </NavLink>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
