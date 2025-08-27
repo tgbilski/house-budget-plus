@@ -69,18 +69,9 @@ const ScrollIndicator = () => (
 );
 
 const CombinedHeroSection = () => (
-  <section className="relative py-8 md:py-12 px-4 rounded-2xl mx-4 mt-4 mb-6 shadow-xl overflow-hidden bg-white">
-    {/* Background house image */}
-    <div className="absolute inset-0">
-      <img
-        src="/lovable-uploads/d46481b3-e5b7-454b-b44e-4e96eb93a00f.png"
-        alt="House background"
-        className="w-full h-full object-cover rounded-2xl opacity-30"
-      />
-    </div>
-    
-    {/* Mascot Image - Absolutely positioned to overlap */}
-    <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20">
+  <div className="relative overflow-hidden mb-6">
+    {/* Mascot Image - Absolutely positioned and sits on top */}
+    <div className="flex justify-center -mt-16 mb-8 relative z-20">
       <img
         src="/lovable-uploads/ed809955-ef71-4d81-b072-945082f4380a.png"
         alt="Budget Calculator mascot"
@@ -88,67 +79,78 @@ const CombinedHeroSection = () => (
       />
     </div>
 
-    <div className="w-full max-w-4xl mx-auto relative z-10 pt-16 md:pt-20"> {/* Add top padding to compensate for mascot */}
-      <div className="text-center mb-10">
-        <div className="flex items-center justify-center gap-1 mb-4">
-          <Star className="h-4 w-4 md:h-5 md:w-5 fill-yellow-400 text-yellow-400" />
-          <Star className="h-4 w-4 md:h-5 md:w-5 fill-yellow-400 text-yellow-400" />
-          <Star className="h-4 w-4 md:h-5 md:w-5 fill-yellow-400 text-yellow-400" />
-          <Star className="h-4 w-4 md:h-5 md:w-5 fill-yellow-400 text-yellow-400" />
-          <Star className="h-4 w-4 md:h-5 md:w-5 fill-yellow-400 text-yellow-400" />
+    {/* Main section content, pulled up with negative margin */}
+    <section className="relative py-8 md:py-12 px-4 rounded-2xl mx-4 shadow-xl overflow-hidden bg-white -mt-24 md:-mt-32">
+      {/* Background house image */}
+      <div className="absolute inset-0">
+        <img
+          src="/lovable-uploads/d46481b3-e5b7-454b-b44e-4e96eb93a00f.png"
+          alt="House background"
+          className="w-full h-full object-cover rounded-2xl opacity-30"
+        />
+      </div>
+      
+      <div className="w-full max-w-4xl mx-auto relative z-10 pt-16 md:pt-20">
+        <div className="text-center mb-10">
+          <div className="flex items-center justify-center gap-1 mb-4">
+            <Star className="h-4 w-4 md:h-5 md:w-5 fill-yellow-400 text-yellow-400" />
+            <Star className="h-4 w-4 md:h-5 md:w-5 fill-yellow-400 text-yellow-400" />
+            <Star className="h-4 w-4 md:h-5 md:w-5 fill-yellow-400 text-yellow-400" />
+            <Star className="h-4 w-4 md:h-5 md:w-5 fill-yellow-400 text-yellow-400" />
+            <Star className="h-4 w-4 md:h-5 md:w-5 fill-yellow-400 text-yellow-400" />
+          </div>
+          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 text-gray-900 leading-tight">
+            Own Your <span className="text-primary">House Budget</span>
+          </h1>
+          <p className="text-base md:text-lg text-gray-600 max-w-3xl mx-auto mb-8 leading-relaxed">
+            Smart financial planning tools with AI insights. Track expenses, compare vendors, and make informed decisions that save you money. Join a community of smart savers today!
+          </p>
+          <div className="flex flex-col sm:flex-row gap-3 md:gap-4 justify-center mb-10 max-w-md mx-auto">
+            <Button asChild size="lg" className="w-full sm:w-auto text-base px-6 py-4 shadow-lg hover:shadow-xl transition-shadow">
+              <Link to="/budget">
+                Budget Calculator <ArrowRight className="ml-2 h-4 w-4" />
+              </Link>
+            </Button>
+            <Button asChild variant="outline" size="lg" className="w-full sm:w-auto text-base px-6 py-4 border-2">
+              <Link to="/ai-insights">
+                AI Insights
+              </Link>
+            </Button>
+          </div>
         </div>
-        <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 text-gray-900 leading-tight">
-          Own Your <span className="text-primary">House Budget</span>
-        </h1>
-        <p className="text-base md:text-lg text-gray-600 max-w-3xl mx-auto mb-8 leading-relaxed">
-          Smart financial planning tools with AI insights. Track expenses, compare vendors, and make informed decisions that save you money. Join a community of smart savers today!
-        </p>
-        <div className="flex flex-col sm:flex-row gap-3 md:gap-4 justify-center mb-10 max-w-md mx-auto">
-          <Button asChild size="lg" className="w-full sm:w-auto text-base px-6 py-4 shadow-lg hover:shadow-xl transition-shadow">
-            <Link to="/budget">
-              Budget Calculator <ArrowRight className="ml-2 h-4 w-4" />
-            </Link>
-          </Button>
-          <Button asChild variant="outline" size="lg" className="w-full sm:w-auto text-base px-6 py-4 border-2">
-            <Link to="/ai-insights">
-              AI Insights
-            </Link>
-          </Button>
+        {/* Social Proof Features */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
+          <div className="space-y-3 md:space-y-4 animate-fade-in px-2" style={{ animationDelay: '0.2s' }}>
+            <div className="w-14 h-14 md:w-16 md:h-16 bg-primary/10 text-primary rounded-full flex items-center justify-center mx-auto hover:scale-110 transition-transform duration-300 hover:bg-primary/20">
+              <Calculator className="h-7 w-7 md:h-8 md:w-8" />
+            </div>
+            <h3 className="text-lg md:text-xl font-semibold text-gray-900">100% Free Forever</h3>
+            <p className="text-sm md:text-base text-gray-600">
+              Core budgeting tools are completely free. Premium AI insights available for advanced users.
+            </p>
+          </div>
+          <div className="space-y-3 md:space-y-4 animate-fade-in px-2" style={{ animationDelay: '0.4s' }}>
+            <div className="w-14 h-14 md:w-16 md:h-16 bg-primary/10 text-primary rounded-full flex items-center justify-center mx-auto hover:scale-110 transition-transform duration-300 hover:bg-primary/20">
+              <Brain className="h-7 w-7 md:h-8 md:w-8" />
+            </div>
+            <h3 className="text-lg md:text-xl font-semibold text-gray-900">AI-Powered Insights</h3>
+            <p className="text-sm md:text-base text-gray-600">
+              Smart recommendations that learn from your spending patterns and help you save more.
+            </p>
+          </div>
+          <div className="space-y-3 md:space-y-4 animate-fade-in px-2" style={{ animationDelay: '0.6s' }}>
+            <div className="w-14 h-14 md:w-16 md:h-16 bg-primary/10 text-primary rounded-full flex items-center justify-center mx-auto hover:scale-110 transition-transform duration-300 hover:bg-primary/20">
+              <TrendingUp className="h-7 w-7 md:h-8 md:w-8" />
+            </div>
+            <h3 className="text-lg md:text-xl font-semibold text-gray-900">Instant Results</h3>
+            <p className="text-sm md:text-base text-gray-600">
+              Get budget analysis and money-saving insights in seconds, not hours.
+            </p>
+          </div>
         </div>
       </div>
-
-      {/* Social Proof Features */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
-        <div className="space-y-3 md:space-y-4 animate-fade-in px-2" style={{ animationDelay: '0.2s' }}>
-          <div className="w-14 h-14 md:w-16 md:h-16 bg-primary/10 text-primary rounded-full flex items-center justify-center mx-auto hover:scale-110 transition-transform duration-300 hover:bg-primary/20">
-            <Calculator className="h-7 w-7 md:h-8 md:w-8" />
-          </div>
-          <h3 className="text-lg md:text-xl font-semibold text-gray-900">100% Free Forever</h3>
-          <p className="text-sm md:text-base text-gray-600">
-            Core budgeting tools are completely free. Premium AI insights available for advanced users.
-          </p>
-        </div>
-        <div className="space-y-3 md:space-y-4 animate-fade-in px-2" style={{ animationDelay: '0.4s' }}>
-          <div className="w-14 h-14 md:w-16 md:h-16 bg-primary/10 text-primary rounded-full flex items-center justify-center mx-auto hover:scale-110 transition-transform duration-300 hover:bg-primary/20">
-            <Brain className="h-7 w-7 md:h-8 md:w-8" />
-          </div>
-          <h3 className="text-lg md:text-xl font-semibold text-gray-900">AI-Powered Insights</h3>
-          <p className="text-sm md:text-base text-gray-600">
-            Smart recommendations that learn from your spending patterns and help you save more.
-          </p>
-        </div>
-        <div className="space-y-3 md:space-y-4 animate-fade-in px-2" style={{ animationDelay: '0.6s' }}>
-          <div className="w-14 h-14 md:w-16 md:h-16 bg-primary/10 text-primary rounded-full flex items-center justify-center mx-auto hover:scale-110 transition-transform duration-300 hover:bg-primary/20">
-            <TrendingUp className="h-7 w-7 md:h-8 md:w-8" />
-          </div>
-          <h3 className="text-lg md:text-xl font-semibold text-gray-900">Instant Results</h3>
-          <p className="text-sm md:text-base text-gray-600">
-            Get budget analysis and money-saving insights in seconds, not hours.
-          </p>
-        </div>
-      </div>
-    </div>
-  </section>
+    </section>
+  </div>
 );
 
 const AllToolsGrid = () => (
@@ -254,7 +256,6 @@ const Home = () => {
                 adSlot="5669663372" 
                 adFormat="fluid"
                 style={{ display: 'block', width: '100%', maxWidth: '100%' }}
-                responsive={true}
               />
             </div>
           </div>
@@ -271,8 +272,8 @@ const Home = () => {
               feedUrl="https://rss.cnn.com/rss/money_news_international.rss"
               title="Latest Financial News"
             />
+          </div>
         </div>
-      </div>
         <ScrollIndicator />
 
         {/* Badge Display Section - Bottom */}
