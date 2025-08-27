@@ -30,7 +30,7 @@ export const AdSense: React.FC<AdSenseProps> = ({
   }, []);
 
   return (
-    <div className="adsense-container w-full max-w-full overflow-hidden">
+    <div className="adsense-container w-full max-w-sm mx-auto overflow-hidden px-2">
       <ins
         className="adsbygoogle w-full"
         style={{ ...style, maxWidth: '100%', overflow: 'hidden' }}
