@@ -99,17 +99,6 @@ const HeroSection = () => (
           <p className="text-base md:text-lg text-gray-600 mb-6 md:mb-8 lg:mb-6 leading-relaxed">
             Smart financial planning tools with AI insights. Track expenses, compare vendors, and make informed decisions that save you money.
           </p>
-          
-          <div className="flex flex-col gap-3 text-sm text-gray-600 lg:hidden">
-            <div className="flex items-center justify-center lg:justify-start gap-2">
-              <TrendingUp className="h-4 w-4 text-green-600 flex-shrink-0" />
-              <span>100% Free Tools</span>
-            </div>
-            <div className="flex items-center justify-center lg:justify-start gap-2">
-              <Users className="h-4 w-4 text-blue-600 flex-shrink-0" />
-              <span>No Sign-up Required</span>
-            </div>
-          </div>
         </div>
 
         {/* Right side - Buttons (desktop only) */}
@@ -149,6 +138,17 @@ const HeroSection = () => (
               AI Insights
             </Link>
           </Button>
+          
+          <div className="flex flex-col gap-3 text-sm text-gray-600 mt-4">
+            <div className="flex items-center justify-center gap-2">
+              <TrendingUp className="h-4 w-4 text-green-600 flex-shrink-0" />
+              <span>100% Free Tools</span>
+            </div>
+            <div className="flex items-center justify-center gap-2">
+              <Users className="h-4 w-4 text-blue-600 flex-shrink-0" />
+              <span>No Sign-up Required</span>
+            </div>
+          </div>
         </div>
       </div>
     </div>
