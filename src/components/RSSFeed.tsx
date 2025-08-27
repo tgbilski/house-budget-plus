@@ -313,10 +313,10 @@ export const RSSFeed: React.FC<RSSFeedProps> = ({
 
             {/* Desktop: Responsive Horizontal Scroll Layout */}
             <div className="hidden md:block">
-              <div className="overflow-x-auto pb-4 scrollbar-hide">
-                <div className="flex gap-4" style={{ width: 'max-content' }}>
-                  {articles.slice(0, 4).map((article, index) => (
-                    <Card key={index} className="hover:shadow-lg transition-all duration-300 cursor-pointer group w-64 flex-shrink-0 bg-white">
+              <div className="overflow-x-auto pb-4 scrollbar-hide max-w-full">
+                <div className="flex gap-4" style={{ width: 'fit-content', maxWidth: '100%' }}>
+                  {articles.slice(0, 3).map((article, index) => (
+                    <Card key={index} className="hover:shadow-lg transition-all duration-300 cursor-pointer group w-60 flex-shrink-0 bg-white">
                       <div className="relative h-24 overflow-hidden">
                         <img 
                           src={financialImages[index % financialImages.length]} 
