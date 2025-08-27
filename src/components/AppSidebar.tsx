@@ -61,11 +61,11 @@ export function AppSidebar() {
       style={!isMobile ? { top: '80px' } : undefined}
       variant={isMobile ? "sidebar" : "floating"}
     >
-      <SidebarContent className={cn(!isMobile && "p-2")}>
-        <SidebarGroup>
+      <SidebarContent className={cn(!isMobile && "p-2", !isMobile && !open && "flex items-center justify-center min-h-full")}>
+        <SidebarGroup className={cn(!isMobile && !open && "flex flex-col items-center space-y-2")}>
           {(open || isMobile) && <SidebarGroupLabel>Navigation</SidebarGroupLabel>}
-          <SidebarGroupContent>
-            <SidebarMenu>
+          <SidebarGroupContent className={cn(!isMobile && !open && "space-y-2")}>
+            <SidebarMenu className={cn(!isMobile && !open && "space-y-2")}>
               {navigationItems.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton asChild isActive={isActive(item.url)}>
