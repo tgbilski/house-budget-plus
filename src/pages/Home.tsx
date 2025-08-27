@@ -132,10 +132,10 @@ const HeroSectionContent = () => (
             Smart recommendations that learn from your spending patterns and help you save more.
           </p>
         </div>
-        <div className="space-y-3 md:space-y-4 animate-fade-in px-2" style={{ animationDelay: '0.6s' }>
+        <div className="space-y-3 md:space-y-4 animate-fade-in px-2" style={{ animationDelay: '0.6s' }}>
           <div className="w-14 h-14 md:w-16 md:h-16 bg-primary/10 text-primary rounded-full flex items-center justify-center mx-auto hover:scale-110 transition-transform duration-300 hover:bg-primary/20">
             <TrendingUp className="h-7 w-7 md:h-8 md:w-8" />
-          </div>
+            </div>
           <h3 className="text-lg md:text-xl font-semibold text-gray-900">Instant Results</h3>
           <p className="text-sm md:text-base text-gray-600">
             Get budget analysis and money-saving insights in seconds, not hours.
