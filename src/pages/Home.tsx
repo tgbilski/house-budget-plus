@@ -302,7 +302,6 @@ const Home = () => {
       />
       <div className="min-h-screen overflow-x-hidden">
         <HeroSection />
-        <FeaturedToolsSection />
       <div className="bg-gray-100 rounded-2xl mx-4 my-6 shadow-xl p-4 md:p-6 overflow-hidden">
         <div className="w-full max-w-sm mx-auto md:max-w-4xl overflow-hidden">
           <RSSFeed 
