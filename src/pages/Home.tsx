@@ -142,11 +142,11 @@ const HeroSection = () => (
           <div className="flex flex-col gap-3 text-sm text-gray-600 mt-4">
             <div className="flex items-center justify-center gap-2">
               <TrendingUp className="h-4 w-4 text-green-600 flex-shrink-0" />
-              <span>100% Free Tools</span>
+              <span>Free Basic Tools</span>
             </div>
             <div className="flex items-center justify-center gap-2">
               <Users className="h-4 w-4 text-blue-600 flex-shrink-0" />
-              <span>No Sign-up Required</span>
+              <span>Sign-up & use AI </span>
             </div>
           </div>
         </div>
@@ -223,9 +223,16 @@ const AllToolsGrid = () => (
             >
               <CardHeader className="pb-3 p-4 md:p-5">
                 <div className="flex items-center gap-4">
-                  <div className={`w-10 h-10 md:w-12 md:h-12 rounded-lg ${tool.color} flex items-center justify-center group-hover:scale-110 transition-transform duration-300 flex-shrink-0`}>
-                    <tool.icon className="h-5 w-5 md:h-6 md:w-6" />
+                  {/* Icon and Arrow stacked vertically */}
+                  <div className="flex flex-col items-center flex-shrink-0">
+                    <div className={`w-10 h-10 md:w-12 md:h-12 rounded-lg ${tool.color} flex items-center justify-center group-hover:scale-110 transition-transform duration-300 mb-2`}>
+                      <tool.icon className="h-5 w-5 md:h-6 md:w-6" />
+                    </div>
+                    <div className="flex items-center text-xs md:text-sm text-primary group-hover:translate-x-1 transition-transform duration-300">
+                      <ArrowRight className="h-4 w-4" />
+                    </div>
                   </div>
+                  {/* Text content */}
                   <div className="flex-1">
                     <CardTitle className="text-base md:text-lg group-hover:text-primary transition-colors text-gray-900 mb-1">
                       {tool.title}
@@ -233,9 +240,6 @@ const AllToolsGrid = () => (
                     <CardDescription className="text-sm text-gray-600 leading-tight">
                       {tool.description}
                     </CardDescription>
-                  </div>
-                  <div className="flex items-center text-xs md:text-sm text-primary group-hover:translate-x-1 transition-transform duration-300 flex-shrink-0">
-                    <ArrowRight className="h-4 w-4" />
                   </div>
                 </div>
               </CardHeader>
@@ -331,14 +335,6 @@ const Home = () => {
       />
       <div className="min-h-screen overflow-x-hidden">
         <HeroSection />
-      <div className="bg-gray-100 rounded-2xl mx-4 my-6 shadow-xl p-4 md:p-6 overflow-hidden">
-        <div className="w-full max-w-sm mx-auto md:max-w-4xl overflow-hidden">
-          <RSSFeed 
-            feedUrl="https://rss.cnn.com/rss/money_news_international.rss"
-            title="Latest Financial News"
-          />
-        </div>
-      </div>
         <AllToolsGrid />
         
         {/* AdSense Ad Unit */}
@@ -357,7 +353,17 @@ const Home = () => {
         
         <SocialProofSection />
         <CTASection />
-        
+
+        {/* === RSS Feed section moved here === */}
+        <div className="bg-gray-100 rounded-2xl mx-4 my-6 shadow-xl p-4 md:p-6 overflow-hidden">
+          <div className="w-full max-w-sm mx-auto md:max-w-4xl overflow-hidden">
+            <RSSFeed 
+              feedUrl="https://rss.cnn.com/rss/money_news_international.rss"
+              title="Latest Financial News"
+            />
+          </div>
+        </div>
+
         {/* Badge Display Section - Bottom */}
         <div className="w-full max-w-sm mx-auto md:max-w-4xl px-4 py-6 md:py-8">
           <BadgeDisplay />
