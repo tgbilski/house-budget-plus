@@ -52,11 +52,12 @@ export function AppSidebar() {
       className={cn(
         // Mobile: standard sidebar behavior
         isMobile ? "relative" : 
-        // Desktop: floating sidebar positioned fixed
-        "fixed left-4 top-1/2 -translate-y-1/2 z-40 shadow-2xl rounded-xl border backdrop-blur-sm bg-background/95",
+        // Desktop: floating sidebar positioned fixed with top margin below header
+        "fixed left-4 z-40 shadow-2xl rounded-xl border backdrop-blur-sm bg-background/95",
         // Width based on open state - desktop only
         !isMobile && (open ? "w-64" : "w-14")
       )}
+      style={!isMobile ? { top: '80px' } : undefined}
       variant={isMobile ? "sidebar" : "floating"}
     >
       <SidebarContent className={cn(!isMobile && "p-2")}>
