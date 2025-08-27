@@ -38,12 +38,12 @@ export default function Engagement() {
         <Breadcrumbs />
         
         {/* Hero Section with Light Background */}
-        <div className="relative bg-white text-gray-900 py-16 mb-8 rounded-2xl mx-4 mt-4 shadow-xl">
+        <div className="relative bg-white text-gray-900 py-8 mb-8 rounded-2xl mx-4 mt-4 shadow-xl">
           <div className="container mx-auto px-4 relative z-10">
             <div className="text-center">
-              <Trophy className="h-16 w-16 mx-auto mb-6 text-primary" />
-              <h1 className="text-2xl md:text-4xl font-bold mb-3 md:mb-4 text-gray-900">Engagement Hub</h1>
-              <p className="text-base md:text-xl text-gray-600 mb-4 md:mb-6 max-w-2xl mx-auto">
+              <Trophy className="h-10 w-10 mx-auto mb-4 text-primary" />
+              <h1 className="text-xl md:text-2xl font-bold mb-2 text-gray-900">Engagement Hub</h1>
+              <p className="text-sm md:text-base text-gray-600 mb-4 max-w-2xl mx-auto">
                 Build lasting financial habits with daily check-ins, exciting challenges, and personalized insights
               </p>
             </div>

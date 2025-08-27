@@ -440,12 +440,12 @@ const SavingsGoals = () => {
       />
       
       {/* Hero Section with Light Background */}
-      <div className="relative bg-white text-gray-900 py-8 md:py-16 overflow-x-hidden rounded-2xl mx-4 mt-4 mb-6 shadow-xl">
+      <div className="relative bg-white text-gray-900 py-8 overflow-x-hidden rounded-2xl mx-4 mt-4 mb-6 shadow-xl">
         <div className="w-full max-w-sm sm:max-w-md md:max-w-4xl mx-auto px-4 relative z-10">
           <div className="text-center">
-            <Target className="h-12 w-12 md:h-16 md:w-16 mx-auto mb-4 md:mb-6 text-primary" />
-            <h1 className="text-2xl md:text-4xl font-bold mb-3 md:mb-4 text-gray-900">Savings Tracker</h1>
-            <p className="text-base md:text-xl text-gray-600 mb-4 md:mb-6">Track your monthly savings progress with an easy-to-use yearly table</p>
+            <Target className="h-10 w-10 mx-auto mb-4 text-primary" />
+            <h1 className="text-xl md:text-2xl font-bold mb-2 text-gray-900">Savings Tracker</h1>
+            <p className="text-sm md:text-base text-gray-600 mb-4">Track your monthly savings progress with an easy-to-use yearly table</p>
           </div>
         </div>
       </div>

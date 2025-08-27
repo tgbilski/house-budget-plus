@@ -110,18 +110,18 @@ const MonthlyBudget: React.FC = () => {
         canonical="https://www.housebudgetcalculator.com/budget"
       />
       {/* Hero Section with Light Background */}
-      <div className="relative bg-white text-gray-900 py-16 mb-8 rounded-2xl mx-4 mt-4 shadow-xl">
+      <div className="relative bg-white text-gray-900 py-8 mb-8 rounded-2xl mx-4 mt-4 shadow-xl">
           <div className="w-full max-w-6xl mx-auto px-4 relative z-10">
             <div className="text-center">
-              <div className="flex items-center justify-center gap-4 mb-6">
+              <div className="flex items-center justify-center gap-4 mb-4">
                 <img 
                   src="/lovable-uploads/ed809955-ef71-4d81-b072-945082f4380a.png" 
                   alt="Calculator mascot" 
-                  className="w-16 h-16 object-contain"
+                  className="w-10 h-10 object-contain"
                 />
               </div>
-              <h1 className="text-2xl md:text-4xl font-bold mb-3 md:mb-4 text-gray-900">Monthly Budget Calculator</h1>
-              <p className="text-base md:text-xl text-gray-600 mb-4 md:mb-6 max-w-2xl mx-auto">
+              <h1 className="text-xl md:text-2xl font-bold mb-2 text-gray-900">Monthly Budget Calculator</h1>
+              <p className="text-sm md:text-base text-gray-600 mb-4 max-w-2xl mx-auto">
                 Plan your household finances with precision
               </p>
             </div>

@@ -82,19 +82,19 @@ export default function AIInsights() {
       />
       
       {/* Hero Section with Light Background */}
-      <div className="relative bg-white text-gray-900 py-16 rounded-2xl mx-4 mt-4 mb-6 shadow-xl">
+      <div className="relative bg-white text-gray-900 py-8 rounded-2xl mx-4 mt-4 mb-6 shadow-xl">
         <div className="container mx-auto px-4 relative z-10">
           <div className="text-center">
-            <div className="flex items-center justify-center gap-4 mb-6">
-              <svg className="h-16 w-16 text-primary" fill="currentColor" viewBox="0 0 24 24">
+            <div className="flex items-center justify-center gap-3 mb-4">
+              <svg className="h-10 w-10 text-primary" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
               </svg>
-              <svg className="h-16 w-16 text-yellow-400" fill="currentColor" viewBox="0 0 24 24">
+              <svg className="h-10 w-10 text-yellow-400" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/>
               </svg>
             </div>
-            <h1 className="text-2xl md:text-4xl font-bold mb-3 md:mb-4 text-gray-900">AI Financial Insights</h1>
-            <p className="text-base md:text-xl text-gray-600 mb-4 md:mb-6 max-w-2xl mx-auto">
+            <h1 className="text-xl md:text-2xl font-bold mb-2 text-gray-900">AI Financial Insights</h1>
+            <p className="text-sm md:text-base text-gray-600 mb-4 max-w-2xl mx-auto">
               Get personalized financial advice powered by artificial intelligence
             </p>
           </div>
