@@ -49,7 +49,7 @@ export function AppSidebar() {
 
   return (
     <Sidebar 
-      collapsible="icon"
+      collapsible={isMobile ? "offcanvas" : "icon"}
       className={cn(
         // Mobile: standard sidebar behavior
         isMobile ? "relative" : 
