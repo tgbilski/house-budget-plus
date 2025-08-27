@@ -71,8 +71,8 @@ const ScrollIndicator = () => (
 // Consolidated Hero and Social Proof section
 const HeroSectionContent = () => (
   <section className="relative py-8 md:py-12 px-4 rounded-2xl mx-4 shadow-xl overflow-visible bg-white mt-16 md:mt-20">
-    {/* Mascot Image - Absolutely positioned just above the stars */}
-    <div className="absolute top-[calc(-50px-1rem)] left-1/2 -translate-x-1/2 z-20"> {/* Adjust -50px as mascot height / 2 + some offset */}
+    {/* Mascot Image - Absolutely positioned just above the title */}
+    <div className="absolute top-[calc(-50px-10px)] left-1/2 -translate-x-1/2 z-20"> {/* Adjusted for 10px buffer */}
       <img
         src="/lovable-uploads/ed809955-ef71-4d81-b072-945082f4380a.png"
         alt="Budget Calculator mascot"
@@ -83,21 +83,15 @@ const HeroSectionContent = () => (
     {/* Background house image */}
     <div className="absolute inset-0">
       <img
-        src="/lovable-uploads/d46481b3-e5b7-454b-b44e-4e96eb93a00f.png" // Corrected image path
+        src="/lovable-uploads/d46481b3-e5b7-454b-b44e-4e96eb93a00f.png"
         alt="House background"
         className="w-full h-full object-cover rounded-2xl opacity-30"
       />
     </div>
     
-    <div className="w-full max-w-4xl mx-auto relative z-10 pt-4 md:pt-8"> {/* Adjusted padding to accommodate mascot */}
+    <div className="w-full max-w-4xl mx-auto relative z-10 pt-4 md:pt-8"> {/* Adjusted padding */}
       <div className="text-center mb-10">
-        <div className="flex items-center justify-center gap-1 mb-4">
-          <Star className="h-4 w-4 md:h-5 md:w-5 fill-yellow-400 text-yellow-400" />
-          <Star className="h-4 w-4 md:h-5 md:w-5 fill-yellow-400 text-yellow-400" />
-          <Star className="h-4 w-4 md:h-5 md:w-5 fill-yellow-400 text-yellow-400" />
-          <Star className="h-4 w-4 md:h-5 md:w-5 fill-yellow-400 text-yellow-400" />
-          <Star className="h-4 w-4 md:h-5 md:w-5 fill-yellow-400 text-yellow-400" />
-        </div>
+        {/* Stars removed */}
         <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 text-gray-900 leading-tight">
           Own Your <span className="text-primary">House Budget</span>
         </h1>
