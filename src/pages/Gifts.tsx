@@ -109,7 +109,8 @@ export function Gifts() {
             {/* Show new card form */}
             {showNewCard && (
               <GiftCard 
-                onDelete={() => {
+                onDelete={() => setShowNewCard(false)}
+                onSave={() => {
                   setShowNewCard(false);
                   loadGiftLists();
                 }}

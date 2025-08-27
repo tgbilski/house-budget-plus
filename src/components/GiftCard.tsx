@@ -26,9 +26,10 @@ interface GiftItemData {
 interface GiftCardProps {
   initialData?: GiftListData;
   onDelete?: (id: string) => void;
+  onSave?: () => void;
 }
 
-export function GiftCard({ initialData, onDelete }: GiftCardProps) {
+export function GiftCard({ initialData, onDelete, onSave }: GiftCardProps) {
   const { user } = useAuth();
   const { toast } = useToast();
   const [isEditingTitle, setIsEditingTitle] = useState(!initialData?.id);
@@ -129,6 +130,7 @@ export function GiftCard({ initialData, onDelete }: GiftCardProps) {
       }
 
       setIsEditingTitle(false);
+      onSave?.();
       toast({
         title: "List saved",
         description: "Your gift list has been saved successfully.",
