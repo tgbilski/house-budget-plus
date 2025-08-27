@@ -496,7 +496,7 @@ const SavingsGoals = () => {
                         variant={currentGoalId === goal.id ? "default" : "outline"}
                         size="sm"
                         onClick={() => selectGoal(goal.id)}
-                        className="pr-8"
+                        className={`pr-8 ${currentGoalId === goal.id ? 'border-2 border-white' : ''}`}
                       >
                         {goal.title}
                       </Button>

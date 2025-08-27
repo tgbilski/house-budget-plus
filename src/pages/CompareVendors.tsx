@@ -809,7 +809,7 @@ const CompareVendors: React.FC = () => {
                             setSelectedProject(project);
                             setIsNewProject(false);
                           }}
-                          className="pr-8"
+                          className={`pr-8 ${selectedProject?.id === project.id ? 'border-2 border-white' : ''}`}
                         >
                           {project.title}
                         </Button>

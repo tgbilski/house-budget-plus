@@ -741,7 +741,7 @@ const Vacation: React.FC = () => {
                           variant={selectedProject?.id === project.id ? "default" : "outline"}
                           size="sm"
                           onClick={() => setSelectedProject(project)}
-                          className="pr-8"
+                          className={`pr-8 ${selectedProject?.id === project.id ? 'border-2 border-white' : ''}`}
                         >
                           {project.title}
                         </Button>
