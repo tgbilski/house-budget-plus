@@ -89,9 +89,9 @@ const HeroSectionContent = () => (
       />
     </div>
     
-    <div className="w-full max-w-4xl mx-auto relative z-10 pt-4 md:pt-8"> {/* Adjusted padding */}
+    {/* Increased padding-top to ensure text starts visually below the mascot */}
+    <div className="w-full max-w-4xl mx-auto relative z-10 pt-24 md:pt-28">
       <div className="text-center mb-10">
-        {/* Stars removed */}
         <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 text-gray-900 leading-tight">
           Own Your <span className="text-primary">House Budget</span>
         </h1>
@@ -132,7 +132,7 @@ const HeroSectionContent = () => (
             Smart recommendations that learn from your spending patterns and help you save more.
           </p>
         </div>
-        <div className="space-y-3 md:space-y-4 animate-fade-in px-2" style={{ animationDelay: '0.6s' }}>
+        <div className="space-y-3 md:space-y-4 animate-fade-in px-2" style={{ animationDelay: '0.6s' }>
           <div className="w-14 h-14 md:w-16 md:h-16 bg-primary/10 text-primary rounded-full flex items-center justify-center mx-auto hover:scale-110 transition-transform duration-300 hover:bg-primary/20">
             <TrendingUp className="h-7 w-7 md:h-8 md:w-8" />
           </div>
@@ -189,6 +189,9 @@ const AllToolsGrid = () => (
           </Link>
         ))}
       </div>
+      <div className="w-full max-w-full overflow-hidden mt-8"> {/* Added margin-top here too if needed */}
+        {/* This is where the ad slot or promo card will go */}
+      </div>
     </div>
   </section>
 );
@@ -204,7 +207,7 @@ const CTASection = () => (
       </p>
       <div className="flex flex-col sm:flex-row gap-3 md:gap-4 justify-center mb-6 md:mb-8 max-w-md mx-auto">
         <Button asChild size="lg" className="w-full sm:w-auto text-base px-6 py-3">
-          <Link to="/auth"> {/* Corrected link to /auth */}
+          <Link to="/auth">
             <span className="block sm:inline">Sign up for free</span>
             <ArrowRight className="ml-2 h-4 w-4" />
           </Link>
@@ -243,16 +246,12 @@ const Home = () => {
           <ScrollIndicator />
           <AllToolsGrid />
           
-          {/* AdSense Ad Unit */}
+          {/* AdSense Ad Unit Placeholder - Choose an option from previous discussion */}
           <div className="py-6 md:py-8 overflow-hidden">
             <div className="w-full max-w-sm mx-auto px-4">
               <div className="max-w-full overflow-hidden">
-                <AdSense 
-                  adSlot="5669663372" 
-                  adFormat="fluid"
-                  style={{ display: 'block', width: '100%', maxWidth: '100%' }}
-                  responsive={true}
-                />
+                {/* For now, let's use the PromoCard as discussed, or replace with NewsletterCard */}
+                <PromoCard /> {/* Example: Using the PromoCard */}
               </div>
             </div>
           </div>
@@ -283,3 +282,19 @@ const Home = () => {
 };
 
 export default Home;
+
+// Temporary PromoCard component for the AdSense placeholder
+const PromoCard = () => (
+  <Card className="flex flex-col items-center justify-center p-6 text-center animate-fade-in transition-all duration-300 transform hover:scale-105">
+    <div className="flex items-center justify-center h-16 w-16 mb-4 bg-orange-500/10 text-orange-600 rounded-full">
+      <Brain className="h-8 w-8" />
+    </div>
+    <CardTitle className="text-xl font-bold mb-2">Unlock Smart Financial Insights</CardTitle>
+    <CardDescription className="text-gray-600 mb-4">
+      Get instant, AI-powered recommendations to help you save more every month.
+    </CardDescription>
+    <Button asChild>
+      <Link to="/ai-insights">Explore AI Insights</Link>
+    </Button>
+  </Card>
+);
