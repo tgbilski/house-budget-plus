@@ -193,31 +193,33 @@ export function GiftCard({ initialData, onDelete }: GiftCardProps) {
   const isUnderBudget = budgetTarget > 0 && totalSpent <= budgetTarget;
 
   return (
-    <Card className="w-full bg-gray-900 dark:bg-gray-800 border-gray-700 text-white">
+    <Card className="w-full bg-white border-gray-200 text-gray-900 shadow-lg hover:shadow-xl transition-all duration-300">
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
         {isEditingTitle ? (
           <div className="flex items-center gap-2 flex-1">
             <Input
               value={listData.list_title}
               onChange={(e) => handleTitleChange(e.target.value)}
-              className="text-lg font-semibold bg-gray-800 border-gray-600 text-white"
+              className="text-lg font-semibold bg-white border-gray-300 text-gray-900"
               placeholder="Gift list title"
             />
             <Button
               size="sm"
               variant="ghost"
               onClick={saveListTitle}
+              className="hover:bg-gray-100"
             >
               <Check className="h-4 w-4" />
             </Button>
           </div>
         ) : (
           <div className="flex items-center gap-2 flex-1">
-            <CardTitle className="text-lg">{listData.list_title}</CardTitle>
+            <CardTitle className="text-lg text-gray-900">{listData.list_title}</CardTitle>
             <Button
               size="sm"
               variant="ghost"
               onClick={() => setIsEditingTitle(true)}
+              className="hover:bg-gray-100"
             >
               <Edit2 className="h-4 w-4" />
             </Button>
@@ -229,7 +231,7 @@ export function GiftCard({ initialData, onDelete }: GiftCardProps) {
             size="sm"
             variant="ghost"
             onClick={handleDeleteList}
-            className="text-destructive hover:text-destructive"
+            className="text-destructive hover:text-destructive hover:bg-red-50"
           >
             <Trash2 className="h-4 w-4" />
           </Button>
@@ -239,15 +241,15 @@ export function GiftCard({ initialData, onDelete }: GiftCardProps) {
       <CardContent className="space-y-4">
         {/* Budget tracking section */}
         {listData.id && (
-          <div className="border border-gray-600 rounded-lg p-4 bg-gray-800/50 space-y-3">
+          <div className="border border-gray-200 rounded-lg p-4 bg-gray-50 space-y-3">
             <div className="flex items-center gap-2">
-              <DollarSign className="h-4 w-4 text-gray-300" />
-              <Label className="text-sm font-medium text-gray-300">Budget Tracking</Label>
+              <DollarSign className="h-4 w-4 text-gray-600" />
+              <Label className="text-sm font-medium text-gray-700">Budget Tracking</Label>
             </div>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <Label htmlFor="budget-target" className="text-xs text-gray-400">
+                <Label htmlFor="budget-target" className="text-xs text-gray-600">
                   Target Budget
                 </Label>
                 <Input
@@ -264,24 +266,24 @@ export function GiftCard({ initialData, onDelete }: GiftCardProps) {
                     saveBudgetTarget(value);
                   }}
                   placeholder="0.00"
-                  className="h-8 bg-gray-700 border-gray-600 text-white"
+                  className="h-8 bg-white border-gray-300 text-gray-900"
                 />
               </div>
               
               <div>
-                <Label className="text-xs text-gray-400">Current Total</Label>
+                <Label className="text-xs text-gray-600">Current Total</Label>
                 <div 
                   className={`text-lg font-semibold p-2 rounded ${
                     isOverBudget 
-                      ? 'text-red-400' 
+                      ? 'text-red-600 bg-red-50' 
                       : isUnderBudget 
-                        ? 'text-green-400' 
-                        : 'text-white'
+                        ? 'text-green-600 bg-green-50' 
+                        : 'text-gray-900 bg-gray-100'
                   }`}
                 >
                   ${totalSpent.toFixed(2)}
                   {budgetTarget > 0 && (
-                    <span className="text-xs text-gray-400 ml-2">
+                    <span className="text-xs text-gray-500 ml-2">
                       / ${budgetTarget.toFixed(2)}
                     </span>
                   )}
@@ -317,8 +319,8 @@ export function GiftCard({ initialData, onDelete }: GiftCardProps) {
         {listData.id && !showNewItem && (
           <Button
             onClick={() => setShowNewItem(true)}
-            variant="secondary"
-            className="w-full"
+            variant="outline"
+            className="w-full border-gray-300 text-gray-700 hover:bg-gray-50"
           >
             <Plus className="h-4 w-4 mr-2" />
             Add Gift Idea

@@ -134,24 +134,24 @@ export function GiftItem({ item, listId, onSave, onDelete, isNew = false }: Gift
 
   if (isEditing) {
     return (
-      <div className="border border-gray-600 rounded-lg p-4 space-y-3 bg-gray-800/50">
+      <div className="border border-gray-200 rounded-lg p-4 space-y-3 bg-gray-50">
         <div className="flex justify-between items-start">
           <div className="flex-1 space-y-3">
             <div>
-              <Label htmlFor={`gift-idea-${itemData.id || 'new'}`} className="text-gray-300">Gift Idea</Label>
+              <Label htmlFor={`gift-idea-${itemData.id || 'new'}`} className="text-gray-700">Gift Idea</Label>
               <Textarea
                 id={`gift-idea-${itemData.id || 'new'}`}
                 value={itemData.gift_idea}
                 onChange={(e) => handleInputChange('gift_idea', e.target.value)}
                 placeholder="Enter a gift idea..."
                 rows={2}
-                className="text-white bg-gray-700 border-gray-600"
+                className="text-gray-900 bg-white border-gray-300"
               />
             </div>
 
             <div className="space-y-3">
               <div>
-                <Label htmlFor={`price-${itemData.id || 'new'}`} className="text-gray-300">Price</Label>
+                <Label htmlFor={`price-${itemData.id || 'new'}`} className="text-gray-700">Price</Label>
                 <Input
                   id={`price-${itemData.id || 'new'}`}
                   type="number"
@@ -159,26 +159,26 @@ export function GiftItem({ item, listId, onSave, onDelete, isNew = false }: Gift
                   value={itemData.price}
                   onChange={(e) => handleInputChange('price', e.target.value)}
                   placeholder="0.00"
-                  className="w-full text-white bg-gray-700 border-gray-600"
+                  className="w-full text-gray-900 bg-white border-gray-300"
                 />
               </div>
 
               <div>
-                <Label htmlFor={`url-${itemData.id || 'new'}`} className="text-gray-300">URL (optional)</Label>
+                <Label htmlFor={`url-${itemData.id || 'new'}`} className="text-gray-700">URL (optional)</Label>
                 <div className="flex gap-2">
                   <Input
                     id={`url-${itemData.id || 'new'}`}
                     value={itemData.url}
                     onChange={(e) => handleInputChange('url', e.target.value)}
                     placeholder="https://example.com"
-                    className="flex-1 min-w-0 text-white bg-gray-700 border-gray-600"
+                    className="flex-1 min-w-0 text-gray-900 bg-white border-gray-300"
                   />
                   {itemData.url && (
                     <Button
                       size="sm"
                       variant="outline"
                       onClick={openUrl}
-                      className="shrink-0 text-slate-800 hover:text-slate-900"
+                      className="shrink-0 text-gray-700 border-gray-300 hover:bg-gray-50"
                     >
                       <ExternalLink className="h-4 w-4" />
                     </Button>
@@ -193,7 +193,7 @@ export function GiftItem({ item, listId, onSave, onDelete, isNew = false }: Gift
               size="sm"
               variant="ghost"
               onClick={handleDelete}
-              className="text-destructive hover:text-destructive ml-2"
+              className="text-destructive hover:text-destructive hover:bg-red-50 ml-2"
             >
               <Trash2 className="h-4 w-4" />
             </Button>
@@ -209,10 +209,10 @@ export function GiftItem({ item, listId, onSave, onDelete, isNew = false }: Gift
             onClick={() => setIsEditing(false)} 
             variant="outline" 
             size="sm"
-            className="text-slate-800 border-slate-300 hover:text-slate-900 hover:border-slate-400"
+            className="text-gray-700 border-gray-300 hover:bg-gray-50"
           >
-              Cancel
-            </Button>
+            Cancel
+          </Button>
           )}
         </div>
       </div>
@@ -222,25 +222,25 @@ export function GiftItem({ item, listId, onSave, onDelete, isNew = false }: Gift
   // Summary view
   return (
     <div 
-      className={`border border-gray-600 rounded-lg p-3 bg-gray-800/50 flex items-center justify-between group transition-colors ${
-        itemData.url ? 'cursor-pointer hover:bg-gray-700/50' : ''
+      className={`border border-gray-200 rounded-lg p-3 bg-white flex items-center justify-between group transition-colors shadow-sm ${
+        itemData.url ? 'cursor-pointer hover:bg-gray-50' : ''
       }`}
       onClick={handleCardClick}
     >
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-3">
           <div className="flex-1 min-w-0">
-            <h4 className="font-medium text-sm truncate text-white">
+            <h4 className="font-medium text-sm truncate text-gray-900">
               {itemData.gift_idea || 'Untitled Gift'}
             </h4>
             <div className="flex items-center gap-2 mt-1">
               {itemData.price && (
-                <span className="text-sm font-semibold text-green-600 dark:text-green-400">
+                <span className="text-sm font-semibold text-green-600">
                   ${Number(itemData.price).toFixed(2)}
                 </span>
               )}
               {itemData.url && (
-                <div className="flex items-center gap-1 text-xs text-gray-300">
+                <div className="flex items-center gap-1 text-xs text-gray-500">
                   <ExternalLink className="h-3 w-3" />
                   <span className="truncate max-w-[100px]">
                     {itemData.url.replace(/^https?:\/\//, '')}
@@ -260,7 +260,7 @@ export function GiftItem({ item, listId, onSave, onDelete, isNew = false }: Gift
             e.stopPropagation();
             setIsEditing(true);
           }}
-          className="h-8 w-8 p-0"
+          className="h-8 w-8 p-0 hover:bg-gray-100"
         >
           <Edit2 className="h-4 w-4" />
         </Button>
@@ -272,7 +272,7 @@ export function GiftItem({ item, listId, onSave, onDelete, isNew = false }: Gift
               e.stopPropagation();
               handleDelete();
             }}
-            className="h-8 w-8 p-0 text-destructive hover:text-destructive"
+            className="h-8 w-8 p-0 text-destructive hover:text-destructive hover:bg-red-50"
           >
             <Trash2 className="h-4 w-4" />
           </Button>
