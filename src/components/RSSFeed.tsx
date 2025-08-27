@@ -229,7 +229,7 @@ export const RSSFeed: React.FC<RSSFeedProps> = ({
               <div className="overflow-hidden">
                 {articles.length > 0 && (
                   <Card className="hover:shadow-lg transition-all duration-300 cursor-pointer group max-w-sm mx-auto bg-white">
-                    <div className="relative h-24 md:h-32 overflow-hidden">
+                    <div className="relative h-16 md:h-20 overflow-hidden">
                       <img 
                         src={financialImages[currentIndex % financialImages.length]} 
                         alt={`Financial news illustration ${currentIndex + 1}`}
@@ -316,8 +316,8 @@ export const RSSFeed: React.FC<RSSFeedProps> = ({
               <div className="overflow-x-auto pb-4">
                 <div className="flex gap-4 min-w-max">
                   {articles.slice(0, 6).map((article, index) => (
-                    <Card key={index} className="hover:shadow-lg transition-all duration-300 cursor-pointer group w-80 flex-shrink-0 bg-white">
-                      <div className="relative h-32 overflow-hidden">
+                    <Card key={index} className="hover:shadow-lg transition-all duration-300 cursor-pointer group w-64 flex-shrink-0 bg-white">
+                      <div className="relative h-20 overflow-hidden">
                         <img 
                           src={financialImages[index % financialImages.length]} 
                           alt={`Financial news illustration ${index + 1}`}
