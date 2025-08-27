@@ -110,7 +110,7 @@ const MonthlyBudget: React.FC = () => {
         canonical="https://www.housebudgetcalculator.com/budget"
       />
       {/* Hero Section with Light Background */}
-      <div className="relative bg-white text-gray-900 py-8 mb-8 rounded-2xl mx-4 mt-4 shadow-xl">
+      <div className="relative bg-white text-gray-900 py-8 rounded-2xl mx-4 mt-4 mb-6 shadow-xl">
           <div className="w-full max-w-6xl mx-auto px-4 relative z-10">
             <div className="text-center">
               <div className="flex items-center justify-center gap-4 mb-4">
@@ -187,29 +187,27 @@ const MonthlyBudget: React.FC = () => {
           </div>
         </div>
 
-        {/* Dark Section with Pin Stripes - Matching Home Page */}
-        <section className="py-16 px-4 bg-slate-900 text-white relative" style={{
-          backgroundImage: `repeating-linear-gradient(45deg, transparent, transparent 40px, rgba(255,255,255,0.04) 40px, rgba(255,255,255,0.04) 42px)`
-        }}>
+        {/* Light Section - Matching Other Pages */}
+        <section className="py-16 px-4 bg-white text-gray-900 relative rounded-2xl mx-4 shadow-xl">
           <div className="w-full max-w-4xl mx-auto text-center relative z-10 px-4">
-            <h2 className="text-2xl md:text-3xl font-bold mb-6 text-white">
+            <h2 className="text-2xl md:text-3xl font-bold mb-6 text-gray-900">
               Take Control of Your Finances
             </h2>
-            <p className="text-lg mb-8 opacity-90">
+            <p className="text-lg mb-8 text-gray-600">
               Use our comprehensive budget calculator to plan your financial future and achieve your goals
             </p>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-              <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6 border border-white/20">
-                <h3 className="font-semibold mb-2 text-white">Track Every Dollar</h3>
-                <p className="text-sm opacity-90">Monitor income and expenses to see exactly where your money goes each month</p>
+              <div className="bg-gray-50 rounded-lg p-6 border border-gray-200">
+                <h3 className="font-semibold mb-2 text-gray-900">Track Every Dollar</h3>
+                <p className="text-sm text-gray-600">Monitor income and expenses to see exactly where your money goes each month</p>
               </div>
-              <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6 border border-white/20">
-                <h3 className="font-semibold mb-2 text-white">Plan for the Future</h3>
-                <p className="text-sm opacity-90">Build emergency funds and save for major purchases with clear financial planning</p>
+              <div className="bg-gray-50 rounded-lg p-6 border border-gray-200">
+                <h3 className="font-semibold mb-2 text-gray-900">Plan for the Future</h3>
+                <p className="text-sm text-gray-600">Build emergency funds and save for major purchases with clear financial planning</p>
               </div>
-              <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6 border border-white/20">
-                <h3 className="font-semibold mb-2 text-white">Multiple Scenarios</h3>
-                <p className="text-sm opacity-90">Create separate budgets for different household members or financial situations</p>
+              <div className="bg-gray-50 rounded-lg p-6 border border-gray-200">
+                <h3 className="font-semibold mb-2 text-gray-900">Multiple Scenarios</h3>
+                <p className="text-sm text-gray-600">Create separate budgets for different household members or financial situations</p>
               </div>
             </div>
           </div>
