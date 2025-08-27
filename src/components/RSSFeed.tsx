@@ -311,54 +311,52 @@ export const RSSFeed: React.FC<RSSFeedProps> = ({
               )}
             </div>
 
-            {/* Desktop: Horizontal Scroll Layout */}
-            <div className="hidden md:block max-w-full">
-              <div className="overflow-x-auto pb-4 scrollbar-hide max-w-[calc(100vw-2rem)] md:max-w-[800px]">
-                <div className="flex gap-3" style={{ width: 'max-content' }}>
-                  {articles.slice(0, 6).map((article, index) => (
-                    <Card key={index} className="hover:shadow-lg transition-all duration-300 cursor-pointer group w-64 flex-shrink-0 bg-white">
-                      <div className="relative h-24 overflow-hidden">
-                        <img 
-                          src={financialImages[index % financialImages.length]} 
-                          alt={`Financial news illustration ${index + 1}`}
-                          className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
-                        />
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
+            {/* Desktop: Responsive Grid Layout */}
+            <div className="hidden md:block">
+              <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4">
+                {articles.slice(0, 6).map((article, index) => (
+                  <Card key={index} className="hover:shadow-lg transition-all duration-300 cursor-pointer group bg-white h-full">
+                    <div className="relative h-24 overflow-hidden">
+                      <img 
+                        src={financialImages[index % financialImages.length]} 
+                        alt={`Financial news illustration ${index + 1}`}
+                        className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
+                    </div>
+                    <CardHeader className="pb-2 p-4">
+                      <div className="flex items-center gap-1 text-xs text-gray-600 mb-2">
+                        <Calendar className="h-3 w-3" />
+                        <span className="text-xs">{formatDate(article.pubDate)}</span>
+                        <span>•</span>
+                        <span className="truncate text-xs">{article.source}</span>
                       </div>
-                      <CardHeader className="pb-2 p-4">
-                        <div className="flex items-center gap-1 text-xs text-gray-600 mb-2">
-                          <Calendar className="h-3 w-3" />
-                          <span className="text-xs">{formatDate(article.pubDate)}</span>
-                          <span>•</span>
-                          <span className="truncate text-xs">{article.source}</span>
-                        </div>
-                        <CardTitle className="text-sm line-clamp-2 group-hover:text-primary transition-colors leading-tight text-gray-900">
-                          {article.title}
-                        </CardTitle>
-                      </CardHeader>
-                      <CardContent className="pt-0 p-4">
-                        <CardDescription className="text-xs line-clamp-2 mb-3 text-gray-600">
-                          {truncateDescription(article.description, 80)}
-                        </CardDescription>
-                        <Button 
-                          variant="outline" 
-                          size="sm" 
-                          className="w-full text-xs"
-                          asChild
+                      <CardTitle className="text-sm line-clamp-2 group-hover:text-primary transition-colors leading-tight text-gray-900">
+                        {article.title}
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent className="pt-0 p-4 mt-auto">
+                      <CardDescription className="text-xs line-clamp-2 mb-3 text-gray-600">
+                        {truncateDescription(article.description, 80)}
+                      </CardDescription>
+                      <Button 
+                        variant="outline" 
+                        size="sm" 
+                        className="w-full text-xs"
+                        asChild
+                      >
+                        <a 
+                          href={article.link} 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          className="flex items-center justify-center gap-1"
                         >
-                          <a 
-                            href={article.link} 
-                            target="_blank" 
-                            rel="noopener noreferrer"
-                            className="flex items-center justify-center gap-1"
-                          >
-                            Read More <ExternalLink className="h-3 w-3" />
-                          </a>
-                        </Button>
-                      </CardContent>
-                    </Card>
-                  ))}
-                </div>
+                          Read More <ExternalLink className="h-3 w-3" />
+                        </a>
+                      </Button>
+                    </CardContent>
+                  </Card>
+                ))}
               </div>
             </div>
           </>
