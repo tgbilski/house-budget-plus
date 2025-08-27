@@ -74,7 +74,7 @@ export default function AIInsights() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background to-muted">
+    <div className="min-h-screen">
       <SEO
         title="AI Budget Insights - Personal Financial Advisor"
         description="Get personalized financial advice using AI. Analyze your budget data and receive expert insights to optimize your spending and savings."
