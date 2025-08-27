@@ -63,7 +63,7 @@ const toolsData = [
 ];
 
 const HeroSection = () => (
-  <section className="py-8 md:py-16 px-4 bg-gradient-to-br from-primary/5 via-secondary/10 to-accent/5 overflow-x-hidden">
+  <section className="py-8 md:py-16 px-4 bg-white rounded-2xl mx-4 my-6 shadow-xl overflow-x-hidden">
     <div className="w-full max-w-sm mx-auto">
       <div className="text-center">
         <div className="flex flex-col items-center mb-6">
@@ -85,7 +85,7 @@ const HeroSection = () => (
           Own Your <span className="text-primary">House Budget</span>
         </h1>
         
-        <p className="text-base md:text-lg text-muted-foreground mb-6 md:mb-8 leading-relaxed">
+        <p className="text-base md:text-lg text-gray-600 mb-6 md:mb-8 leading-relaxed">
           Smart financial planning tools with AI insights. Track expenses, compare vendors, and make informed decisions that save you money.
         </p>
         
@@ -102,7 +102,7 @@ const HeroSection = () => (
           </Button>
         </div>
         
-        <div className="flex flex-col gap-3 text-sm text-muted-foreground">
+        <div className="flex flex-col gap-3 text-sm text-gray-600">
           <div className="flex items-center justify-center gap-2">
             <TrendingUp className="h-4 w-4 text-green-600 flex-shrink-0" />
             <span>100% Free Tools</span>
@@ -121,10 +121,10 @@ const FeaturedToolsSection = () => {
   const featuredTools = toolsData.filter(tool => tool.featured);
   
   return (
-    <section className="py-8 md:py-12 px-4 bg-slate-900 text-white relative overflow-x-hidden">
+    <section className="py-8 md:py-12 px-4 bg-white rounded-2xl mx-4 my-6 shadow-xl relative overflow-x-hidden">
       <div className="w-full max-w-sm mx-auto">
         <div className="text-center mb-6 md:mb-8">
-          <h2 className="text-xl md:text-2xl lg:text-3xl font-bold mb-3 text-white">
+          <h2 className="text-xl md:text-2xl lg:text-3xl font-bold mb-3 text-gray-900">
             Start Saving Money Today
           </h2>
         </div>
@@ -132,7 +132,7 @@ const FeaturedToolsSection = () => {
         <div className="grid grid-cols-1 gap-4 mb-6 md:mb-8 relative z-10">
           {featuredTools.map((tool, index) => (
             <Link to={tool.href} key={index} className="block">
-              <Card className="group relative hover:shadow-xl transition-all duration-500 border-2 hover:border-primary/30 cursor-pointer h-full animate-fade-in hover:scale-105 transform" style={{ animationDelay: `${index * 0.2}s` }}>
+              <Card className="group relative hover:shadow-xl transition-all duration-500 border-2 hover:border-primary/30 cursor-pointer h-full animate-fade-in hover:scale-105 transform bg-white" style={{ animationDelay: `${index * 0.2}s` }}>
                 <div className="absolute top-3 right-3 bg-primary text-primary-foreground text-xs px-2 py-1 rounded-full">
                   POPULAR
                 </div>
@@ -140,13 +140,13 @@ const FeaturedToolsSection = () => {
                   <div className={`w-10 h-10 md:w-12 md:h-12 rounded-xl ${tool.color} flex items-center justify-center mb-2 md:mb-3 group-hover:scale-110 transition-transform duration-300`}>
                     <tool.icon className="h-5 w-5 md:h-6 md:w-6" />
                   </div>
-                  <CardTitle className="text-lg md:text-xl group-hover:text-primary transition-colors mb-2">
+                  <CardTitle className="text-lg md:text-xl group-hover:text-primary transition-colors mb-2 text-gray-900">
                     {tool.title}
                   </CardTitle>
                   <div className="text-sm font-semibold text-green-600 mb-2">
                     ✓ {tool.benefit}
                   </div>
-                  <CardDescription className="text-sm md:text-base leading-relaxed">
+                  <CardDescription className="text-sm md:text-base leading-relaxed text-gray-600">
                     {tool.description}
                   </CardDescription>
                 </CardHeader>
@@ -166,15 +166,13 @@ const FeaturedToolsSection = () => {
 };
 
 const AllToolsGrid = () => (
-  <section className="py-8 md:py-12 px-4 bg-slate-900 text-white relative overflow-hidden" style={{
-    backgroundImage: `repeating-linear-gradient(45deg, transparent, transparent 40px, rgba(255,255,255,0.04) 40px, rgba(255,255,255,0.04) 42px)`
-  }}>
+  <section className="py-8 md:py-12 px-4 bg-white rounded-2xl mx-4 my-6 shadow-xl relative overflow-hidden">
     <div className="w-full max-w-sm mx-auto">
       <div className="text-center mb-6 md:mb-8">
-        <h2 className="text-xl md:text-2xl font-bold mb-3 text-white px-2">
+        <h2 className="text-xl md:text-2xl font-bold mb-3 text-gray-900 px-2">
           Complete Financial Toolkit
         </h2>
-        <p className="text-sm md:text-base text-gray-300 max-w-2xl mx-auto px-2">
+        <p className="text-sm md:text-base text-gray-600 max-w-2xl mx-auto px-2">
           Everything you need to manage your household finances in one place
         </p>
       </div>
@@ -182,17 +180,17 @@ const AllToolsGrid = () => (
         {toolsData.map((tool, index) => (
           <Link to={tool.href} key={index} className="block">
             <Card
-              className={`group relative hover:shadow-lg transition-all duration-500 border-2 hover:border-primary/20 cursor-pointer hover:scale-105 h-full animate-fade-in bg-white/80 backdrop-blur-sm`}
+              className={`group relative hover:shadow-lg transition-all duration-500 border-2 hover:border-primary/20 cursor-pointer hover:scale-105 h-full animate-fade-in bg-white`}
               style={{ animationDelay: `${index * 0.1}s` }}
             >
               <CardHeader className="pb-3 p-4">
                 <div className={`w-10 h-10 md:w-12 md:h-12 rounded-lg ${tool.color} flex items-center justify-center mb-3 md:mb-4 group-hover:scale-110 transition-transform duration-300`}>
                   <tool.icon className="h-5 w-5 md:h-6 md:w-6" />
                 </div>
-                <CardTitle className="text-base md:text-lg group-hover:text-primary transition-colors">
+                <CardTitle className="text-base md:text-lg group-hover:text-primary transition-colors text-gray-900">
                   {tool.title}
                 </CardTitle>
-                <CardDescription className="text-sm">
+                <CardDescription className="text-sm text-gray-600">
                   {tool.description}
                 </CardDescription>
               </CardHeader>
@@ -208,9 +206,9 @@ const AllToolsGrid = () => (
 );
 
 const SocialProofSection = () => (
-  <section className="py-8 md:py-12 px-4 bg-gradient-to-r from-white via-primary/5 to-white relative overflow-hidden">
+  <section className="py-8 md:py-12 px-4 bg-white rounded-2xl mx-4 my-6 shadow-xl relative overflow-hidden">
     <div className="w-full max-w-sm mx-auto text-center">
-      <h2 className="text-xl md:text-2xl font-bold mb-6 md:mb-8 px-2">
+      <h2 className="text-xl md:text-2xl font-bold mb-6 md:mb-8 px-2 text-gray-900">
         Join a Community of Smart Savers
       </h2>
       <div className="grid grid-cols-1 gap-6 relative z-10">
@@ -218,8 +216,8 @@ const SocialProofSection = () => (
           <div className="w-12 h-12 md:w-16 md:h-16 bg-primary/10 text-primary rounded-full flex items-center justify-center mx-auto hover:scale-110 transition-transform duration-300 hover:bg-primary/20">
             <Calculator className="h-6 w-6 md:h-8 md:w-8" />
           </div>
-          <h3 className="text-lg md:text-xl font-semibold">100% Free Forever</h3>
-          <p className="text-sm md:text-base text-muted-foreground">
+          <h3 className="text-lg md:text-xl font-semibold text-gray-900">100% Free Forever</h3>
+          <p className="text-sm md:text-base text-gray-600">
             Core budgeting tools are completely free. Premium AI insights available for advanced users.
           </p>
         </div>
@@ -227,8 +225,8 @@ const SocialProofSection = () => (
           <div className="w-12 h-12 md:w-16 md:h-16 bg-primary/10 text-primary rounded-full flex items-center justify-center mx-auto hover:scale-110 transition-transform duration-300 hover:bg-primary/20">
             <Brain className="h-6 w-6 md:h-8 md:w-8" />
           </div>
-          <h3 className="text-lg md:text-xl font-semibold">AI-Powered Insights</h3>
-          <p className="text-sm md:text-base text-muted-foreground">
+          <h3 className="text-lg md:text-xl font-semibold text-gray-900">AI-Powered Insights</h3>
+          <p className="text-sm md:text-base text-gray-600">
             Smart recommendations that learn from your spending patterns and help you save more.
           </p>
         </div>
@@ -236,8 +234,8 @@ const SocialProofSection = () => (
           <div className="w-12 h-12 md:w-16 md:h-16 bg-primary/10 text-primary rounded-full flex items-center justify-center mx-auto hover:scale-110 transition-transform duration-300 hover:bg-primary/20">
             <TrendingUp className="h-6 w-6 md:h-8 md:w-8" />
           </div>
-          <h3 className="text-lg md:text-xl font-semibold">Instant Results</h3>
-          <p className="text-sm md:text-base text-muted-foreground">
+          <h3 className="text-lg md:text-xl font-semibold text-gray-900">Instant Results</h3>
+          <p className="text-sm md:text-base text-gray-600">
             Get budget analysis and money-saving insights in seconds, not hours.
           </p>
         </div>
@@ -247,18 +245,16 @@ const SocialProofSection = () => (
 );
 
 const CTASection = () => (
-  <section className="py-8 md:py-12 px-4 bg-slate-900 text-white relative overflow-hidden" style={{
-    backgroundImage: `repeating-linear-gradient(45deg, transparent, transparent 40px, rgba(255,255,255,0.04) 40px, rgba(255,255,255,0.04) 42px)`
-  }}>
+  <section className="py-8 md:py-12 px-4 bg-white rounded-2xl mx-4 my-6 shadow-xl relative overflow-hidden">
     <div className="w-full max-w-sm mx-auto text-center relative z-10">
-      <h2 className="text-xl md:text-2xl lg:text-3xl font-bold mb-4 md:mb-6 animate-fade-in px-2">
+      <h2 className="text-xl md:text-2xl lg:text-3xl font-bold mb-4 md:mb-6 animate-fade-in px-2 text-gray-900">
         Ready to Save Money Every Month?
       </h2>
-      <p className="text-base md:text-lg mb-6 md:mb-8 opacity-90 animate-fade-in px-2" style={{ animationDelay: '0.2s' }}>
+      <p className="text-base md:text-lg mb-6 md:mb-8 animate-fade-in px-2 text-gray-600" style={{ animationDelay: '0.2s' }}>
         Join our community and take control of your finances with our free tools
       </p>
       <div className="flex flex-col sm:flex-row gap-3 md:gap-4 justify-center mb-6 md:mb-8 max-w-md mx-auto">
-        <Button asChild size="lg" variant="secondary" className="w-full sm:w-auto text-base px-6 py-3">
+        <Button asChild size="lg" className="w-full sm:w-auto text-base px-6 py-3">
           <Link to="/budget">
             <span className="block sm:inline">Free Budget Calculator</span>
             <ArrowRight className="ml-2 h-4 w-4" />
@@ -266,15 +262,15 @@ const CTASection = () => (
         </Button>
         <Button
           asChild
-          variant="secondary"
+          variant="outline"
           size="lg"
-          className="w-full sm:w-auto text-base px-6 py-3 cursor-pointer border-bg-primary-foreground/20 hover:bg-primary-foreground/10"
+          className="w-full sm:w-auto text-base px-6 py-3 cursor-pointer"
           onClick={() => window.location.href = 'mailto:homebudgetcalculator@gmail.com?subject=Budget Calculator Feedback'}
         >
           <span>Get Support</span>
         </Button>
       </div>
-      <p className="text-sm opacity-75 px-2">
+      <p className="text-sm text-gray-500 px-2">
         No credit card required • Start saving in under 2 minutes
       </p>
     </div>
@@ -291,7 +287,7 @@ const Home = () => {
         structuredData={seoData.home.structuredData}
         canonical="https://www.housebudgetcalculator.com/"
       />
-      <div className="min-h-screen overflow-x-hidden">
+      <div className="min-h-screen overflow-x-hidden bg-[hsl(213,50%,22%)]">
         <HeroSection />
         <FeaturedToolsSection />
         <RSSFeed 
@@ -301,7 +297,7 @@ const Home = () => {
         <AllToolsGrid />
         
         {/* AdSense Ad Unit */}
-        <div className="py-6 md:py-8 bg-background overflow-hidden">
+        <div className="py-6 md:py-8 overflow-hidden">
           <div className="w-full max-w-sm mx-auto px-4">
             <div className="max-w-full overflow-hidden">
               <AdSense 
