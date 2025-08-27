@@ -53,8 +53,8 @@ export function AppSidebar() {
       className={cn(
         // Mobile: standard sidebar behavior
         isMobile ? "relative" : 
-        // Desktop: floating sidebar positioned fixed with top margin below header
-        "fixed left-4 z-40 shadow-2xl rounded-xl border backdrop-blur-sm bg-background/95",
+        // Desktop: floating sidebar positioned fixed with top margin below header, height fits content
+        "fixed left-4 z-40 shadow-2xl rounded-xl border backdrop-blur-sm bg-background/95 h-fit",
         // Width based on open state - desktop only
         !isMobile && (open ? "w-64" : "w-14")
       )}
