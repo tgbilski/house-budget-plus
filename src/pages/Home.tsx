@@ -74,8 +74,8 @@ const HeroSection = () => (
       <div className="absolute inset-0 bg-black/20 rounded-2xl"></div>
     </div>
     
-    <div className="w-full max-w-sm mx-auto lg:max-w-4xl lg:mx-0 lg:ml-8 relative z-10">
-      <div className="text-center lg:text-left lg:max-w-md">
+    <div className="w-full max-w-sm mx-auto lg:max-w-4xl lg:mx-0 lg:ml-8 lg:flex lg:justify-start relative z-10">
+      <div className="text-center lg:text-left lg:max-w-lg lg:w-full">
         <div className="flex flex-col items-center lg:items-start mb-6">
           <img
             src="/lovable-uploads/ed809955-ef71-4d81-b072-945082f4380a.png"
