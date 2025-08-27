@@ -63,10 +63,20 @@ const toolsData = [
 ];
 
 const HeroSection = () => (
-  <section className="py-8 md:py-16 px-4 bg-white rounded-2xl mx-4 mt-4 mb-6 shadow-xl overflow-x-hidden">
-    <div className="w-full max-w-sm mx-auto">
-      <div className="text-center">
-        <div className="flex flex-col items-center mb-6">
+  <section className="py-8 md:py-16 px-4 rounded-2xl mx-4 mt-4 mb-6 shadow-xl overflow-x-hidden relative bg-white lg:bg-transparent">
+    {/* Desktop background house image */}
+    <div className="absolute inset-0 hidden lg:block">
+      <img
+        src="/lovable-uploads/5377daa4-3f84-4748-a91b-081403394030.png"
+        alt="House background"
+        className="w-full h-full object-cover rounded-2xl opacity-80"
+      />
+      <div className="absolute inset-0 bg-black/20 rounded-2xl"></div>
+    </div>
+    
+    <div className="w-full max-w-sm mx-auto lg:max-w-4xl lg:mx-0 lg:ml-8 relative z-10">
+      <div className="text-center lg:text-left lg:max-w-md">
+        <div className="flex flex-col items-center lg:items-start mb-6">
           <img
             src="/lovable-uploads/ed809955-ef71-4d81-b072-945082f4380a.png"
             alt="Budget Calculator mascot"
@@ -81,34 +91,34 @@ const HeroSection = () => (
           </div>
         </div>
         
-        <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-4 md:mb-6 text-gray-900 leading-tight">
-          Own Your <span className="text-primary">House Budget</span>
+        <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-4 md:mb-6 text-gray-900 lg:text-white leading-tight">
+          Own Your <span className="text-primary lg:text-yellow-400">House Budget</span>
         </h1>
         
-        <p className="text-base md:text-lg text-gray-600 mb-6 md:mb-8 leading-relaxed">
+        <p className="text-base md:text-lg text-gray-600 lg:text-gray-100 mb-6 md:mb-8 leading-relaxed">
           Smart financial planning tools with AI insights. Track expenses, compare vendors, and make informed decisions that save you money.
         </p>
         
-        <div className="flex flex-col gap-3 md:gap-4 mb-6 md:mb-8 w-full max-w-xs mx-auto">
+        <div className="flex flex-col gap-3 md:gap-4 mb-6 md:mb-8 w-full max-w-xs mx-auto lg:mx-0">
           <Button asChild size="lg" className="w-full text-sm md:text-base px-4 md:px-6 py-3 md:py-4 shadow-lg hover:shadow-xl transition-shadow">
             <Link to="/budget">
               Budget Calculator <ArrowRight className="ml-2 h-4 w-4" />
             </Link>
           </Button>
-          <Button asChild variant="outline" size="lg" className="w-full text-sm md:text-base px-4 md:px-6 py-3 md:py-4 border-2">
+          <Button asChild variant="outline" size="lg" className="w-full text-sm md:text-base px-4 md:px-6 py-3 md:py-4 border-2 lg:bg-white/10 lg:text-white lg:border-white/30 lg:hover:bg-white/20">
             <Link to="/ai-insights">
               AI Insights
             </Link>
           </Button>
         </div>
         
-        <div className="flex flex-col gap-3 text-sm text-gray-600">
-          <div className="flex items-center justify-center gap-2">
-            <TrendingUp className="h-4 w-4 text-green-600 flex-shrink-0" />
+        <div className="flex flex-col gap-3 text-sm text-gray-600 lg:text-gray-200">
+          <div className="flex items-center justify-center lg:justify-start gap-2">
+            <TrendingUp className="h-4 w-4 text-green-600 lg:text-green-400 flex-shrink-0" />
             <span>100% Free Tools</span>
           </div>
-          <div className="flex items-center justify-center gap-2">
-            <Users className="h-4 w-4 text-blue-600 flex-shrink-0" />
+          <div className="flex items-center justify-center lg:justify-start gap-2">
+            <Users className="h-4 w-4 text-blue-600 lg:text-blue-400 flex-shrink-0" />
             <span>No Sign-up Required</span>
           </div>
         </div>
@@ -294,12 +304,14 @@ const Home = () => {
       <div className="min-h-screen overflow-x-hidden">
         <HeroSection />
         <FeaturedToolsSection />
-        <div className="bg-gray-100 rounded-2xl mx-4 my-6 shadow-xl p-4 md:p-6">
+      <div className="bg-gray-100 rounded-2xl mx-4 my-6 shadow-xl p-4 md:p-6 max-w-3xl lg:mx-auto overflow-hidden">
+        <div className="w-full overflow-hidden">
           <RSSFeed 
             feedUrl="https://rss.cnn.com/rss/money_news_international.rss"
             title="Latest Financial News"
           />
         </div>
+      </div>
         <AllToolsGrid />
         
         {/* AdSense Ad Unit */}
