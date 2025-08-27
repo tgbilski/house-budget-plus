@@ -278,6 +278,14 @@ const CTASection = () => (
 );
 
 const Home = () => {
+  // Override body background for this page
+  React.useEffect(() => {
+    document.body.style.backgroundColor = 'hsl(213, 50%, 22%)';
+    return () => {
+      document.body.style.backgroundColor = '';
+    };
+  }, []);
+
   return (
     <>
       <SEO
