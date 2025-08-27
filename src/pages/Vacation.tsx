@@ -836,28 +836,26 @@ const Vacation: React.FC = () => {
           )}
         </div>
 
-        <section className="py-12 px-4 bg-slate-900 text-white relative mt-12" style={{
-          backgroundImage: `repeating-linear-gradient(45deg, transparent, transparent 40px, rgba(255,255,255,0.04) 40px, rgba(255,255,255,0.04) 42px)`
-        }}>
+        <section className="py-12 px-4 bg-white text-gray-900 relative mt-12 rounded-2xl mx-4 shadow-xl">
           <div className="container mx-auto text-center relative z-10">
-            <h2 className="text-2xl md:text-3xl font-bold mb-6 text-white">
+            <h2 className="text-2xl md:text-3xl font-bold mb-6 text-gray-900">
               Plan Your Perfect Vacation
             </h2>
-            <p className="text-lg mb-8 opacity-90">
+            <p className="text-lg mb-8 text-gray-600">
               Compare destinations, costs, and travel options to make informed vacation decisions
             </p>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-              <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6 border border-white/20">
-                <h3 className="font-semibold mb-2 text-white">Budget Planning</h3>
-                <p className="text-sm opacity-90">Compare costs across different destinations and travel options to stay within budget</p>
+              <div className="bg-gray-50 rounded-lg p-6 border border-gray-200">
+                <h3 className="font-semibold mb-2 text-gray-900">Budget Planning</h3>
+                <p className="text-sm text-gray-600">Compare costs across different destinations and travel options to stay within budget</p>
               </div>
-              <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6 border border-white/20">
-                <h3 className="font-semibold mb-2 text-white">Option Evaluation</h3>
-                <p className="text-sm opacity-90">Rate each vacation option on safety, excitement, and overall appeal</p>
+              <div className="bg-gray-50 rounded-lg p-6 border border-gray-200">
+                <h3 className="font-semibold mb-2 text-gray-900">Option Evaluation</h3>
+                <p className="text-sm text-gray-600">Rate each vacation option on safety, excitement, and overall appeal</p>
               </div>
-              <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6 border border-white/20">
-                <h3 className="font-semibold mb-2 text-white">Dream Tracker</h3>
-                <p className="text-sm opacity-90">Save and organize multiple vacation ideas for future planning and comparison</p>
+              <div className="bg-gray-50 rounded-lg p-6 border border-gray-200">
+                <h3 className="font-semibold mb-2 text-gray-900">Dream Tracker</h3>
+                <p className="text-sm text-gray-600">Save and organize multiple vacation ideas for future planning and comparison</p>
               </div>
             </div>
           </div>

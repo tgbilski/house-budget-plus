@@ -199,9 +199,9 @@ export default function AIInsights() {
             </div>
           )}
 
-          {/* Light Section - Matching Other Pages */}
+          {/* Transparent Section - Background removed */}
           {user && subscribed && !subLoading && (
-            <section className="py-16 px-4 bg-white text-gray-900 relative mt-8 rounded-2xl mx-4 shadow-xl">
+            <section className="py-16 px-4 relative mt-8">
               <div className="max-w-4xl mx-auto text-center relative z-10">
                 <h2 className="text-2xl md:text-3xl font-bold mb-6 text-gray-900">
                   AI-Powered Financial Intelligence

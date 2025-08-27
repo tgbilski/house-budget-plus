@@ -904,28 +904,26 @@ const CompareVendors: React.FC = () => {
           </div>
         </div>
 
-        <section className="py-16 px-4 bg-slate-900 text-white relative mt-16" style={{
-          backgroundImage: `repeating-linear-gradient(45deg, transparent, transparent 40px, rgba(255,255,255,0.04) 40px, rgba(255,255,255,0.04) 42px)`
-        }}>
+        <section className="py-16 px-4 bg-white text-gray-900 relative mt-16 rounded-2xl mx-4 shadow-xl">
           <div className="w-full max-w-4xl mx-auto text-center relative z-10 px-4">
-            <h2 className="text-2xl md:text-3xl font-bold mb-6 text-white">
+            <h2 className="text-2xl md:text-3xl font-bold mb-6 text-gray-900">
               Make Smarter Vendor Decisions
             </h2>
-            <p className="text-lg mb-8 opacity-90">
+            <p className="text-lg mb-8 text-gray-600">
               Compare quotes, evaluate vendors, and save money on your home improvement projects
             </p>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-              <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6 border border-white/20">
-                <h3 className="font-semibold mb-2 text-white">Side-by-Side Comparison</h3>
-                <p className="text-sm opacity-90">Easily compare multiple vendor quotes and services in one organized view</p>
+              <div className="bg-gray-50 rounded-lg p-6 border border-gray-200">
+                <h3 className="font-semibold mb-2 text-gray-900">Side-by-Side Comparison</h3>
+                <p className="text-sm text-gray-600">Easily compare multiple vendor quotes and services in one organized view</p>
               </div>
-              <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6 border border-white/20">
-                <h3 className="font-semibold mb-2 text-white">Vendor Evaluation</h3>
-                <p className="text-sm opacity-90">Rate vendors on key factors like trustworthiness, responsiveness, and financing options</p>
+              <div className="bg-gray-50 rounded-lg p-6 border border-gray-200">
+                <h3 className="font-semibold mb-2 text-gray-900">Vendor Evaluation</h3>
+                <p className="text-sm text-gray-600">Rate vendors on key factors like trustworthiness, responsiveness, and financing options</p>
               </div>
-              <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6 border border-white/20">
-                <h3 className="font-semibold mb-2 text-white">Save Your Favorites</h3>
-                <p className="text-sm opacity-90">Keep track of top-rated vendors and their quotes for future reference</p>
+              <div className="bg-gray-50 rounded-lg p-6 border border-gray-200">
+                <h3 className="font-semibold mb-2 text-gray-900">Save Your Favorites</h3>
+                <p className="text-sm text-gray-600">Keep track of top-rated vendors and their quotes for future reference</p>
               </div>
             </div>
           </div>
