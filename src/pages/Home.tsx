@@ -63,7 +63,7 @@ const toolsData = [
 ];
 
 const HeroSection = () => (
-  <section className="py-8 md:py-16 px-4 bg-white rounded-2xl mx-4 my-6 shadow-xl overflow-x-hidden">
+  <section className="py-8 md:py-16 px-4 bg-white rounded-2xl mx-4 mt-4 mb-6 shadow-xl overflow-x-hidden">
     <div className="w-full max-w-sm mx-auto">
       <div className="text-center">
         <div className="flex flex-col items-center mb-6">
