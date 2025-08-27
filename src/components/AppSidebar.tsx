@@ -63,7 +63,7 @@ export function AppSidebar() {
     >
       <SidebarContent className={cn(!isMobile && "p-2")}>
         <SidebarGroup>
-          {(open || isMobile) && <SidebarGroupLabel>Navigation</SidebarGroupLabel>}
+          {isMobile && <SidebarGroupLabel>Navigation</SidebarGroupLabel>}
           <SidebarGroupContent>
             <SidebarMenu className={cn(!isMobile && !open && "flex flex-col items-center space-y-1")}>
               {navigationItems.map((item) => (
