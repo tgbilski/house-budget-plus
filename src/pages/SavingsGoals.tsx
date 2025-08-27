@@ -104,7 +104,6 @@ const SavingsGoals = () => {
       }
     } catch (error) {
       console.error('Error loading savings goals:', error);
-      toast.error('Failed to load savings goals');
     } finally {
       setLoading(false);
     }
@@ -235,7 +234,6 @@ const SavingsGoals = () => {
       setLocalInputValues(inputMap);
     } catch (error) {
       console.error('Error fetching savings data:', error);
-      toast.error('Failed to load savings data');
     }
   };
 
