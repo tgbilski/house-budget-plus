@@ -68,89 +68,79 @@ const ScrollIndicator = () => (
   </div>
 );
 
-const CombinedHeroSection = () => (
-  <div className="relative overflow-hidden mb-6">
-    {/* Mascot Image - Absolutely positioned and sits on top */}
-    <div className="flex justify-center -mt-16 mb-8 relative z-20">
+// Consolidated Hero and Social Proof section
+const HeroSectionContent = () => (
+  <section className="relative py-8 md:py-12 px-4 rounded-2xl mx-4 shadow-xl overflow-hidden bg-white">
+    {/* Background house image */}
+    <div className="absolute inset-0">
       <img
-        src="/lovable-uploads/ed809955-ef71-4d81-b072-945082f4380a.png"
-        alt="Budget Calculator mascot"
-        className="w-32 h-32 md:w-40 md:h-40 object-contain hover:scale-110 transition-transform duration-300"
+        src="/lovable-uploads/d46481b3-e5b7-454b-b44e-e5e9eb93a00f.png"
+        alt="House background"
+        className="w-full h-full object-cover rounded-2xl opacity-30"
       />
     </div>
+    
+    <div className="w-full max-w-4xl mx-auto relative z-10 pt-16 md:pt-20"> {/* Add top padding to create space below mascot */}
+      <div className="text-center mb-10">
+        <div className="flex items-center justify-center gap-1 mb-4">
+          <Star className="h-4 w-4 md:h-5 md:w-5 fill-yellow-400 text-yellow-400" />
+          <Star className="h-4 w-4 md:h-5 md:w-5 fill-yellow-400 text-yellow-400" />
+          <Star className="h-4 w-4 md:h-5 md:w-5 fill-yellow-400 text-yellow-400" />
+          <Star className="h-4 w-4 md:h-5 md:w-5 fill-yellow-400 text-yellow-400" />
+          <Star className="h-4 w-4 md:h-5 md:w-5 fill-yellow-400 text-yellow-400" />
+        </div>
+        <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 text-gray-900 leading-tight">
+          Own Your <span className="text-primary">House Budget</span>
+        </h1>
+        <p className="text-base md:text-lg text-gray-600 max-w-3xl mx-auto mb-8 leading-relaxed">
+          Smart financial planning tools with AI insights. Track expenses, compare vendors, and make informed decisions that save you money. Join a community of smart savers today!
+        </p>
+        <div className="flex flex-col sm:flex-row gap-3 md:gap-4 justify-center mb-10 max-w-md mx-auto">
+          <Button asChild size="lg" className="w-full sm:w-auto text-base px-6 py-4 shadow-lg hover:shadow-xl transition-shadow">
+            <Link to="/budget">
+              Budget Calculator <ArrowRight className="ml-2 h-4 w-4" />
+            </Link>
+          </Button>
+          <Button asChild variant="outline" size="lg" className="w-full sm:w-auto text-base px-6 py-4 border-2">
+            <Link to="/ai-insights">
+              AI Insights
+            </Link>
+          </Button>
+        </div>
+      </div>
 
-    {/* Main section content, pulled up with negative margin */}
-    <section className="relative py-8 md:py-12 px-4 rounded-2xl mx-4 shadow-xl overflow-hidden bg-white -mt-24 md:-mt-32">
-      {/* Background house image */}
-      <div className="absolute inset-0">
-        <img
-          src="/lovable-uploads/d46481b3-e5b7-454b-b44e-4e96eb93a00f.png"
-          alt="House background"
-          className="w-full h-full object-cover rounded-2xl opacity-30"
-        />
-      </div>
-      
-      <div className="w-full max-w-4xl mx-auto relative z-10 pt-16 md:pt-20">
-        <div className="text-center mb-10">
-          <div className="flex items-center justify-center gap-1 mb-4">
-            <Star className="h-4 w-4 md:h-5 md:w-5 fill-yellow-400 text-yellow-400" />
-            <Star className="h-4 w-4 md:h-5 md:w-5 fill-yellow-400 text-yellow-400" />
-            <Star className="h-4 w-4 md:h-5 md:w-5 fill-yellow-400 text-yellow-400" />
-            <Star className="h-4 w-4 md:h-5 md:w-5 fill-yellow-400 text-yellow-400" />
-            <Star className="h-4 w-4 md:h-5 md:w-5 fill-yellow-400 text-yellow-400" />
+      {/* Social Proof Features */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
+        <div className="space-y-3 md:space-y-4 animate-fade-in px-2" style={{ animationDelay: '0.2s' }}>
+          <div className="w-14 h-14 md:w-16 md:h-16 bg-primary/10 text-primary rounded-full flex items-center justify-center mx-auto hover:scale-110 transition-transform duration-300 hover:bg-primary/20">
+            <Calculator className="h-7 w-7 md:h-8 md:w-8" />
           </div>
-          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 text-gray-900 leading-tight">
-            Own Your <span className="text-primary">House Budget</span>
-          </h1>
-          <p className="text-base md:text-lg text-gray-600 max-w-3xl mx-auto mb-8 leading-relaxed">
-            Smart financial planning tools with AI insights. Track expenses, compare vendors, and make informed decisions that save you money. Join a community of smart savers today!
+          <h3 className="text-lg md:text-xl font-semibold text-gray-900">100% Free Forever</h3>
+          <p className="text-sm md:text-base text-gray-600">
+            Core budgeting tools are completely free. Premium AI insights available for advanced users.
           </p>
-          <div className="flex flex-col sm:flex-row gap-3 md:gap-4 justify-center mb-10 max-w-md mx-auto">
-            <Button asChild size="lg" className="w-full sm:w-auto text-base px-6 py-4 shadow-lg hover:shadow-xl transition-shadow">
-              <Link to="/budget">
-                Budget Calculator <ArrowRight className="ml-2 h-4 w-4" />
-              </Link>
-            </Button>
-            <Button asChild variant="outline" size="lg" className="w-full sm:w-auto text-base px-6 py-4 border-2">
-              <Link to="/ai-insights">
-                AI Insights
-              </Link>
-            </Button>
-          </div>
         </div>
-        {/* Social Proof Features */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
-          <div className="space-y-3 md:space-y-4 animate-fade-in px-2" style={{ animationDelay: '0.2s' }}>
-            <div className="w-14 h-14 md:w-16 md:h-16 bg-primary/10 text-primary rounded-full flex items-center justify-center mx-auto hover:scale-110 transition-transform duration-300 hover:bg-primary/20">
-              <Calculator className="h-7 w-7 md:h-8 md:w-8" />
-            </div>
-            <h3 className="text-lg md:text-xl font-semibold text-gray-900">100% Free Forever</h3>
-            <p className="text-sm md:text-base text-gray-600">
-              Core budgeting tools are completely free. Premium AI insights available for advanced users.
-            </p>
+        <div className="space-y-3 md:space-y-4 animate-fade-in px-2" style={{ animationDelay: '0.4s' }}>
+          <div className="w-14 h-14 md:w-16 md:h-16 bg-primary/10 text-primary rounded-full flex items-center justify-center mx-auto hover:scale-110 transition-transform duration-300 hover:bg-primary/20">
+            <Brain className="h-7 w-7 md:h-8 md:w-8" />
           </div>
-          <div className="space-y-3 md:space-y-4 animate-fade-in px-2" style={{ animationDelay: '0.4s' }}>
-            <div className="w-14 h-14 md:w-16 md:h-16 bg-primary/10 text-primary rounded-full flex items-center justify-center mx-auto hover:scale-110 transition-transform duration-300 hover:bg-primary/20">
-              <Brain className="h-7 w-7 md:h-8 md:w-8" />
-            </div>
-            <h3 className="text-lg md:text-xl font-semibold text-gray-900">AI-Powered Insights</h3>
-            <p className="text-sm md:text-base text-gray-600">
-              Smart recommendations that learn from your spending patterns and help you save more.
-            </p>
+          <h3 className="text-lg md:text-xl font-semibold text-gray-900">AI-Powered Insights</h3>
+          <p className="text-sm md:text-base text-gray-600">
+            Smart recommendations that learn from your spending patterns and help you save more.
+          </p>
+        </div>
+        <div className="space-y-3 md:space-y-4 animate-fade-in px-2" style={{ animationDelay: '0.6s' }}>
+          <div className="w-14 h-14 md:w-16 md:h-16 bg-primary/10 text-primary rounded-full flex items-center justify-center mx-auto hover:scale-110 transition-transform duration-300 hover:bg-primary/20">
+            <TrendingUp className="h-7 w-7 md:h-8 md:w-8" />
           </div>
-          <div className="space-y-3 md:space-y-4 animate-fade-in px-2" style={{ animationDelay: '0.6s' }}>
-            <div className="w-14 h-14 md:w-16 md:h-16 bg-primary/10 text-primary rounded-full flex items-center justify-center mx-auto hover:scale-110 transition-transform duration-300 hover:bg-primary/20">
-              <TrendingUp className="h-7 w-7 md:h-8 md:w-8" />
-            </div>
-            <h3 className="text-lg md:text-xl font-semibold text-gray-900">Instant Results</h3>
-            <p className="text-sm md:text-base text-gray-600">
-              Get budget analysis and money-saving insights in seconds, not hours.
-            </p>
-          </div>
+          <h3 className="text-lg md:text-xl font-semibold text-gray-900">Instant Results</h3>
+          <p className="text-sm md:text-base text-gray-600">
+            Get budget analysis and money-saving insights in seconds, not hours.
+          </p>
         </div>
       </div>
-    </section>
-  </div>
+    </div>
+  </section>
 );
 
 const AllToolsGrid = () => (
@@ -211,8 +201,8 @@ const CTASection = () => (
       </p>
       <div className="flex flex-col sm:flex-row gap-3 md:gap-4 justify-center mb-6 md:mb-8 max-w-md mx-auto">
         <Button asChild size="lg" className="w-full sm:w-auto text-base px-6 py-3">
-          <Link to="/budget">
-            <span className="block sm:inline">Free Budget Calculator</span>
+          <Link to="/signup">
+            <span className="block sm:inline">Sign up for free</span>
             <ArrowRight className="ml-2 h-4 w-4" />
           </Link>
         </Button>
@@ -243,42 +233,55 @@ const Home = () => {
         structuredData={seoData.home.structuredData}
         canonical="https://www.housebudgetcalculator.com/"
       />
-      <div className="min-h-screen overflow-x-hidden">
-        <CombinedHeroSection />
-        <ScrollIndicator />
-        <AllToolsGrid />
-        
-        {/* AdSense Ad Unit */}
-        <div className="py-6 md:py-8 overflow-hidden">
-          <div className="w-full max-w-sm mx-auto px-4">
-            <div className="max-w-full overflow-hidden">
-              <AdSense 
-                adSlot="5669663372" 
-                adFormat="fluid"
-                style={{ display: 'block', width: '100%', maxWidth: '100%' }}
+      <div className="min-h-screen overflow-x-hidden relative">
+        {/* Mascot Image - Absolutely positioned and on top of everything */}
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 -mt-10 z-50"> {/* Adjust -mt- values as needed */}
+          <img
+            src="/lovable-uploads/ed809955-ef71-4d81-b072-945082f4380a.png"
+            alt="Budget Calculator mascot"
+            className="w-36 h-36 md:w-48 md:h-48 object-contain hover:scale-110 transition-transform duration-300"
+          />
+        </div>
+
+        {/* Main content sections, with a top margin to make space for the mascot */}
+        <div className="mt-20 md:mt-24"> {/* Adjust this margin to match the mascot's height and desired overlap */}
+          <HeroSectionContent />
+          <ScrollIndicator />
+          <AllToolsGrid />
+          
+          {/* AdSense Ad Unit */}
+          <div className="py-6 md:py-8 overflow-hidden">
+            <div className="w-full max-w-sm mx-auto px-4">
+              <div className="max-w-full overflow-hidden">
+                <AdSense 
+                  adSlot="5669663372" 
+                  adFormat="fluid"
+                  style={{ display: 'block', width: '100%', maxWidth: '100%' }}
+                  responsive={true}
+                />
+              </div>
+            </div>
+          </div>
+          <ScrollIndicator />
+          
+          <CTASection />
+          <ScrollIndicator />
+
+          {/* === RSS Feed section moved here === */}
+          <div className="bg-gray-100 rounded-2xl mx-4 my-6 shadow-xl p-4 md:p-6 overflow-hidden">
+            <div className="w-full max-w-sm mx-auto md:max-w-4xl overflow-hidden">
+              <RSSFeed 
+                feedUrl="https://rss.cnn.com/rss/money_news_international.rss"
+                title="Latest Financial News"
               />
             </div>
           </div>
-        </div>
-        <ScrollIndicator />
-        
-        <CTASection />
-        <ScrollIndicator />
+          <ScrollIndicator />
 
-        {/* === RSS Feed section moved here === */}
-        <div className="bg-gray-100 rounded-2xl mx-4 my-6 shadow-xl p-4 md:p-6 overflow-hidden">
-          <div className="w-full max-w-sm mx-auto md:max-w-4xl overflow-hidden">
-            <RSSFeed 
-              feedUrl="https://rss.cnn.com/rss/money_news_international.rss"
-              title="Latest Financial News"
-            />
+          {/* Badge Display Section - Bottom */}
+          <div className="w-full max-w-sm mx-auto md:max-w-4xl px-4 py-6 md:py-8">
+            <BadgeDisplay />
           </div>
-        </div>
-        <ScrollIndicator />
-
-        {/* Badge Display Section - Bottom */}
-        <div className="w-full max-w-sm mx-auto md:max-w-4xl px-4 py-6 md:py-8">
-          <BadgeDisplay />
         </div>
       </div>
     </>
