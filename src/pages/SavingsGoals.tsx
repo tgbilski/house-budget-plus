@@ -439,14 +439,13 @@ const SavingsGoals = () => {
         keywords="savings goals, monthly savings, financial planning, money tracker"
       />
       
-      {/* Hero Section with Dark Gradient */}
-      <div className="relative bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 text-white py-8 md:py-16 overflow-x-hidden">
-        <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHZpZXdCb3g9IjAgMCAyMCAyMCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3QgeD0iMCIgeT0iMCIgd2lkdGg9IjEiIGhlaWdodD0iMjAiIGZpbGw9InJnYmEoMjU1LDI1NSwyNTUsMC4xKSIvPgo8L3N2Zz4K')] opacity-20"></div>
+      {/* Hero Section with Light Background */}
+      <div className="relative bg-white text-gray-900 py-8 md:py-16 overflow-x-hidden rounded-2xl mx-4 mt-4 mb-6 shadow-xl">
         <div className="w-full max-w-sm sm:max-w-md md:max-w-4xl mx-auto px-4 relative z-10">
           <div className="text-center">
             <Target className="h-12 w-12 md:h-16 md:w-16 mx-auto mb-4 md:mb-6 text-primary" />
-            <h1 className="text-2xl md:text-4xl font-bold mb-3 md:mb-4">Savings Tracker</h1>
-            <p className="text-base md:text-xl text-white/90 mb-4 md:mb-6">Track your monthly savings progress with an easy-to-use yearly table</p>
+            <h1 className="text-2xl md:text-4xl font-bold mb-3 md:mb-4 text-gray-900">Savings Tracker</h1>
+            <p className="text-base md:text-xl text-gray-600 mb-4 md:mb-6">Track your monthly savings progress with an easy-to-use yearly table</p>
           </div>
         </div>
       </div>

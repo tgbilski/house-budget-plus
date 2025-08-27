@@ -81,9 +81,8 @@ export default function AIInsights() {
         keywords="AI financial advisor, budget insights, personal finance, money management, financial optimization"
       />
       
-      {/* Hero Section with Dark Gradient */}
-      <div className="relative bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 text-white py-16">
-        <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHZpZXdCb3g9IjAgMCAyMCAyMCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3QgeD0iMCIgeT0iMCIgd2lkdGg9IjEiIGhlaWdodD0iMjAiIGZpbGw9InJnYmEoMjU1LDI1NSwyNTUsMC4xKSIvPgo8L3N2Zz4K')] opacity-20"></div>
+      {/* Hero Section with Light Background */}
+      <div className="relative bg-white text-gray-900 py-16 rounded-2xl mx-4 mt-4 mb-6 shadow-xl">
         <div className="container mx-auto px-4 relative z-10">
           <div className="text-center">
             <div className="flex items-center justify-center gap-4 mb-6">
@@ -94,8 +93,8 @@ export default function AIInsights() {
                 <path d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/>
               </svg>
             </div>
-            <h1 className="text-2xl md:text-4xl font-bold mb-3 md:mb-4">AI Financial Insights</h1>
-            <p className="text-base md:text-xl text-white/90 mb-4 md:mb-6 max-w-2xl mx-auto">
+            <h1 className="text-2xl md:text-4xl font-bold mb-3 md:mb-4 text-gray-900">AI Financial Insights</h1>
+            <p className="text-base md:text-xl text-gray-600 mb-4 md:mb-6 max-w-2xl mx-auto">
               Get personalized financial advice powered by artificial intelligence
             </p>
           </div>
