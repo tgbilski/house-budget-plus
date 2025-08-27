@@ -281,8 +281,10 @@ const Home = () => {
   // Override body background for this page
   React.useEffect(() => {
     document.body.style.backgroundColor = 'hsl(213, 50%, 22%)';
+    document.body.style.backgroundImage = 'repeating-linear-gradient(45deg, transparent, transparent 40px, rgba(255,255,255,0.04) 40px, rgba(255,255,255,0.04) 42px)';
     return () => {
       document.body.style.backgroundColor = '';
+      document.body.style.backgroundImage = '';
     };
   }, []);
 
