@@ -6,9 +6,9 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
-const supabaseUrl = Deno.env.get("SUPABASE_URL");
-const supabaseServiceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
-const openAIApiKey = Deno.env.get("OPENAI_API_KEY");
+const supabaseUrl = Deno.env.get("SUPABASE_URL") ?? '';
+const supabaseServiceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? '';
+const openAIApiKey = Deno.env.get("OPENAI_API_KEY") ?? '';
 
 serve(async (req) => {
   if (req.method === "OPTIONS") {
@@ -24,12 +24,10 @@ serve(async (req) => {
       });
     }
     
-    // Use the service role key for internal operations
-    const supabase = createClient(supabaseUrl!, supabaseServiceKey!, {
+    const supabase = createClient(supabaseUrl, supabaseServiceKey, {
       auth: { persistSession: false },
     });
     
-    // Get user from JWT
     const token = authHeader.replace("Bearer ", "");
     const { data: { user }, error: authError } = await supabase.auth.getUser(token);
 
@@ -40,32 +38,27 @@ serve(async (req) => {
       });
     }
 
-    // --- CONTEXT CONDENSATION ---
-    // Fetch a limited, relevant number of transactions
     const { data: takeoutData } = await supabase
       .from('takeout_transactions')
-      .select('date, amount, category, merchant') // Fetch only necessary columns
+      .select('date, amount, category, merchant')
       .eq('user_id', user.id)
       .order('date', { ascending: false })
-      .limit(50); // Limit to 50
+      .limit(50);
 
-    // Fetch the most recent budget
     const { data: budgetData } = await supabase
       .from('budget_data')
       .select('income, expenses, page_type')
       .eq('user_id', user.id)
       .order('created_at', { ascending: false })
-      .limit(1); // Limit to 1, the most recent
+      .limit(1);
       
-    // Fetch most recent daily check-ins
     const { data: checkinData } = await supabase
       .from('daily_checkins')
       .select('date, feeling, notes')
       .eq('user_id', user.id)
       .order('date', { ascending: false })
-      .limit(10); // Limit to 10
+      .limit(10);
 
-    // Prepare a concise, structured context for the AI
     const dataContext = {
       recent_takeout: takeoutData || [],
       most_recent_budget: budgetData?.[0] || null,
@@ -73,7 +66,6 @@ serve(async (req) => {
       current_date: new Date().toISOString().split('T')[0]
     };
     
-    // Check if there is enough data to generate insights
     if (takeoutData?.length === 0 && budgetData?.length === 0) {
       return new Response(JSON.stringify({
         success: true,
@@ -102,7 +94,6 @@ serve(async (req) => {
       ${JSON.stringify(dataContext, null, 2)}
     `;
 
-    // Call OpenAI for insights
     const response = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
       headers: {
@@ -117,7 +108,7 @@ serve(async (req) => {
         ],
         temperature: 0.7,
         max_tokens: 1500,
-        response_format: { type: "json_object" }, // Enforce JSON output
+        response_format: { type: "json_object" },
       }),
     });
 
@@ -135,17 +126,16 @@ serve(async (req) => {
       throw new Error("No content returned from OpenAI.");
     }
     
+    // Correctly parse the JSON and access the insights array
     const parsedInsights = JSON.parse(insightsJSON).insights;
 
-    // Clear old insights to avoid duplicates before inserting new ones
     await supabase.from('user_insights').delete().eq('user_id', user.id);
 
-    // Store insights in database
     const { error: insertError } = await supabase
       .from('user_insights')
-      .insert(parsedInsights.map((insight: any) => ({
+      .insert(parsedInsights.map((insight) => ({
         user_id: user.id,
-        insight_type: insight.type, // Map 'type' to 'insight_type' for your database schema
+        insight_type: insight.insight_type || insight.type,
         title: insight.title,
         description: insight.description,
         priority: insight.priority || 2,
