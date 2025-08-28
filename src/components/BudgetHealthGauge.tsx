@@ -68,15 +68,15 @@ export const BudgetHealthGauge: React.FC<BudgetHealthGaugeProps> = ({
             </div>
           )}
           
-          {/* Gauge Container */}
-          <div className="relative w-8 h-48 bg-gray-200 rounded-full border-2 border-gray-300 mx-auto overflow-hidden">
+          {/* Gauge Container - Increased height to match calculator */}
+          <div className="relative w-8 h-96 bg-gray-200 rounded-full border-2 border-gray-300 mx-auto overflow-hidden">
             {/* Fill */}
             <div
               className={`absolute bottom-0 left-0 right-0 transition-all duration-500 ease-out ${gaugeStatus.color} rounded-full`}
               style={{ height: gaugeStatus.fillHeight }}
             />
             
-            {/* Tick marks */}
+            {/* Tick marks only */}
             <div className="absolute right-0 top-0 h-full w-full">
               {[0, 25, 50, 75, 100].map((mark) => (
                 <div
@@ -86,15 +86,6 @@ export const BudgetHealthGauge: React.FC<BudgetHealthGaugeProps> = ({
                 />
               ))}
             </div>
-          </div>
-          
-          {/* Gauge Labels */}
-          <div className="absolute -right-8 top-0 h-full flex flex-col justify-between text-xs text-muted-foreground">
-            <span>100%</span>
-            <span>75%</span>
-            <span>50%</span>
-            <span>25%</span>
-            <span>0%</span>
           </div>
         </div>
         
