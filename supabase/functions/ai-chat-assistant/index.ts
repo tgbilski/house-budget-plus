@@ -1,245 +1,177 @@
-import "https://deno.land/x/xhr@0.1.0/mod.ts";
-import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 
 const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
+const supabaseUrl = Deno.env.get("SUPABASE_URL");
+const supabaseServiceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
+const openAIApiKey = Deno.env.get("OPENAI_API_KEY");
+
 serve(async (req) => {
-  if (req.method === 'OPTIONS') {
-    return new Response(null, { headers: corsHeaders });
-  }
+  if (req.method === "OPTIONS") {
+    return new Response(null, { headers: corsHeaders });
+  }
 
-  try {
-    const { message, pageContext, pageName, conversationHistory } = await req.json();
+  try {
+    const authHeader = req.headers.get("Authorization");
+    if (!authHeader) {
+      return new Response(JSON.stringify({ error: "No authorization header" }), {
+        status: 401,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+    const jwt = authHeader.replace("Bearer ", "");
 
-    const openAIApiKey = Deno.env.get('OPENAI_API_KEY');
-    if (!openAIApiKey) {
-      throw new Error('OPENAI_API_KEY is not set');
-    }
+    const supabase = createClient(supabaseUrl!, supabaseServiceKey!);
 
-    // Build context-aware system prompt with examples
-    const systemPrompt = `You are a helpful AI assistant embedded in a financial planning web application. You are currently helping a user on the "${pageName}" page.
+    const { data: { user }, error: authError } = await supabase.auth.getUser(jwt);
+    if (authError || !user) {
+      return new Response(JSON.stringify({ error: "Invalid token" }), {
+        status: 401,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
 
-Page Context: ${pageContext}
+    const { data: subscription } = await supabase
+      .from("subscribers")
+      .select("subscribed")
+      .eq("user_id", user.id)
+      .maybeSingle();
 
-Your role is to:
-1. Help users understand how to fill out forms and use features on this specific page.
-2. Provide guidance on financial planning concepts relevant to this page.
-3. Answer questions about the interface and functionality.
-4. **AUTOFILL FORMS** when users give you specific instructions about data entry.
-5. Be concise but helpful in your responses.
-6. If users ask about features not on this page, guide them to the appropriate section.
-7. **USE MARKDOWN** for your responses to improve readability. Use headings, bold text, lists, and bullet points as needed.
+    if (!subscription?.subscribed) {
+      return new Response(JSON.stringify({
+        error: "Subscription required",
+        message: "Please subscribe to access AI insights feature."
+      }), {
+        status: 403,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
 
-**BUDGET CALCULATOR AUTOFILL CAPABILITIES:**
-When users want to autofill budget calculator data, look for instructions like:
-- "Set my income to $5000"
-- "Add $1200 for rent"
-- "Set my electric bill to $150"
-- "My mortgage is $2500"
-- "Add Netflix for $15.99"
-- "I pay $100 for car insurance"
+    const { question } = await req.json();
+    if (!question || typeof question !== "string") {
+      return new Response(JSON.stringify({ error: "Missing or invalid question" }), {
+        status: 400,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
 
-**BUDGET FIELD MAPPING:**
-- "income", "salary", "pay" -> monthlyIncome
-- "rent", "mortgage" -> mortgage (fixed expense)
-- "electric", "electricity" -> electric
-- "gas" -> gas 
-- "water" -> water
-- "sewage", "sewer" -> sewage
-- "utilities" -> utilities
-- "car loan", "auto loan" -> car-loan
-- "car insurance", "auto insurance" -> car-insurance
-- "internet", "wifi" -> internet
-- "phone", "cell phone", "mobile" -> phone
-- "netflix", "streaming", "subscription" -> subscription fields
+    // --- CONTEXT CONDENSATION ---
+    // Fetch only the most recent budget data
+    const { data: budgetData } = await supabase
+      .from("budget_data")
+      .select("*")
+      .eq("user_id", user.id)
+      .order("created_at", { ascending: false })
+      .limit(1);
 
-For budget autofill requests, respond with this exact format:
-BUDGET_AUTOFILL: {
-  "action": "fill_budget",
-  "data": {
-    "income": amount_or_null,
-    "expenses": {
-      "field_id": amount,
-      "field_id2": amount
-    },
-    "customExpenses": [
-      {"label": "Expense Name", "amount": amount}
-    ]
-  },
-  "message": "I've updated your budget with the specified amounts."
-}
+    // Fetch a limited number of recent transactions
+    const { data: takeoutData } = await supabase
+      .from("takeout_transactions")
+      .select("*")
+      .eq("user_id", user.id)
+      .order("date", { ascending: false })
+      .limit(50); // Reduced from 100
 
-**GIFTS AUTOFILL CAPABILITIES:**
-When users want to autofill gift information, look for instructions like:
-- "Add a $50 book for Christmas"
-- "Set up a birthday list with a $25 toy"
-- "Add a holiday gift: $100 headphones from Amazon"
-- "Create a gift idea for my brother's birthday: $75 shoes from Nike.com"
+    const { data: profileData } = await supabase
+      .from("profiles")
+      .select("first_name, last_name")
+      .eq("user_id", user.id)
+      .single();
 
-For gift autofill requests, respond with this exact format:
-GIFT_AUTOFILL: {
-  "action": "fill_gift",
-  "data": {
-    "list_title": "list title or null",
-    "gift_idea": "gift description",
-    "price": amount_or_null,
-    "url": "url_or_null"
-  },
-  "message": "I've added your gift idea."
-}
+    // Prepare concise context for OpenAI
+    let dataContext = `User financial profile:\n\n`;
+    
+    if (profileData) {
+      dataContext += `User Name: ${profileData.first_name || ''} ${profileData.last_name || ''}\n`;
+    }
 
-**TAKEOUT CALENDAR AUTOFILL CAPABILITIES:**
-When users give instructions like:
-- "I bought a $2 coffee each day this week"
-- "Add $5 lunch every day this week"
-- "$2 coffee and $5 lunch each day this week"
-- "I spent $10 at McDonald's yesterday"
+    if (budgetData && budgetData.length > 0) {
+      const budget = budgetData[0]; // Use only the most recent budget
+      dataContext += `Most Recent Budget (${budget.page_type}, Created: ${new Date(budget.created_at).toLocaleDateString()}):\n`;
+      dataContext += `- Monthly Income: $${budget.income || 0}\n`;
+      if (budget.expenses) {
+        dataContext += `- Expenses: ${JSON.stringify(budget.expenses, null, 2)}\n`;
+      }
+    } else {
+      dataContext += "No recent budget data available.\n";
+    }
 
-You should parse the amounts, items, time periods, and create autofill instructions.
+    if (takeoutData && takeoutData.length > 0) {
+      dataContext += `Recent Transactions (Last ${takeoutData.length}):\n`;
+      takeoutData.forEach(tx => {
+        dataContext += `- ${tx.date}: $${tx.amount} at ${tx.merchant} (${tx.category})\n`;
+      });
+    } else {
+      dataContext += "No recent transaction history available.\n";
+    }
 
-**CALCULATION EXAMPLES:**
-- "$2 coffee and $5 lunch each day" = $7 total per day
-- "coffee for $2, lunch $5, dinner $8" = $15 total
-- Multiple items get combined into a single entry per day
+    const systemPrompt = `
+      You are an expert financial advisor AI. Your goal is to provide **personalized, actionable, and helpful financial advice**.
+      
+      Your response should be formatted using **Markdown** for clarity. Use headings, bold text, and bullet points.
+      
+      Base your advice on the following data, and if a question cannot be answered with the data, state that clearly. Avoid making up information.
+      
+      ---
+      ${dataContext}
+      ---
+    `;
 
-**DATE PARSING:**
-- "this week" = Monday through Sunday of current week
-- "today" = current date
-- "yesterday" = previous day
-- "last 3 days" = previous 3 days including today
+    const openaiBody = {
+      model: "gpt-4o-mini",
+      messages: [
+        { role: "system", content: systemPrompt },
+        { role: "user", content: question }
+      ],
+      max_tokens: 750, // Adjusted max tokens
+      temperature: 0.7,
+    };
 
-For takeout autofill requests, respond with this exact format:
-TAKEOUT_AUTOFILL: {
-  "action": "fill_form",
-  "entries": [
-    {
-      "date": "YYYY-MM-DD",
-      "restaurant": "Combined items (e.g., 'Coffee & Lunch')",
-      "amount": total_calculated_amount
-    }
-  ],
-  "message": "I've filled in your entries as requested."
-}
+    const response = await fetch("https://api.openai.com/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${openAIApiKey}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(openaiBody),
+    });
 
-**EXAMPLES:**
-Budget: "Set my income to $5000 and rent to $1200"
-Response: BUDGET_AUTOFILL: {"action": "fill_budget", "data": {"income": 5000, "expenses": {"mortgage": 1200}}, "message": "I've set your income to $5000 and rent to $1200."}
+    if (!response.ok) {
+      const errorDetails = await response.json();
+      console.error("OpenAI API error:", errorDetails);
+      return new Response(JSON.stringify({
+        error: "OpenAI API error",
+        details: errorDetails,
+      }), {
+        status: 500,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
 
-Takeout: "I bought a $2 coffee each day this week"
-Response: TAKEOUT_AUTOFILL: {"action": "fill_form", "entries": [{"date": "2024-01-01", "restaurant": "Coffee", "amount": 2}, {"date": "2024-01-02", "restaurant": "Coffee", "amount": 2}, ...], "message": "I've added $2 coffee entries for each day this week."}
+    const completion = await response.json();
+    const insight = completion.choices?.[0]?.message?.content;
 
-Gift: "Add a $50 book for Christmas"
-Response: GIFT_AUTOFILL: {"action": "fill_gift", "data": {"list_title": "Christmas Gifts", "gift_idea": "Book", "price": 50, "url": null}, "message": "I've added a $50 book to your Christmas gift list."}
+    // --- NEW: Handle empty insight explicitly ---
+    if (!insight) {
+      return new Response(JSON.stringify({ response: "I'm sorry, I couldn't generate a helpful response at this time. Please try again." }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        status: 200,
+      });
+    }
 
-Keep responses focused, practical, and user-friendly. Always be encouraging about their financial planning journey.
-`;
-
-    // Prepare conversation context
-    const messages = [
-      { role: 'system', content: systemPrompt },
-      ...conversationHistory
-        .filter((msg) => msg.content && typeof msg.content === 'string')
-        .map((msg) => ({
-          role: msg.type === 'user' ? 'user' : 'assistant',
-          content: msg.content
-        })),
-      { role: 'user', content: message }
-    ];
-
-    const response = await fetch('https://api.openai.com/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${openAIApiKey}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        model: 'gpt-4o-mini',
-        messages,
-        max_tokens: 500,
-        temperature: 0.7,
-      }),
-    });
-
-    if (!response.ok) {
-      throw new Error(`OpenAI API error: ${response.statusText}`);
-    }
-
-    const data = await response.json();
-    const assistantResponse = data.choices[0].message.content;
-
-    // Check if the response contains autofill instructions
-    if (assistantResponse.includes('BUDGET_AUTOFILL:')) {
-      const parts = assistantResponse.split('BUDGET_AUTOFILL:');
-      const instruction = parts[1].trim();
-      
-      try {
-        const autofillData = JSON.parse(instruction);
-        return new Response(JSON.stringify({
-          response: autofillData.message,
-          autofill: autofillData
-        }), {
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        });
-      } catch (parseError) {
-        console.error('Error parsing budget autofill instruction:', parseError);
-        return new Response(JSON.stringify({ response: "I'm sorry, I was unable to process that autofill request. Please try again." }), {
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        });
-      }
-    }
-    
-    if (assistantResponse.includes('TAKEOUT_AUTOFILL:')) {
-      const parts = assistantResponse.split('TAKEOUT_AUTOFILL:');
-      const instruction = parts[1].trim();
-      
-      try {
-        const autofillData = JSON.parse(instruction);
-        return new Response(JSON.stringify({
-          response: autofillData.message,
-          autofill: autofillData
-        }), {
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        });
-      } catch (parseError) {
-        console.error('Error parsing takeout autofill instruction:', parseError);
-        return new Response(JSON.stringify({ response: "I'm sorry, I was unable to process that autofill request. Please try again." }), {
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        });
-      }
-    }
-
-    if (assistantResponse.includes('GIFT_AUTOFILL:')) {
-      const parts = assistantResponse.split('GIFT_AUTOFILL:');
-      const instruction = parts[1].trim();
-      
-      try {
-        const autofillData = JSON.parse(instruction);
-        return new Response(JSON.stringify({
-          response: autofillData.message,
-          autofill: autofillData
-        }), {
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        });
-      } catch (parseError) {
-        console.error('Error parsing gift autofill instruction:', parseError);
-        return new Response(JSON.stringify({ response: "I'm sorry, I was unable to process that autofill request. Please try again." }), {
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        });
-      }
-    }
-
-    // If no autofill instruction is found, return the raw markdown response
-    return new Response(JSON.stringify({ response: assistantResponse }), {
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-    });
-  } catch (error) {
-    console.error('Error in ai-chat-assistant function:', error);
-    return new Response(JSON.stringify({ error: error.message }), {
-      status: 500,
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-    });
-  }
+    return new Response(JSON.stringify({ response: insight }), {
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
+      status: 200,
+    });
+  } catch (error) {
+    console.error("ai-budget-insights function error:", error);
+    return new Response(JSON.stringify({ error: error.message || String(error) }), {
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
+      status: 500,
+    });
+  }
 });
