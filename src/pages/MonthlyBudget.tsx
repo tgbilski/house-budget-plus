@@ -128,62 +128,113 @@ const MonthlyBudget: React.FC = () => {
           </div>
         </div>
 
-        <div className="w-full max-w-6xl mx-auto px-4 py-8">
-          <div className="text-center mb-8">
-          
-          {/* Currency Selector */}
-          <div className="flex items-center justify-center gap-2 mb-4">
-            <Globe className="h-4 w-4 text-muted-foreground" />
-            <Select value={currency.code} onValueChange={(value) => {
-              const selectedCurrency = currencies.find(c => c.code === value);
-              if (selectedCurrency) setCurrency(selectedCurrency);
-            }}>
-              <SelectTrigger className="w-48">
-                <SelectValue placeholder="Select currency" />
-              </SelectTrigger>
-              <SelectContent>
-                {currencies.map((curr) => (
-                  <SelectItem key={curr.code} value={curr.code}>
-                    <span className="flex items-center gap-2">
-                      <span className="font-mono">{curr.symbol}</span>
-                      <span>{curr.name}</span>
-                    </span>
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
+        {/* Main Container with Sidebar Layout */}
+        <div className="w-full max-w-7xl mx-auto px-4 py-8">
+          <div className="flex flex-col lg:flex-row gap-8">
+            
+            {/* Left Sidebar - Tips & Info */}
+            <div className="lg:w-80 space-y-6">
+              {/* Currency Selector */}
+              <div className="bg-card border border-border rounded-lg p-4">
+                <div className="flex items-center gap-2 mb-3">
+                  <Globe className="h-4 w-4 text-muted-foreground" />
+                  <span className="text-sm font-medium">Currency</span>
+                </div>
+                <Select value={currency.code} onValueChange={(value) => {
+                  const selectedCurrency = currencies.find(c => c.code === value);
+                  if (selectedCurrency) setCurrency(selectedCurrency);
+                }}>
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Select currency" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {currencies.map((curr) => (
+                      <SelectItem key={curr.code} value={curr.code}>
+                        <span className="flex items-center gap-2">
+                          <span className="font-mono">{curr.symbol}</span>
+                          <span>{curr.name}</span>
+                        </span>
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
 
-          {/* Instructional Text */}
-          <p className="text-muted-foreground text-sm max-w-2xl mx-auto mb-6">
-            Simply add your monthly income, then add monthly expenses to see if you have money left over! Use the plus sign to add a spouse or roommate to split the costs!
-          </p>
-        </div>
+              {/* Quick Tips */}
+              <div className="bg-card border border-border rounded-lg p-4">
+                <h3 className="font-medium mb-3 text-foreground">Quick Tips</h3>
+                <ul className="space-y-2 text-sm text-muted-foreground">
+                  <li className="flex items-start gap-2">
+                    <span className="text-primary font-bold">•</span>
+                    <span>Include all income sources</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-primary font-bold">•</span>
+                    <span>Don't forget subscriptions</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-primary font-bold">•</span>
+                    <span>Use + to add household members</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-primary font-bold">•</span>
+                    <span>Aim for positive net result</span>
+                  </li>
+                </ul>
+              </div>
 
-        {/* Main Content */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6 mb-16 w-full max-w-none">
-          {/* Calculator Containers */}
-          {calculators.map((calculator) => (
-            <div key={calculator.id} className="w-full">
-              <BudgetCalculator
-                id={calculator.id}
-                onRemove={() => removeCalculator(calculator.id)}
-                showRemove={calculators.length > 1}
-                pageType="monthly_budget"
-              />
+              {/* Budget Health */}
+              <div className="bg-card border border-border rounded-lg p-4">
+                <h3 className="font-medium mb-3 text-foreground">Budget Health</h3>
+                <div className="space-y-2 text-sm">
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">Excellent:</span>
+                    <span className="text-green-600 font-medium">&gt;20% surplus</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">Good:</span>
+                    <span className="text-blue-600 font-medium">10-20% surplus</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">Caution:</span>
+                    <span className="text-yellow-600 font-medium">0-10% surplus</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">Risk:</span>
+                    <span className="text-red-600 font-medium">Deficit</span>
+                  </div>
+                </div>
+              </div>
             </div>
-          ))}
 
-          {/* Add New Calculator Button */}
-          <div className="w-full flex items-center justify-center col-span-1 lg:col-span-2 xl:col-span-3">
-            <Button
-              onClick={addCalculator}
-              variant="outline"
-              size="lg"
-              className="h-20 w-20 rounded-full border-2 border-dashed border-primary hover:bg-primary/5"
-            >
-              <Plus className="h-8 w-8 text-primary" />
-            </Button>
+            {/* Main Content - Centered Calculators */}
+            <div className="flex-1 max-w-4xl">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+                {/* Calculator Containers */}
+                {calculators.map((calculator) => (
+                  <div key={calculator.id} className="w-full">
+                    <BudgetCalculator
+                      id={calculator.id}
+                      onRemove={() => removeCalculator(calculator.id)}
+                      showRemove={calculators.length > 1}
+                      pageType="monthly_budget"
+                    />
+                  </div>
+                ))}
+
+                {/* Add New Calculator Button */}
+                <div className="w-full flex items-center justify-center col-span-1 lg:col-span-2">
+                  <Button
+                    onClick={addCalculator}
+                    variant="outline"
+                    size="lg"
+                    className="h-20 w-20 rounded-full border-2 border-dashed border-primary hover:bg-primary/5"
+                  >
+                    <Plus className="h-8 w-8 text-primary" />
+                  </Button>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -293,12 +344,11 @@ const MonthlyBudget: React.FC = () => {
           </div>
         </section>
 
-          {/* AI Chatbot */}
-          <AIChatbot 
-            pageContext="This is the Monthly Budget Calculator page where users can input their monthly income and expenses to calculate their net budget. Users can add multiple calculators for different household members or scenarios, select different currencies, and save their data if logged in. The page includes pre-configured expense categories and the ability to add custom expenses."
-            pageName="Monthly Budget Calculator"
-          />
-        </div>
+        {/* AI Chatbot */}
+        <AIChatbot 
+          pageContext="This is the Monthly Budget Calculator page where users can input their monthly income and expenses to calculate their net budget. Users can add multiple calculators for different household members or scenarios, select different currencies, and save their data if logged in. The page includes pre-configured expense categories and the ability to add custom expenses."
+          pageName="Monthly Budget Calculator"
+        />
       </div>
   );
 };
