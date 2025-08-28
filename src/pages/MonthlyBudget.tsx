@@ -3,6 +3,7 @@ import { Plus, Globe } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import BudgetCalculator from '@/components/BudgetCalculator';
+import { BudgetHealthGauge } from '@/components/BudgetHealthGauge';
 import { useCurrency } from '@/hooks/useCurrency';
 import { useAuth } from '@/hooks/useAuth';
 import { useBadges } from '@/hooks/useBadges';
@@ -43,9 +44,28 @@ const currencies = [
 
 const MonthlyBudget: React.FC = () => {
   const [calculators, setCalculators] = useState<Calculator[]>([{ id: '1' }]);
+  const [budgetData, setBudgetData] = useState<Record<string, { income: number; expenses: number }>>({});
   const { currency, setCurrency } = useCurrency();
   const { user } = useAuth();
   const { earnBadge } = useBadges();
+
+  // Calculate total budget health from all calculators
+  const totalIncome = Object.values(budgetData).reduce((sum, data) => sum + data.income, 0);
+  const totalExpenses = Object.values(budgetData).reduce((sum, data) => sum + data.expenses, 0);
+
+  // Listen for budget updates from individual calculators
+  useEffect(() => {
+    const handleBudgetUpdate = (event: CustomEvent) => {
+      const { calculatorId, income, totalExpenses } = event.detail;
+      setBudgetData(prev => ({
+        ...prev,
+        [calculatorId]: { income: income || 0, expenses: totalExpenses || 0 }
+      }));
+    };
+
+    window.addEventListener('budgetUpdate', handleBudgetUpdate as EventListener);
+    return () => window.removeEventListener('budgetUpdate', handleBudgetUpdate as EventListener);
+  }, []);
 
   // Listen for badge earning events
   useEffect(() => {
@@ -128,115 +148,67 @@ const MonthlyBudget: React.FC = () => {
           </div>
         </div>
 
-        {/* Main Container with Sidebar Layout */}
-        <div className="w-full max-w-7xl mx-auto px-4 py-8">
-          <div className="flex flex-col lg:flex-row gap-8">
-            
-            {/* Left Sidebar - Tips & Info */}
-            <div className="lg:w-80 space-y-6">
-              {/* Currency Selector */}
-              <div className="bg-card border border-border rounded-lg p-4">
-                <div className="flex items-center gap-2 mb-3">
-                  <Globe className="h-4 w-4 text-muted-foreground" />
-                  <span className="text-sm font-medium">Currency</span>
-                </div>
-                <Select value={currency.code} onValueChange={(value) => {
-                  const selectedCurrency = currencies.find(c => c.code === value);
-                  if (selectedCurrency) setCurrency(selectedCurrency);
-                }}>
-                  <SelectTrigger className="w-full">
-                    <SelectValue placeholder="Select currency" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {currencies.map((curr) => (
-                      <SelectItem key={curr.code} value={curr.code}>
-                        <span className="flex items-center gap-2">
-                          <span className="font-mono">{curr.symbol}</span>
-                          <span>{curr.name}</span>
-                        </span>
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-
-              {/* Quick Tips */}
-              <div className="bg-card border border-border rounded-lg p-4">
-                <h3 className="font-medium mb-3 text-foreground">Quick Tips</h3>
-                <ul className="space-y-2 text-sm text-muted-foreground">
-                  <li className="flex items-start gap-2">
-                    <span className="text-primary font-bold">•</span>
-                    <span>Include all income sources</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="text-primary font-bold">•</span>
-                    <span>Don't forget subscriptions</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="text-primary font-bold">•</span>
-                    <span>Use + to add household members</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="text-primary font-bold">•</span>
-                    <span>Aim for positive net result</span>
-                  </li>
-                </ul>
-              </div>
-
-              {/* Budget Health */}
-              <div className="bg-card border border-border rounded-lg p-4">
-                <h3 className="font-medium mb-3 text-foreground">Budget Health</h3>
-                <div className="space-y-2 text-sm">
-                  <div className="flex justify-between">
-                    <span className="text-muted-foreground">Excellent:</span>
-                    <span className="text-green-600 font-medium">&gt;20% surplus</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-muted-foreground">Good:</span>
-                    <span className="text-blue-600 font-medium">10-20% surplus</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-muted-foreground">Caution:</span>
-                    <span className="text-yellow-600 font-medium">0-10% surplus</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-muted-foreground">Risk:</span>
-                    <span className="text-red-600 font-medium">Deficit</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Main Content - Centered Calculators */}
-            <div className="flex-1 max-w-4xl">
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-                {/* Calculator Containers */}
-                {calculators.map((calculator) => (
-                  <div key={calculator.id} className="w-full">
-                    <BudgetCalculator
-                      id={calculator.id}
-                      onRemove={() => removeCalculator(calculator.id)}
-                      showRemove={calculators.length > 1}
-                      pageType="monthly_budget"
-                    />
-                  </div>
+        {/* Main Container */}
+        <div className="w-full max-w-6xl mx-auto px-4 py-8">
+          
+          {/* Currency Selector */}
+          <div className="flex items-center justify-center gap-2 mb-8">
+            <Globe className="h-4 w-4 text-muted-foreground" />
+            <Select value={currency.code} onValueChange={(value) => {
+              const selectedCurrency = currencies.find(c => c.code === value);
+              if (selectedCurrency) setCurrency(selectedCurrency);
+            }}>
+              <SelectTrigger className="w-64">
+                <SelectValue placeholder="Select currency" />
+              </SelectTrigger>
+              <SelectContent>
+                {currencies.map((curr) => (
+                  <SelectItem key={curr.code} value={curr.code}>
+                    <span className="flex items-center gap-2">
+                      <span className="font-mono">{curr.symbol}</span>
+                      <span>{curr.name}</span>
+                    </span>
+                  </SelectItem>
                 ))}
+              </SelectContent>
+            </Select>
+          </div>
 
-                {/* Add New Calculator Button */}
-                <div className="w-full flex items-center justify-center col-span-1 lg:col-span-2">
-                  <Button
-                    onClick={addCalculator}
-                    variant="outline"
-                    size="lg"
-                    className="h-20 w-20 rounded-full border-2 border-dashed border-primary hover:bg-primary/5"
-                  >
-                    <Plus className="h-8 w-8 text-primary" />
-                  </Button>
+          {/* Main Content - Centered Calculators */}
+          <div className="max-w-5xl mx-auto">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+              {/* Calculator Containers */}
+              {calculators.map((calculator) => (
+                <div key={calculator.id} className="w-full">
+                  <BudgetCalculator
+                    id={calculator.id}
+                    onRemove={() => removeCalculator(calculator.id)}
+                    showRemove={calculators.length > 1}
+                    pageType="monthly_budget"
+                  />
                 </div>
+              ))}
+
+              {/* Add New Calculator Button */}
+              <div className="w-full flex items-center justify-center col-span-1 lg:col-span-2">
+                <Button
+                  onClick={addCalculator}
+                  variant="outline"
+                  size="lg"
+                  className="h-20 w-20 rounded-full border-2 border-dashed border-primary hover:bg-primary/5"
+                >
+                  <Plus className="h-8 w-8 text-primary" />
+                </Button>
               </div>
             </div>
           </div>
         </div>
+
+        {/* Budget Health Gauge - Fixed Position */}
+        <BudgetHealthGauge 
+          income={totalIncome} 
+          totalExpenses={totalExpenses} 
+        />
 
         {/* Light Section - Matching Other Pages */}
         <section className="py-16 px-4 bg-white text-gray-900 relative rounded-2xl mx-4 shadow-xl">

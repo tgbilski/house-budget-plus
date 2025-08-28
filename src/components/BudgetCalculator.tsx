@@ -268,6 +268,19 @@ const BudgetCalculator: React.FC<BudgetCalculatorProps> = ({
   
   const netResult = monthlyIncome - totalExpenses;
 
+  // Emit budget updates for the temperature gauge
+  useEffect(() => {
+    const event = new CustomEvent('budgetUpdate', {
+      detail: {
+        calculatorId: id,
+        income: monthlyIncome,
+        totalExpenses: totalExpenses,
+        netResult: netResult
+      }
+    });
+    window.dispatchEvent(event);
+  }, [id, monthlyIncome, totalExpenses, netResult]);
+
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
