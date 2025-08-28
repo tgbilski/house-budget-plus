@@ -1,4 +1,4 @@
-import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
+import { serve } from "https://deno.land/std@0.210.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 
 const corsHeaders = {
@@ -23,11 +23,11 @@ serve(async (req) => {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
-    
+
     const supabase = createClient(supabaseUrl, supabaseServiceKey, {
       auth: { persistSession: false },
     });
-    
+
     const token = authHeader.replace("Bearer ", "");
     const { data: { user }, error: authError } = await supabase.auth.getUser(token);
 
@@ -51,7 +51,7 @@ serve(async (req) => {
       .eq('user_id', user.id)
       .order('created_at', { ascending: false })
       .limit(1);
-      
+
     const { data: checkinData } = await supabase
       .from('daily_checkins')
       .select('date, feeling, notes')
@@ -65,7 +65,7 @@ serve(async (req) => {
       recent_checkins: checkinData || [],
       current_date: new Date().toISOString().split('T')[0]
     };
-    
+
     if (takeoutData?.length === 0 && budgetData?.length === 0) {
       return new Response(JSON.stringify({
         success: true,
