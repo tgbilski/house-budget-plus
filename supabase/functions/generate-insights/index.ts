@@ -126,7 +126,6 @@ serve(async (req) => {
       throw new Error("No content returned from OpenAI.");
     }
     
-    // Correctly parse the JSON and access the insights array
     const parsedInsights = JSON.parse(insightsJSON).insights;
 
     await supabase.from('user_insights').delete().eq('user_id', user.id);
