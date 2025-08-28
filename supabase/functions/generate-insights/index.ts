@@ -1,168 +1,183 @@
-import { serve } from "https://deno.land/std@0.210.0/http/server.ts";
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
+import "https://deno.land/x/xhr@0.1.0/mod.ts";
+import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 
 const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
-const supabaseUrl = Deno.env.get("SUPABASE_URL") ?? '';
-const supabaseServiceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? '';
-const openAIApiKey = Deno.env.get("OPENAI_API_KEY") ?? '';
-
 serve(async (req) => {
-  if (req.method === "OPTIONS") {
+  // Handle CORS preflight requests
+  if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
   }
 
   try {
-    const authHeader = req.headers.get("Authorization");
-    if (!authHeader) {
-      return new Response(JSON.stringify({ error: "Unauthorized" }), {
-        status: 401,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
-    }
+    const supabaseClient = createClient(
+      Deno.env.get('SUPABASE_URL') ?? '',
+      Deno.env.get('SUPABASE_ANON_KEY') ?? '',
+      {
+        global: {
+          headers: { Authorization: req.headers.get('Authorization')! },
+        },
+      }
+    );
 
-    const supabase = createClient(supabaseUrl, supabaseServiceKey, {
-      auth: { persistSession: false },
-    });
-
-    const token = authHeader.replace("Bearer ", "");
-    const { data: { user }, error: authError } = await supabase.auth.getUser(token);
-
+    // Get user from JWT
+    const { data: { user }, error: authError } = await supabaseClient.auth.getUser();
     if (authError || !user) {
-      return new Response(JSON.stringify({ error: "Invalid token" }), {
+      return new Response(JSON.stringify({ error: 'Unauthorized' }), {
         status: 401,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
     }
 
-    const { data: takeoutData } = await supabase
+    console.log('Generating insights for user:', user.id);
+
+    // Fetch user's financial data
+    const { data: takeoutData } = await supabaseClient
       .from('takeout_transactions')
-      .select('date, amount, category, merchant')
+      .select('*')
       .eq('user_id', user.id)
       .order('date', { ascending: false })
-      .limit(50);
+      .limit(100);
 
-    const { data: budgetData } = await supabase
+    const { data: budgetData } = await supabaseClient
       .from('budget_data')
-      .select('income, expenses, page_type')
+      .select('*')
       .eq('user_id', user.id)
       .order('created_at', { ascending: false })
-      .limit(1);
-
-    const { data: checkinData } = await supabase
-      .from('daily_checkins')
-      .select('date, feeling, notes')
-      .eq('user_id', user.id)
-      .order('date', { ascending: false })
       .limit(10);
 
+    const { data: checkinData } = await supabaseClient
+      .from('daily_checkins')
+      .select('*')
+      .eq('user_id', user.id)
+      .order('date', { ascending: false })
+      .limit(30);
+
+    // Prepare data for AI analysis
     const dataContext = {
-      recent_takeout: takeoutData || [],
-      most_recent_budget: budgetData?.[0] || null,
-      recent_checkins: checkinData || [],
+      takeout_spending: takeoutData || [],
+      budget_history: budgetData || [],
+      daily_checkins: checkinData || [],
       current_date: new Date().toISOString().split('T')[0]
     };
 
-    if (takeoutData?.length === 0 && budgetData?.length === 0) {
-      return new Response(JSON.stringify({
-        success: true,
-        insights: [],
-        message: "Not enough data to generate insights. Please add more transactions and budget information."
-      }), {
-        status: 200,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+    // Call OpenAI for insights
+    const openAIApiKey = Deno.env.get('OPENAI_API_KEY');
+    if (!openAIApiKey) {
+      throw new Error('OpenAI API key not configured');
     }
 
-    const systemPrompt = `
-      You are an expert financial analyst. Your task is to generate 3 personalized financial insights for the user based on the provided data.
-      
-      Each insight must be a JSON object with the following properties:
-      - "id" (string): a unique ID (e.g., a timestamp or a random string).
-      - "insight_type" (string): must be one of 'spending_pattern', 'budget_prediction', or 'savings_opportunity'.
-      - "title" (string): a short, clear title for the insight.
-      - "description" (string): a detailed, actionable description.
-      - "priority" (number): a priority level (1=High, 2=Medium, 3=Low).
-      - "data" (object): an optional object with relevant metrics.
-      
-      The entire response must be a single JSON object with a key "insights" which is an array of these objects. Do not include any other text or markdown outside the JSON.
-      
-      User Data:
-      ${JSON.stringify(dataContext, null, 2)}
-    `;
+    const prompt = `Analyze this user's financial data and generate 3-5 personalized insights. Focus on spending patterns, budgeting opportunities, and actionable recommendations.
 
-    const response = await fetch("https://api.openai.com/v1/chat/completions", {
-      method: "POST",
+User Data:
+${JSON.stringify(dataContext, null, 2)}
+
+Generate insights in this JSON format:
+{
+  "insights": [
+    {
+      "type": "spending_pattern|budget_prediction|savings_opportunity",
+      "title": "Brief insight title",
+      "description": "Detailed explanation with specific numbers and actionable advice",
+      "priority": 1-3,
+      "data": { "relevant_metrics": "key_data" }
+    }
+  ]
+}
+
+Make insights specific, actionable, and encouraging. Use actual numbers from their data.`;
+
+    const response = await fetch('https://api.openai.com/v1/chat/completions', {
+      method: 'POST',
       headers: {
-        "Authorization": `Bearer ${openAIApiKey}`,
-        "Content-Type": "application/json",
+        'Authorization': `Bearer ${openAIApiKey}`,
+        'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: "gpt-4o-mini",
+        model: 'gpt-4o-mini',
         messages: [
-          { role: "system", content: "You are a helpful financial advisor that provides personalized insights based on spending data." },
-          { role: "user", content: systemPrompt }
+          { role: 'system', content: 'You are a helpful financial advisor that provides personalized insights based on spending data.' },
+          { role: 'user', content: prompt }
         ],
         temperature: 0.7,
         max_tokens: 1500,
-        response_format: { type: "json_object" },
       }),
     });
 
     if (!response.ok) {
-      const errorDetails = await response.json();
-      console.error("OpenAI API error:", errorDetails);
-      throw new Error("OpenAI API call failed");
+      throw new Error(`OpenAI API error: ${response.status}`);
     }
 
     const aiResponse = await response.json();
-    const insightsJSON = aiResponse.choices?.[0]?.message?.content;
+    const insightsText = aiResponse.choices[0].message.content;
     
-    if (!insightsJSON) {
-      console.error("OpenAI returned no content.");
-      throw new Error("No content returned from OpenAI.");
+    console.log('AI Response:', insightsText);
+
+    let insights;
+    try {
+      insights = JSON.parse(insightsText);
+    } catch (parseError) {
+      console.error('Failed to parse AI response:', parseError);
+      // Fallback insights if AI response is malformed
+      insights = {
+        insights: [{
+          type: 'spending_pattern',
+          title: 'Review Your Spending Patterns',
+          description: 'Take a closer look at your recent transactions to identify areas for improvement.',
+          priority: 2,
+          data: { suggestion: 'manual_review' }
+        }]
+      };
     }
-    
-    const parsedInsights = JSON.parse(insightsJSON).insights;
 
-    await supabase.from('user_insights').delete().eq('user_id', user.id);
+    // Store insights in database
+    const insightsToStore = insights.insights.map((insight: any) => ({
+      user_id: user.id,
+      insight_type: insight.type,
+      title: insight.title,
+      description: insight.description,
+      priority: insight.priority || 2,
+      data: insight.data || {},
+      valid_until: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0] // Valid for 7 days
+    }));
 
-    const { error: insertError } = await supabase
+    // Clear old insights before inserting new ones
+    await supabaseClient
       .from('user_insights')
-      .insert(parsedInsights.map((insight) => ({
-        user_id: user.id,
-        insight_type: insight.insight_type || insight.type,
-        title: insight.title,
-        description: insight.description,
-        priority: insight.priority || 2,
-        data: insight.data || {},
-      })));
+      .delete()
+      .eq('user_id', user.id);
+
+    const { error: insertError } = await supabaseClient
+      .from('user_insights')
+      .insert(insightsToStore);
 
     if (insertError) {
       console.error('Error storing insights:', insertError);
-      throw new Error('Database insertion failed');
+      throw insertError;
     }
 
-    return new Response(JSON.stringify({
-      success: true,
-      count: parsedInsights.length,
-      message: `Successfully generated and saved ${parsedInsights.length} insights.`
+    console.log('Successfully generated and stored insights');
+
+    return new Response(JSON.stringify({ 
+      success: true, 
+      insights: insightsToStore,
+      count: insightsToStore.length 
     }), {
-      status: 200,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
 
   } catch (error) {
-    console.error('Error in generate-insights function:', error.message);
-    return new Response(JSON.stringify({
+    console.error('Error in generate-insights function:', error);
+    return new Response(JSON.stringify({ 
       error: 'Failed to generate insights',
-      details: error.message
+      details: error.message 
     }), {
       status: 500,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
   }
 });

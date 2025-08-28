@@ -8,7 +8,6 @@ import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/hooks/useAuth';
 import { useSubscription } from '@/hooks/useSubscription';
 import { supabase } from '@/integrations/supabase/client';
-import ReactMarkdown from 'react-markdown';
 
 interface Message {
   id: string;
@@ -51,8 +50,8 @@ export function AIChatbot({ pageContext, pageName }: AIChatbotProps) {
     if (isOpen && messages.length === 0) {
       const welcomeMessage: Message = {
         id: Date.now().toString(),
+        content: `Hi! I'm your AI assistant for the ${pageName} page. I can help guide you through filling out the forms and using the features here. You can type your questions or use voice input!`,
         type: 'assistant',
-        content: `Hi! I'm your AI assistant for the **${pageName}** page. I can help guide you through filling out the forms and using the features here. You can type your questions or use voice input!`,
         timestamp: new Date(),
       };
       setMessages([welcomeMessage]);
@@ -75,7 +74,7 @@ export function AIChatbot({ pageContext, pageName }: AIChatbotProps) {
 
     try {
       const { data, error } = await supabase.functions.invoke('ai-chat-assistant', {
-        body: {
+        body: { 
           message: messageText,
           pageContext,
           pageName,
@@ -100,7 +99,7 @@ export function AIChatbot({ pageContext, pageName }: AIChatbotProps) {
           window.dispatchEvent(new CustomEvent('budgetAutofill', {
             detail: data.autofill
           }));
-
+          
           toast({
             title: "Budget Updated",
             description: "I've updated your budget calculator with the specified amounts.",
@@ -112,7 +111,7 @@ export function AIChatbot({ pageContext, pageName }: AIChatbotProps) {
             });
             window.dispatchEvent(event);
           });
-
+          
           toast({
             title: "Form Filled",
             description: `Added ${data.autofill.entries.length} entries to your takeout calendar.`,
@@ -121,7 +120,7 @@ export function AIChatbot({ pageContext, pageName }: AIChatbotProps) {
           window.dispatchEvent(new CustomEvent('giftAutofill', {
             detail: data.autofill.data
           }));
-
+          
           toast({
             title: "Gift Added",
             description: "I've added your gift idea to the list.",
@@ -159,7 +158,7 @@ export function AIChatbot({ pageContext, pageName }: AIChatbotProps) {
 
       mediaRecorder.start();
       setIsRecording(true);
-
+      
       toast({
         title: "Recording Started",
         description: "Speak your message. Click the mic again to stop.",
@@ -230,6 +229,8 @@ export function AIChatbot({ pageContext, pageName }: AIChatbotProps) {
       startRecording();
     }
   };
+
+  
 
   if (!hasAccess) {
     return (
@@ -354,13 +355,7 @@ export function AIChatbot({ pageContext, pageName }: AIChatbotProps) {
                           : 'bg-muted'
                       }`}
                     >
-                      {message.type === 'assistant' ? (
-                        <ReactMarkdown>
-                          {message.content}
-                        </ReactMarkdown>
-                      ) : (
-                        message.content
-                      )}
+                      {message.content}
                     </div>
                   </div>
                 ))}
