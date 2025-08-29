@@ -43,7 +43,7 @@ const currencies = [
 ];
 
 const MonthlyBudget: React.FC = () => {
-  const [calculators, setCalculators] = useState<Calculator[]>([{ id: '1' }]);
+  const [calculators, setCalculators] = useState<Calculator[]>([{ id: '1' }, { id: '2' }]);
   const [budgetData, setBudgetData] = useState<Record<string, { income: number; expenses: number }>>({});
   const { currency, setCurrency } = useCurrency();
   const { user } = useAuth();
@@ -99,11 +99,6 @@ const MonthlyBudget: React.FC = () => {
     }
   };
 
-  const addCalculator = () => {
-    const newId = (calculators.length + 1).toString();
-    setCalculators([...calculators, { id: newId }]);
-  };
-
   const removeCalculator = (calculatorId: string) => {
     if (calculators.length > 1) {
       setCalculators(calculators.filter(calc => calc.id !== calculatorId));
@@ -148,67 +143,53 @@ const MonthlyBudget: React.FC = () => {
           </div>
         </div>
 
-        {/* Main Container */}
-        <div className="w-full max-w-6xl mx-auto px-4 py-8">
+        {/* Main Content Container - Flexbox Layout */}
+        <div className="flex flex-col xl:flex-row justify-center items-start gap-8 w-full max-w-7xl mx-auto px-4 py-8">
           
-          {/* Currency Selector */}
-          <div className="flex items-center justify-center gap-2 mb-8">
-            <Globe className="h-4 w-4 text-muted-foreground" />
-            <Select value={currency.code} onValueChange={(value) => {
-              const selectedCurrency = currencies.find(c => c.code === value);
-              if (selectedCurrency) setCurrency(selectedCurrency);
-            }}>
-              <SelectTrigger className="w-64">
-                <SelectValue placeholder="Select currency" />
-              </SelectTrigger>
-              <SelectContent>
-                {currencies.map((curr) => (
-                  <SelectItem key={curr.code} value={curr.code}>
-                    <span className="flex items-center gap-2">
-                      <span className="font-mono">{curr.symbol}</span>
-                      <span>{curr.name}</span>
-                    </span>
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+          {/* Calculators Container */}
+          <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-6 w-full">
+            {calculators.map((calculator) => (
+              <div key={calculator.id} className="w-full">
+                <BudgetCalculator
+                  id={calculator.id}
+                  onRemove={() => removeCalculator(calculator.id)}
+                  showRemove={calculators.length > 1}
+                  pageType="monthly_budget"
+                />
+              </div>
+            ))}
           </div>
 
-          {/* Budget Health Gauge - Below hero section */}
-          <div className="flex justify-center mb-8">
+          {/* Budget Health Gauge - Right side */}
+          <div className="order-first xl:order-last w-full xl:w-auto flex justify-center">
             <BudgetHealthGauge 
               income={totalIncome} 
               totalExpenses={totalExpenses} 
             />
           </div>
+        </div>
 
-          {/* Main Content - Grid with Calculators */}
-          <div className="max-w-7xl mx-auto">
-            <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 mb-8">
-              {calculators.map((calculator) => (
-                <div key={calculator.id} className="w-full">
-                  <BudgetCalculator
-                    id={calculator.id}
-                    onRemove={() => removeCalculator(calculator.id)}
-                    showRemove={calculators.length > 1}
-                    pageType="monthly_budget"
-                  />
-                </div>
+        {/* Currency Selector moved outside the main flex container */}
+        <div className="flex items-center justify-center gap-2 mt-4 mb-8">
+          <Globe className="h-4 w-4 text-muted-foreground" />
+          <Select value={currency.code} onValueChange={(value) => {
+            const selectedCurrency = currencies.find(c => c.code === value);
+            if (selectedCurrency) setCurrency(selectedCurrency);
+          }}>
+            <SelectTrigger className="w-64">
+              <SelectValue placeholder="Select currency" />
+            </SelectTrigger>
+            <SelectContent>
+              {currencies.map((curr) => (
+                <SelectItem key={curr.code} value={curr.code}>
+                  <span className="flex items-center gap-2">
+                    <span className="font-mono">{curr.symbol}</span>
+                    <span>{curr.name}</span>
+                  </span>
+                </SelectItem>
               ))}
-              
-              {/* Add New Calculator Button */}
-              <div className="flex items-center justify-center">
-                <Button
-                  onClick={addCalculator}
-                  variant="outline"
-                  size="lg"
-                  className="h-20 w-20 rounded-full border-2 border-dashed border-primary hover:bg-primary/5"
-                >
-                  <Plus className="h-8 w-8 text-primary" />
-                </Button>
-              </div>
-            </div>
-          </div>
+            </SelectContent>
+          </Select>
         </div>
 
         {/* Light Section - Matching Other Pages */}
