@@ -82,9 +82,9 @@ export default function AIInsights() {
         keywords="AI financial advisor, budget insights, personal finance, money management, financial optimization"
       />
 
-      {/* Hero Section */}
+      {/* Hero Section - Replicating Home Page Layout */}
       <div className="container mx-auto px-4 py-16 md:py-24 relative overflow-hidden">
-        {/* Mascot Image on top of everything */}
+        {/* Mascot Image - On top of everything */}
         <div className="absolute top-0 left-1/2 -translate-x-1/2 z-20 md:top-16">
           <img
             src="/lovable-uploads/ed809955-ef71-4d81-b072-945082f4380a.png"
@@ -200,9 +200,7 @@ export default function AIInsights() {
         </div>
       </div>
 
-      ---
-
-      {/* Main Content Sections */}
+      {/* Main Content Sections - Replicating Home Page Layout */}
       <div className="container mx-auto px-4 py-16 md:py-24">
         {user && subscribed && !subLoading && (
           <div className="max-w-6xl mx-auto">
