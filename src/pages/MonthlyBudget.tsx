@@ -121,44 +121,41 @@ const MonthlyBudget: React.FC = () => {
         <div
           className="w-full max-w-6xl mx-auto px-4"
         >
-          {/* This is the container with the white background */}
-          <div
-            className="relative py-8 rounded-2xl shadow-xl border border-gray-100 mb-8 **bg-white/50**"
-          >
-            <div className="text-center">
-              <div className="flex items-center justify-center gap-4 mb-4">
-                <img 
-                  src="/lovable-uploads/ed809955-ef71-4d81-b072-945082f4380a.png" 
-                  alt="Calculator mascot" 
-                  className="w-12 h-12 object-contain"
-                />
-              </div>
-              <h1 className="text-3xl md:text-4xl font-bold mb-2 text-gray-900">Monthly Budget Calculator</h1>
-              <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-                Take control of your finances by tracking every dollar of your household income and expenses.
-              </p>
+          {/* Main content now starts here, directly after the main container. */}
+          <div className="relative py-8 text-center">
+            <div className="flex items-center justify-center gap-4 mb-4">
+              <img 
+                src="/lovable-uploads/ed809955-ef71-4d81-b072-945082f4380a.png" 
+                alt="Calculator mascot" 
+                className="w-12 h-12 object-contain"
+              />
             </div>
-            <div className="absolute top-6 right-6 flex items-center gap-2">
-              <Globe className="h-4 w-4 text-muted-foreground" />
-              <Select value={currency.code} onValueChange={(value) => {
-                const selectedCurrency = currencies.find(c => c.code === value);
-                if (selectedCurrency) setCurrency(selectedCurrency);
-              }}>
-                <SelectTrigger className="w-[150px] md:w-[180px] border-none text-sm bg-gray-50/50">
-                  <SelectValue placeholder="Currency" />
-                </SelectTrigger>
-                <SelectContent>
-                  {currencies.map((curr) => (
-                    <SelectItem key={curr.code} value={curr.code}>
-                      <span className="flex items-center gap-2">
-                        <span className="font-mono">{curr.symbol}</span>
-                        <span>{curr.name}</span>
-                      </span>
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
+            <h1 className="text-3xl md:text-4xl font-bold mb-2 text-gray-900">Monthly Budget Calculator</h1>
+            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+              Take control of your finances by tracking every dollar of your household income and expenses.
+            </p>
+          </div>
+
+          <div className="absolute top-6 right-6 flex items-center gap-2">
+            <Globe className="h-4 w-4 text-muted-foreground" />
+            <Select value={currency.code} onValueChange={(value) => {
+              const selectedCurrency = currencies.find(c => c.code === value);
+              if (selectedCurrency) setCurrency(selectedCurrency);
+            }}>
+              <SelectTrigger className="w-[150px] md:w-[180px] border-none text-sm bg-gray-50/50">
+                <SelectValue placeholder="Currency" />
+              </SelectTrigger>
+              <SelectContent>
+                {currencies.map((curr) => (
+                  <SelectItem key={curr.code} value={curr.code}>
+                    <span className="flex items-center gap-2">
+                      <span className="font-mono">{curr.symbol}</span>
+                      <span>{curr.name}</span>
+                    </span>
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8 mt-4">
