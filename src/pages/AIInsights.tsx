@@ -85,7 +85,7 @@ export default function AIInsights() {
       {/* Hero Section */}
       <div className="container mx-auto px-4 py-16 md:py-24 relative overflow-hidden">
         {/* Mascot Image on top of everything */}
-        <div className="absolute top-0 right-1/2 translate-x-1/2 z-20 md:top-16">
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 z-20 md:top-16">
           <img
             src="/lovable-uploads/ed809955-ef71-4d81-b072-945082f4380a.png"
             alt="Budget Calculator mascot"
