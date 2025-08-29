@@ -89,7 +89,7 @@ export default function AIInsights() {
         description="Get personalized financial advice using AI. Analyze your budget data and receive expert insights to optimize your spending and savings."
         keywords="AI financial advisor, budget insights, personal finance, money management, financial optimization"
       />
-      
+
       {/* Hero Section with Glassmorphism */}
       <div className="relative bg-white/10 backdrop-blur-lg border border-white/20 text-white py-20 rounded-3xl mx-4 mt-8 mb-12 shadow-2xl z-10">
         {/* Mascot Image - Absolutely positioned just above the title */}
@@ -102,7 +102,6 @@ export default function AIInsights() {
         </div>
         <div className="container mx-auto px-4 relative z-10 pt-24 md:pt-28"> {/* Adjusted padding-top */}
           <div className="text-center">
-            {/* Removed the flex container for the icon, as only the mascot remains */}
             <h1 className="text-5xl md:text-6xl font-extrabold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-blue-300 to-purple-300 leading-tight">
               AI Financial Insights
             </h1>
@@ -209,7 +208,6 @@ export default function AIInsights() {
                           dangerouslySetInnerHTML={{
                             __html: formatAIResponse(answer)
                           }}
-                        />
                       </div>
                     )}
                   </CardContent>
