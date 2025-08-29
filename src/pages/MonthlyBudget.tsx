@@ -306,12 +306,11 @@ const MonthlyBudget: React.FC = () => {
               We're here to help you succeed with your budgeting journey. Get in touch with questions, suggestions, or feedback.
             </p>
             <Button 
-              asChild 
               variant="outline" 
               size="lg"
               onClick={() => window.location.href = 'mailto:homebudgetcalculator@gmail.com?subject=Budget Calculator Feedback'}
             >
-              <span>Contact Us</span>
+              Contact Us
             </Button>
           </div>
         </section>
