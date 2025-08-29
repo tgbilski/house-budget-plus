@@ -9,8 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { toast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { SEO } from "@/components/SEO";
-import { Breadcrumbs } from "@/components/Breadcrumbs";
-import { Brain, Crown } from "lucide-react"; // FaRobot has been removed
+import { Brain, Crown } from "lucide-react";
 
 export default function AIInsights() {
   const { user } = useAuth();
@@ -78,23 +77,25 @@ export default function AIInsights() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 text-gray-900">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-indigo-50 text-gray-900">
       <SEO
         title="AI Budget Insights - Personal Financial Advisor"
         description="Get personalized financial advice using AI. Analyze your budget data and receive expert insights to optimize your spending and savings."
         keywords="AI financial advisor, budget insights, personal finance, money management, financial optimization"
       />
       
-      {/* Hero Section with Light Background and Consistent Styling */}
-      <div className="relative bg-white text-gray-900 py-12 rounded-2xl mx-4 mt-4 mb-8 shadow-xl border border-gray-100">
+      {/* Hero Section with Modern, Clean Styling */}
+      <div className="relative bg-white text-gray-900 py-20 rounded-2xl mx-4 mt-8 mb-8 shadow-xl border border-gray-100">
         <div className="container mx-auto px-4 relative z-10">
           <div className="text-center">
-            <div className="flex items-center justify-center gap-3 mb-4">
-              <Brain className="h-12 w-12 text-primary" />
+            <div className="flex items-center justify-center gap-4 mb-4">
+              <div className="p-4 bg-primary/10 rounded-full">
+                <Brain className="h-16 w-16 text-primary" />
+              </div>
             </div>
-            <h1 className="text-2xl md:text-4xl font-bold mb-2 text-gray-900">AI Financial Insights</h1>
-            <p className="text-base md:text-lg text-gray-600 max-w-2xl mx-auto">
-              Unlock personalized financial advice powered by artificial intelligence.
+            <h1 className="text-4xl md:text-5xl font-bold mb-3 text-gray-900">AI Financial Insights</h1>
+            <p className="text-lg md:text-xl text-gray-600 max-w-2xl mx-auto">
+              Unlock personalized financial advice, powered by your data and artificial intelligence.
             </p>
           </div>
         </div>
@@ -121,9 +122,10 @@ export default function AIInsights() {
 
           {!user && !subLoading && (
             <div className="min-h-[50vh] flex items-center justify-center">
-              <Card className="w-full max-w-md bg-white border-gray-100 text-gray-900 shadow-md">
-                <CardContent className="p-6 text-center">
-                  <p>Please sign in to access AI Insights</p>
+              <Card className="w-full max-w-md bg-white border-gray-100 text-gray-900 shadow-xl">
+                <CardContent className="p-8 text-center">
+                  <p className="text-xl font-semibold mb-4">Please sign in to access AI Insights</p>
+                  <Button className="mt-4 bg-primary hover:bg-primary/90 text-white" onClick={() => window.location.href = '/login'}>Sign In</Button>
                 </CardContent>
               </Card>
             </div>
@@ -131,18 +133,18 @@ export default function AIInsights() {
 
           {user && !subscribed && !subLoading && (
             <div className="min-h-[50vh] flex items-center justify-center">
-              <Card className="w-full max-w-md bg-white border-gray-100 text-gray-900 shadow-md">
+              <Card className="w-full max-w-md bg-white border-gray-100 text-gray-900 shadow-xl">
                 <CardHeader className="text-center">
-                  <CardTitle className="text-gray-900">AI Insights</CardTitle>
+                  <CardTitle className="text-2xl font-bold text-gray-900">AI Insights</CardTitle>
                 </CardHeader>
                 <CardContent className="p-6 text-center">
-                  <Badge variant="destructive" className="mb-4 bg-red-500 text-white">
+                  <Badge variant="destructive" className="mb-4 bg-red-500 text-white text-sm py-1 px-3">
                     Subscription Required
                   </Badge>
-                  <p className="text-gray-600">
+                  <p className="text-gray-600 mb-6">
                     The AI Insights feature is available for premium subscribers.
                   </p>
-                  <Button className="mt-6 bg-primary hover:bg-primary/90 text-white" onClick={handleManageSubscription}>
+                  <Button className="bg-primary hover:bg-primary/90 text-white" onClick={handleManageSubscription}>
                     Manage Subscription
                   </Button>
                 </CardContent>
@@ -151,15 +153,15 @@ export default function AIInsights() {
           )}
 
           {user && subscribed && !subLoading && (
-            <div className="max-w-6xl mx-auto space-y-8">
+            <div className="max-w-4xl mx-auto space-y-12">
               {/* AI Chat Interface */}
-              <div className="max-w-2xl mx-auto">
-                <Card className="bg-white border-gray-100 text-gray-900 shadow-md">
+              <div className="relative">
+                <Card className="bg-white border-gray-100 text-gray-900 shadow-2xl">
                   <CardHeader>
-                    <CardTitle className="flex items-center gap-2 text-gray-900">
-                      <Brain className="h-6 w-6 text-primary" /> AI Financial Advisor
+                    <CardTitle className="flex items-center gap-3 text-2xl font-bold text-gray-900">
+                      <Brain className="h-7 w-7 text-primary" /> AI Financial Advisor
                       {subscriptionTier && (
-                        <Badge variant="secondary" className="ml-auto bg-gray-100 text-gray-600 hover:bg-gray-200">
+                        <Badge className="ml-auto bg-gray-100 text-gray-600 hover:bg-gray-200 text-xs font-medium px-3 py-1.5">
                           <Crown className="h-4 w-4 mr-1 text-yellow-400" /> {subscriptionTier}
                         </Badge>
                       )}
@@ -167,27 +169,27 @@ export default function AIInsights() {
                   </CardHeader>
                   <CardContent>
                     <Textarea
-                      rows={3}
+                      rows={4}
                       value={question}
                       onChange={(e) => setQuestion(e.target.value)}
                       placeholder="Ask an AI-powered budget question, such as 'How can I reduce my expenses?'"
                       disabled={loading}
-                      className="bg-gray-50 border-gray-200 text-gray-900 placeholder:text-gray-500 focus:border-primary"
+                      className="bg-gray-50 border-gray-200 text-gray-900 placeholder:text-gray-500 focus:border-primary transition-colors"
                     />
                     <Button
-                      className="mt-4 bg-primary hover:bg-primary/90 text-white"
+                      className="mt-4 bg-primary hover:bg-primary/90 text-white transition-all duration-200"
                       onClick={handleAsk}
                       disabled={loading || !question.trim()}
                     >
                       {loading ? "Thinking..." : "Ask AI"}
                     </Button>
                     {answer && (
-                      <div className="mt-6 p-4 bg-gray-100 rounded-lg">
-                        <div className="font-bold mb-2 text-gray-900">AI Financial Advisor:</div>
-                        <div 
-                          className="prose prose-sm max-w-none text-gray-600"
-                          dangerouslySetInnerHTML={{ 
-                            __html: formatAIResponse(answer) 
+                      <div className="mt-6 p-6 bg-gray-100 rounded-lg border border-gray-200">
+                        <div className="font-bold mb-3 text-gray-900 text-lg">AI Financial Advisor:</div>
+                        <div
+                          className="prose prose-sm max-w-none text-gray-700 leading-relaxed"
+                          dangerouslySetInnerHTML={{
+                            __html: formatAIResponse(answer)
                           }}
                         />
                       </div>
@@ -225,7 +227,6 @@ export default function AIInsights() {
           )}
         </div>
       </div>
-      <Breadcrumbs />
     </div>
   );
 }
