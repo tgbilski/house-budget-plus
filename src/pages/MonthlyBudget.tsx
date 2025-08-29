@@ -99,22 +99,6 @@ const MonthlyBudget: React.FC = () => {
     }
   };
 
-  const removeCalculator = (calculatorId: string) => {
-    if (calculators.length > 1) {
-      setCalculators(calculators.filter(calc => calc.id !== calculatorId));
-      
-      // Also remove from database if user is logged in
-      if (user) {
-        supabase
-          .from('budget_data')
-          .delete()
-          .eq('user_id', user.id)
-          .eq('calculator_id', calculatorId)
-          .eq('page_type', 'monthly_budget');
-      }
-    }
-  };
-
   return (
     <div className="min-h-screen overflow-x-hidden">
       <SEO 
@@ -175,8 +159,7 @@ const MonthlyBudget: React.FC = () => {
               <div key={calculator.id} className="min-w-[320px] max-w-sm flex-1">
                 <BudgetCalculator
                   id={calculator.id}
-                  onRemove={() => removeCalculator(calculator.id)}
-                  showRemove={calculators.length > 1}
+                  showRemove={false}
                   pageType="monthly_budget"
                 />
               </div>
