@@ -55,9 +55,9 @@ export const BudgetHealthGauge: React.FC<BudgetHealthGaugeProps> = ({
   const gaugeStatus = getGaugeStatus();
 
   return (
-    <div className="bg-card border border-border rounded-lg p-6 shadow-lg w-full max-w-sm">
-      <div className="text-center mb-4">
-        <h3 className="text-lg font-semibold text-foreground">Budget Health</h3>
+    <div className="bg-card border border-border rounded-lg p-4 shadow-lg w-full max-w-xs">
+      <div className="text-center mb-3">
+        <h3 className="text-sm font-semibold text-foreground">Budget Health</h3>
       </div>
       
       {/* Temperature Gauge */}
@@ -73,7 +73,7 @@ export const BudgetHealthGauge: React.FC<BudgetHealthGaugeProps> = ({
         )}
         
         {/* Gauge Container */}
-        <div className="relative w-12 h-80 bg-gray-200 rounded-full border-2 border-gray-300 overflow-hidden">
+        <div className="relative w-8 h-60 bg-gray-200 rounded-full border-2 border-gray-300 overflow-hidden">
           {/* Fill */}
           <div
             className={`absolute bottom-0 left-0 right-0 transition-all duration-500 ease-out ${gaugeStatus.color} rounded-full`}
@@ -85,7 +85,7 @@ export const BudgetHealthGauge: React.FC<BudgetHealthGaugeProps> = ({
             {[0, 25, 50, 75, 100].map((mark) => (
               <div
                 key={mark}
-                className="absolute right-0 w-3 h-0.5 bg-gray-400"
+                className="absolute right-0 w-2 h-0.5 bg-gray-400"
                 style={{ top: `${100 - mark}%` }}
               />
             ))}
@@ -94,14 +94,13 @@ export const BudgetHealthGauge: React.FC<BudgetHealthGaugeProps> = ({
       </div>
       
       {/* Status Text - Centered and contained */}
-      <div className="mt-6 text-center space-y-2">
-        <div className={`text-sm font-bold uppercase tracking-wide ${gaugeStatus.textColor} break-words`}>
+      <div className="mt-4 text-center space-y-1">
+        <div className={`text-xs font-bold uppercase tracking-wide ${gaugeStatus.textColor} break-words`}>
           {gaugeStatus.status}
         </div>
         
-        
         {/* Net Amount */}
-        <div className={`text-sm font-medium ${gaugeStatus.textColor} break-words`}>
+        <div className={`text-xs font-medium ${gaugeStatus.textColor} break-words`}>
           {netResult >= 0 ? `+$${netResult.toFixed(0)}` : `-$${Math.abs(netResult).toFixed(0)}`}
         </div>
       </div>

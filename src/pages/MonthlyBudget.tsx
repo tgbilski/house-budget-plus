@@ -174,8 +174,8 @@ const MonthlyBudget: React.FC = () => {
             </Select>
           </div>
 
-          {/* Budget Health Gauge - Fixed position below header */}
-          <div className="fixed top-20 right-4 z-10">
+          {/* Budget Health Gauge - Below hero section */}
+          <div className="flex justify-center mb-8">
             <BudgetHealthGauge 
               income={totalIncome} 
               totalExpenses={totalExpenses} 
