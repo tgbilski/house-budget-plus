@@ -86,19 +86,19 @@ export default function AIInsights() {
       {/* Hero Section - Replicating Home Page Layout */}
       <div className="container mx-auto px-4 py-16 md:py-24 relative overflow-hidden">
         {/* Mascot Image - On top of everything */}
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 z-20 md:top-16">
+        <div className="absolute top-[calc(-50px-10px)] left-1/2 -translate-x-1/2 z-20">
           <img
             src="/lovable-uploads/ed809955-ef71-4d81-b072-945082f4380a.png"
             alt="Budget Calculator mascot"
-            className="w-32 h-32 md:w-48 md:h-48 object-contain"
+            className="w-36 h-36 md:w-48 md:h-48 object-contain"
           />
         </div>
 
-        <div className="max-w-6xl mx-auto text-center relative z-10 pt-20 md:pt-32">
-          <h1 className="text-4xl md:text-7xl font-extrabold mb-4 text-gray-900 leading-tight">
+        <div className="max-w-6xl mx-auto text-center relative z-10 pt-24 md:pt-28">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 text-gray-900 leading-tight">
             AI Financial Insights
           </h1>
-          <p className="text-lg md:text-2xl text-gray-600 max-w-3xl mx-auto leading-relaxed mb-12">
+          <p className="text-base md:text-lg text-gray-600 max-w-3xl mx-auto leading-relaxed mb-12">
             Unlock intelligent, **personalized financial advice** powered by advanced artificial intelligence to master your money.
           </p>
 
@@ -126,7 +126,7 @@ export default function AIInsights() {
                 <CardContent className="p-8 text-center">
                   <p className="text-xl font-semibold mb-6 text-gray-900">Please sign in to access AI Insights</p>
                   <Button asChild className="mt-4 bg-purple-600 hover:bg-purple-700 text-white transition-all duration-300 transform hover:scale-105 shadow-lg">
-                    <Link to="/login">Sign In Now</Link>
+                    <Link to="/auth">Sign In Now</Link>
                   </Button>
                 </CardContent>
               </Card>
