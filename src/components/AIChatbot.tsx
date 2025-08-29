@@ -231,17 +231,18 @@ export function AIChatbot({ pageContext, pageName }: AIChatbotProps) {
   };
 
   const formatAIResponse = (content: string) => {
-    return content
+    // Process the content step by step
+    let processed = content
       // Bold text for **text**
       .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
       // Bullet points
       .replace(/^- (.+)$/gm, '• $1')
       .replace(/^\* (.+)$/gm, '• $1')
-      // Line breaks for paragraphs
-      .replace(/\n\n/g, '</p><p>')
-      .replace(/\n/g, '<br>')
-      // Wrap in paragraph
-      .replace(/^(.+)$/, '<p>$1</p>');
+      // Convert line breaks to proper paragraph structure
+      .replace(/\n/g, '<br>');
+    
+    // Wrap in a single div to ensure single root element
+    return `<div>${processed}</div>`;
   };
 
   
