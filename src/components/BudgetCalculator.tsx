@@ -1,3 +1,4 @@
+// src/components/BudgetCalculator.tsx
 import React, { useState, useEffect } from 'react';
 import { Plus, Trash2, Download } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -22,6 +23,7 @@ interface BudgetCalculatorProps {
   onRemove: () => void;
   showRemove: boolean;
   pageType?: string;
+  onNameChange: (id: string, name: string) => void; // Add this new prop
 }
 
 const defaultExpenses: ExpenseItem[] = [
@@ -44,7 +46,8 @@ const BudgetCalculator: React.FC<BudgetCalculatorProps> = ({
   id, 
   onRemove, 
   showRemove, 
-  pageType = 'monthly_budget'
+  pageType = 'monthly_budget',
+  onNameChange
 }) => {
   const { currency } = useCurrency();
   const { user } = useAuth();
@@ -65,8 +68,9 @@ const BudgetCalculator: React.FC<BudgetCalculatorProps> = ({
   useEffect(() => {
     const handleBudgetAutofill = (event: CustomEvent) => {
       const autofillData = event.detail;
-      
-      if (autofillData.action === 'fill_budget') {
+
+      // Only proceed if the event is for this specific calculator ID
+      if (autofillData.action === 'fill_budget' && autofillData.calculatorId === id) {
         const { data } = autofillData;
         
         // Set income if provided
@@ -102,7 +106,7 @@ const BudgetCalculator: React.FC<BudgetCalculatorProps> = ({
     return () => {
       window.removeEventListener('budgetAutofill', handleBudgetAutofill as EventListener);
     };
-  }, [expenses]);
+  }, [expenses, id]); // Include `id` in the dependency array
 
   const loadData = async () => {
     if (!user) return;
@@ -139,6 +143,7 @@ const BudgetCalculator: React.FC<BudgetCalculatorProps> = ({
         }
         if (expensesData.ownerName) {
           setOwnerName(expensesData.ownerName);
+          onNameChange(id, expensesData.ownerName); // Report initial name
         }
       }
     }
@@ -263,8 +268,8 @@ const BudgetCalculator: React.FC<BudgetCalculatorProps> = ({
   };
 
   const totalExpenses = expenses.reduce((sum, expense) => sum + expense.amount, 0) +
-                       additionalExpenses.reduce((sum, expense) => sum + expense.amount, 0) +
-                       additionalSubscriptions.reduce((sum, expense) => sum + expense.amount, 0);
+                        additionalExpenses.reduce((sum, expense) => sum + expense.amount, 0) +
+                        additionalSubscriptions.reduce((sum, expense) => sum + expense.amount, 0);
   
   const netResult = monthlyIncome - totalExpenses;
 
@@ -311,7 +316,11 @@ const BudgetCalculator: React.FC<BudgetCalculatorProps> = ({
               id={`owner-${id}`}
               placeholder="Enter name..."
               value={ownerName}
-              onChange={(e) => setOwnerName(e.target.value)}
+              onChange={(e) => {
+                const newName = e.target.value;
+                setOwnerName(newName);
+                onNameChange(id, newName); // Call the new prop to report the name change
+              }}
               className="mt-1 h-8 text-sm"
             />
           </div>
