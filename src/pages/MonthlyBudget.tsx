@@ -112,7 +112,7 @@ const MonthlyBudget: React.FC = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-900 text-gray-100 overflow-x-hidden">
+    <div className="min-h-screen bg-gray-50 text-gray-900 overflow-x-hidden">
       <SEO 
         title={seoData.monthlyBudget.title}
         description={seoData.monthlyBudget.description}
@@ -123,7 +123,7 @@ const MonthlyBudget: React.FC = () => {
       <div className="relative pt-8 pb-16">
         {/* Main Content Container */}
         <div className="w-full max-w-6xl mx-auto px-4">
-          <div className="relative bg-gray-800 py-8 rounded-2xl shadow-xl border border-gray-700 mb-8">
+          <div className="relative bg-white py-8 rounded-2xl shadow-xl border border-gray-100 mb-8">
             <div className="text-center">
               <div className="flex items-center justify-center gap-4 mb-4">
                 <img 
@@ -132,22 +132,22 @@ const MonthlyBudget: React.FC = () => {
                   className="w-12 h-12 object-contain"
                 />
               </div>
-              <h1 className="text-3xl md:text-4xl font-bold mb-2 text-white">Monthly Budget Calculator</h1>
-              <p className="text-lg text-gray-300 max-w-2xl mx-auto">
+              <h1 className="text-3xl md:text-4xl font-bold mb-2 text-gray-900">Monthly Budget Calculator</h1>
+              <p className="text-lg text-gray-600 max-w-2xl mx-auto">
                 Take control of your finances by tracking every dollar of your household income and expenses.
               </p>
             </div>
             {/* Currency Selector - Now a sleek, top-right element */}
             <div className="absolute top-6 right-6 flex items-center gap-2">
-              <Globe className="h-4 w-4 text-gray-400" />
+              <Globe className="h-4 w-4 text-muted-foreground" />
               <Select value={currency.code} onValueChange={(value) => {
                 const selectedCurrency = currencies.find(c => c.code === value);
                 if (selectedCurrency) setCurrency(selectedCurrency);
               }}>
-                <SelectTrigger className="w-[150px] md:w-[180px] border-none text-sm bg-gray-700/50 text-white">
+                <SelectTrigger className="w-[150px] md:w-[180px] border-none text-sm bg-gray-50/50">
                   <SelectValue placeholder="Currency" />
                 </SelectTrigger>
-                <SelectContent className="bg-gray-800 text-white border border-gray-700">
+                <SelectContent>
                   {currencies.map((curr) => (
                     <SelectItem key={curr.code} value={curr.code}>
                       <span className="flex items-center gap-2">
@@ -164,9 +164,9 @@ const MonthlyBudget: React.FC = () => {
           {/* New Summary Metrics Section */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8 mt-4">
             {summaryData.map((item) => (
-              <div key={item.title} className="bg-gray-800 rounded-xl shadow-md p-6 border border-gray-700 flex items-center justify-between">
+              <div key={item.title} className="bg-white rounded-xl shadow-md p-6 border border-gray-100 flex items-center justify-between">
                 <div>
-                  <h3 className="text-xl font-semibold text-gray-400 mb-1">{item.title}</h3>
+                  <h3 className="text-xl font-semibold text-gray-600 mb-1">{item.title}</h3>
                   <p className={`text-3xl font-bold ${item.color}`}>{currency.symbol}{item.value.toLocaleString()}</p>
                 </div>
                 <item.icon className={`w-10 h-10 ${item.color}`} />
@@ -196,32 +196,32 @@ const MonthlyBudget: React.FC = () => {
 
           {/* Add Another Calculator Button */}
           <div className="text-center my-8">
-            <Button onClick={addCalculator} className="group transition-all duration-300 transform-gpu hover:scale-105 bg-gray-700 text-white hover:bg-gray-600">
+            <Button onClick={addCalculator} className="group transition-all duration-300 transform-gpu hover:scale-105">
               <Plus className="h-4 w-4 mr-2" /> Add Another Budget
             </Button>
           </div>
 
           {/* Feature Section - Enhanced and more visual */}
-          <section className="py-16 bg-gray-800 text-gray-100 rounded-2xl shadow-xl border border-gray-700 mt-8">
+          <section className="py-16 bg-white text-gray-900 rounded-2xl shadow-xl border border-gray-100 mt-8">
             <div className="w-full max-w-4xl mx-auto text-center px-4">
               <h2 className="text-2xl md:text-3xl font-bold mb-6">
                 Take Control of Your Finances
               </h2>
-              <p className="text-lg text-gray-300 mb-8">
+              <p className="text-lg text-gray-600 mb-8">
                 Use our comprehensive budget calculator to plan your financial future and achieve your goals.
               </p>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div className="bg-gray-700 rounded-lg p-6 border border-gray-600">
-                  <h3 className="font-semibold mb-2 text-white">Track Every Dollar</h3>
-                  <p className="text-sm text-gray-400">Monitor income and expenses to see exactly where your money goes each month.</p>
+                <div className="bg-gray-50 rounded-lg p-6 border border-gray-200">
+                  <h3 className="font-semibold mb-2">Track Every Dollar</h3>
+                  <p className="text-sm text-gray-600">Monitor income and expenses to see exactly where your money goes each month.</p>
                 </div>
-                <div className="bg-gray-700 rounded-lg p-6 border border-gray-600">
-                  <h3 className="font-semibold mb-2 text-white">Plan for the Future</h3>
-                  <p className="text-sm text-gray-400">Build emergency funds and save for major purchases with clear financial planning.</p>
+                <div className="bg-gray-50 rounded-lg p-6 border border-gray-200">
+                  <h3 className="font-semibold mb-2">Plan for the Future</h3>
+                  <p className="text-sm text-gray-600">Build emergency funds and save for major purchases with clear financial planning.</p>
                 </div>
-                <div className="bg-gray-700 rounded-lg p-6 border border-gray-600">
-                  <h3 className="font-semibold mb-2 text-white">Multiple Scenarios</h3>
-                  <p className="text-sm text-gray-400">Create separate budgets for different household members or financial situations.</p>
+                <div className="bg-gray-50 rounded-lg p-6 border border-gray-200">
+                  <h3 className="font-semibold mb-2">Multiple Scenarios</h3>
+                  <p className="text-sm text-gray-600">Create separate budgets for different household members or financial situations.</p>
                 </div>
               </div>
             </div>
@@ -229,16 +229,16 @@ const MonthlyBudget: React.FC = () => {
 
           {/* AdSense Optimization Content - Cleaned up and in a single card */}
           <section className="mt-16 w-full max-w-4xl mx-auto px-4">
-            <div className="bg-gray-800 border border-gray-700 rounded-lg p-6">
-              <h2 className="text-2xl font-semibold text-white mb-4">
+            <div className="bg-card border border-border rounded-lg p-6">
+              <h2 className="text-2xl font-semibold text-foreground mb-4">
                 How to Use the Monthly Budget Calculator
               </h2>
-              <div className="prose prose-sm text-gray-400 space-y-4">
+              <div className="prose prose-sm text-muted-foreground space-y-4">
                 <p>
                   Our free Monthly Budget Calculator helps you track and manage your household expenses effectively. Simply enter your monthly income and all your regular expenses to see your financial picture at a glance.
                 </p>
                 
-                <h3 className="text-lg font-medium text-white">Key Features:</h3>
+                <h3 className="text-lg font-medium text-foreground">Key Features:</h3>
                 <ul className="list-disc list-inside space-y-2">
                   <li>Track monthly income and expenses for multiple household members</li>
                   <li>Pre-configured expense categories for common household costs</li>
@@ -257,15 +257,14 @@ const MonthlyBudget: React.FC = () => {
           
           {/* Contact Us Section */}
           <section className="mt-12 py-8 text-center">
-            <h3 className="text-xl font-semibold text-white mb-4">Need Help or Have Feedback?</h3>
-            <p className="text-gray-400 mb-6">
+            <h3 className="text-xl font-semibold text-foreground mb-4">Need Help or Have Feedback?</h3>
+            <p className="text-muted-foreground mb-6">
               We're here to help you succeed with your budgeting journey. Get in touch with questions, suggestions, or feedback.
             </p>
             <Button 
               variant="outline" 
               size="lg"
               onClick={() => window.location.href = 'mailto:homebudgetcalculator@gmail.com?subject=Budget Calculator Feedback'}
-              className="border-gray-700 text-white hover:bg-gray-700"
             >
               Contact Us
             </Button>
