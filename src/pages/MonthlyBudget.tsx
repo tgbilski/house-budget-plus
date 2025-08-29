@@ -1,3 +1,4 @@
+// src/pages/MonthlyBudget.tsx
 import React, { useState, useEffect } from 'react';
 import { Plus, Globe, PiggyBank, Receipt, DollarSign } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -45,6 +46,7 @@ const currencies = [
 const MonthlyBudget: React.FC = () => {
   const [calculators, setCalculators] = useState<Calculator[]>([{ id: '1' }]);
   const [budgetData, setBudgetData] = useState<Record<string, { income: number; expenses: number }>>({});
+  const [calculatorNames, setCalculatorNames] = useState<Record<string, string>>({});
   const { currency, setCurrency } = useCurrency();
   const { user } = useAuth();
   const { earnBadge } = useBadges();
@@ -100,6 +102,14 @@ const MonthlyBudget: React.FC = () => {
   const addCalculator = () => {
     const newId = (parseInt(calculators[calculators.length - 1].id) + 1).toString();
     setCalculators([...calculators, { id: newId }]);
+  };
+  
+  // New function to update the name for a specific calculator
+  const handleNameChange = (id: string, name: string) => {
+    setCalculatorNames(prev => ({
+      ...prev,
+      [id]: name
+    }));
   };
 
   const summaryData = [
@@ -176,6 +186,7 @@ const MonthlyBudget: React.FC = () => {
                   id={calculator.id}
                   showRemove={calculators.length > 1}
                   onRemove={() => setCalculators(calculators.filter(c => c.id !== calculator.id))}
+                  onNameChange={handleNameChange} // Pass the new prop
                   pageType="monthly_budget"
                 />
               </div>
@@ -263,6 +274,7 @@ const MonthlyBudget: React.FC = () => {
           <AIChatbot 
             pageContext="This is the Monthly Budget Calculator page where users can input their monthly income and expenses to calculate their net budget. Users can add multiple calculators for different household members or scenarios, select different currencies, and save their data if logged in. The page includes pre-configured expense categories and the ability to add custom expenses."
             pageName="Monthly Budget Calculator"
+            additionalContext={{ calculatorNames }}
           />
         </div>
       </div>
