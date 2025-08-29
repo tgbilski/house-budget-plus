@@ -9,7 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { toast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { SEO } from "@/components/SEO";
-import { Brain, Crown, Zap, Target, Lightbulb } from "lucide-react"; // Added new icons
+import { Brain, Crown, Zap, Target, Lightbulb } from "lucide-react";
 
 export default function AIInsights() {
   const { user } = useAuth();
