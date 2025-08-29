@@ -122,8 +122,13 @@ const MonthlyBudget: React.FC = () => {
       />
       <div className="relative pt-8 pb-16">
         {/* Main Content Container */}
-        <div className="w-full max-w-6xl mx-auto px-4">
-          <div className="relative bg-white py-8 rounded-2xl shadow-xl border border-gray-100 mb-8">
+        <div
+          className="w-full max-w-6xl mx-auto px-4"
+        >
+          <div
+            className="relative py-8 rounded-2xl shadow-xl border border-gray-100 mb-8"
+            style={{ backgroundColor: 'rgba(255,255,255,0.5)' }}
+          >
             <div className="text-center">
               <div className="flex items-center justify-center gap-4 mb-4">
                 <img 
