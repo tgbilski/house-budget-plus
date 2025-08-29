@@ -281,7 +281,7 @@ const Home = () => {
   );
 };
 
-export default Home;
+export default AIInsights;
 
 // Temporary PromoCard component for the AdSense placeholder
 const PromoCard = () => (
