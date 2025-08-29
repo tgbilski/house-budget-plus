@@ -10,8 +10,7 @@ import { toast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { SEO } from "@/components/SEO";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
-import { Brain, Crown } from "lucide-react";
-import { FaRobot } from 'react-icons/fa'; // Using react-icons for a consistent style
+import { Brain, Crown } from "lucide-react"; // FaRobot has been removed
 
 export default function AIInsights() {
   const { user } = useAuth();
@@ -91,7 +90,7 @@ export default function AIInsights() {
         <div className="container mx-auto px-4 relative z-10">
           <div className="text-center">
             <div className="flex items-center justify-center gap-3 mb-4">
-              <FaRobot className="h-12 w-12 text-primary" />
+              <Brain className="h-12 w-12 text-primary" />
             </div>
             <h1 className="text-2xl md:text-4xl font-bold mb-2 text-gray-900">AI Financial Insights</h1>
             <p className="text-base md:text-lg text-gray-600 max-w-2xl mx-auto">
