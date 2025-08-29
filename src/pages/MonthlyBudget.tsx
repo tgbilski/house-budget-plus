@@ -49,10 +49,12 @@ const MonthlyBudget: React.FC = () => {
   const { user } = useAuth();
   const { earnBadge } = useBadges();
 
+  // Calculate total budget health from all calculators
   const totalIncome = Object.values(budgetData).reduce((sum, data) => sum + (data.income || 0), 0);
   const totalExpenses = Object.values(budgetData).reduce((sum, data) => sum + (data.expenses || 0), 0);
   const netBalance = totalIncome - totalExpenses;
 
+  // Listen for budget updates from individual calculators
   useEffect(() => {
     const handleBudgetUpdate = (event: CustomEvent) => {
       const { calculatorId, income, totalExpenses } = event.detail;
@@ -66,6 +68,7 @@ const MonthlyBudget: React.FC = () => {
     return () => window.removeEventListener('budgetUpdate', handleBudgetUpdate as EventListener);
   }, []);
 
+  // Listen for badge earning events
   useEffect(() => {
     const handleEarnBadge = (event: CustomEvent) => {
       const { badgeType } = event.detail;
@@ -118,46 +121,52 @@ const MonthlyBudget: React.FC = () => {
         canonical="https://www.housebudgetcalculator.com/budget"
       />
       <div className="relative pt-8 pb-16">
+        {/* Main Content Container */}
         <div
           className="w-full max-w-6xl mx-auto px-4"
         >
-          {/* Main content now starts here, directly after the main container. */}
-          <div className="relative py-8 text-center">
-            <div className="flex items-center justify-center gap-4 mb-4">
-              <img 
-                src="/lovable-uploads/ed809955-ef71-4d81-b072-945082f4380a.png" 
-                alt="Calculator mascot" 
-                className="w-12 h-12 object-contain"
-              />
+          <div
+            className="relative py-8 rounded-2xl shadow-xl border border-gray-100 mb-8"
+            style={{ backgroundColor: 'rgba(255,255,255,0.5)' }}
+          >
+            <div className="text-center">
+              <div className="flex items-center justify-center gap-4 mb-4">
+                <img 
+                  src="/lovable-uploads/ed809955-ef71-4d81-b072-945082f4380a.png" 
+                  alt="Calculator mascot" 
+                  className="w-12 h-12 object-contain"
+                />
+              </div>
+              <h1 className="text-3xl md:text-4xl font-bold mb-2 text-gray-900">Monthly Budget Calculator</h1>
+              <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+                Take control of your finances by tracking every dollar of your household income and expenses.
+              </p>
             </div>
-            <h1 className="text-3xl md:text-4xl font-bold mb-2 text-gray-900">Monthly Budget Calculator</h1>
-            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-              Take control of your finances by tracking every dollar of your household income and expenses.
-            </p>
-          </div>
-
-          <div className="absolute top-6 right-6 flex items-center gap-2">
-            <Globe className="h-4 w-4 text-muted-foreground" />
-            <Select value={currency.code} onValueChange={(value) => {
-              const selectedCurrency = currencies.find(c => c.code === value);
-              if (selectedCurrency) setCurrency(selectedCurrency);
-            }}>
-              <SelectTrigger className="w-[150px] md:w-[180px] border-none text-sm bg-gray-50/50">
-                <SelectValue placeholder="Currency" />
-              </SelectTrigger>
-              <SelectContent>
-                {currencies.map((curr) => (
-                  <SelectItem key={curr.code} value={curr.code}>
-                    <span className="flex items-center gap-2">
-                      <span className="font-mono">{curr.symbol}</span>
-                      <span>{curr.name}</span>
-                    </span>
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            {/* Currency Selector - Now a sleek, top-right element */}
+            <div className="absolute top-6 right-6 flex items-center gap-2">
+              <Globe className="h-4 w-4 text-muted-foreground" />
+              <Select value={currency.code} onValueChange={(value) => {
+                const selectedCurrency = currencies.find(c => c.code === value);
+                if (selectedCurrency) setCurrency(selectedCurrency);
+              }}>
+                <SelectTrigger className="w-[150px] md:w-[180px] border-none text-sm bg-gray-50/50">
+                  <SelectValue placeholder="Currency" />
+                </SelectTrigger>
+                <SelectContent>
+                  {currencies.map((curr) => (
+                    <SelectItem key={curr.code} value={curr.code}>
+                      <span className="flex items-center gap-2">
+                        <span className="font-mono">{curr.symbol}</span>
+                        <span>{curr.name}</span>
+                      </span>
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
           </div>
           
+          {/* New Summary Metrics Section */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8 mt-4">
             {summaryData.map((item) => (
               <div key={item.title} className="bg-white rounded-xl shadow-md p-6 border border-gray-100 flex items-center justify-between">
@@ -170,6 +179,7 @@ const MonthlyBudget: React.FC = () => {
             ))}
           </div>
 
+          {/* Calculators and Gauge - Horizontal Layout */}
           <div className="flex flex-col md:flex-row flex-wrap justify-center items-start gap-4 mb-8">
             {calculators.map((calculator) => (
               <div key={calculator.id} className="w-full md:w-auto min-w-[300px] flex-1">
@@ -189,12 +199,14 @@ const MonthlyBudget: React.FC = () => {
             </div>
           </div>
 
+          {/* Add Another Calculator Button */}
           <div className="text-center my-8">
             <Button onClick={addCalculator} className="group transition-all duration-300 transform-gpu hover:scale-105">
               <Plus className="h-4 w-4 mr-2" /> Add Another Budget
             </Button>
           </div>
 
+          {/* Feature Section - Enhanced and more visual */}
           <section className="py-16 bg-white text-gray-900 rounded-2xl shadow-xl border border-gray-100 mt-8">
             <div className="w-full max-w-4xl mx-auto text-center px-4">
               <h2 className="text-2xl md:text-3xl font-bold mb-6">
@@ -220,6 +232,7 @@ const MonthlyBudget: React.FC = () => {
             </div>
           </section>
 
+          {/* AdSense Optimization Content - Cleaned up and in a single card */}
           <section className="mt-16 w-full max-w-4xl mx-auto px-4">
             <div className="bg-card border border-border rounded-lg p-6">
               <h2 className="text-2xl font-semibold text-foreground mb-4">
@@ -247,6 +260,7 @@ const MonthlyBudget: React.FC = () => {
           <FAQ faqs={budgetCalculatorFAQs} />
           <InternalLinks currentPage="/" category="budgeting" />
           
+          {/* Contact Us Section */}
           <section className="mt-12 py-8 text-center">
             <h3 className="text-xl font-semibold text-foreground mb-4">Need Help or Have Feedback?</h3>
             <p className="text-muted-foreground mb-6">
@@ -261,6 +275,7 @@ const MonthlyBudget: React.FC = () => {
             </Button>
           </section>
 
+          {/* AI Chatbot */}
           <AIChatbot 
             pageContext="This is the Monthly Budget Calculator page where users can input their monthly income and expenses to calculate their net budget. Users can add multiple calculators for different household members or scenarios, select different currencies, and save their data if logged in. The page includes pre-configured expense categories and the ability to add custom expenses."
             pageName="Monthly Budget Calculator"
