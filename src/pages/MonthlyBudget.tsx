@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Plus, Globe } from 'lucide-react';
+import { Plus, Globe, PiggyBank, Receipt, DollarSign } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import BudgetCalculator from '@/components/BudgetCalculator';
@@ -43,15 +43,16 @@ const currencies = [
 ];
 
 const MonthlyBudget: React.FC = () => {
-  const [calculators, setCalculators] = useState<Calculator[]>([{ id: '1' }, { id: '2' }]);
+  const [calculators, setCalculators] = useState<Calculator[]>([{ id: '1' }]);
   const [budgetData, setBudgetData] = useState<Record<string, { income: number; expenses: number }>>({});
   const { currency, setCurrency } = useCurrency();
   const { user } = useAuth();
   const { earnBadge } = useBadges();
 
   // Calculate total budget health from all calculators
-  const totalIncome = Object.values(budgetData).reduce((sum, data) => sum + data.income, 0);
-  const totalExpenses = Object.values(budgetData).reduce((sum, data) => sum + data.expenses, 0);
+  const totalIncome = Object.values(budgetData).reduce((sum, data) => sum + (data.income || 0), 0);
+  const totalExpenses = Object.values(budgetData).reduce((sum, data) => sum + (data.expenses || 0), 0);
+  const netBalance = totalIncome - totalExpenses;
 
   // Listen for budget updates from individual calculators
   useEffect(() => {
@@ -99,8 +100,19 @@ const MonthlyBudget: React.FC = () => {
     }
   };
 
+  const addCalculator = () => {
+    const newId = (parseInt(calculators[calculators.length - 1].id) + 1).toString();
+    setCalculators([...calculators, { id: newId }]);
+  };
+
+  const summaryData = [
+    { title: 'Total Income', value: totalIncome, icon: PiggyBank, color: 'text-green-500' },
+    { title: 'Total Expenses', value: totalExpenses, icon: Receipt, color: 'text-red-500' },
+    { title: 'Net Balance', value: netBalance, icon: DollarSign, color: netBalance >= 0 ? 'text-blue-500' : 'text-red-500' },
+  ];
+
   return (
-    <div className="min-h-screen overflow-x-hidden">
+    <div className="min-h-screen bg-gray-50 text-gray-900 overflow-x-hidden">
       <SEO 
         title={seoData.monthlyBudget.title}
         description={seoData.monthlyBudget.description}
@@ -108,161 +120,143 @@ const MonthlyBudget: React.FC = () => {
         structuredData={seoData.monthlyBudget.structuredData}
         canonical="https://www.housebudgetcalculator.com/budget"
       />
-      {/* Hero Section with Light Background */}
-      <div className="relative bg-white text-gray-900 py-8 rounded-2xl mx-4 mt-4 mb-6 shadow-xl">
-          <div className="w-full max-w-6xl mx-auto px-4 relative z-10">
+      <div className="relative pt-8 pb-16">
+        {/* Main Content Container */}
+        <div className="w-full max-w-6xl mx-auto px-4">
+          <div className="relative bg-white py-8 rounded-2xl shadow-xl border border-gray-100 mb-8">
             <div className="text-center">
               <div className="flex items-center justify-center gap-4 mb-4">
                 <img 
                   src="/lovable-uploads/ed809955-ef71-4d81-b072-945082f4380a.png" 
                   alt="Calculator mascot" 
-                  className="w-10 h-10 object-contain"
+                  className="w-12 h-12 object-contain"
                 />
               </div>
-              <h1 className="text-xl md:text-2xl font-bold mb-2 text-gray-900">Monthly Budget Calculator</h1>
-              <p className="text-sm md:text-base text-gray-600 mb-4 max-w-2xl mx-auto">
-                Plan your household finances with precision
+              <h1 className="text-3xl md:text-4xl font-bold mb-2 text-gray-900">Monthly Budget Calculator</h1>
+              <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+                Take control of your finances by tracking every dollar of your household income and expenses.
               </p>
             </div>
+            {/* Currency Selector - Now a sleek, top-right element */}
+            <div className="absolute top-6 right-6 flex items-center gap-2">
+              <Globe className="h-4 w-4 text-muted-foreground" />
+              <Select value={currency.code} onValueChange={(value) => {
+                const selectedCurrency = currencies.find(c => c.code === value);
+                if (selectedCurrency) setCurrency(selectedCurrency);
+              }}>
+                <SelectTrigger className="w-[150px] md:w-[180px] border-none text-sm bg-gray-50/50">
+                  <SelectValue placeholder="Currency" />
+                </SelectTrigger>
+                <SelectContent>
+                  {currencies.map((curr) => (
+                    <SelectItem key={curr.code} value={curr.code}>
+                      <span className="flex items-center gap-2">
+                        <span className="font-mono">{curr.symbol}</span>
+                        <span>{curr.name}</span>
+                      </span>
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
           </div>
-        </div>
-
-        {/* Currency Selector */}
-        <div className="flex items-center justify-center gap-2 mt-4 mb-8">
-          <Globe className="h-4 w-4 text-muted-foreground" />
-          <Select value={currency.code} onValueChange={(value) => {
-            const selectedCurrency = currencies.find(c => c.code === value);
-            if (selectedCurrency) setCurrency(selectedCurrency);
-          }}>
-            <SelectTrigger className="w-64">
-              <SelectValue placeholder="Select currency" />
-            </SelectTrigger>
-            <SelectContent>
-              {currencies.map((curr) => (
-                <SelectItem key={curr.code} value={curr.code}>
-                  <span className="flex items-center gap-2">
-                    <span className="font-mono">{curr.symbol}</span>
-                    <span>{curr.name}</span>
-                  </span>
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-
-        {/* Main Content Container - Centered Flexbox Layout with equal gaps */}
-        <div className="flex flex-col md:flex-row justify-center items-start gap-4 px-4 py-8 max-w-full overflow-x-auto">
           
-          {/* Calculators and Gauge in a single flex container for equal spacing */}
-          <div className="flex flex-row flex-wrap justify-center items-start gap-4">
+          {/* New Summary Metrics Section */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8 mt-4">
+            {summaryData.map((item) => (
+              <div key={item.title} className="bg-white rounded-xl shadow-md p-6 border border-gray-100 flex items-center justify-between">
+                <div>
+                  <h3 className="text-xl font-semibold text-gray-600 mb-1">{item.title}</h3>
+                  <p className={`text-3xl font-bold ${item.color}`}>{currency.symbol}{item.value.toLocaleString()}</p>
+                </div>
+                <item.icon className={`w-10 h-10 ${item.color}`} />
+              </div>
+            ))}
+          </div>
+
+          {/* Calculators and Gauge - Horizontal Layout */}
+          <div className="flex flex-col md:flex-row flex-wrap justify-center items-start gap-4 mb-8">
             {calculators.map((calculator) => (
-              <div key={calculator.id} className="min-w-[320px] max-w-sm flex-1">
+              <div key={calculator.id} className="w-full md:w-auto min-w-[300px] flex-1">
                 <BudgetCalculator
                   id={calculator.id}
-                  showRemove={false}
+                  showRemove={calculators.length > 1}
+                  onRemove={() => setCalculators(calculators.filter(c => c.id !== calculator.id))}
                   pageType="monthly_budget"
                 />
               </div>
             ))}
-            <div className="min-w-[180px] max-w-xs flex-shrink-0 flex justify-center">
+            <div className="w-full md:w-auto min-w-[300px] max-w-xs flex-shrink-0 flex justify-center">
               <BudgetHealthGauge 
                 income={totalIncome} 
                 totalExpenses={totalExpenses} 
               />
             </div>
           </div>
-        </div>
 
-        {/* Light Section - Matching Other Pages */}
-        <section className="py-16 px-4 bg-white text-gray-900 relative rounded-2xl mx-4 shadow-xl">
-          <div className="w-full max-w-4xl mx-auto text-center relative z-10 px-4">
-            <h2 className="text-2xl md:text-3xl font-bold mb-6 text-gray-900">
-              Take Control of Your Finances
-            </h2>
-            <p className="text-lg mb-8 text-gray-600">
-              Use our comprehensive budget calculator to plan your financial future and achieve your goals
-            </p>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-              <div className="bg-gray-50 rounded-lg p-6 border border-gray-200">
-                <h3 className="font-semibold mb-2 text-gray-900">Track Every Dollar</h3>
-                <p className="text-sm text-gray-600">Monitor income and expenses to see exactly where your money goes each month</p>
-              </div>
-              <div className="bg-gray-50 rounded-lg p-6 border border-gray-200">
-                <h3 className="font-semibold mb-2 text-gray-900">Plan for the Future</h3>
-                <p className="text-sm text-gray-600">Build emergency funds and save for major purchases with clear financial planning</p>
-              </div>
-              <div className="bg-gray-50 rounded-lg p-6 border border-gray-200">
-                <h3 className="font-semibold mb-2 text-gray-900">Multiple Scenarios</h3>
-                <p className="text-sm text-gray-600">Create separate budgets for different household members or financial situations</p>
+          {/* Add Another Calculator Button */}
+          <div className="text-center my-8">
+            <Button onClick={addCalculator} className="group transition-all duration-300 transform-gpu hover:scale-105">
+              <Plus className="h-4 w-4 mr-2" /> Add Another Budget
+            </Button>
+          </div>
+
+          {/* Feature Section - Enhanced and more visual */}
+          <section className="py-16 bg-white text-gray-900 rounded-2xl shadow-xl border border-gray-100 mt-8">
+            <div className="w-full max-w-4xl mx-auto text-center px-4">
+              <h2 className="text-2xl md:text-3xl font-bold mb-6">
+                Take Control of Your Finances
+              </h2>
+              <p className="text-lg text-gray-600 mb-8">
+                Use our comprehensive budget calculator to plan your financial future and achieve your goals.
+              </p>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div className="bg-gray-50 rounded-lg p-6 border border-gray-200">
+                  <h3 className="font-semibold mb-2">Track Every Dollar</h3>
+                  <p className="text-sm text-gray-600">Monitor income and expenses to see exactly where your money goes each month.</p>
+                </div>
+                <div className="bg-gray-50 rounded-lg p-6 border border-gray-200">
+                  <h3 className="font-semibold mb-2">Plan for the Future</h3>
+                  <p className="text-sm text-gray-600">Build emergency funds and save for major purchases with clear financial planning.</p>
+                </div>
+                <div className="bg-gray-50 rounded-lg p-6 border border-gray-200">
+                  <h3 className="font-semibold mb-2">Multiple Scenarios</h3>
+                  <p className="text-sm text-gray-600">Create separate budgets for different household members or financial situations.</p>
+                </div>
               </div>
             </div>
-          </div>
-        </section>
+          </section>
 
-        {/* AdSense Optimization Content */}
-        <section className="mt-16 w-full max-w-4xl mx-auto px-4">
-          <div className="bg-card border border-border rounded-lg p-6">
-            <h2 className="text-2xl font-semibold text-foreground mb-4">
-              How to Use the Monthly Budget Calculator
-            </h2>
-            <div className="prose prose-sm text-muted-foreground space-y-4">
-              <p>
-                Our free Monthly Budget Calculator helps you track and manage your household expenses effectively. 
-                Simply enter your monthly income and all your regular expenses to see your financial picture at a glance.
-              </p>
-              
-              <h3 className="text-lg font-medium text-foreground">Key Features:</h3>
-              <ul className="list-disc list-inside space-y-2">
-                <li>Track monthly income and expenses for multiple household members</li>
-                <li>Pre-configured expense categories for common household costs</li>
-                <li>Add up to 10 custom expense categories per person</li>
-                <li>Real-time calculation of your net budget result</li>
-                <li>Easy-to-use interface with clear visual feedback</li>
-                <li>Support for multiple currencies (USD, EUR, GBP, and more)</li>
-                <li>Save your budgets when you create an account</li>
-              </ul>
-
-              <h3 className="text-lg font-medium text-foreground">Why Use a Budget Calculator?</h3>
-              <p>
-                A monthly budget calculator is essential for financial health. It helps you understand where your money goes, 
-                identify unnecessary expenses, and plan for future goals. Whether you're saving for a house, paying off debt, 
-                or just trying to make ends meet, having a clear budget is the first step.
-              </p>
-
-              <h3 className="text-lg font-medium text-foreground">Tips for Better Budgeting:</h3>
-              <ul className="list-disc list-inside space-y-2">
-                <li><strong>Be accurate with income:</strong> Include all sources of monthly income including salary, freelance work, and passive income</li>
-                <li><strong>Track every expense:</strong> Don't forget small recurring expenses like subscriptions, apps, and services</li>
-                <li><strong>Review monthly:</strong> Update your budget regularly as your circumstances change</li>
-                <li><strong>Aim for surplus:</strong> Try to have a positive net result to build emergency savings</li>
-                <li><strong>Use multiple calculators:</strong> Separate budgets for different scenarios or household members</li>
-                <li><strong>Plan for irregular expenses:</strong> Include annual or quarterly expenses divided by 12</li>
-              </ul>
-
-              <h3 className="text-lg font-medium text-foreground">Who Should Use This Calculator?</h3>
-              <p>
-                This calculator is perfect for individuals, couples, families, and roommates who want to 
-                understand their shared or individual financial responsibilities. Whether you're planning 
-                to buy a home, save for a vacation, start a family, or simply want better control over your finances, 
-                this tool provides the clarity you need to make informed financial decisions.
-              </p>
-
-              <h3 className="text-lg font-medium text-foreground">Start Building Better Financial Habits Today</h3>
-              <p>
-                Financial planning doesn't have to be complicated. With our intuitive budget calculator, you can 
-                start taking control of your finances in minutes. Create multiple budget scenarios, track different 
-                household members, and see exactly where you stand financially each month.
-              </p>
+          {/* AdSense Optimization Content - Cleaned up and in a single card */}
+          <section className="mt-16 w-full max-w-4xl mx-auto px-4">
+            <div className="bg-card border border-border rounded-lg p-6">
+              <h2 className="text-2xl font-semibold text-foreground mb-4">
+                How to Use the Monthly Budget Calculator
+              </h2>
+              <div className="prose prose-sm text-muted-foreground space-y-4">
+                <p>
+                  Our free Monthly Budget Calculator helps you track and manage your household expenses effectively. Simply enter your monthly income and all your regular expenses to see your financial picture at a glance.
+                </p>
+                
+                <h3 className="text-lg font-medium text-foreground">Key Features:</h3>
+                <ul className="list-disc list-inside space-y-2">
+                  <li>Track monthly income and expenses for multiple household members</li>
+                  <li>Pre-configured expense categories for common household costs</li>
+                  <li>Add up to 10 custom expense categories per person</li>
+                  <li>Real-time calculation of your net budget result</li>
+                  <li>Easy-to-use interface with clear visual feedback</li>
+                  <li>Support for multiple currencies (USD, EUR, GBP, and more)</li>
+                  <li>Save your budgets when you create an account</li>
+                </ul>
+              </div>
             </div>
-          </div>
-        </section>
+          </section>
 
-        <FAQ faqs={budgetCalculatorFAQs} />
-        <InternalLinks currentPage="/" category="budgeting" />
-        
-        {/* Contact Us Section */}
-        <section className="mt-12 py-8">
-          <div className="text-center">
+          <FAQ faqs={budgetCalculatorFAQs} />
+          <InternalLinks currentPage="/" category="budgeting" />
+          
+          {/* Contact Us Section */}
+          <section className="mt-12 py-8 text-center">
             <h3 className="text-xl font-semibold text-foreground mb-4">Need Help or Have Feedback?</h3>
             <p className="text-muted-foreground mb-6">
               We're here to help you succeed with your budgeting journey. Get in touch with questions, suggestions, or feedback.
@@ -274,15 +268,16 @@ const MonthlyBudget: React.FC = () => {
             >
               Contact Us
             </Button>
-          </div>
-        </section>
+          </section>
 
-        {/* AI Chatbot */}
-        <AIChatbot 
-          pageContext="This is the Monthly Budget Calculator page where users can input their monthly income and expenses to calculate their net budget. Users can add multiple calculators for different household members or scenarios, select different currencies, and save their data if logged in. The page includes pre-configured expense categories and the ability to add custom expenses."
-          pageName="Monthly Budget Calculator"
-        />
+          {/* AI Chatbot */}
+          <AIChatbot 
+            pageContext="This is the Monthly Budget Calculator page where users can input their monthly income and expenses to calculate their net budget. Users can add multiple calculators for different household members or scenarios, select different currencies, and save their data if logged in. The page includes pre-configured expense categories and the ability to add custom expenses."
+            pageName="Monthly Budget Calculator"
+          />
+        </div>
       </div>
+    </div>
   );
 };
 
