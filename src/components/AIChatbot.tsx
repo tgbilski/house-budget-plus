@@ -230,6 +230,20 @@ export function AIChatbot({ pageContext, pageName }: AIChatbotProps) {
     }
   };
 
+  const formatAIResponse = (content: string) => {
+    return content
+      // Bold text for **text**
+      .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+      // Bullet points
+      .replace(/^- (.+)$/gm, '• $1')
+      .replace(/^\* (.+)$/gm, '• $1')
+      // Line breaks for paragraphs
+      .replace(/\n\n/g, '</p><p>')
+      .replace(/\n/g, '<br>')
+      // Wrap in paragraph
+      .replace(/^(.+)$/, '<p>$1</p>');
+  };
+
   
 
   if (!hasAccess) {
@@ -355,7 +369,16 @@ export function AIChatbot({ pageContext, pageName }: AIChatbotProps) {
                           : 'bg-muted'
                       }`}
                     >
-                      {message.content}
+                      {message.type === 'assistant' ? (
+                        <div 
+                          className="prose prose-sm max-w-none"
+                          dangerouslySetInnerHTML={{ 
+                            __html: formatAIResponse(message.content) 
+                          }}
+                        />
+                      ) : (
+                        message.content
+                      )}
                     </div>
                   </div>
                 ))}

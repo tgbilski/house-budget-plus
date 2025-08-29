@@ -73,6 +73,20 @@ export default function AIInsights() {
     }
   };
 
+  const formatAIResponse = (content: string) => {
+    return content
+      // Bold text for **text**
+      .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+      // Bullet points
+      .replace(/^- (.+)$/gm, '• $1')
+      .replace(/^\* (.+)$/gm, '• $1')
+      // Line breaks for paragraphs
+      .replace(/\n\n/g, '</p><p>')
+      .replace(/\n/g, '<br>')
+      // Wrap in paragraph
+      .replace(/^(.+)$/, '<p>$1</p>');
+  };
+
   return (
     <div className="min-h-screen">
       <SEO
@@ -189,8 +203,13 @@ export default function AIInsights() {
                     </Button>
                     {answer && (
                       <div className="mt-6 p-4 bg-muted rounded">
-                        <div className="font-bold mb-2">AI Answer:</div>
-                        <div>{answer}</div>
+                        <div className="font-bold mb-2">AI Financial Advisor:</div>
+                        <div 
+                          className="prose prose-sm max-w-none"
+                          dangerouslySetInnerHTML={{ 
+                            __html: formatAIResponse(answer) 
+                          }}
+                        />
                       </div>
                     )}
                   </CardContent>
