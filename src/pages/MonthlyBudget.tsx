@@ -174,35 +174,30 @@ const MonthlyBudget: React.FC = () => {
             </Select>
           </div>
 
-          {/* Main Content - Grid with Calculators and Gauge */}
+          {/* Budget Health Gauge - Fixed position below header */}
+          <div className="fixed top-20 right-4 z-10">
+            <BudgetHealthGauge 
+              income={totalIncome} 
+              totalExpenses={totalExpenses} 
+            />
+          </div>
+
+          {/* Main Content - Grid with Calculators */}
           <div className="max-w-7xl mx-auto">
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-              {/* Calculator Containers - Takes 2 columns */}
-              <div className="lg:col-span-2">
-                <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
-                  {calculators.map((calculator) => (
-                    <div key={calculator.id} className="w-full">
-                      <BudgetCalculator
-                        id={calculator.id}
-                        onRemove={() => removeCalculator(calculator.id)}
-                        showRemove={calculators.length > 1}
-                        pageType="monthly_budget"
-                      />
-                    </div>
-                  ))}
+            <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 mb-8">
+              {calculators.map((calculator) => (
+                <div key={calculator.id} className="w-full">
+                  <BudgetCalculator
+                    id={calculator.id}
+                    onRemove={() => removeCalculator(calculator.id)}
+                    showRemove={calculators.length > 1}
+                    pageType="monthly_budget"
+                  />
                 </div>
-              </div>
-
-              {/* Budget Health Gauge - Takes 1 column */}
-              <div className="lg:col-span-1 flex justify-center">
-                <BudgetHealthGauge 
-                  income={totalIncome} 
-                  totalExpenses={totalExpenses} 
-                />
-              </div>
-
+              ))}
+              
               {/* Add New Calculator Button */}
-              <div className="lg:col-span-3 flex items-center justify-center">
+              <div className="flex items-center justify-center">
                 <Button
                   onClick={addCalculator}
                   variant="outline"

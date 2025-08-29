@@ -99,10 +99,6 @@ export const BudgetHealthGauge: React.FC<BudgetHealthGaugeProps> = ({
           {gaugeStatus.status}
         </div>
         
-        {/* Percentage Display */}
-        <div className="text-sm text-muted-foreground">
-          {surplusPercentage >= 0 ? `+${surplusPercentage.toFixed(1)}%` : `${surplusPercentage.toFixed(1)}%`}
-        </div>
         
         {/* Net Amount */}
         <div className={`text-sm font-medium ${gaugeStatus.textColor} break-words`}>
