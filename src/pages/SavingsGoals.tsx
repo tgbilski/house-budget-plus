@@ -7,7 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Progress } from '@/components/ui/progress';
-import { Plus, Target, Edit2, Check, X, AlertTriangle, Trash2, Calendar, LeafyGreen } from 'lucide-react'; 
+import { Plus, Target, Edit2, Check, X, AlertTriangle, Trash2, Calendar, LeafyGreen } from 'lucide-react';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { AIChatbot } from '@/components/AIChatbot';
 import { toast } from 'sonner';
@@ -586,35 +586,6 @@ const SavingsGoals = () => {
           </CardContent>
         </Card>
 
-        {/* NEW: "WHAT IF" SCENARIO CARD */}
-        <Card className="mb-6">
-          <CardHeader>
-            <CardTitle className="text-lg">What If I Save More?</CardTitle>
-          </CardHeader>
-          <CardContent className="pt-2">
-            <p className="text-sm text-gray-500 mb-3">
-              See how adding a little extra each month can change your timeline.
-            </p>
-            <div className="flex items-center gap-2 mb-3">
-              <span className="text-lg font-bold text-muted-foreground">$</span>
-              <Input
-                type="number"
-                placeholder="0"
-                value={whatIfAmount}
-                onChange={(e) => setWhatIfAmount(e.target.value)}
-                className="w-24 text-lg [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                min="0"
-              />
-              <span className="text-sm text-gray-600">more per month</span>
-            </div>
-            {whatIfAmount && getWhatIfCompletionDate(parseFloat(whatIfAmount)) && (
-              <p className="text-lg font-semibold">
-                Your new completion date would be: **{getWhatIfCompletionDate(parseFloat(whatIfAmount))}**
-              </p>
-            )}
-          </CardContent>
-        </Card>
-
         <hr className="my-8 border-t-2 border-gray-200 dark:border-gray-700 w-full max-w-xs mx-auto" />
 
         <Card>
@@ -717,7 +688,39 @@ const SavingsGoals = () => {
             </div>
           </CardContent>
         </Card>
+        
+        {/* "WHAT IF" SCENARIO CARD */}
+        <Card className="mt-6 mb-6">
+          <CardHeader>
+            <CardTitle className="text-lg">What If I Save More?</CardTitle>
+          </CardHeader>
+          <CardContent className="pt-2">
+            <p className="text-sm text-gray-500 mb-3">
+              See how adding a little extra each month can change your timeline.
+            </p>
+            <div className="flex items-center gap-2 mb-3">
+              <span className="text-lg font-bold text-muted-foreground">$</span>
+              <Input
+                type="number"
+                placeholder="0"
+                value={whatIfAmount}
+                onChange={(e) => setWhatIfAmount(e.target.value)}
+                className="w-24 text-lg [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                min="0"
+              />
+              <span className="text-sm text-gray-600">more per month</span>
+            </div>
+            {whatIfAmount && getWhatIfCompletionDate(parseFloat(whatIfAmount)) && (
+              <p className="text-lg font-semibold">
+                Your new completion date would be: **{getWhatIfCompletionDate(parseFloat(whatIfAmount))}**
+              </p>
+            )}
+          </CardContent>
+        </Card>
 
+        <hr className="my-8 border-t-2 border-gray-200 dark:border-gray-700 w-full max-w-xs mx-auto" />
+
+        {/* Financial Glossary Section */}
         <div className="w-full max-w-sm sm:max-w-md md:max-w-4xl mx-auto px-4 py-8">
           <Collapsible.Root
             className="w-full"
@@ -735,7 +738,7 @@ const SavingsGoals = () => {
                 </Button>
               </Collapsible.Trigger>
             </div>
-            <Collapsible.Content className="space-y-4">
+            <Collapsible.Content className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="p-4 bg-muted rounded-lg">
                 <h5 className="font-semibold text-sm mb-1">APY (Annual Percentage Yield)</h5>
                 <p className="text-sm text-gray-600">
@@ -754,13 +757,31 @@ const SavingsGoals = () => {
                   An investment strategy that aims to balance risk and reward by dividing a portfolio's assets according to an individual's goals, risk tolerance, and investment horizon.
                 </p>
               </div>
+              <div className="p-4 bg-muted rounded-lg">
+                <h5 className="font-semibold text-sm mb-1">ROI (Return on Investment)</h5>
+                <p className="text-sm text-gray-600">
+                  A performance measure used to evaluate the efficiency of an investment or to compare the efficiency of a number of different investments.
+                </p>
+              </div>
+              <div className="p-4 bg-muted rounded-lg">
+                <h5 className="font-semibold text-sm mb-1">Emergency Fund</h5>
+                <p className="text-sm text-gray-600">
+                  A personal savings account that is reserved for financial surprises, such as medical emergencies or a sudden job loss.
+                </p>
+              </div>
+              <div className="p-4 bg-muted rounded-lg">
+                <h5 className="font-semibold text-sm mb-1">Diversification</h5>
+                <p className="text-sm text-gray-600">
+                  A risk management strategy that mixes a wide variety of investments within a portfolio.
+                </p>
+              </div>
             </Collapsible.Content>
           </Collapsible.Root>
         </div>
       </div>
 
       <AIChatbot 
-        pageContext="This is the Savings Goals page where users can set and track their savings goals for different years. Users can create multiple savings goals, set target amounts, and track their monthly savings progress in a table format. The page shows total saved amounts and calculates progress toward goals, including a predictive analysis of the goal completion date. Decorative elements include a calendar icon, a sprouting plant icon for predictions, and decorative dividers. A new collapsible financial glossary section has been added to the bottom of the page."
+        pageContext="This is the Savings Goals page where users can set and track their savings goals for different years. The page now includes a 'What If' calculator for goal projections and an expanded, collapsible financial glossary at the bottom. The core features are editing goals, tracking monthly savings, and viewing progress."
         pageName="Savings Goals"
       />
     </div>
