@@ -5,14 +5,12 @@ import { useBadges } from "@/hooks/useBadges";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-// Removed loader import - using inline spinner instead
 import { Badge } from "@/components/ui/badge";
 import { toast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { SEO } from "@/components/SEO";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { Brain, Crown } from "lucide-react";
-import { FinancialGauges } from "@/components/FinancialGauges";
 
 export default function AIInsights() {
   const { user } = useAuth();
@@ -24,8 +22,6 @@ export default function AIInsights() {
     openCustomerPortal,
     loading: subLoading,
   } = useSubscription();
-
-  // Removed auto badge earning - now earned when user asks a question
 
   const [question, setQuestion] = useState("");
   const [answer, setAnswer] = useState("");
@@ -74,43 +70,32 @@ export default function AIInsights() {
   };
 
   const formatAIResponse = (content: string) => {
-    // Process the content step by step
     let processed = content
-      // Bold text for **text**
       .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-      // Bullet points
       .replace(/^- (.+)$/gm, '• $1')
       .replace(/^\* (.+)$/gm, '• $1')
-      // Convert line breaks to proper paragraph structure
       .replace(/\n/g, '<br>');
-    
-    // Wrap in a single div to ensure single root element
     return `<div>${processed}</div>`;
   };
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen bg-gray-900 text-gray-100">
       <SEO
         title="AI Budget Insights - Personal Financial Advisor"
         description="Get personalized financial advice using AI. Analyze your budget data and receive expert insights to optimize your spending and savings."
         keywords="AI financial advisor, budget insights, personal finance, money management, financial optimization"
       />
       
-      {/* Hero Section with Light Background */}
-      <div className="relative bg-white text-gray-900 py-8 rounded-2xl mx-4 mt-4 mb-6 shadow-xl">
+      {/* Hero Section with Dark Background and Unified Icon */}
+      <div className="relative bg-gray-800 text-gray-100 py-12 rounded-2xl mx-4 mt-4 mb-8 shadow-xl">
         <div className="container mx-auto px-4 relative z-10">
           <div className="text-center">
             <div className="flex items-center justify-center gap-3 mb-4">
-              <svg className="h-10 w-10 text-primary" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-              </svg>
-              <svg className="h-10 w-10 text-yellow-400" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/>
-              </svg>
+              <Brain className="h-12 w-12 text-primary" />
             </div>
-            <h1 className="text-xl md:text-2xl font-bold mb-2 text-gray-900">AI Financial Insights</h1>
-            <p className="text-sm md:text-base text-gray-600 mb-4 max-w-2xl mx-auto">
-              Get personalized financial advice powered by artificial intelligence
+            <h1 className="text-2xl md:text-4xl font-bold mb-2 text-white">AI Financial Insights</h1>
+            <p className="text-base md:text-lg text-gray-300 max-w-2xl mx-auto">
+              Unlock personalized financial advice powered by artificial intelligence.
             </p>
           </div>
         </div>
@@ -118,28 +103,26 @@ export default function AIInsights() {
 
       <div className="container mx-auto px-3 sm:px-4 py-4 sm:py-8">
         <div className="max-w-6xl mx-auto">
-          {/* The debugState <pre> block has been removed */}
-
           {subLoading && (
-            <div className="flex justify-center items-center h-40">
+            <div className="flex justify-center items-center h-40 text-gray-400">
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-              <span className="ml-3 text-muted-foreground">Loading your subscription…</span>
+              <span className="ml-3">Loading your subscription…</span>
             </div>
           )}
 
           {errorMsg && (
-            <div className="text-center text-red-700 mb-4">{errorMsg}</div>
+            <div className="text-center text-red-400 mb-4">{errorMsg}</div>
           )}
 
           {typeof subscribed === "undefined" && !subLoading && (
-            <div className="text-center text-muted-foreground mb-4">
+            <div className="text-center text-gray-400 mb-4">
               Unable to determine your subscription status. Please refresh or try again.
             </div>
           )}
 
           {!user && !subLoading && (
-            <div className="min-h-screen flex items-center justify-center">
-              <Card className="w-full max-w-md">
+            <div className="min-h-[50vh] flex items-center justify-center">
+              <Card className="w-full max-w-md bg-gray-800 border-gray-700 text-gray-100">
                 <CardContent className="p-6 text-center">
                   <p>Please sign in to access AI Insights</p>
                 </CardContent>
@@ -148,19 +131,19 @@ export default function AIInsights() {
           )}
 
           {user && !subscribed && !subLoading && (
-            <div className="min-h-screen flex items-center justify-center">
-              <Card className="w-full max-w-md">
-                <CardHeader>
-                  <CardTitle>AI Insights</CardTitle>
+            <div className="min-h-[50vh] flex items-center justify-center">
+              <Card className="w-full max-w-md bg-gray-800 border-gray-700 text-gray-100">
+                <CardHeader className="text-center">
+                  <CardTitle className="text-white">AI Insights</CardTitle>
                 </CardHeader>
                 <CardContent className="p-6 text-center">
-                  <Badge variant="destructive" className="mb-4">
+                  <Badge variant="destructive" className="mb-4 bg-red-600 text-white">
                     Subscription Required
                   </Badge>
-                  <p>
+                  <p className="text-gray-300">
                     The AI Insights feature is available for premium subscribers.
                   </p>
-                  <Button className="mt-6" onClick={handleManageSubscription}>
+                  <Button className="mt-6 bg-primary hover:bg-primary/90" onClick={handleManageSubscription}>
                     Manage Subscription
                   </Button>
                 </CardContent>
@@ -170,43 +153,40 @@ export default function AIInsights() {
 
           {user && subscribed && !subLoading && (
             <div className="max-w-6xl mx-auto space-y-8">
-
               {/* AI Chat Interface */}
               <div className="max-w-2xl mx-auto">
-                <Card>
+                <Card className="bg-gray-800 border-gray-700 text-gray-100">
                   <CardHeader>
-                    <CardTitle>AI Insights</CardTitle>
+                    <CardTitle className="flex items-center gap-2">
+                      <Brain className="h-6 w-6 text-primary" /> AI Financial Advisor
+                      {subscriptionTier && (
+                        <Badge variant="secondary" className="ml-auto bg-primary/20 text-primary hover:bg-primary/30">
+                          <Crown className="h-4 w-4 mr-1 text-yellow-400" /> {subscriptionTier}
+                        </Badge>
+                      )}
+                    </CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <div className="mb-4">
-                      <Badge variant="secondary">
-                        Active: {subscriptionTier}
-                      </Badge>
-                      {subscriptionEnd && (
-                        <span className="ml-2 text-muted-foreground text-sm">
-                          until {new Date(subscriptionEnd).toLocaleDateString()}
-                        </span>
-                      )}
-                    </div>
                     <Textarea
                       rows={3}
                       value={question}
                       onChange={(e) => setQuestion(e.target.value)}
-                      placeholder="Ask an AI-powered budget question..."
+                      placeholder="Ask an AI-powered budget question, such as 'How can I reduce my expenses?'"
                       disabled={loading}
+                      className="bg-gray-700 border-gray-600 text-gray-100 placeholder:text-gray-400 focus:border-primary"
                     />
                     <Button
-                      className="mt-4"
+                      className="mt-4 bg-primary hover:bg-primary/90"
                       onClick={handleAsk}
                       disabled={loading || !question.trim()}
                     >
                       {loading ? "Thinking..." : "Ask AI"}
                     </Button>
                     {answer && (
-                      <div className="mt-6 p-4 bg-muted rounded">
-                        <div className="font-bold mb-2">AI Financial Advisor:</div>
+                      <div className="mt-6 p-4 bg-gray-700 rounded-lg">
+                        <div className="font-bold mb-2 text-white">AI Financial Advisor:</div>
                         <div 
-                          className="prose prose-sm max-w-none"
+                          className="prose prose-sm max-w-none text-gray-300"
                           dangerouslySetInnerHTML={{ 
                             __html: formatAIResponse(answer) 
                           }}
@@ -216,38 +196,36 @@ export default function AIInsights() {
                   </CardContent>
                 </Card>
               </div>
-            </div>
-          )}
 
-          {/* Transparent Section - Background removed */}
-          {user && subscribed && !subLoading && (
-            <section className="py-16 px-4 relative mt-8">
-              <div className="max-w-4xl mx-auto text-center relative z-10">
-                <h2 className="text-2xl md:text-3xl font-bold mb-6 text-white">
-                  AI-Powered Financial Intelligence
-                </h2>
-                <p className="text-lg mb-8 text-white">
-                  Get personalized insights and recommendations based on your actual financial data
-                </p>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                  <div className="bg-gray-50 rounded-lg p-6 border border-gray-200">
-                    <h3 className="font-semibold mb-2 text-gray-900">Smart Analysis</h3>
-                    <p className="text-sm text-gray-600">AI analyzes your spending patterns and budget data to provide tailored advice</p>
-                  </div>
-                  <div className="bg-gray-50 rounded-lg p-6 border border-gray-200">
-                    <h3 className="font-semibold mb-2 text-gray-900">Real-Time Insights</h3>
-                    <p className="text-sm text-gray-600">Get instant answers to financial questions based on your current situation</p>
-                  </div>
-                  <div className="bg-gray-50 rounded-lg p-6 border border-gray-200">
-                    <h3 className="font-semibold mb-2 text-gray-900">Actionable Advice</h3>
-                    <p className="text-sm text-gray-600">Receive specific recommendations to improve your financial health</p>
+              <section className="py-16 px-4 relative mt-8">
+                <div className="max-w-4xl mx-auto text-center relative z-10">
+                  <h2 className="text-2xl md:text-3xl font-bold mb-6 text-white">
+                    AI-Powered Financial Intelligence
+                  </h2>
+                  <p className="text-lg mb-8 text-gray-300">
+                    Get personalized insights and recommendations based on your actual financial data.
+                  </p>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                    <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
+                      <h3 className="font-semibold mb-2 text-white">Smart Analysis</h3>
+                      <p className="text-sm text-gray-400">AI analyzes your spending patterns and budget data to provide tailored advice.</p>
+                    </div>
+                    <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
+                      <h3 className="font-semibold mb-2 text-white">Real-Time Insights</h3>
+                      <p className="text-sm text-gray-400">Get instant answers to financial questions based on your current situation.</p>
+                    </div>
+                    <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
+                      <h3 className="font-semibold mb-2 text-white">Actionable Advice</h3>
+                      <p className="text-sm text-gray-400">Receive specific recommendations to improve your financial health.</p>
+                    </div>
                   </div>
                 </div>
-              </div>
-            </section>
+              </section>
+            </div>
           )}
         </div>
       </div>
+      <Breadcrumbs />
     </div>
   );
 }
