@@ -350,8 +350,7 @@ export function AIChatbot({ pageContext, pageName }: AIChatbotProps) {
             {/* Voice Status */}
             {(isRecording || isTranscribing) && (
               <div className="mb-3 p-2 rounded-lg bg-muted text-center text-sm">
-                {isRecording && "🎤 Recording... Click mic to stop"}
-                {isTranscribing && "🔄 Converting speech to text..."}
+                {isTranscribing ? "🔄 Converting speech to text..." : "🎤 Recording... Click mic to stop"}
               </div>
             )}
 
