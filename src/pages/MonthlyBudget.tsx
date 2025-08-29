@@ -174,23 +174,35 @@ const MonthlyBudget: React.FC = () => {
             </Select>
           </div>
 
-          {/* Main Content - Centered Calculators */}
-          <div className="max-w-5xl mx-auto">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-              {/* Calculator Containers */}
-              {calculators.map((calculator) => (
-                <div key={calculator.id} className="w-full">
-                  <BudgetCalculator
-                    id={calculator.id}
-                    onRemove={() => removeCalculator(calculator.id)}
-                    showRemove={calculators.length > 1}
-                    pageType="monthly_budget"
-                  />
+          {/* Main Content - Grid with Calculators and Gauge */}
+          <div className="max-w-7xl mx-auto">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+              {/* Calculator Containers - Takes 2 columns */}
+              <div className="lg:col-span-2">
+                <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
+                  {calculators.map((calculator) => (
+                    <div key={calculator.id} className="w-full">
+                      <BudgetCalculator
+                        id={calculator.id}
+                        onRemove={() => removeCalculator(calculator.id)}
+                        showRemove={calculators.length > 1}
+                        pageType="monthly_budget"
+                      />
+                    </div>
+                  ))}
                 </div>
-              ))}
+              </div>
+
+              {/* Budget Health Gauge - Takes 1 column */}
+              <div className="lg:col-span-1 flex justify-center">
+                <BudgetHealthGauge 
+                  income={totalIncome} 
+                  totalExpenses={totalExpenses} 
+                />
+              </div>
 
               {/* Add New Calculator Button */}
-              <div className="w-full flex items-center justify-center col-span-1 lg:col-span-2">
+              <div className="lg:col-span-3 flex items-center justify-center">
                 <Button
                   onClick={addCalculator}
                   variant="outline"
@@ -203,12 +215,6 @@ const MonthlyBudget: React.FC = () => {
             </div>
           </div>
         </div>
-
-        {/* Budget Health Gauge - Fixed Position */}
-        <BudgetHealthGauge 
-          income={totalIncome} 
-          totalExpenses={totalExpenses} 
-        />
 
         {/* Light Section - Matching Other Pages */}
         <section className="py-16 px-4 bg-white text-gray-900 relative rounded-2xl mx-4 shadow-xl">
@@ -235,7 +241,6 @@ const MonthlyBudget: React.FC = () => {
             </div>
           </div>
         </section>
-
 
         {/* AdSense Optimization Content */}
         <section className="mt-16 w-full max-w-4xl mx-auto px-4">

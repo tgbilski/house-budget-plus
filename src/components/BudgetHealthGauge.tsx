@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Sparkles } from 'lucide-react';
 
@@ -54,56 +55,58 @@ export const BudgetHealthGauge: React.FC<BudgetHealthGaugeProps> = ({
   const gaugeStatus = getGaugeStatus();
 
   return (
-    <div className="fixed right-4 top-1/2 transform -translate-y-1/2 z-10">
-      <div className="bg-card border border-border rounded-lg p-4 shadow-lg w-20">
-        {/* Temperature Gauge */}
-        <div className="relative">
-          {/* Burst effect for >100% surplus */}
-          {gaugeStatus.showBurst && (
-            <div className="absolute -top-6 left-1/2 transform -translate-x-1/2 animate-pulse">
-              <Sparkles className="h-6 w-6 text-green-500" />
-              <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-1 h-8 bg-green-500 opacity-60"></div>
-              <div className="absolute top-0 left-1/2 transform -translate-x-1/2 translate-x-1 w-1 h-6 bg-green-400 opacity-40"></div>
-              <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-x-1 w-1 h-6 bg-green-400 opacity-40"></div>
-            </div>
-          )}
+    <div className="bg-card border border-border rounded-lg p-6 shadow-lg w-full max-w-sm">
+      <div className="text-center mb-4">
+        <h3 className="text-lg font-semibold text-foreground">Budget Health</h3>
+      </div>
+      
+      {/* Temperature Gauge */}
+      <div className="relative flex justify-center">
+        {/* Burst effect for >100% surplus */}
+        {gaugeStatus.showBurst && (
+          <div className="absolute -top-6 left-1/2 transform -translate-x-1/2 animate-pulse">
+            <Sparkles className="h-6 w-6 text-green-500" />
+            <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-1 h-8 bg-green-500 opacity-60"></div>
+            <div className="absolute top-0 left-1/2 transform -translate-x-1/2 translate-x-1 w-1 h-6 bg-green-400 opacity-40"></div>
+            <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-x-1 w-1 h-6 bg-green-400 opacity-40"></div>
+          </div>
+        )}
+        
+        {/* Gauge Container */}
+        <div className="relative w-12 h-80 bg-gray-200 rounded-full border-2 border-gray-300 overflow-hidden">
+          {/* Fill */}
+          <div
+            className={`absolute bottom-0 left-0 right-0 transition-all duration-500 ease-out ${gaugeStatus.color} rounded-full`}
+            style={{ height: gaugeStatus.fillHeight }}
+          />
           
-          {/* Gauge Container - Increased height to match calculator */}
-          <div className="relative w-8 h-96 bg-gray-200 rounded-full border-2 border-gray-300 mx-auto overflow-hidden">
-            {/* Fill */}
-            <div
-              className={`absolute bottom-0 left-0 right-0 transition-all duration-500 ease-out ${gaugeStatus.color} rounded-full`}
-              style={{ height: gaugeStatus.fillHeight }}
-            />
-            
-            {/* Tick marks only */}
-            <div className="absolute right-0 top-0 h-full w-full">
-              {[0, 25, 50, 75, 100].map((mark) => (
-                <div
-                  key={mark}
-                  className="absolute right-0 w-2 h-0.5 bg-gray-400"
-                  style={{ top: `${100 - mark}%` }}
-                />
-              ))}
-            </div>
+          {/* Tick marks */}
+          <div className="absolute right-0 top-0 h-full w-full">
+            {[0, 25, 50, 75, 100].map((mark) => (
+              <div
+                key={mark}
+                className="absolute right-0 w-3 h-0.5 bg-gray-400"
+                style={{ top: `${100 - mark}%` }}
+              />
+            ))}
           </div>
         </div>
+      </div>
+      
+      {/* Status Text - Centered and contained */}
+      <div className="mt-6 text-center space-y-2">
+        <div className={`text-sm font-bold uppercase tracking-wide ${gaugeStatus.textColor} break-words`}>
+          {gaugeStatus.status}
+        </div>
         
-        {/* Status Text */}
-        <div className="mt-4 text-center">
-          <div className={`text-xs font-bold uppercase tracking-wide ${gaugeStatus.textColor}`}>
-            {gaugeStatus.status}
-          </div>
-          
-          {/* Percentage Display */}
-          <div className="text-xs text-muted-foreground mt-1">
-            {surplusPercentage >= 0 ? `+${surplusPercentage.toFixed(1)}%` : `${surplusPercentage.toFixed(1)}%`}
-          </div>
-          
-          {/* Net Amount */}
-          <div className={`text-xs font-medium mt-1 ${gaugeStatus.textColor}`}>
-            {netResult >= 0 ? `+$${netResult.toFixed(0)}` : `-$${Math.abs(netResult).toFixed(0)}`}
-          </div>
+        {/* Percentage Display */}
+        <div className="text-sm text-muted-foreground">
+          {surplusPercentage >= 0 ? `+${surplusPercentage.toFixed(1)}%` : `${surplusPercentage.toFixed(1)}%`}
+        </div>
+        
+        {/* Net Amount */}
+        <div className={`text-sm font-medium ${gaugeStatus.textColor} break-words`}>
+          {netResult >= 0 ? `+$${netResult.toFixed(0)}` : `-$${Math.abs(netResult).toFixed(0)}`}
         </div>
       </div>
     </div>
