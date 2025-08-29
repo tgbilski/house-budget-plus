@@ -43,17 +43,26 @@ const GuidedBudgetForm: React.FC<GuidedBudgetFormProps> = ({ onFormComplete }) =
       monthlyIncome = income * 4;
     } else if (formData.payFrequency === 'semi-monthly') {
       monthlyIncome = income * 2;
+    } else if (formData.payFrequency === 'monthly') {
+        monthlyIncome = income;
     }
 
     const initialData = {
       income: monthlyIncome,
       expenses: {
-        rentOrMortgage: parseFloat(formData.rentOrMortgage) || 0,
-        utilities: parseFloat(formData.utilities) || 0,
-        debtPayments: parseFloat(formData.debtPayments) || 0,
-        groceries: parseFloat(formData.groceries) || 0,
-      }
+        'mortgage': parseFloat(formData.rentOrMortgage) || 0,
+        'utilities': parseFloat(formData.utilities) || 0,
+        // The rest of the expenses are not in the default expenses list in BudgetCalculator.tsx,
+        // but we can add them to an object here. If your calculator has a way to accept custom expenses,
+        // you would format them here.
+      },
+      // If we want to add custom fields to the main calculator, they would go here.
+      customExpenses: [
+        { label: 'Debt Payments', amount: parseFloat(formData.debtPayments) || 0 },
+        { label: 'Groceries', amount: parseFloat(formData.groceries) || 0 },
+      ]
     };
+
     onFormComplete(initialData);
   };
 
