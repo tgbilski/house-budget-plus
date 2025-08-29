@@ -52,7 +52,6 @@ const SavingsGoals = () => {
     if (user) {
       loadSavingsGoals();
     } else {
-      // Initialize with a default goal for non-authenticated users
       const defaultGoal = {
         id: 'temp-1',
         title: 'My Savings Goal',
@@ -85,7 +84,6 @@ const SavingsGoals = () => {
         setSavingsGoals(goals);
         setCurrentGoalId(goals[0].id);
       } else {
-        // Create a default goal for the user
         const { data: newGoal, error: createError } = await supabase
           .from('savings_goals')
           .insert([{
@@ -111,7 +109,6 @@ const SavingsGoals = () => {
 
   const createNewGoal = async () => {
     if (!user) {
-      // For non-authenticated users, create a temporary goal
       const tempGoal = {
         id: `temp-${Date.now()}`,
         title: `Goal ${savingsGoals.length + 1}`,
@@ -154,16 +151,13 @@ const SavingsGoals = () => {
     }
 
     if (!user) {
-      // For non-authenticated users, just remove from local state
       const updatedGoals = savingsGoals.filter(goal => goal.id !== goalId);
       setSavingsGoals(updatedGoals);
       
-      // Select first remaining goal
       if (updatedGoals.length > 0) {
         setCurrentGoalId(updatedGoals[0].id);
       }
       
-      // Clear savings data for this goal
       const newData = { ...savingsData };
       Object.keys(newData).forEach(key => delete newData[key]);
       setSavingsData(newData);
@@ -173,7 +167,6 @@ const SavingsGoals = () => {
     }
 
     try {
-      // Delete from database
       const { error } = await supabase
         .from('savings_goals')
         .delete()
@@ -181,16 +174,13 @@ const SavingsGoals = () => {
 
       if (error) throw error;
 
-      // Update local state
       const updatedGoals = savingsGoals.filter(goal => goal.id !== goalId);
       setSavingsGoals(updatedGoals);
 
-      // Select first remaining goal
       if (updatedGoals.length > 0) {
         setCurrentGoalId(updatedGoals[0].id);
       }
 
-      // Clear savings data for this goal
       const newData = { ...savingsData };
       Object.keys(newData).forEach(key => delete newData[key]);
       setSavingsData(newData);
@@ -225,7 +215,7 @@ const SavingsGoals = () => {
       const dataMap: Record<string, number> = {};
       const inputMap: Record<string, string> = {};
       data?.forEach((entry: SavingsEntry) => {
-        const monthKey = entry.entry_month.slice(0, 7); // YYYY-MM format
+        const monthKey = entry.entry_month.slice(0, 7);
         dataMap[monthKey] = entry.amount;
         inputMap[monthKey] = entry.amount.toString();
       });
@@ -240,13 +230,11 @@ const SavingsGoals = () => {
   const handleInputChange = (monthIndex: number, inputValue: string) => {
     const monthKey = `${selectedYear}-${(monthIndex + 1).toString().padStart(2, '0')}`;
     
-    // Update local input value immediately for responsive UI
     setLocalInputValues(prev => ({
       ...prev,
       [monthKey]: inputValue
     }));
     
-    // Parse and update the actual savings data
     const numericValue = parseFloat(inputValue) || 0;
     updateSavingsAmount(monthIndex, numericValue);
   };
@@ -255,7 +243,6 @@ const SavingsGoals = () => {
     const monthKey = `${selectedYear}-${(monthIndex + 1).toString().padStart(2, '0')}`;
     
     if (!user) {
-      // For non-authenticated users, just update local state
       const newData = { ...savingsData };
       if (amount === 0) {
         delete newData[monthKey];
@@ -271,7 +258,6 @@ const SavingsGoals = () => {
     const entryDate = `${monthKey}-01`;
 
     try {
-      // Check if entry exists
       const { data: existingEntry } = await supabase
         .from('savings_entries')
         .select('id')
@@ -280,9 +266,7 @@ const SavingsGoals = () => {
         .single();
 
       if (existingEntry) {
-        // Update existing entry
         if (amount === 0) {
-          // Delete if amount is 0
           await supabase
             .from('savings_entries')
             .delete()
@@ -294,7 +278,6 @@ const SavingsGoals = () => {
             .eq('id', existingEntry.id);
         }
       } else if (amount > 0) {
-        // Create new entry only if amount > 0
         await supabase
           .from('savings_entries')
           .insert([{
@@ -304,7 +287,6 @@ const SavingsGoals = () => {
           }]);
       }
 
-      // Update local state
       const newData = { ...savingsData };
       if (amount === 0) {
         delete newData[monthKey];
@@ -313,7 +295,6 @@ const SavingsGoals = () => {
       }
       setSavingsData(newData);
 
-      // Update total in goals table
       const total = Object.values(newData).reduce((sum, val) => sum + val, 0);
       await supabase
         .from('savings_goals')
@@ -330,7 +311,6 @@ const SavingsGoals = () => {
     if (!newTitle.trim()) return;
 
     if (!user) {
-      // For non-authenticated users, just update local state
       const updatedGoals = savingsGoals.map(goal => 
         goal.id === goalId ? { ...goal, title: newTitle.trim() } : goal
       );
@@ -348,7 +328,6 @@ const SavingsGoals = () => {
 
       if (error) throw error;
 
-      // Update local state
       const updatedGoals = savingsGoals.map(goal => 
         goal.id === goalId ? { ...goal, title: newTitle.trim() } : goal
       );
@@ -386,7 +365,6 @@ const SavingsGoals = () => {
     if (!currentGoalId) return;
 
     if (!user) {
-      // For non-authenticated users, just update local state
       const updatedGoals = savingsGoals.map(goal => 
         goal.id === currentGoalId ? { ...goal, target_amount: targetAmount } : goal
       );
@@ -402,7 +380,6 @@ const SavingsGoals = () => {
 
       if (error) throw error;
 
-      // Update local state
       const updatedGoals = savingsGoals.map(goal => 
         goal.id === currentGoalId ? { ...goal, target_amount: targetAmount } : goal
       );
@@ -415,6 +392,34 @@ const SavingsGoals = () => {
 
   const getTotalSaved = () => {
     return Object.values(savingsData).reduce((sum, amount) => sum + amount, 0);
+  };
+
+  // NEW FUNCTION FOR PREDICTIVE ANALYSIS
+  const getEstimatedCompletionDate = () => {
+    const currentGoal = getCurrentGoal();
+    if (!currentGoal) return null;
+
+    const remainingAmount = currentGoal.target_amount - getTotalSaved();
+    if (remainingAmount <= 0) return "Goal achieved!";
+
+    const allSavingsValues = Object.values(savingsData);
+    const monthsWithSavings = allSavingsValues.filter(amount => amount > 0).length;
+    
+    if (monthsWithSavings === 0) return null;
+
+    const averageMonthlySavings = getTotalSaved() / monthsWithSavings;
+    if (averageMonthlySavings <= 0) return null;
+
+    const monthsToComplete = Math.ceil(remainingAmount / averageMonthlySavings);
+
+    const completionDate = new Date();
+    completionDate.setMonth(completionDate.getMonth() + monthsToComplete);
+
+    return completionDate.toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    });
   };
 
   if (loading) {
@@ -437,7 +442,6 @@ const SavingsGoals = () => {
         keywords="savings goals, monthly savings, financial planning, money tracker"
       />
       
-      {/* Hero Section with Light Background */}
       <div className="relative bg-white text-gray-900 py-8 overflow-x-hidden rounded-2xl mx-4 mt-4 mb-6 shadow-xl">
         <div className="w-full max-w-sm sm:max-w-md md:max-w-4xl mx-auto px-4 relative z-10">
           <div className="text-center">
@@ -449,7 +453,6 @@ const SavingsGoals = () => {
       </div>
 
       <div className="w-full max-w-sm sm:max-w-md md:max-w-4xl mx-auto px-4 py-6 md:py-8">
-        {/* Warning Banner for Non-Authenticated Users */}
         {!user && (
           <Alert className="mb-6 border-yellow-200 bg-yellow-50 dark:border-yellow-800 dark:bg-yellow-950">
             <AlertTriangle className="h-4 w-4 text-yellow-600 dark:text-yellow-400" />
@@ -462,7 +465,6 @@ const SavingsGoals = () => {
           </Alert>
         )}
         
-        {/* Savings Goals Tabs */}
         <div className="mb-6">
           <div className="flex items-center gap-2 mb-4 flex-wrap">
             {savingsGoals.map((goal) => (
@@ -525,7 +527,6 @@ const SavingsGoals = () => {
           </div>
         </div>
 
-        {/* Total Saved with Progress Bar */}
         <Card className="mb-6">
           <CardContent className="pt-6">
             <div className="mb-4">
@@ -543,11 +544,16 @@ const SavingsGoals = () => {
               <p className="text-4xl font-bold text-primary">
                 ${getTotalSaved().toLocaleString()}
               </p>
+              {/* NEW PREDICTIVE ANALYSIS DISPLAY */}
+              {getEstimatedCompletionDate() && (
+                <p className="text-sm text-gray-500 mt-2">
+                  On track to reach your goal by: **{getEstimatedCompletionDate()}**
+                </p>
+              )}
             </div>
           </CardContent>
         </Card>
 
-        {/* Year Selection and Savings Table */}
         <Card>
           <CardContent className="pt-4 md:pt-6 p-3 md:p-6">
             <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between mb-4 md:mb-6">
@@ -610,7 +616,6 @@ const SavingsGoals = () => {
                 <TableBody>
                   {months.map((month, index) => {
                     const monthKey = `${selectedYear}-${(index + 1).toString().padStart(2, '0')}`;
-                    const currentAmount = savingsData[monthKey] || 0;
                     const inputValue = localInputValues[monthKey] || '';
                     
                     return (
@@ -650,7 +655,7 @@ const SavingsGoals = () => {
       </div>
 
       <AIChatbot 
-        pageContext="This is the Savings Goals page where users can set and track their savings goals for different years. Users can create multiple savings goals, set target amounts, and track their monthly savings progress in a table format. The page shows total saved amounts and calculates progress toward goals."
+        pageContext="This is the Savings Goals page where users can set and track their savings goals for different years. Users can create multiple savings goals, set target amounts, and track their monthly savings progress in a table format. The page shows total saved amounts and calculates progress toward goals, including a predictive analysis of the goal completion date."
         pageName="Savings Goals"
       />
     </div>
