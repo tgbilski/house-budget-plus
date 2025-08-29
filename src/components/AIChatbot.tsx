@@ -1,3 +1,4 @@
+// src/components/AIChatbot.tsx
 import React, { useState, useRef, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -16,12 +17,19 @@ interface Message {
   timestamp: Date;
 }
 
+// New interface for calculator data
+interface CalculatorData {
+  calculatorId: string;
+  ownerName: string;
+}
+
 interface AIChatbotProps {
   pageContext: string;
   pageName: string;
+  calculatorsData?: CalculatorData[]; // Add this new prop
 }
 
-export function AIChatbot({ pageContext, pageName }: AIChatbotProps) {
+export function AIChatbot({ pageContext, pageName, calculatorsData = [] }: AIChatbotProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [input, setInput] = useState('');
   const [messages, setMessages] = useState<Message[]>([]);
@@ -74,11 +82,12 @@ export function AIChatbot({ pageContext, pageName }: AIChatbotProps) {
 
     try {
       const { data, error } = await supabase.functions.invoke('ai-chat-assistant', {
-        body: { 
+        body: {
           message: messageText,
           pageContext,
           pageName,
-          conversationHistory: messages.slice(-5)
+          conversationHistory: messages.slice(-5),
+          calculatorsData, // Pass the calculator data here
         }
       });
 
@@ -96,10 +105,11 @@ export function AIChatbot({ pageContext, pageName }: AIChatbotProps) {
       // Handle autofill suggestions
       if (data.autofill) {
         if (data.autofill.action === 'fill_budget') {
+          // Dispatch the event with the specific calculator ID
           window.dispatchEvent(new CustomEvent('budgetAutofill', {
             detail: data.autofill
           }));
-          
+
           toast({
             title: "Budget Updated",
             description: "I've updated your budget calculator with the specified amounts.",
@@ -111,7 +121,7 @@ export function AIChatbot({ pageContext, pageName }: AIChatbotProps) {
             });
             window.dispatchEvent(event);
           });
-          
+
           toast({
             title: "Form Filled",
             description: `Added ${data.autofill.entries.length} entries to your takeout calendar.`,
@@ -120,7 +130,7 @@ export function AIChatbot({ pageContext, pageName }: AIChatbotProps) {
           window.dispatchEvent(new CustomEvent('giftAutofill', {
             detail: data.autofill.data
           }));
-          
+
           toast({
             title: "Gift Added",
             description: "I've added your gift idea to the list.",
@@ -158,7 +168,7 @@ export function AIChatbot({ pageContext, pageName }: AIChatbotProps) {
 
       mediaRecorder.start();
       setIsRecording(true);
-      
+
       toast({
         title: "Recording Started",
         description: "Speak your message. Click the mic again to stop.",
@@ -244,8 +254,6 @@ export function AIChatbot({ pageContext, pageName }: AIChatbotProps) {
     // Wrap in a single div to ensure single root element
     return `<div>${processed}</div>`;
   };
-
-  
 
   if (!hasAccess) {
     return (
