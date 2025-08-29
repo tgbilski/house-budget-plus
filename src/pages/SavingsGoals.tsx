@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
-import { Card, CardContent } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Progress } from '@/components/ui/progress';
-// Import Calendar and LeafyGreen icons
 import { Plus, Target, Edit2, Check, X, AlertTriangle, Trash2, Calendar, LeafyGreen } from 'lucide-react'; 
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { AIChatbot } from '@/components/AIChatbot';
@@ -15,6 +14,8 @@ import { toast } from 'sonner';
 import { SEO } from '@/components/SEO';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Link } from 'react-router-dom';
+import * as Collapsible from '@radix-ui/react-collapsible';
+import { ChevronDown } from 'lucide-react';
 
 interface SavingsEntry {
   id: string;
@@ -43,11 +44,14 @@ const SavingsGoals = () => {
   const [localInputValues, setLocalInputValues] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(true);
 
-  const years = Array.from({ length: 11 }, (_, i) => (new Date().getFullYear() - 5 + i).toString()); // Adjusted years to be more current
+  const years = Array.from({ length: 11 }, (_, i) => (new Date().getFullYear() - 5 + i).toString());
   const months = [
     'January', 'February', 'March', 'April', 'May', 'June',
     'July', 'August', 'September', 'October', 'November', 'December'
   ];
+
+  const [isGlossaryOpen, setIsGlossaryOpen] = useState(false);
+  const [whatIfAmount, setWhatIfAmount] = useState('');
 
   useEffect(() => {
     if (user) {
@@ -395,6 +399,13 @@ const SavingsGoals = () => {
     return Object.values(savingsData).reduce((sum, amount) => sum + amount, 0);
   };
 
+  const getAverageMonthlySavings = () => {
+    const allSavingsValues = Object.values(savingsData); 
+    const monthsWithSavings = allSavingsValues.filter(amount => amount > 0).length;
+    if (monthsWithSavings === 0) return 0;
+    return getTotalSaved() / monthsWithSavings;
+  };
+
   const getEstimatedCompletionDate = () => {
     const currentGoal = getCurrentGoal();
     if (!currentGoal) return null;
@@ -402,18 +413,35 @@ const SavingsGoals = () => {
     const remainingAmount = currentGoal.target_amount - getTotalSaved();
     if (remainingAmount <= 0) return "Goal achieved!";
 
-    // Calculate average monthly savings based on all available data for this goal, not just current year
-    // To make this more robust, you might fetch ALL savings entries for the currentGoalId
-    // For now, let's use the current year's data as a proxy if it's the only data available
-    const allSavingsValues = Object.values(savingsData); // This only reflects current year's data due to fetchSavingsData scope
-    const monthsWithSavings = allSavingsValues.filter(amount => amount > 0).length;
-    
-    if (monthsWithSavings === 0) return null;
-
-    const averageMonthlySavings = getTotalSaved() / monthsWithSavings;
+    const averageMonthlySavings = getAverageMonthlySavings();
     if (averageMonthlySavings <= 0) return null;
 
     const monthsToComplete = Math.ceil(remainingAmount / averageMonthlySavings);
+
+    const completionDate = new Date();
+    completionDate.setMonth(completionDate.getMonth() + monthsToComplete);
+
+    return completionDate.toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    });
+  };
+
+  // NEW FUNCTION FOR "WHAT IF" SCENARIO
+  const getWhatIfCompletionDate = (monthlyAddition: number) => {
+    const currentGoal = getCurrentGoal();
+    if (!currentGoal) return null;
+
+    const remainingAmount = currentGoal.target_amount - getTotalSaved();
+    if (remainingAmount <= 0) return "Goal achieved!";
+
+    const currentMonthlyAverage = getAverageMonthlySavings();
+    const newMonthlySavings = currentMonthlyAverage + (monthlyAddition || 0);
+
+    if (newMonthlySavings <= 0) return null;
+
+    const monthsToComplete = Math.ceil(remainingAmount / newMonthlySavings);
 
     const completionDate = new Date();
     completionDate.setMonth(completionDate.getMonth() + monthsToComplete);
@@ -445,7 +473,6 @@ const SavingsGoals = () => {
         keywords="savings goals, monthly savings, financial planning, money tracker"
       />
       
-      {/* Hero Section with Light Background */}
       <div className="relative bg-white text-gray-900 py-8 overflow-x-hidden rounded-2xl mx-4 mt-4 mb-6 shadow-xl">
         <div className="w-full max-w-sm sm:max-w-md md:max-w-4xl mx-auto px-4 relative z-10">
           <div className="text-center">
@@ -457,7 +484,6 @@ const SavingsGoals = () => {
       </div>
 
       <div className="w-full max-w-sm sm:max-w-md md:max-w-4xl mx-auto px-4 py-6 md:py-8">
-        {/* Warning Banner for Non-Authenticated Users */}
         {!user && (
           <Alert className="mb-6 border-yellow-200 bg-yellow-50 dark:border-yellow-800 dark:bg-yellow-950">
             <AlertTriangle className="h-4 w-4 text-yellow-600 dark:text-yellow-400" />
@@ -470,7 +496,6 @@ const SavingsGoals = () => {
           </Alert>
         )}
         
-        {/* Savings Goals Tabs */}
         <div className="mb-6">
           <div className="flex items-center gap-2 mb-4 flex-wrap">
             {savingsGoals.map((goal) => (
@@ -533,10 +558,8 @@ const SavingsGoals = () => {
           </div>
         </div>
 
-        {/* Decorative Divider */}
         <hr className="my-8 border-t-2 border-gray-200 dark:border-gray-700 w-full max-w-xs mx-auto" />
 
-        {/* Total Saved with Progress Bar */}
         <Card className="mb-6">
           <CardContent className="pt-6">
             <div className="mb-4">
@@ -563,10 +586,37 @@ const SavingsGoals = () => {
           </CardContent>
         </Card>
 
-        {/* Decorative Divider */}
+        {/* NEW: "WHAT IF" SCENARIO CARD */}
+        <Card className="mb-6">
+          <CardHeader>
+            <CardTitle className="text-lg">What If I Save More?</CardTitle>
+          </CardHeader>
+          <CardContent className="pt-2">
+            <p className="text-sm text-gray-500 mb-3">
+              See how adding a little extra each month can change your timeline.
+            </p>
+            <div className="flex items-center gap-2 mb-3">
+              <span className="text-lg font-bold text-muted-foreground">$</span>
+              <Input
+                type="number"
+                placeholder="0"
+                value={whatIfAmount}
+                onChange={(e) => setWhatIfAmount(e.target.value)}
+                className="w-24 text-lg [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                min="0"
+              />
+              <span className="text-sm text-gray-600">more per month</span>
+            </div>
+            {whatIfAmount && getWhatIfCompletionDate(parseFloat(whatIfAmount)) && (
+              <p className="text-lg font-semibold">
+                Your new completion date would be: **{getWhatIfCompletionDate(parseFloat(whatIfAmount))}**
+              </p>
+            )}
+          </CardContent>
+        </Card>
+
         <hr className="my-8 border-t-2 border-gray-200 dark:border-gray-700 w-full max-w-xs mx-auto" />
 
-        {/* Year Selection and Savings Table */}
         <Card>
           <CardContent className="pt-4 md:pt-6 p-3 md:p-6">
             <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between mb-4 md:mb-6">
@@ -667,10 +717,50 @@ const SavingsGoals = () => {
             </div>
           </CardContent>
         </Card>
+
+        <div className="w-full max-w-sm sm:max-w-md md:max-w-4xl mx-auto px-4 py-8">
+          <Collapsible.Root
+            className="w-full"
+            open={isGlossaryOpen}
+            onOpenChange={setIsGlossaryOpen}
+          >
+            <div className="flex items-center justify-between mb-2">
+              <h4 className="text-lg font-bold">Financial Glossary</h4>
+              <Collapsible.Trigger asChild>
+                <Button variant="ghost" size="sm" className="w-9 p-0">
+                  <ChevronDown 
+                    className={`h-4 w-4 transition-transform duration-200 ${isGlossaryOpen ? 'rotate-180' : 'rotate-0'}`} 
+                  />
+                  <span className="sr-only">Toggle Financial Glossary</span>
+                </Button>
+              </Collapsible.Trigger>
+            </div>
+            <Collapsible.Content className="space-y-4">
+              <div className="p-4 bg-muted rounded-lg">
+                <h5 className="font-semibold text-sm mb-1">APY (Annual Percentage Yield)</h5>
+                <p className="text-sm text-gray-600">
+                  The real rate of return earned on an investment, taking into account the effect of compounding interest.
+                </p>
+              </div>
+              <div className="p-4 bg-muted rounded-lg">
+                <h5 className="font-semibold text-sm mb-1">Compound Interest</h5>
+                <p className="text-sm text-gray-600">
+                  Interest earned on both the initial principal and the accumulated interest from previous periods.
+                </p>
+              </div>
+              <div className="p-4 bg-muted rounded-lg">
+                <h5 className="font-semibold text-sm mb-1">Asset Allocation</h5>
+                <p className="text-sm text-gray-600">
+                  An investment strategy that aims to balance risk and reward by dividing a portfolio's assets according to an individual's goals, risk tolerance, and investment horizon.
+                </p>
+              </div>
+            </Collapsible.Content>
+          </Collapsible.Root>
+        </div>
       </div>
 
       <AIChatbot 
-        pageContext="This is the Savings Goals page where users can set and track their savings goals for different years. Users can create multiple savings goals, set target amounts, and track their monthly savings progress in a table format. The page shows total saved amounts and calculates progress toward goals, including a predictive analysis of the goal completion date. Decorative elements include a calendar icon, a sprouting plant icon for predictions, and decorative dividers."
+        pageContext="This is the Savings Goals page where users can set and track their savings goals for different years. Users can create multiple savings goals, set target amounts, and track their monthly savings progress in a table format. The page shows total saved amounts and calculates progress toward goals, including a predictive analysis of the goal completion date. Decorative elements include a calendar icon, a sprouting plant icon for predictions, and decorative dividers. A new collapsible financial glossary section has been added to the bottom of the page."
         pageName="Savings Goals"
       />
     </div>
