@@ -167,12 +167,12 @@ const MonthlyBudget: React.FC = () => {
         </div>
 
         {/* Main Content Container - Flexbox Layout with gauge on the right */}
-        <div className="flex flex-col xl:flex-row justify-center items-start gap-8 w-full max-w-7xl mx-auto px-4 py-8">
+        <div className="flex flex-col md:flex-row justify-center items-start gap-4 px-4 py-8 max-w-full overflow-x-auto">
           
           {/* Calculators Container */}
-          <div className="flex flex-row flex-wrap justify-center xl:justify-start gap-6 flex-1 w-full">
+          <div className="flex flex-row flex-shrink-0 gap-4">
             {calculators.map((calculator) => (
-              <div key={calculator.id} className="w-full md:w-[48%] lg:w-[49%]">
+              <div key={calculator.id} className="w-[380px] flex-shrink-0">
                 <BudgetCalculator
                   id={calculator.id}
                   onRemove={() => removeCalculator(calculator.id)}
@@ -184,7 +184,7 @@ const MonthlyBudget: React.FC = () => {
           </div>
 
           {/* Budget Health Gauge - Right side, locked in position */}
-          <div className="flex justify-center w-full xl:w-auto xl:flex-shrink-0">
+          <div className="w-[180px] flex-shrink-0 mt-8 md:mt-0 flex justify-center">
             <BudgetHealthGauge 
               income={totalIncome} 
               totalExpenses={totalExpenses} 
