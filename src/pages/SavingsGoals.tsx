@@ -4,7 +4,6 @@ import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Progress } from '@/components/ui/progress';
 import { Plus, Target, Edit2, Check, X, AlertTriangle, Trash2, Calendar, LeafyGreen } from 'lucide-react';
@@ -39,19 +38,18 @@ const SavingsGoals = () => {
   const [currentGoalId, setCurrentGoalId] = useState<string | null>(null);
   const [editingGoalId, setEditingGoalId] = useState<string | null>(null);
   const [editingTitle, setEditingTitle] = useState('');
+  const [localTargetAmount, setLocalTargetAmount] = useState('');
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear().toString());
   const [savingsData, setSavingsData] = useState<Record<string, number>>({});
   const [localInputValues, setLocalInputValues] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(true);
-
-  const years = Array.from({ length: 11 }, (_, i) => (new Date().getFullYear() - 5 + i).toString());
-  const months = [
-    'January', 'February', 'March', 'April', 'May', 'June',
-    'July', 'August', 'September', 'October', 'November', 'December'
-  ];
-
   const [isGlossaryOpen, setIsGlossaryOpen] = useState(false);
   const [whatIfAmount, setWhatIfAmount] = useState('');
+
+  const years = Array.from({ length: 11 }, (_, i) => (new Date().getFullYear() - 5 + i).toString());
+  const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+
+  const currentGoal = savingsGoals.find(g => g.id === currentGoalId);
 
   useEffect(() => {
     if (user) {
@@ -72,8 +70,12 @@ const SavingsGoals = () => {
   useEffect(() => {
     if (currentGoalId) {
       fetchSavingsData();
+      const goal = savingsGoals.find(g => g.id === currentGoalId);
+      if (goal) {
+        setLocalTargetAmount(goal.target_amount.toString());
+      }
     }
-  }, [currentGoalId, selectedYear]);
+  }, [currentGoalId, selectedYear, savingsGoals]);
 
   const loadSavingsGoals = async () => {
     try {
@@ -89,30 +91,17 @@ const SavingsGoals = () => {
         setSavingsGoals(goals);
         setCurrentGoalId(goals[0].id);
       } else {
-        const { data: newGoal, error: createError } = await supabase
-          .from('savings_goals')
-          .insert([{
-            user_id: user?.id,
-            title: 'My Savings Goal',
-            target_amount: 0,
-            current_amount: 0
-          }])
-          .select()
-          .single();
-
-        if (createError) throw createError;
-
-        setSavingsGoals([newGoal]);
-        setCurrentGoalId(newGoal.id);
+        await createNewGoal(true);
       }
     } catch (error) {
       console.error('Error loading savings goals:', error);
+      toast.error('Failed to load savings goals.');
     } finally {
       setLoading(false);
     }
   };
 
-  const createNewGoal = async () => {
+  const createNewGoal = async (isInitialLoad = false) => {
     if (!user) {
       const tempGoal = {
         id: `temp-${Date.now()}`,
@@ -120,9 +109,10 @@ const SavingsGoals = () => {
         target_amount: 0,
         current_amount: 0
       };
-      setSavingsGoals([...savingsGoals, tempGoal]);
+      const newGoals = [...savingsGoals, tempGoal];
+      setSavingsGoals(newGoals);
       setCurrentGoalId(tempGoal.id);
-      toast.success('New savings goal created! Sign in to save your progress.');
+      if (!isInitialLoad) toast.success('New savings goal created! Sign in to save your progress.');
       return;
     }
 
@@ -140,9 +130,10 @@ const SavingsGoals = () => {
 
       if (error) throw error;
 
-      setSavingsGoals([...savingsGoals, newGoal]);
+      const updatedGoals = [...savingsGoals, newGoal];
+      setSavingsGoals(updatedGoals);
       setCurrentGoalId(newGoal.id);
-      toast.success('New savings goal created!');
+      if (!isInitialLoad) toast.success('New savings goal created!');
     } catch (error) {
       console.error('Error creating goal:', error);
       toast.error('Failed to create new goal');
@@ -155,41 +146,20 @@ const SavingsGoals = () => {
       return;
     }
 
+    const newGoals = savingsGoals.filter(goal => goal.id !== goalId);
+    setSavingsGoals(newGoals);
+    setCurrentGoalId(newGoals[0].id);
+    setSavingsData({});
+    setLocalInputValues({});
+
     if (!user) {
-      const updatedGoals = savingsGoals.filter(goal => goal.id !== goalId);
-      setSavingsGoals(updatedGoals);
-
-      if (updatedGoals.length > 0) {
-        setCurrentGoalId(updatedGoals[0].id);
-      }
-
-      const newData = { ...savingsData };
-      Object.keys(newData).forEach(key => delete newData[key]);
-      setSavingsData(newData);
-
       toast.success('Goal deleted! Sign in to save your progress.');
       return;
     }
 
     try {
-      const { error } = await supabase
-        .from('savings_goals')
-        .delete()
-        .eq('id', goalId);
-
+      const { error } = await supabase.from('savings_goals').delete().eq('id', goalId);
       if (error) throw error;
-
-      const updatedGoals = savingsGoals.filter(goal => goal.id !== goalId);
-      setSavingsGoals(updatedGoals);
-
-      if (updatedGoals.length > 0) {
-        setCurrentGoalId(updatedGoals[0].id);
-      }
-
-      const newData = { ...savingsData };
-      Object.keys(newData).forEach(key => delete newData[key]);
-      setSavingsData(newData);
-
       toast.success('Savings goal deleted!');
     } catch (error) {
       console.error('Error deleting goal:', error);
@@ -197,16 +167,8 @@ const SavingsGoals = () => {
     }
   };
 
-  const selectGoal = (goalId: string) => {
-    const goal = savingsGoals.find(g => g.id === goalId);
-    if (goal) {
-      setCurrentGoalId(goal.id);
-    }
-  };
-
   const fetchSavingsData = async () => {
     if (!currentGoalId) return;
-
     try {
       const { data, error } = await supabase
         .from('savings_entries')
@@ -216,7 +178,6 @@ const SavingsGoals = () => {
         .lt('entry_month', `${parseInt(selectedYear) + 1}-01-01`);
 
       if (error) throw error;
-
       const dataMap: Record<string, number> = {};
       const inputMap: Record<string, string> = {};
       data?.forEach((entry: SavingsEntry) => {
@@ -224,43 +185,34 @@ const SavingsGoals = () => {
         dataMap[monthKey] = entry.amount;
         inputMap[monthKey] = entry.amount.toString();
       });
-
       setSavingsData(dataMap);
       setLocalInputValues(inputMap);
     } catch (error) {
       console.error('Error fetching savings data:', error);
+      toast.error('Failed to fetch savings data.');
     }
   };
 
-  const handleInputChange = (monthIndex: number, inputValue: string) => {
+  const handleMonthlyInputChange = (monthIndex: number, inputValue: string) => {
     const monthKey = `${selectedYear}-${(monthIndex + 1).toString().padStart(2, '0')}`;
-
-    setLocalInputValues(prev => ({
-      ...prev,
-      [monthKey]: inputValue
-    }));
-
+    setLocalInputValues(prev => ({ ...prev, [monthKey]: inputValue }));
     const numericValue = parseFloat(inputValue) || 0;
     updateSavingsAmount(monthIndex, numericValue);
   };
 
   const updateSavingsAmount = async (monthIndex: number, amount: number) => {
     const monthKey = `${selectedYear}-${(monthIndex + 1).toString().padStart(2, '0')}`;
-
-    if (!user) {
-      const newData = { ...savingsData };
-      if (amount === 0) {
-        delete newData[monthKey];
-      } else {
-        newData[monthKey] = amount;
-      }
-      setSavingsData(newData);
-      return;
-    }
-
-    if (!currentGoalId) return;
-
     const entryDate = `${monthKey}-01`;
+
+    const newData = { ...savingsData };
+    if (amount === 0) {
+      delete newData[monthKey];
+    } else {
+      newData[monthKey] = amount;
+    }
+    setSavingsData(newData);
+
+    if (!user || !currentGoalId) return;
 
     try {
       const { data: existingEntry } = await supabase
@@ -272,39 +224,20 @@ const SavingsGoals = () => {
 
       if (existingEntry) {
         if (amount === 0) {
-          await supabase
-            .from('savings_entries')
-            .delete()
-            .eq('id', existingEntry.id);
+          await supabase.from('savings_entries').delete().eq('id', existingEntry.id);
         } else {
-          await supabase
-            .from('savings_entries')
-            .update({ amount })
-            .eq('id', existingEntry.id);
+          await supabase.from('savings_entries').update({ amount }).eq('id', existingEntry.id);
         }
       } else if (amount > 0) {
-        await supabase
-          .from('savings_entries')
-          .insert([{
-            goal_id: currentGoalId,
-            amount,
-            entry_month: entryDate
-          }]);
+        await supabase.from('savings_entries').insert([{ goal_id: currentGoalId, amount, entry_month: entryDate }]);
       }
-
-      const newData = { ...savingsData };
-      if (amount === 0) {
-        delete newData[monthKey];
-      } else {
-        newData[monthKey] = amount;
-      }
-      setSavingsData(newData);
 
       const total = Object.values(newData).reduce((sum, val) => sum + val, 0);
-      await supabase
-        .from('savings_goals')
-        .update({ current_amount: total })
-        .eq('id', currentGoalId);
+      await supabase.from('savings_goals').update({ current_amount: total }).eq('id', currentGoalId);
+      
+      setSavingsGoals(prevGoals => prevGoals.map(goal => 
+        goal.id === currentGoalId ? { ...goal, current_amount: total } : goal
+      ));
 
     } catch (error) {
       console.error('Error updating savings:', error);
@@ -312,12 +245,12 @@ const SavingsGoals = () => {
     }
   };
 
-  const updateGoalTitle = async (goalId: string, newTitle: string) => {
-    if (!newTitle.trim()) return;
+  const updateGoalTitle = async (newTitle: string) => {
+    if (!editingGoalId || !newTitle.trim()) return;
 
     if (!user) {
       const updatedGoals = savingsGoals.map(goal =>
-        goal.id === goalId ? { ...goal, title: newTitle.trim() } : goal
+        goal.id === editingGoalId ? { ...goal, title: newTitle.trim() } : goal
       );
       setSavingsGoals(updatedGoals);
       setEditingGoalId(null);
@@ -326,15 +259,10 @@ const SavingsGoals = () => {
     }
 
     try {
-      const { error } = await supabase
-        .from('savings_goals')
-        .update({ title: newTitle.trim() })
-        .eq('id', goalId);
-
+      const { error } = await supabase.from('savings_goals').update({ title: newTitle.trim() }).eq('id', editingGoalId);
       if (error) throw error;
-
       const updatedGoals = savingsGoals.map(goal =>
-        goal.id === goalId ? { ...goal, title: newTitle.trim() } : goal
+        goal.id === editingGoalId ? { ...goal, title: newTitle.trim() } : goal
       );
       setSavingsGoals(updatedGoals);
       setEditingGoalId(null);
@@ -343,27 +271,6 @@ const SavingsGoals = () => {
       console.error('Error updating title:', error);
       toast.error('Failed to update goal title');
     }
-  };
-
-  const startEditingGoal = (goalId: string) => {
-    const goal = savingsGoals.find(g => g.id === goalId);
-    if (goal) {
-      setEditingGoalId(goalId);
-      setEditingTitle(goal.title);
-    }
-  };
-
-  const getCurrentGoal = () => {
-    return savingsGoals.find(goal => goal.id === currentGoalId);
-  };
-
-  const getProgressPercentage = () => {
-    const currentGoal = getCurrentGoal();
-    const totalSaved = getTotalSaved();
-    const targetAmount = currentGoal?.target_amount || 0;
-
-    if (targetAmount === 0) return 0;
-    return Math.min((totalSaved / targetAmount) * 100, 100);
   };
 
   const updateGoalTarget = async (targetAmount: number) => {
@@ -378,25 +285,23 @@ const SavingsGoals = () => {
     }
 
     try {
-      const { error } = await supabase
-        .from('savings_goals')
-        .update({ target_amount: targetAmount })
-        .eq('id', currentGoalId);
-
+      const { error } = await supabase.from('savings_goals').update({ target_amount: targetAmount }).eq('id', currentGoalId);
       if (error) throw error;
-
-      const updatedGoals = savingsGoals.map(goal =>
+      setSavingsGoals(prevGoals => prevGoals.map(goal =>
         goal.id === currentGoalId ? { ...goal, target_amount: targetAmount } : goal
-      );
-      setSavingsGoals(updatedGoals);
+      ));
     } catch (error) {
       console.error('Error updating goal target:', error);
       toast.error('Failed to update goal target');
     }
   };
 
-  const getTotalSaved = () => {
-    return Object.values(savingsData).reduce((sum, amount) => sum + amount, 0);
+  const getTotalSaved = () => Object.values(savingsData).reduce((sum, amount) => sum + amount, 0);
+
+  const getProgressPercentage = () => {
+    if (!currentGoal || currentGoal.target_amount === 0) return 0;
+    const totalSaved = getTotalSaved();
+    return Math.min((totalSaved / currentGoal.target_amount) * 100, 100);
   };
 
   const getAverageMonthlySavings = () => {
@@ -406,50 +311,17 @@ const SavingsGoals = () => {
     return getTotalSaved() / monthsWithSavings;
   };
 
-  const getEstimatedCompletionDate = () => {
-    const currentGoal = getCurrentGoal();
+  const getEstimatedCompletionDate = (monthlyAddition = 0) => {
     if (!currentGoal) return null;
-
     const remainingAmount = currentGoal.target_amount - getTotalSaved();
     if (remainingAmount <= 0) return "Goal achieved!";
-
     const averageMonthlySavings = getAverageMonthlySavings();
-    if (averageMonthlySavings <= 0) return null;
-
-    const monthsToComplete = Math.ceil(remainingAmount / averageMonthlySavings);
-
-    const completionDate = new Date();
-    completionDate.setMonth(completionDate.getMonth() + monthsToComplete);
-
-    return completionDate.toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
-    });
-  };
-
-  const getWhatIfCompletionDate = (monthlyAddition: number) => {
-    const currentGoal = getCurrentGoal();
-    if (!currentGoal) return null;
-
-    const remainingAmount = currentGoal.target_amount - getTotalSaved();
-    if (remainingAmount <= 0) return "Goal achieved!";
-
-    const currentMonthlyAverage = getAverageMonthlySavings();
-    const newMonthlySavings = currentMonthlyAverage + (monthlyAddition || 0);
-
+    const newMonthlySavings = averageMonthlySavings + monthlyAddition;
     if (newMonthlySavings <= 0) return null;
-
     const monthsToComplete = Math.ceil(remainingAmount / newMonthlySavings);
-
     const completionDate = new Date();
     completionDate.setMonth(completionDate.getMonth() + monthsToComplete);
-
-    return completionDate.toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
-    });
+    return completionDate.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
   };
 
   if (loading) {
@@ -506,13 +378,13 @@ const SavingsGoals = () => {
                       onChange={(e) => setEditingTitle(e.target.value)}
                       className="h-8 w-32 text-sm"
                       onKeyDown={(e) => {
-                        if (e.key === 'Enter') updateGoalTitle(goal.id, editingTitle);
+                        if (e.key === 'Enter') updateGoalTitle(editingTitle);
                         if (e.key === 'Escape') setEditingGoalId(null);
                       }}
-                      onBlur={() => updateGoalTitle(goal.id, editingTitle)}
+                      onBlur={() => updateGoalTitle(editingTitle)}
                       autoFocus
                     />
-                    <Button size="sm" variant="ghost" onClick={() => updateGoalTitle(goal.id, editingTitle)} className="h-8 w-8 p-0">
+                    <Button size="sm" variant="ghost" onClick={() => updateGoalTitle(editingTitle)} className="h-8 w-8 p-0">
                       <Check className="h-3 w-3" />
                     </Button>
                     <Button size="sm" variant="ghost" onClick={() => setEditingGoalId(null)} className="h-8 w-8 p-0">
@@ -525,7 +397,7 @@ const SavingsGoals = () => {
                       <Button
                         variant={currentGoalId === goal.id ? "default" : "outline"}
                         size="sm"
-                        onClick={() => selectGoal(goal.id)}
+                        onClick={() => setCurrentGoalId(goal.id)}
                         className={`pr-8 ${currentGoalId === goal.id ? 'border-2 border-white' : ''}`}
                       >
                         {goal.title}
@@ -533,7 +405,8 @@ const SavingsGoals = () => {
                       <button
                         onClick={(e) => {
                           e.stopPropagation();
-                          startEditingGoal(goal.id);
+                          setEditingGoalId(goal.id);
+                          setEditingTitle(goal.title);
                         }}
                         className="absolute right-1 top-1/2 -translate-y-1/2 h-6 w-6 p-0 opacity-0 group-hover:opacity-100 transition-opacity hover:bg-white/20 rounded flex items-center justify-center"
                         title="Edit goal name"
@@ -545,9 +418,8 @@ const SavingsGoals = () => {
                 )}
               </div>
             ))}
-
             <Button
-              onClick={createNewGoal}
+              onClick={() => createNewGoal()}
               size="sm"
               variant="outline"
               className="h-8 w-8 p-0 rounded-full border-dashed"
@@ -597,8 +469,15 @@ const SavingsGoals = () => {
                     <span className="absolute left-2 top-1/2 transform -translate-y-1/2 text-muted-foreground text-sm">$</span>
                     <Input
                       type="number"
-                      value={getCurrentGoal()?.target_amount || ''}
-                      onChange={(e) => updateGoalTarget(parseFloat(e.target.value) || 0)}
+                      value={localTargetAmount}
+                      onChange={(e) => setLocalTargetAmount(e.target.value)}
+                      onBlur={() => updateGoalTarget(parseFloat(localTargetAmount) || 0)}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') {
+                          (e.target as HTMLInputElement).blur();
+                          updateGoalTarget(parseFloat(localTargetAmount) || 0);
+                        }
+                      }}
                       placeholder="0"
                       className="w-24 md:w-32 pl-5 text-sm [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                       min="0"
@@ -660,7 +539,7 @@ const SavingsGoals = () => {
                           <Input
                             type="number"
                             value={inputValue}
-                            onChange={(e) => handleInputChange(index, e.target.value)}
+                            onChange={(e) => handleMonthlyInputChange(index, e.target.value)}
                             placeholder="0.00"
                             className="w-20 md:w-32 text-sm [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                             min="0"
@@ -708,9 +587,9 @@ const SavingsGoals = () => {
               />
               <span className="text-sm text-gray-600">more per month</span>
             </div>
-            {whatIfAmount && getWhatIfCompletionDate(parseFloat(whatIfAmount)) && (
+            {whatIfAmount && getEstimatedCompletionDate(parseFloat(whatIfAmount)) && (
               <p className="text-lg font-semibold">
-                Your new completion date would be: **{getWhatIfCompletionDate(parseFloat(whatIfAmount))}**
+                Your new completion date would be: **{getEstimatedCompletionDate(parseFloat(whatIfAmount))}**
               </p>
             )}
           </CardContent>
