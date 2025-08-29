@@ -54,7 +54,7 @@ export const BudgetHealthGauge: React.FC<BudgetHealthGaugeProps> = ({
   const gaugeStatus = getGaugeStatus();
 
   return (
-    <div className="bg-card border border-border rounded-lg p-4 shadow-lg w-32">
+    <div className="bg-card border border-border rounded-lg p-4 shadow-lg w-25">
       {/* The 'Budget Health' title has been removed. */}
       
       {/* Temperature Gauge */}
