@@ -1,527 +1,286 @@
 import React, { useState, useEffect } from 'react';
-import { Plus, Trash2, Download } from 'lucide-react';
+import { Plus, Globe, PiggyBank, Receipt, DollarSign } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Card, CardContent, CardHeader } from '@/components/ui/card';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import BudgetCalculator from '@/components/BudgetCalculator';
+import { BudgetHealthGauge } from '@/components/BudgetHealthGauge';
 import { useCurrency } from '@/hooks/useCurrency';
 import { useAuth } from '@/hooks/useAuth';
-import { generateBudgetPDF } from '@/utils/pdfGenerator';
+import { useBadges } from '@/hooks/useBadges';
 import { supabase } from '@/integrations/supabase/client';
-import { StreamingServiceSelector } from './StreamingServiceSelector';
 
-interface ExpenseItem {
+import { SEO } from '@/components/SEO';
+import { seoData } from '@/utils/seoData';
+import { Breadcrumbs } from '@/components/Breadcrumbs';
+import { InternalLinks } from '@/components/InternalLinks';
+import { SocialShare } from '@/components/SocialShare';
+import { FAQ } from '@/components/FAQ';
+import { budgetCalculatorFAQs } from '@/utils/faqData';
+import { AIChatbot } from '@/components/AIChatbot';
+import GuidedBudgetForm from '@/components/GuidedBudgetForm'; // Import the new form component
+
+interface Calculator {
   id: string;
-  label: string;
-  amount: number;
-  selectedService?: string;
 }
 
-interface BudgetCalculatorProps {
-  id: string;
-  onRemove: () => void;
-  showRemove: boolean;
-  pageType?: string;
-}
-
-const defaultExpenses: ExpenseItem[] = [
-  { id: 'mortgage', label: 'Mortgage / Rent', amount: 0 },
-  { id: 'electric', label: 'Electric', amount: 0 },
-  { id: 'gas', label: 'Gas', amount: 0 },
-  { id: 'water', label: 'Water', amount: 0 },
-  { id: 'sewage', label: 'Sewage', amount: 0 },
-  { id: 'utilities', label: 'Other Utilities', amount: 0 },
-  { id: 'car-loan', label: 'Car Loan', amount: 0 },
-  { id: 'car-insurance', label: 'Car Insurance', amount: 0 },
-  { id: 'internet', label: 'Internet', amount: 0 },
-  { id: 'phone', label: 'Phone', amount: 0 },
-  { id: 'subscription1', label: 'Subscription #1', amount: 0 },
-  { id: 'subscription2', label: 'Subscription #2', amount: 0 },
-  { id: 'subscription3', label: 'Subscription #3', amount: 0 },
+const currencies = [
+  { code: 'USD', symbol: '$', name: 'US Dollar' },
+  { code: 'EUR', symbol: '€', name: 'Euro' },
+  { code: 'GBP', symbol: '£', name: 'British Pound' },
+  { code: 'JPY', symbol: '¥', name: 'Japanese Yen' },
+  { code: 'CAD', symbol: 'C$', name: 'Canadian Dollar' },
+  { code: 'AUD', symbol: 'A$', name: 'Australian Dollar' },
+  { code: 'CHF', symbol: 'CHF', name: 'Swiss Franc' },
+  { code: 'CNY', symbol: '¥', name: 'Chinese Yuan' },
+  { code: 'INR', symbol: '₹', name: 'Indian Rupee' },
+  { code: 'KRW', symbol: '₩', name: 'South Korean Won' },
+  { code: 'MXN', symbol: '$', name: 'Mexican Peso' },
+  { code: 'BRL', symbol: 'R$', name: 'Brazilian Real' },
+  { code: 'ZAR', symbol: 'R', name: 'South African Rand' },
+  { code: 'SEK', symbol: 'kr', name: 'Swedish Krona' },
+  { code: 'NOK', symbol: 'kr', name: 'Norwegian Krone' },
+  { code: 'DKK', symbol: 'kr', name: 'Danish Krone' },
+  { code: 'RUB', symbol: '₽', name: 'Russian Ruble' },
 ];
 
-const BudgetCalculator: React.FC<BudgetCalculatorProps> = ({ 
-  id, 
-  onRemove, 
-  showRemove, 
-  pageType = 'monthly_budget'
-}) => {
-  const { currency } = useCurrency();
+const MonthlyBudget: React.FC = () => {
+  const [showForm, setShowForm] = useState(true);
+  const [initialData, setInitialData] = useState<any>(null);
+  const [calculators, setCalculators] = useState<Calculator[]>([{ id: '1' }]);
+  const [budgetData, setBudgetData] = useState<Record<string, { income: number; expenses: number }>>({});
+  const { currency, setCurrency } = useCurrency();
   const { user } = useAuth();
-  const [ownerName, setOwnerName] = useState('');
-  const [monthlyIncome, setMonthlyIncome] = useState(0);
-  const [expenses, setExpenses] = useState<ExpenseItem[]>(defaultExpenses);
-  const [additionalExpenses, setAdditionalExpenses] = useState<ExpenseItem[]>([]);
-  const [additionalSubscriptions, setAdditionalSubscriptions] = useState<ExpenseItem[]>([]);
-  const [subscriptionServices, setSubscriptionServices] = useState<Record<string, string>>({});
+  const { earnBadge } = useBadges();
+
+  const totalIncome = Object.values(budgetData).reduce((sum, data) => sum + (data.income || 0), 0);
+  const totalExpenses = Object.values(budgetData).reduce((sum, data) => sum + (data.expenses || 0), 0);
+  const netBalance = totalIncome - totalExpenses;
+
+  useEffect(() => {
+    const handleBudgetUpdate = (event: CustomEvent) => {
+      const { calculatorId, income, totalExpenses } = event.detail;
+      setBudgetData(prev => ({
+        ...prev,
+        [calculatorId]: { income: income || 0, expenses: totalExpenses || 0 }
+      }));
+    };
+
+    window.addEventListener('budgetUpdate', handleBudgetUpdate as EventListener);
+    return () => window.removeEventListener('budgetUpdate', handleBudgetUpdate as EventListener);
+  }, []);
+
+  useEffect(() => {
+    const handleEarnBadge = (event: CustomEvent) => {
+      const { badgeType } = event.detail;
+      earnBadge(badgeType);
+    };
+
+    window.addEventListener('earnBadge', handleEarnBadge as EventListener);
+    return () => window.removeEventListener('earnBadge', handleEarnBadge as EventListener);
+  }, [earnBadge]);
 
   useEffect(() => {
     if (user) {
-      loadData();
+      loadCalculators();
     }
-  }, [user, id, pageType]);
+  }, [user]);
 
-  // Add event listener for budget autofill
-  useEffect(() => {
-    const handleBudgetAutofill = (event: CustomEvent) => {
-      const autofillData = event.detail;
-      
-      if (autofillData.action === 'fill_budget') {
-        const { data } = autofillData;
-        
-        // Set income if provided
-        if (data.income !== null && data.income !== undefined) {
-          setMonthlyIncome(data.income);
-        }
-        
-        // Set expenses if provided
-        if (data.expenses) {
-          const updatedExpenses = expenses.map(expense => {
-            if (data.expenses[expense.id] !== undefined) {
-              return { ...expense, amount: data.expenses[expense.id] };
-            }
-            return expense;
-          });
-          setExpenses(updatedExpenses);
-        }
-        
-        // Add custom expenses if provided
-        if (data.customExpenses && data.customExpenses.length > 0) {
-          const newCustomExpenses = data.customExpenses.map((expense: any, index: number) => ({
-            id: `custom-${Date.now()}-${index}`,
-            label: expense.label,
-            amount: expense.amount
-          }));
-          setAdditionalExpenses(prev => [...prev, ...newCustomExpenses]);
-        }
-      }
-    };
-
-    window.addEventListener('budgetAutofill', handleBudgetAutofill as EventListener);
-    
-    return () => {
-      window.removeEventListener('budgetAutofill', handleBudgetAutofill as EventListener);
-    };
-  }, [expenses]);
-
-  const loadData = async () => {
+  const loadCalculators = async () => {
     if (!user) return;
 
     const { data } = await supabase
       .from('budget_data')
-      .select('*')
+      .select('calculator_id')
       .eq('user_id', user.id)
-      .eq('calculator_id', id)
-      .eq('page_type', pageType)
-      .order('created_at', { ascending: false })
-      .limit(1);
+      .eq('page_type', 'monthly_budget');
 
     if (data && data.length > 0) {
-      const budgetData = data[0];
-      setMonthlyIncome(budgetData.income || 0);
-      const expensesData = budgetData.expenses as any;
-      if (expensesData) {
-        if (expensesData.fixed) {
-          const updatedExpenses = defaultExpenses.map(expense => ({
-            ...expense,
-            amount: expensesData.fixed[expense.id] || 0
-          }));
-          setExpenses(updatedExpenses);
-        }
-        if (expensesData.custom) {
-          setAdditionalExpenses(expensesData.custom);
-        }
-        if (expensesData.additionalSubscriptions) {
-          setAdditionalSubscriptions(expensesData.additionalSubscriptions);
-        }
-        if (expensesData.subscriptionServices) {
-          setSubscriptionServices(expensesData.subscriptionServices);
-        }
-        if (expensesData.ownerName) {
-          setOwnerName(expensesData.ownerName);
-        }
-      }
+      const uniqueCalculators = [...new Set(data.map(item => item.calculator_id))];
+      setCalculators(uniqueCalculators.map(id => ({ id })));
     }
   };
 
-  const saveData = async () => {
-    if (!user) return;
-
-    const fixedExpensesData: Record<string, number> = {};
-    expenses.forEach(expense => {
-      if (expense.amount > 0) {
-        fixedExpensesData[expense.id] = expense.amount;
-      }
-    });
-
-    const expensesData = {
-      fixed: fixedExpensesData,
-      custom: additionalExpenses,
-      additionalSubscriptions,
-      subscriptionServices,
-      ownerName
-    };
-
-    const { error } = await supabase
-      .from('budget_data')
-      .upsert({
-        user_id: user.id,
-        calculator_id: id,
-        page_type: pageType,
-        income: monthlyIncome,
-        expenses: expensesData as any
-      });
-
-    if (error) {
-      console.error('Error saving budget data:', error);
-    } else {
-      // Award badge when user actually saves budget data
-      if (pageType === 'monthly_budget' && (monthlyIncome > 0 || Object.keys(fixedExpensesData).length > 0 || additionalExpenses.length > 0 || additionalSubscriptions.length > 0)) {
-        // Dynamically import and use the badge system
-        import('@/hooks/useBadges').then(({ useBadges }) => {
-          // We can't use hooks here, so we'll dispatch a custom event
-          window.dispatchEvent(new CustomEvent('earnBadge', { detail: { badgeType: 'monthly_budget' } }));
-        });
-      }
-    }
+  const addCalculator = () => {
+    const newId = (parseInt(calculators[calculators.length - 1].id) + 1).toString();
+    setCalculators([...calculators, { id: newId }]);
   };
 
-  useEffect(() => {
-    if (user && (monthlyIncome > 0 || expenses.some(e => e.amount > 0) || additionalExpenses.length > 0 || additionalSubscriptions.length > 0 || ownerName || Object.keys(subscriptionServices).length > 0)) {
-      const saveTimeout = setTimeout(saveData, 500);
-      return () => clearTimeout(saveTimeout);
-    }
-  }, [monthlyIncome, expenses, additionalExpenses, additionalSubscriptions, subscriptionServices, ownerName, user]);
-
-  const addAdditionalExpense = () => {
-    if (additionalExpenses.length < 10) {
-      const newExpense: ExpenseItem = {
-        id: `additional-${Date.now()}`,
-        label: 'Custom Expense',
-        amount: 0,
-      };
-      setAdditionalExpenses([...additionalExpenses, newExpense]);
-    }
+  const handleFormComplete = (data: any) => {
+    setInitialData(data);
+    setShowForm(false);
   };
 
-  const addAdditionalSubscription = () => {
-    if (additionalSubscriptions.length < 10) {
-      const newSubscription: ExpenseItem = {
-        id: `subscription-${Date.now()}`,
-        label: `Subscription #${4 + additionalSubscriptions.length}`,
-        amount: 0,
-      };
-      setAdditionalSubscriptions([...additionalSubscriptions, newSubscription]);
-    }
-  };
-
-  const removeAdditionalSubscription = (subscriptionId: string) => {
-    setAdditionalSubscriptions(additionalSubscriptions.filter(sub => sub.id !== subscriptionId));
-  };
-
-  const removeAdditionalExpense = (expenseId: string) => {
-    setAdditionalExpenses(additionalExpenses.filter(expense => expense.id !== expenseId));
-  };
-
-  const updateExpense = (expenseId: string, amount: number, isAdditional = false) => {
-    if (isAdditional) {
-      setAdditionalExpenses(
-        additionalExpenses.map(expense =>
-          expense.id === expenseId ? { ...expense, amount } : expense
-        )
-      );
-    } else {
-      setExpenses(
-        expenses.map(expense =>
-          expense.id === expenseId ? { ...expense, amount } : expense
-        )
-      );
-    }
-  };
-
-  const updateAdditionalSubscription = (subscriptionId: string, amount: number) => {
-    setAdditionalSubscriptions(
-      additionalSubscriptions.map(subscription =>
-        subscription.id === subscriptionId ? { ...subscription, amount } : subscription
-      )
-    );
-  };
-
-  const updateSubscriptionService = (expenseId: string, serviceId: string) => {
-    setSubscriptionServices(prev => ({
-      ...prev,
-      [expenseId]: serviceId
-    }));
-  };
-
-  const updateAdditionalExpenseLabel = (expenseId: string, label: string) => {
-    setAdditionalExpenses(
-      additionalExpenses.map(expense =>
-        expense.id === expenseId ? { ...expense, label } : expense
-      )
-    );
-  };
-
-  const totalExpenses = expenses.reduce((sum, expense) => sum + expense.amount, 0) +
-                       additionalExpenses.reduce((sum, expense) => sum + expense.amount, 0) +
-                       additionalSubscriptions.reduce((sum, expense) => sum + expense.amount, 0);
-  
-  const netResult = monthlyIncome - totalExpenses;
-
-  // Emit budget updates for the temperature gauge
-  useEffect(() => {
-    const event = new CustomEvent('budgetUpdate', {
-      detail: {
-        calculatorId: id,
-        income: monthlyIncome,
-        totalExpenses: totalExpenses,
-        netResult: netResult
-      }
-    });
-    window.dispatchEvent(event);
-  }, [id, monthlyIncome, totalExpenses, netResult]);
-
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: currency.code,
-    }).format(amount);
-  };
-
-  const handleDownloadPDF = () => {
-    const budgetData = {
-      ownerName,
-      monthlyIncome,
-      expenses,
-      additionalExpenses,
-      currency: currency.symbol
-    };
-    generateBudgetPDF(budgetData);
-  };
+  const summaryData = [
+    { title: 'Total Income', value: totalIncome, icon: PiggyBank, color: 'text-green-500' },
+    { title: 'Total Expenses', value: totalExpenses, icon: Receipt, color: 'text-red-500' },
+    { title: 'Net Balance', value: netBalance, icon: DollarSign, color: netBalance >= 0 ? 'text-blue-500' : 'text-red-500' },
+  ];
 
   return (
-    <Card className="w-full max-w-sm sm:max-w-md mx-auto shadow-lg border border-border" data-calculator-id={id}>
-      <CardHeader className="pb-3">
-        <div className="flex items-center justify-between">
-          <div className="flex-1">
-            <Label htmlFor={`owner-${id}`} className="text-xs sm:text-sm font-medium text-muted-foreground">
-              Owner / Renter
-            </Label>
-            <Input
-              id={`owner-${id}`}
-              placeholder="Enter name..."
-              value={ownerName}
-              onChange={(e) => setOwnerName(e.target.value)}
-              className="mt-1 h-8 text-sm"
-            />
-          </div>
-          {showRemove && (
-            <Button
-              variant="destructive"
-              size="sm"
-              onClick={onRemove}
-              className="ml-4"
-            >
-              <Trash2 className="h-4 w-4" />
-            </Button>
-          )}
-        </div>
-      </CardHeader>
-
-      <CardContent className="space-y-3">
-        {/* Monthly Income */}
-        <div>
-          <Label htmlFor={`income-${id}`} className="text-xs sm:text-sm font-semibold text-foreground">
-            Monthly Income
-          </Label>
-          <div className="relative mt-1">
-            <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground text-sm">{currency.symbol}</span>
-            <Input
-              id={`income-${id}`}
-              type="number"
-              min="0"
-              step="0.01"
-              value={monthlyIncome || ''}
-              onChange={(e) => setMonthlyIncome(parseFloat(e.target.value) || 0)}
-              className="pl-8 h-9 text-sm [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-              placeholder="0.00"
-            />
-          </div>
-        </div>
-
-        {/* Monthly Expenses Header */}
-        <div className="pt-3">
-          <h3 className="text-xs sm:text-sm font-semibold text-foreground mb-2">Monthly Expenses</h3>
-          
-          {/* Default Expenses */}
-          <div className="space-y-1.5">
-            {expenses.map((expense) => {
-              // Render non-subscription expenses first
-              if (!expense.id.startsWith('subscription')) {
-                return (
-                  <div key={expense.id} className="flex items-center space-x-2">
-                    <Label className="text-xs text-muted-foreground w-28 sm:w-32 text-left">
-                      {expense.label}
-                    </Label>
-                    <div className="relative flex-1">
-                      <span className="absolute left-2 top-1/2 transform -translate-y-1/2 text-muted-foreground text-xs">{currency.symbol}</span>
-                      <Input
-                        type="number"
-                        min="0"
-                        step="0.01"
-                        value={expense.amount || ''}
-                        onChange={(e) => updateExpense(expense.id, parseFloat(e.target.value) || 0)}
-                        className="pl-6 h-7 text-xs [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                        placeholder="0.00"
-                      />
-                    </div>
-                  </div>
-                );
-              }
-              return null;
-            })}
-
-            {/* Additional Expenses */}
-            {additionalExpenses.map((expense) => (
-              <div key={expense.id} className="flex items-center space-x-2">
-                <Input
-                  value={expense.label}
-                  onChange={(e) => updateAdditionalExpenseLabel(expense.id, e.target.value)}
-                  className="w-28 sm:w-32 h-7 text-xs"
-                  placeholder="Expense name"
-                />
-                <div className="relative flex-1">
-                  <span className="absolute left-2 top-1/2 transform -translate-y-1/2 text-muted-foreground text-xs">{currency.symbol}</span>
-                  <Input
-                    type="number"
-                    min="0"
-                    step="0.01"
-                    value={expense.amount || ''}
-                    onChange={(e) => updateExpense(expense.id, parseFloat(e.target.value) || 0, true)}
-                    className="pl-6 h-7 text-xs [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                    placeholder="0.00"
+    <div className="min-h-screen bg-gray-50 text-gray-900 overflow-x-hidden">
+      <SEO 
+        title={seoData.monthlyBudget.title}
+        description={seoData.monthlyBudget.description}
+        keywords={seoData.monthlyBudget.keywords}
+        structuredData={seoData.monthlyBudget.structuredData}
+        canonical="https://www.housebudgetcalculator.com/budget"
+      />
+      <div className="relative pt-8 pb-16">
+        <div className="w-full max-w-6xl mx-auto px-4">
+          {showForm ? (
+            <GuidedBudgetForm onFormComplete={handleFormComplete} />
+          ) : (
+            <>
+              <div className="relative py-8 text-center">
+                <div className="flex items-center justify-center gap-4 mb-4">
+                  <img 
+                    src="/lovable-uploads/ed809955-ef71-4d81-b072-945082f4380a.png" 
+                    alt="Calculator mascot" 
+                    className="w-12 h-12 object-contain"
                   />
                 </div>
-                <Button
-                  variant="destructive"
-                  size="sm"
-                  onClick={() => removeAdditionalExpense(expense.id)}
-                  className="h-7 w-7 p-0"
-                >
-                  <Trash2 className="h-3 w-3" />
-                </Button>
+                <h1 className="text-3xl md:text-4xl font-bold mb-2 text-gray-900">Monthly Budget Calculator</h1>
+                <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+                  Take control of your finances by tracking every dollar of your household income and expenses.
+                </p>
               </div>
-            ))}
 
-            {/* Add Expense Button */}
-            {additionalExpenses.length < 10 && (
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={addAdditionalExpense}
-                className="w-full h-7 text-xs"
-              >
-                <Plus className="h-3 w-3 mr-1" />
-                Add Expense
-              </Button>
-            )}
+              <div className="absolute top-6 right-6 flex items-center gap-2">
+                <Globe className="h-4 w-4 text-muted-foreground" />
+                <Select value={currency.code} onValueChange={(value) => {
+                  const selectedCurrency = currencies.find(c => c.code === value);
+                  if (selectedCurrency) setCurrency(selectedCurrency);
+                }}>
+                  <SelectTrigger className="w-[150px] md:w-[180px] border-none text-sm bg-gray-50/50">
+                    <SelectValue placeholder="Currency" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {currencies.map((curr) => (
+                      <SelectItem key={curr.code} value={curr.code}>
+                        <span className="flex items-center gap-2">
+                          <span className="font-mono">{curr.symbol}</span>
+                          <span>{curr.name}</span>
+                        </span>
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8 mt-4">
+                {summaryData.map((item) => (
+                  <div key={item.title} className="bg-white rounded-xl shadow-md p-6 border border-gray-100 flex items-center justify-between">
+                    <div>
+                      <h3 className="text-xl font-semibold text-gray-600 mb-1">{item.title}</h3>
+                      <p className={`text-3xl font-bold ${item.color}`}>{currency.symbol}{item.value.toLocaleString()}</p>
+                    </div>
+                    <item.icon className={`w-10 h-10 ${item.color}`} />
+                  </div>
+                ))}
+              </div>
 
-            {/* Default Subscription Expenses */}
-            {expenses.map((expense) => {
-              // Use StreamingServiceSelector for subscription fields
-              if (expense.id.startsWith('subscription')) {
-                return (
-                  <div key={expense.id} className="space-y-1">
-                    <StreamingServiceSelector
-                      value={expense.amount}
-                      onChange={(amount) => updateExpense(expense.id, amount)}
-                      label={expense.label}
-                      expenseId={expense.id}
-                      selectedService={subscriptionServices[expense.id] || 'custom'}
-                      onServiceChange={(serviceId) => updateSubscriptionService(expense.id, serviceId)}
+              <div className="flex flex-col md:flex-row flex-wrap justify-center items-start gap-4 mb-8">
+                {calculators.map((calculator) => (
+                  <div key={calculator.id} className="w-full md:w-auto min-w-[300px] flex-1">
+                    <BudgetCalculator
+                      id={calculator.id}
+                      initialData={initialData}
+                      showRemove={calculators.length > 1}
+                      onRemove={() => setCalculators(calculators.filter(c => c.id !== calculator.id))}
+                      pageType="monthly_budget"
                     />
                   </div>
-                );
-              }
-              return null;
-            })}
-
-            {/* Additional Subscriptions */}
-            {additionalSubscriptions.map((subscription) => (
-              <div key={subscription.id} className="space-y-1">
-                <div className="flex items-center space-x-2">
-                  <StreamingServiceSelector
-                    value={subscription.amount}
-                    onChange={(amount) => updateAdditionalSubscription(subscription.id, amount)}
-                    label={subscription.label}
-                    expenseId={subscription.id}
-                    selectedService={subscriptionServices[subscription.id] || 'custom'}
-                    onServiceChange={(serviceId) => updateSubscriptionService(subscription.id, serviceId)}
+                ))}
+                <div className="w-full md:w-auto min-w-[300px] max-w-xs flex-shrink-0 flex justify-center">
+                  <BudgetHealthGauge 
+                    income={totalIncome} 
+                    totalExpenses={totalExpenses} 
                   />
-                  <Button
-                    variant="destructive"
-                    size="sm"
-                    onClick={() => removeAdditionalSubscription(subscription.id)}
-                    className="h-7 w-7 p-0"
-                  >
-                    <Trash2 className="h-3 w-3" />
-                  </Button>
                 </div>
               </div>
-            ))}
 
-            {/* Add Subscription Button */}
-            {additionalSubscriptions.length < 10 && (
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={addAdditionalSubscription}
-                className="w-full h-7 text-xs"
-              >
-                <Plus className="h-3 w-3 mr-1" />
-                Subscription
-              </Button>
-            )}
-          </div>
-        </div>
+              <div className="text-center my-8">
+                <Button onClick={addCalculator} className="group transition-all duration-300 transform-gpu hover:scale-105">
+                  <Plus className="h-4 w-4 mr-2" /> Add Another Budget
+                </Button>
+              </div>
 
-        {/* Subtotal */}
-        <div className="border-t pt-2">
-          <div className="flex justify-between items-center">
-            <span className="text-xs sm:text-sm font-medium text-foreground">Subtotal:</span>
-            <span className="text-xs sm:text-sm font-semibold text-foreground">
-              {formatCurrency(totalExpenses)}
-            </span>
-          </div>
-        </div>
+              <section className="py-16 bg-white text-gray-900 rounded-2xl shadow-xl border border-gray-100 mt-8">
+                <div className="w-full max-w-4xl mx-auto text-center px-4">
+                  <h2 className="text-2xl md:text-3xl font-bold mb-6">
+                    Take Control of Your Finances
+                  </h2>
+                  <p className="text-lg text-gray-600 mb-8">
+                    Use our comprehensive budget calculator to plan your financial future and achieve your goals.
+                  </p>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div className="bg-gray-50 rounded-lg p-6 border border-gray-200">
+                      <h3 className="font-semibold mb-2">Track Every Dollar</h3>
+                      <p className="text-sm text-gray-600">Monitor income and expenses to see exactly where your money goes each month.</p>
+                    </div>
+                    <div className="bg-gray-50 rounded-lg p-6 border border-gray-200">
+                      <h3 className="font-semibold mb-2">Plan for the Future</h3>
+                      <p className="text-sm text-gray-600">Build emergency funds and save for major purchases with clear financial planning.</p>
+                    </div>
+                    <div className="bg-gray-50 rounded-lg p-6 border border-gray-200">
+                      <h3 className="font-semibold mb-2">Multiple Scenarios</h3>
+                      <p className="text-sm text-gray-600">Create separate budgets for different household members or financial situations.</p>
+                    </div>
+                  </div>
+                </div>
+              </section>
 
-        {/* Net Result */}
-        <div className="border-t pt-2">
-          <div className="flex justify-between items-center">
-            <span className="text-sm sm:text-base font-semibold text-foreground">Net Result:</span>
-            <span className={`text-sm sm:text-base font-bold ${
-              netResult >= 0 ? 'text-success' : 'text-destructive'
-            }`}>
-              {formatCurrency(netResult)}
-            </span>
-          </div>
-        </div>
+              <section className="mt-16 w-full max-w-4xl mx-auto px-4">
+                <div className="bg-card border border-border rounded-lg p-6">
+                  <h2 className="text-2xl font-semibold text-foreground mb-4">
+                    How to Use the Monthly Budget Calculator
+                  </h2>
+                  <div className="prose prose-sm text-muted-foreground space-y-4">
+                    <p>
+                      Our free Monthly Budget Calculator helps you track and manage your household expenses effectively. Simply enter your monthly income and all your regular expenses to see your financial picture at a glance.
+                    </p>
+                    
+                    <h3 className="text-lg font-medium text-foreground">Key Features:</h3>
+                    <ul className="list-disc list-inside space-y-2">
+                      <li>Track monthly income and expenses for multiple household members</li>
+                      <li>Pre-configured expense categories for common household costs</li>
+                      <li>Add up to 10 custom expense categories per person</li>
+                      <li>Real-time calculation of your net budget result</li>
+                      <li>Easy-to-use interface with clear visual feedback</li>
+                      <li>Support for multiple currencies (USD, EUR, GBP, and more)</li>
+                      <li>Save your budgets when you create an account</li>
+                    </ul>
+                  </div>
+                </div>
+              </section>
 
-        {/* Download PDF Button */}
-        <div className="pt-2">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={handleDownloadPDF}
-            className="w-full h-8 text-xs"
-          >
-            <Download className="h-3 w-3 mr-1" />
-            Download PDF
-          </Button>
+              <FAQ faqs={budgetCalculatorFAQs} />
+              <InternalLinks currentPage="/" category="budgeting" />
+              
+              <section className="mt-12 py-8 text-center">
+                <h3 className="text-xl font-semibold text-foreground mb-4">Need Help or Have Feedback?</h3>
+                <p className="text-muted-foreground mb-6">
+                  We're here to help you succeed with your budgeting journey. Get in touch with questions, suggestions, or feedback.
+                </p>
+                <Button 
+                  variant="outline" 
+                  size="lg"
+                  onClick={() => window.location.href = 'mailto:homebudgetcalculator@gmail.com?subject=Budget Calculator Feedback'}
+                >
+                  Contact Us
+                </Button>
+              </section>
+
+              <AIChatbot 
+                pageContext="This is the Monthly Budget Calculator page where users can input their monthly income and expenses to calculate their net budget. Users can add multiple calculators for different household members or scenarios, select different currencies, and save their data if logged in. The page includes pre-configured expense categories and the ability to add custom expenses."
+                pageName="Monthly Budget Calculator"
+              />
+            </>
+          )}
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   );
 };
 
-export default BudgetCalculator;
+export default MonthlyBudget;
