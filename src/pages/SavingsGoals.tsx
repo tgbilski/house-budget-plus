@@ -158,15 +158,15 @@ const SavingsGoals = () => {
     if (!user) {
       const updatedGoals = savingsGoals.filter(goal => goal.id !== goalId);
       setSavingsGoals(updatedGoals);
-      
+
       if (updatedGoals.length > 0) {
         setCurrentGoalId(updatedGoals[0].id);
       }
-      
+
       const newData = { ...savingsData };
       Object.keys(newData).forEach(key => delete newData[key]);
       setSavingsData(newData);
-      
+
       toast.success('Goal deleted! Sign in to save your progress.');
       return;
     }
@@ -234,19 +234,19 @@ const SavingsGoals = () => {
 
   const handleInputChange = (monthIndex: number, inputValue: string) => {
     const monthKey = `${selectedYear}-${(monthIndex + 1).toString().padStart(2, '0')}`;
-    
+
     setLocalInputValues(prev => ({
       ...prev,
       [monthKey]: inputValue
     }));
-    
+
     const numericValue = parseFloat(inputValue) || 0;
     updateSavingsAmount(monthIndex, numericValue);
   };
 
   const updateSavingsAmount = async (monthIndex: number, amount: number) => {
     const monthKey = `${selectedYear}-${(monthIndex + 1).toString().padStart(2, '0')}`;
-    
+
     if (!user) {
       const newData = { ...savingsData };
       if (amount === 0) {
@@ -316,7 +316,7 @@ const SavingsGoals = () => {
     if (!newTitle.trim()) return;
 
     if (!user) {
-      const updatedGoals = savingsGoals.map(goal => 
+      const updatedGoals = savingsGoals.map(goal =>
         goal.id === goalId ? { ...goal, title: newTitle.trim() } : goal
       );
       setSavingsGoals(updatedGoals);
@@ -333,7 +333,7 @@ const SavingsGoals = () => {
 
       if (error) throw error;
 
-      const updatedGoals = savingsGoals.map(goal => 
+      const updatedGoals = savingsGoals.map(goal =>
         goal.id === goalId ? { ...goal, title: newTitle.trim() } : goal
       );
       setSavingsGoals(updatedGoals);
@@ -361,7 +361,7 @@ const SavingsGoals = () => {
     const currentGoal = getCurrentGoal();
     const totalSaved = getTotalSaved();
     const targetAmount = currentGoal?.target_amount || 0;
-    
+
     if (targetAmount === 0) return 0;
     return Math.min((totalSaved / targetAmount) * 100, 100);
   };
@@ -370,7 +370,7 @@ const SavingsGoals = () => {
     if (!currentGoalId) return;
 
     if (!user) {
-      const updatedGoals = savingsGoals.map(goal => 
+      const updatedGoals = savingsGoals.map(goal =>
         goal.id === currentGoalId ? { ...goal, target_amount: targetAmount } : goal
       );
       setSavingsGoals(updatedGoals);
@@ -385,7 +385,7 @@ const SavingsGoals = () => {
 
       if (error) throw error;
 
-      const updatedGoals = savingsGoals.map(goal => 
+      const updatedGoals = savingsGoals.map(goal =>
         goal.id === currentGoalId ? { ...goal, target_amount: targetAmount } : goal
       );
       setSavingsGoals(updatedGoals);
@@ -400,7 +400,7 @@ const SavingsGoals = () => {
   };
 
   const getAverageMonthlySavings = () => {
-    const allSavingsValues = Object.values(savingsData); 
+    const allSavingsValues = Object.values(savingsData);
     const monthsWithSavings = allSavingsValues.filter(amount => amount > 0).length;
     if (monthsWithSavings === 0) return 0;
     return getTotalSaved() / monthsWithSavings;
@@ -428,7 +428,6 @@ const SavingsGoals = () => {
     });
   };
 
-  // NEW FUNCTION FOR "WHAT IF" SCENARIO
   const getWhatIfCompletionDate = (monthlyAddition: number) => {
     const currentGoal = getCurrentGoal();
     if (!currentGoal) return null;
@@ -467,12 +466,12 @@ const SavingsGoals = () => {
 
   return (
     <div className="min-h-screen overflow-x-hidden">
-      <SEO 
+      <SEO
         title="Savings Goals - Track Your Monthly Savings"
         description="Track your monthly savings with an interactive yearly table and editable goals."
         keywords="savings goals, monthly savings, financial planning, money tracker"
       />
-      
+
       <div className="relative bg-white text-gray-900 py-8 overflow-x-hidden rounded-2xl mx-4 mt-4 mb-6 shadow-xl">
         <div className="w-full max-w-sm sm:max-w-md md:max-w-4xl mx-auto px-4 relative z-10">
           <div className="text-center">
@@ -488,14 +487,14 @@ const SavingsGoals = () => {
           <Alert className="mb-6 border-yellow-200 bg-yellow-50 dark:border-yellow-800 dark:bg-yellow-950">
             <AlertTriangle className="h-4 w-4 text-yellow-600 dark:text-yellow-400" />
             <AlertDescription className="text-yellow-800 dark:text-yellow-200">
-              <strong>Try it out!</strong> You're using savings tracker in demo mode. 
+              <strong>Try it out!</strong> You're using savings tracker in demo mode.
               <Link to="/auth" className="underline font-medium ml-1 hover:text-yellow-900 dark:hover:text-yellow-100">
                 Sign in to save your progress
               </Link> and access all features.
             </AlertDescription>
           </Alert>
         )}
-        
+
         <div className="mb-6">
           <div className="flex items-center gap-2 mb-4 flex-wrap">
             {savingsGoals.map((goal) => (
@@ -546,10 +545,10 @@ const SavingsGoals = () => {
                 )}
               </div>
             ))}
-            
-            <Button 
-              onClick={createNewGoal} 
-              size="sm" 
+
+            <Button
+              onClick={createNewGoal}
+              size="sm"
               variant="outline"
               className="h-8 w-8 p-0 rounded-full border-dashed"
             >
@@ -571,7 +570,7 @@ const SavingsGoals = () => {
               </div>
               <Progress value={getProgressPercentage()} className="h-2" />
             </div>
-            
+
             <div className="text-center">
               <h3 className="text-lg font-semibold text-muted-foreground mb-2">Total Saved</h3>
               <p className="text-4xl font-bold text-primary">
@@ -607,7 +606,7 @@ const SavingsGoals = () => {
                     />
                   </div>
                 </div>
-                
+
                 <div className="flex items-center gap-2">
                   <label className="text-sm font-medium flex items-center gap-1">
                     <Calendar className="h-4 w-4 text-muted-foreground" /> Year:
@@ -626,7 +625,7 @@ const SavingsGoals = () => {
                   </Select>
                 </div>
               </div>
-              
+
               {savingsGoals.length > 1 && currentGoalId && (
                 <Button
                   variant="outline"
@@ -653,7 +652,7 @@ const SavingsGoals = () => {
                   {months.map((month, index) => {
                     const monthKey = `${selectedYear}-${(index + 1).toString().padStart(2, '0')}`;
                     const inputValue = localInputValues[monthKey] || '';
-                    
+
                     return (
                       <TableRow key={month}>
                         <TableCell className="font-medium text-sm py-2">{month}</TableCell>
@@ -674,7 +673,7 @@ const SavingsGoals = () => {
                 </TableBody>
               </Table>
             </div>
-            
+
             <div className="mt-4 p-3 md:p-4 bg-muted rounded-lg">
               <div className="flex justify-between items-center">
                 <span className="font-semibold text-sm md:text-base">Total for {selectedYear}:</span>
@@ -688,8 +687,7 @@ const SavingsGoals = () => {
             </div>
           </CardContent>
         </Card>
-        
-        {/* "WHAT IF" SCENARIO CARD */}
+
         <Card className="mt-6 mb-6">
           <CardHeader>
             <CardTitle className="text-lg">What If I Save More?</CardTitle>
@@ -720,7 +718,6 @@ const SavingsGoals = () => {
 
         <hr className="my-8 border-t-2 border-gray-200 dark:border-gray-700 w-full max-w-xs mx-auto" />
 
-        {/* Financial Glossary Section */}
         <div className="w-full max-w-sm sm:max-w-md md:max-w-4xl mx-auto px-4 py-8">
           <Collapsible.Root
             className="w-full"
@@ -728,11 +725,11 @@ const SavingsGoals = () => {
             onOpenChange={setIsGlossaryOpen}
           >
             <div className="flex items-center justify-between mb-2">
-              <h4 className="text-lg font-bold">Financial Glossary</h4>
+              <h4 className="text-lg font-bold text-white">Financial Glossary</h4>
               <Collapsible.Trigger asChild>
                 <Button variant="ghost" size="sm" className="w-9 p-0">
-                  <ChevronDown 
-                    className={`h-4 w-4 transition-transform duration-200 ${isGlossaryOpen ? 'rotate-180' : 'rotate-0'}`} 
+                  <ChevronDown
+                    className={`h-4 w-4 transition-transform duration-200 ${isGlossaryOpen ? 'rotate-180' : 'rotate-0'}`}
                   />
                   <span className="sr-only">Toggle Financial Glossary</span>
                 </Button>
@@ -780,8 +777,8 @@ const SavingsGoals = () => {
         </div>
       </div>
 
-      <AIChatbot 
-        pageContext="This is the Savings Goals page where users can set and track their savings goals for different years. The page now includes a 'What If' calculator for goal projections and an expanded, collapsible financial glossary at the bottom. The core features are editing goals, tracking monthly savings, and viewing progress."
+      <AIChatbot
+        pageContext="This is the Savings Goals page where users can set and track their savings goals for different years. The page includes a 'What If' calculator for goal projections and an expanded, collapsible financial glossary at the bottom. The core features are editing goals, tracking monthly savings, and viewing progress."
         pageName="Savings Goals"
       />
     </div>
