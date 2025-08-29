@@ -104,6 +104,7 @@ const MonthlyBudget: React.FC = () => {
     setCalculators([...calculators, { id: newId }]);
   };
   
+  // New function to update the name for a specific calculator
   const handleNameChange = (id: string, name: string) => {
     setCalculatorNames(prev => ({
       ...prev,
@@ -185,7 +186,7 @@ const MonthlyBudget: React.FC = () => {
                   id={calculator.id}
                   showRemove={calculators.length > 1}
                   onRemove={() => setCalculators(calculators.filter(c => c.id !== calculator.id))}
-                  onNameChange={handleNameChange}
+                  onNameChange={handleNameChange} // Pass the new prop
                   pageType="monthly_budget"
                 />
               </div>
