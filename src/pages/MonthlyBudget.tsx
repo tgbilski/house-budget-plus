@@ -143,33 +143,7 @@ const MonthlyBudget: React.FC = () => {
           </div>
         </div>
 
-        {/* Main Content Container - Flexbox Layout */}
-        <div className="flex flex-col xl:flex-row justify-center items-start gap-8 w-full max-w-7xl mx-auto px-4 py-8">
-          
-          {/* Calculators Container */}
-          <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-6 w-full">
-            {calculators.map((calculator) => (
-              <div key={calculator.id} className="w-full">
-                <BudgetCalculator
-                  id={calculator.id}
-                  onRemove={() => removeCalculator(calculator.id)}
-                  showRemove={calculators.length > 1}
-                  pageType="monthly_budget"
-                />
-              </div>
-            ))}
-          </div>
-
-          {/* Budget Health Gauge - Right side */}
-          <div className="order-first xl:order-last w-full xl:w-auto flex justify-center">
-            <BudgetHealthGauge 
-              income={totalIncome} 
-              totalExpenses={totalExpenses} 
-            />
-          </div>
-        </div>
-
-        {/* Currency Selector moved outside the main flex container */}
+        {/* Currency Selector */}
         <div className="flex items-center justify-center gap-2 mt-4 mb-8">
           <Globe className="h-4 w-4 text-muted-foreground" />
           <Select value={currency.code} onValueChange={(value) => {
@@ -190,6 +164,32 @@ const MonthlyBudget: React.FC = () => {
               ))}
             </SelectContent>
           </Select>
+        </div>
+
+        {/* Main Content Container - Flexbox Layout with gauge on the right */}
+        <div className="flex flex-col xl:flex-row justify-center items-start gap-8 w-full max-w-7xl mx-auto px-4 py-8">
+          
+          {/* Calculators Container */}
+          <div className="flex flex-row flex-wrap justify-center xl:justify-start gap-6 flex-1 w-full">
+            {calculators.map((calculator) => (
+              <div key={calculator.id} className="w-full md:w-[48%] lg:w-[49%]">
+                <BudgetCalculator
+                  id={calculator.id}
+                  onRemove={() => removeCalculator(calculator.id)}
+                  showRemove={calculators.length > 1}
+                  pageType="monthly_budget"
+                />
+              </div>
+            ))}
+          </div>
+
+          {/* Budget Health Gauge - Right side, locked in position */}
+          <div className="flex justify-center w-full xl:w-auto xl:flex-shrink-0">
+            <BudgetHealthGauge 
+              income={totalIncome} 
+              totalExpenses={totalExpenses} 
+            />
+          </div>
         </div>
 
         {/* Light Section - Matching Other Pages */}
