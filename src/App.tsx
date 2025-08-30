@@ -6,7 +6,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { HelmetProvider } from 'react-helmet-async';
 import { AuthProvider } from "@/hooks/useAuth";
 import { SubscriptionProvider } from "@/hooks/useSubscription";
-import { HouseholdProvider } from "./HouseholdProvider";
+import { HouseholdProvider } from "@/hooks/useHousehold";
 import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar";
 import Header from "@/components/Header";
 import { AppSidebar } from "@/components/AppSidebar";
@@ -71,7 +71,7 @@ const App = () => {
                     className="min-h-screen w-full flex flex-col relative"
                     style={{ 
                       backgroundColor: 'hsl(213, 50%, 22%)',
-                      backgroundImage: 'repeating-linear-linear-gradient(45deg, transparent, transparent 40px, rgba(255,255,255,0.04) 40px, rgba(255,255,255,0.04) 42px)'
+                      backgroundImage: 'repeating-linear-gradient(45deg, transparent, transparent 40px, rgba(255,255,255,0.04) 40px, rgba(255,255,255,0.04) 42px)'
                     }}
                   >
                     <Header />
@@ -98,7 +98,7 @@ const App = () => {
                   </div>
                 </SidebarProvider>
               </BrowserRouter>
-              </CurrencyContext.Provider>
+            </CurrencyContext.Provider>
             </HouseholdProvider>
           </SubscriptionProvider>
         </AuthProvider>
@@ -109,4 +109,3 @@ const App = () => {
 };
 
 export default App;
-

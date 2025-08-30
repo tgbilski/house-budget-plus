@@ -1,4 +1,4 @@
-import { useState, useEffect, createContext, useContext, ReactNode, useCallback } from 'react';
+import { useState, useEffect, createContext, useContext, ReactNode } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import { useSubscription } from '@/hooks/useSubscription';
 import { supabase } from '@/integrations/supabase/client';
@@ -55,7 +55,6 @@ interface HouseholdContextType {
   leaveHousehold: () => Promise<boolean>;
   deleteHousehold: () => Promise<boolean>;
   refreshHouseholds: () => Promise<void>;
-  updateHousehold: (householdId: string, newName: string) => Promise<boolean>; // Add the new function to the type
 }
 
 const HouseholdContext = createContext<HouseholdContextType | undefined>(undefined);
@@ -463,54 +462,6 @@ export function HouseholdProvider({ children }: { children: ReactNode }) {
     }
   };
 
-  const updateHousehold = useCallback(async (householdId: string, newName: string) => {
-    if (!user || !isOriginator) {
-      toast({
-        title: "Permission Denied",
-        description: "You must be the household owner to edit its name.",
-        variant: "destructive",
-      });
-      return false;
-    }
-
-    setLoading(true);
-    try {
-      const { data, error } = await supabase
-        .from('households')
-        .update({ name: newName })
-        .eq('id', householdId)
-        .select();
-
-      if (error) {
-        throw error;
-      }
-      
-      if (data && data.length > 0) {
-        setCurrentHousehold(data[0]);
-        setUserHouseholds(prevHouseholds => 
-          prevHouseholds.map(h => h.id === householdId ? { ...h, name: newName } : h)
-        );
-      }
-      
-      toast({
-        title: "Household Updated",
-        description: `Household name changed to "${newName}".`,
-      });
-
-      return true;
-    } catch (error) {
-      console.error('Error updating household:', error);
-      toast({
-        title: "Error",
-        description: "Failed to update household name.",
-        variant: "destructive",
-      });
-      return false;
-    } finally {
-      setLoading(false);
-    }
-  }, [user, isOriginator, toast]);
-
   return (
     <HouseholdContext.Provider
       value={{
@@ -530,7 +481,6 @@ export function HouseholdProvider({ children }: { children: ReactNode }) {
         leaveHousehold,
         deleteHousehold,
         refreshHouseholds,
-        updateHousehold, // <-- Return the new function here
       }}
     >
       {children}

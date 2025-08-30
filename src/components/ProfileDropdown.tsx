@@ -1,30 +1,28 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger
+import { 
+  DropdownMenu, 
+  DropdownMenuContent, 
+  DropdownMenuItem, 
+  DropdownMenuLabel, 
+  DropdownMenuSeparator, 
+  DropdownMenuTrigger 
 } from '@/components/ui/dropdown-menu';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
-import { Settings, LogOut, Crown, Home } from 'lucide-react'; // Add Home icon
+import { Settings, LogOut, Crown } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { useProfile } from '@/hooks/useProfile';
 import { useSubscription } from '@/hooks/useSubscription';
 import { Badge } from '@/components/ui/badge';
 import ProfileSettings from './ProfileSettings';
 import { HouseholdSwitcher } from './HouseholdSwitcher';
-import { HouseholdSettings } from './HouseholdSettings'; // Import the new component
 
 const ProfileDropdown: React.FC = () => {
   const { signOut } = useAuth();
   const { profile, getInitials, truncateEmail } = useProfile();
   const { subscribed, subscriptionTier } = useSubscription();
-  const [profileSettingsOpen, setProfileSettingsOpen] = useState(false);
-  const [householdSettingsOpen, setHouseholdSettingsOpen] = useState(false); // New state for household dialog
+  const [settingsOpen, setSettingsOpen] = useState(false);
 
   const displayEmail = profile?.email || '';
 
@@ -44,7 +42,7 @@ const ProfileDropdown: React.FC = () => {
           <DropdownMenuLabel className="font-normal">
             <div className="flex flex-col space-y-2">
               <p className="text-sm font-medium leading-none">
-                {profile?.first_name && profile?.last_name
+                {profile?.first_name && profile?.last_name 
                   ? `${profile.first_name} ${profile.last_name}`
                   : 'My Account'
                 }
@@ -52,6 +50,7 @@ const ProfileDropdown: React.FC = () => {
               <p className="text-xs leading-none text-muted-foreground">
                 {truncateEmail(displayEmail)}
               </p>
+              {/* Subscription Status Badge */}
               <div className="flex items-center gap-1">
                 {subscribed ? (
                   <Badge variant="default" className="text-xs">
@@ -67,9 +66,10 @@ const ProfileDropdown: React.FC = () => {
             </div>
           </DropdownMenuLabel>
           <DropdownMenuSeparator />
-          <DropdownMenuItem onClick={() => setHouseholdSettingsOpen(true)}>
-            <Home className="mr-2 h-4 w-4" />
-            <span>Manage Household</span>
+          <DropdownMenuItem asChild>
+            <div className="w-full p-0">
+              <HouseholdSwitcher className="w-full justify-start p-2" />
+            </div>
           </DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem asChild>
@@ -85,14 +85,10 @@ const ProfileDropdown: React.FC = () => {
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
-
-      <ProfileSettings
-        open={profileSettingsOpen}
-        onOpenChange={setProfileSettingsOpen}
-      />
-      <HouseholdSettings
-        open={householdSettingsOpen}
-        onOpenChange={setHouseholdSettingsOpen}
+      
+      <ProfileSettings 
+        open={settingsOpen} 
+        onOpenChange={setSettingsOpen} 
       />
     </>
   );
