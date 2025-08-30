@@ -9,7 +9,7 @@ import { useProfile } from '@/hooks/useProfile';
 import { PricingCards } from '@/components/PricingCards';
 import { supabase } from '@/integrations/supabase/client';
 import { useState, useEffect } from 'react';
-import ProfileSettings from '@/components/ProfileSettings'; // Import the ProfileSettings component
+import ProfileSettings from '@/components/ProfileSettings'; // Ensure this path is correct
 
 export default function UserSettings() {
   const { user, signOut } = useAuth();
@@ -22,7 +22,7 @@ export default function UserSettings() {
     loading
   } = useSubscription();
   const [pdfCount, setPdfCount] = useState<number>(0);
-  const [isProfileDialogOpen, setIsProfileDialogOpen] = useState(false); // State to control the dialog
+  const [isProfileDialogOpen, setIsProfileDialogOpen] = useState(false);
 
   useEffect(() => {
     const fetchPdfCount = async () => {
