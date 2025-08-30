@@ -2,13 +2,14 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
-import { Settings, Crown } from 'lucide-react';
+import { Settings, Crown, Edit } from 'lucide-react';
 import { useSubscription } from '@/hooks/useSubscription';
 import { useAuth } from '@/hooks/useAuth';
 import { useProfile } from '@/hooks/useProfile';
 import { PricingCards } from '@/components/PricingCards';
 import { supabase } from '@/integrations/supabase/client';
 import { useState, useEffect } from 'react';
+import ProfileSettings from '@/components/ProfileSettings'; // Import the ProfileSettings component
 
 export default function UserSettings() {
   const { user, signOut } = useAuth();
@@ -21,6 +22,7 @@ export default function UserSettings() {
     loading
   } = useSubscription();
   const [pdfCount, setPdfCount] = useState<number>(0);
+  const [isProfileDialogOpen, setIsProfileDialogOpen] = useState(false); // State to control the dialog
 
   useEffect(() => {
     const fetchPdfCount = async () => {
@@ -64,8 +66,16 @@ export default function UserSettings() {
 
         {/* Profile Information */}
         <Card>
-          <CardHeader>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle>Profile Information</CardTitle>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setIsProfileDialogOpen(true)}
+            >
+              <Edit className="h-4 w-4 mr-2" />
+              Edit Profile
+            </Button>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -140,6 +150,12 @@ export default function UserSettings() {
           <Button variant="destructive" onClick={signOut}>Sign Out</Button>
         </div>
       </div>
+
+      {/* Profile Settings Dialog */}
+      <ProfileSettings
+        open={isProfileDialogOpen}
+        onOpenChange={setIsProfileDialogOpen}
+      />
     </div>
   );
 }
