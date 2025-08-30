@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
+import { supabase } from "@/lib/supabaseClient"; // adjust this path if needed
 
-// Adjust types to fit your backend response shape
 type Household = {
   id: string;
   name: string;
@@ -15,43 +15,56 @@ export function useHousehold() {
   const [isOriginator, setIsOriginator] = useState(false);
   const [loading, setLoading] = useState(true);
 
-  // --- API Calls ---
-
   // Fetch the currently-selected household for this user
-  const fetchCurrentHousehold = async (): Promise<Household> => {
-    const res = await fetch("/api/household/current");
-    if (!res.ok) throw new Error("Failed to fetch current household");
-    return res.json();
+  const fetchCurrentHousehold = async (): Promise<Household | null> => {
+    // Replace with your logic to get the current household, e.g. from user profile or a "selected" flag
+    const { data, error } = await supabase
+      .from("households")
+      .select("*")
+      .eq("is_current", true)
+      .single();
+    if (error) return null;
+    return data as Household;
   };
 
   // Fetch all households this user is a member of
   const fetchUserHouseholds = async (): Promise<Household[]> => {
-    const res = await fetch("/api/household");
-    if (!res.ok) throw new Error("Failed to fetch households");
-    return res.json();
+    // Replace with your actual user ID logic
+    const { data, error } = await supabase
+      .from("households")
+      .select("*");
+    if (error) return [];
+    return data as Household[];
   };
 
   // Switch the active household for this user
   const switchHousehold = async (householdId: string) => {
     setLoading(true);
-    const res = await fetch(`/api/household/switch`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ householdId }),
-    });
-    if (!res.ok) throw new Error("Failed to switch household");
+    // Update the current household for this user (customize as needed)
+    // Example: set is_current=false for all, is_current=true for selected
+    const { error: clearError } = await supabase
+      .from("households")
+      .update({ is_current: false })
+      .eq("is_current", true);
+    const { error: setError } = await supabase
+      .from("households")
+      .update({ is_current: true })
+      .eq("id", householdId);
+    if (clearError || setError) {
+      setLoading(false);
+      throw new Error("Failed to switch household");
+    }
     await refresh();
   };
 
   // Create a new household for this user
   const createHousehold = async (name: string) => {
     setLoading(true);
-    const res = await fetch(`/api/household`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name }),
-    });
-    if (!res.ok) {
+    // You may want to set originator_id from the authenticated user
+    const { data, error } = await supabase
+      .from("households")
+      .insert([{ name }]);
+    if (error) {
       setLoading(false);
       return false;
     }
@@ -63,12 +76,11 @@ export function useHousehold() {
   const renameHousehold = async (newName: string) => {
     if (!currentHousehold) return false;
     setLoading(true);
-    const res = await fetch(`/api/household/${currentHousehold.id}/rename`, {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name: newName }),
-    });
-    if (!res.ok) {
+    const { error } = await supabase
+      .from("households")
+      .update({ name: newName })
+      .eq("id", currentHousehold.id);
+    if (error) {
       setLoading(false);
       return false;
     }
