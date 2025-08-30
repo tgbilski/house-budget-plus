@@ -119,6 +119,7 @@ const BudgetApp: React.FC = () => {
                     id={calculator.id}
                     onRemove={() => removeCalculator(calculator.id)}
                     showRemove={calculators.length > 1}
+                    onNameChange={() => {}} // Empty function for BudgetApp
                   />
                 </div>
               );

@@ -100,6 +100,9 @@ const MonthlyBudget: React.FC = () => {
   };
 
   const addCalculator = () => {
+    if (calculators.length >= 4) {
+      return; // Limit to 4 calculators
+    }
     const newId = (parseInt(calculators[calculators.length - 1].id) + 1).toString();
     setCalculators([...calculators, { id: newId }]);
   };
@@ -199,8 +202,13 @@ const MonthlyBudget: React.FC = () => {
           </div>
 
           <div className="text-center my-8">
-            <Button onClick={addCalculator} className="group transition-all duration-300 transform-gpu hover:scale-105">
-              <Plus className="h-4 w-4 mr-2" /> Add Another Budget
+            <Button 
+              onClick={addCalculator} 
+              disabled={calculators.length >= 4}
+              className="group transition-all duration-300 transform-gpu hover:scale-105"
+            >
+              <Plus className="h-4 w-4 mr-2" /> 
+              Add Another Budget {calculators.length >= 4 ? '(Max 4)' : `(${calculators.length}/4)`}
             </Button>
           </div>
 
@@ -273,7 +281,7 @@ const MonthlyBudget: React.FC = () => {
           <AIChatbot 
             pageContext="This is the Monthly Budget Calculator page where users can input their monthly income and expenses to calculate their net budget. Users can add multiple calculators for different household members or scenarios, select different currencies, and save their data if logged in. The page includes pre-configured expense categories and the ability to add custom expenses."
             pageName="Monthly Budget Calculator"
-            additionalContext={{ calculatorNames }}
+            calculatorsData={Object.entries(calculatorNames).map(([id, name]) => ({ calculatorId: id, ownerName: name }))}
           />
         </div>
       </div>

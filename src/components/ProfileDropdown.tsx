@@ -16,6 +16,7 @@ import { useProfile } from '@/hooks/useProfile';
 import { useSubscription } from '@/hooks/useSubscription';
 import { Badge } from '@/components/ui/badge';
 import ProfileSettings from './ProfileSettings';
+import { HouseholdSwitcher } from './HouseholdSwitcher';
 
 const ProfileDropdown: React.FC = () => {
   const { signOut } = useAuth();
@@ -64,6 +65,12 @@ const ProfileDropdown: React.FC = () => {
               </div>
             </div>
           </DropdownMenuLabel>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem asChild>
+            <div className="w-full p-0">
+              <HouseholdSwitcher className="w-full justify-start p-2" />
+            </div>
+          </DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem asChild>
             <Link to="/settings" className="flex items-center w-full">

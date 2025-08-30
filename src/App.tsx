@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { HelmetProvider } from 'react-helmet-async';
 import { AuthProvider } from "@/hooks/useAuth";
 import { SubscriptionProvider } from "@/hooks/useSubscription";
+import { HouseholdProvider } from "@/hooks/useHousehold";
 import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar";
 import Header from "@/components/Header";
 import { AppSidebar } from "@/components/AppSidebar";
@@ -62,7 +63,8 @@ const App = () => {
         <Sonner />
         <AuthProvider>
           <SubscriptionProvider>
-            <CurrencyContext.Provider value={{ currency, setCurrency }}>
+            <HouseholdProvider>
+              <CurrencyContext.Provider value={{ currency, setCurrency }}>
               <BrowserRouter>
                 <SidebarProvider defaultOpen={isMobile ? false : false}>
                   <div 
@@ -97,6 +99,7 @@ const App = () => {
                 </SidebarProvider>
               </BrowserRouter>
             </CurrencyContext.Provider>
+            </HouseholdProvider>
           </SubscriptionProvider>
         </AuthProvider>
       </TooltipProvider>

@@ -12,7 +12,7 @@ serve(async (req) => {
   }
 
   try {
-    const { message, pageContext, pageName, conversationHistory } = await req.json();
+    const { message, pageContext, pageName, conversationHistory, calculatorsData } = await req.json();
 
     const openAIApiKey = Deno.env.get('OPENAI_API_KEY');
     if (!openAIApiKey) {
@@ -23,6 +23,13 @@ serve(async (req) => {
     const systemPrompt = `You are a helpful AI assistant embedded in a financial planning web application. You are currently helping a user on the "${pageName}" page.
 
 Page Context: ${pageContext}
+
+${calculatorsData && calculatorsData.length > 0 ? `
+**AVAILABLE BUDGET CALCULATORS:**
+${calculatorsData.map((calc: any, index: number) => `Calculator ${index + 1}: ${calc.ownerName || 'Unnamed'} (ID: ${calc.calculatorId})`).join('\n')}
+
+**IMPORTANT:** When users request budget changes, they can specify which calculator by number (1, 2, 3, or 4). If no specific calculator is mentioned, ask which calculator they want to update.
+` : ''}
 
 **RESPONSE FORMATTING REQUIREMENTS:**
 - Use **bold text** for headings and important information
@@ -47,12 +54,18 @@ Your role is to:
 
 **BUDGET CALCULATOR AUTOFILL CAPABILITIES:**
 When users want to autofill budget calculator data, look for instructions like:
-- "Set my income to $5000"
-- "Add $1200 for rent" 
-- "Set my electric bill to $150"
-- "My mortgage is $2500"
-- "Add Netflix for $15.99"
-- "I pay $100 for car insurance"
+- "Set my income to $5000 in calculator 1"
+- "Add $1200 for rent to calculator 2" 
+- "Set my electric bill to $150 in budget 3"
+- "My mortgage is $2500 for calculator 1"
+- "Add Netflix for $15.99 to budget 2"
+- "I pay $100 for car insurance in calculator 1"
+
+**CALCULATOR TARGETING:**
+- Users can specify "calculator 1", "budget 1", "first calculator", etc.
+- Numbers 1-4 correspond to the calculators they have created
+- If no calculator is specified, ask them which calculator they want to update
+- Use the calculatorId from the calculatorsData to target the correct calculator
 
 **BUDGET FIELD MAPPING:**
 - "income", "salary", "pay" → monthlyIncome
@@ -71,6 +84,7 @@ When users want to autofill budget calculator data, look for instructions like:
 For budget autofill requests, respond with this exact format:
 BUDGET_AUTOFILL: {
   "action": "fill_budget",
+  "calculatorId": "specific_calculator_id_from_calculatorsData",
   "data": {
     "income": amount_or_null,
     "expenses": {
@@ -81,7 +95,7 @@ BUDGET_AUTOFILL: {
       {"label": "Expense Name", "amount": amount}
     ]
   },
-  "message": "I've updated your budget with the specified amounts."
+  "message": "I've updated calculator [number] with the specified amounts."
 }
 
 **GIFTS AUTOFILL CAPABILITIES:**
