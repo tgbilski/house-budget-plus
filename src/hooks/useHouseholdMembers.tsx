@@ -1,15 +1,24 @@
 import { useState, useEffect } from "react";
+import { supabase } from "@/lib/supabaseClient"; // adjust this path if needed
 
-// Replace with your actual API functions
-import { fetchHouseholdMembers } from "@/lib/api/householdMembers";
+type Member = {
+  id: string;
+  name: string;
+  email: string;
+  // ...other fields
+};
 
 export function useHouseholdMembers() {
-  const [members, setMembers] = useState<any[]>([]);
+  const [members, setMembers] = useState<Member[]>([]);
   const [loading, setLoading] = useState(false);
 
   const refresh = async () => {
     setLoading(true);
-    setMembers(await fetchHouseholdMembers());
+    // Replace with your logic to fetch household members for the current household
+    const { data, error } = await supabase
+      .from("household_members")
+      .select("*");
+    setMembers(data || []);
     setLoading(false);
   };
 
