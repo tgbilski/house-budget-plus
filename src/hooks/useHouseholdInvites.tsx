@@ -1,21 +1,25 @@
-
 import { useState, useEffect } from "react";
+import { supabase } from "@/lib/supabaseClient"; // adjust this path if needed
 
-// Replace with your actual API functions
-import {
-  fetchPendingInvites,
-  apiSendInvite,
-  apiAcceptInvite,
-  apiDeclineInvite,
-} from "@/lib/api/householdInvites";
+type Invite = {
+  id: string;
+  email: string;
+  status: string;
+  // ...other fields
+};
 
 export function useHouseholdInvites() {
-  const [pendingInvites, setPendingInvites] = useState<any[]>([]);
+  const [pendingInvites, setPendingInvites] = useState<Invite[]>([]);
   const [loading, setLoading] = useState(false);
 
   const refresh = async () => {
     setLoading(true);
-    setPendingInvites(await fetchPendingInvites());
+    // Get pending invites for the current user (adjust as needed)
+    const { data, error } = await supabase
+      .from("household_invites")
+      .select("*")
+      .eq("status", "pending");
+    setPendingInvites(data || []);
     setLoading(false);
   };
 
@@ -25,23 +29,31 @@ export function useHouseholdInvites() {
 
   const sendInvite = async (email: string) => {
     setLoading(true);
-    const ok = await apiSendInvite(email);
+    const { error } = await supabase
+      .from("household_invites")
+      .insert([{ email, status: "pending" }]);
     await refresh();
-    return ok;
+    return !error;
   };
 
   const acceptInvite = async (inviteId: string) => {
     setLoading(true);
-    const ok = await apiAcceptInvite(inviteId);
+    const { error } = await supabase
+      .from("household_invites")
+      .update({ status: "accepted" })
+      .eq("id", inviteId);
     await refresh();
-    return ok;
+    return !error;
   };
 
   const declineInvite = async (inviteId: string) => {
     setLoading(true);
-    const ok = await apiDeclineInvite(inviteId);
+    const { error } = await supabase
+      .from("household_invites")
+      .update({ status: "declined" })
+      .eq("id", inviteId);
     await refresh();
-    return ok;
+    return !error;
   };
 
   return {
