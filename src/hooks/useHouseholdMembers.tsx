@@ -1,30 +1,31 @@
 import { useState, useEffect } from "react";
-import { supabase } from "@/lib/supabaseClient"; // adjust this path if needed
+import { supabase } from "@/lib/supabaseClient";
 
 type Member = {
   id: string;
-  name: string;
-  email: string;
-  // ...other fields
+  user_id: string;
+  household_id: string;
+  // ...add additional fields as needed
 };
 
-export function useHouseholdMembers() {
+export function useHouseholdMembers(householdId?: string) {
   const [members, setMembers] = useState<Member[]>([]);
   const [loading, setLoading] = useState(false);
 
   const refresh = async () => {
+    if (!householdId) return;
     setLoading(true);
-    // Replace with your logic to fetch household members for the current household
     const { data, error } = await supabase
       .from("household_members")
-      .select("*");
+      .select("*")
+      .eq("household_id", householdId);
     setMembers(data || []);
     setLoading(false);
   };
 
   useEffect(() => {
     refresh();
-  }, []);
+  }, [householdId]);
 
   return {
     members,
