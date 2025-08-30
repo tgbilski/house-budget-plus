@@ -6,7 +6,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { HelmetProvider } from 'react-helmet-async';
 import { AuthProvider } from "@/hooks/useAuth";
 import { SubscriptionProvider } from "@/hooks/useSubscription";
-import { HouseholdProvider } from "@/hooks/useHouseholdProvider";
+import { HouseholdProvider } from "./HouseholdProvider";
 import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar";
 import Header from "@/components/Header";
 import { AppSidebar } from "@/components/AppSidebar";
@@ -109,3 +109,4 @@ const App = () => {
 };
 
 export default App;
+
