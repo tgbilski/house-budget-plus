@@ -1,73 +1,73 @@
 import { useState, useEffect, useCallback } from "react";
-import { supabase } from "@/lib/supabaseClient"; // adjust this path if needed
+import { supabase } from "@/lib/supabaseClient";
 
+// Adjust these types to match your table columns
 type Household = {
   id: string;
   name: string;
-  role: "originator" | "member";
   originator_id: string;
-  // ...add any other relevant fields!
 };
 
-export function useHousehold() {
+export function useHousehold(userId?: string) {
   const [currentHousehold, setCurrentHousehold] = useState<Household | null>(null);
   const [userHouseholds, setUserHouseholds] = useState<Household[]>([]);
   const [isOriginator, setIsOriginator] = useState(false);
   const [loading, setLoading] = useState(true);
 
-  // Fetch the currently-selected household for this user
-  const fetchCurrentHousehold = async (): Promise<Household | null> => {
-    // Replace with your logic to get the current household, e.g. from user profile or a "selected" flag
-    const { data, error } = await supabase
-      .from("households")
-      .select("*")
-      .eq("is_current", true)
-      .single();
-    if (error) return null;
-    return data as Household;
+  // Fetch all households where the user is a member
+  const fetchUserHouseholds = async () => {
+    if (!userId) return [];
+    // Find all households the user belongs to
+    const { data: memberships, error: membershipsError } = await supabase
+      .from("household_members")
+      .select("household_id, household:households(*)")
+      .eq("user_id", userId);
+
+    if (membershipsError || !memberships) return [];
+
+    // Extract households
+    return memberships.map((m: any) => m.household);
   };
 
-  // Fetch all households this user is a member of
-  const fetchUserHouseholds = async (): Promise<Household[]> => {
-    // Replace with your actual user ID logic
-    const { data, error } = await supabase
-      .from("households")
-      .select("*");
-    if (error) return [];
-    return data as Household[];
+  // Fetch the household marked as "current" for this user (if you have such logic)
+  // Otherwise, just pick the first one
+  const fetchCurrentHousehold = async () => {
+    const households = await fetchUserHouseholds();
+    return households[0] || null;
   };
 
-  // Switch the active household for this user
+  // Switch the current household (this is app-specific logic; you may need to persist this in user profile, etc.)
   const switchHousehold = async (householdId: string) => {
+    // Example: update a "current_household_id" column in the user's profile
+    if (!userId) return;
     setLoading(true);
-    // Update the current household for this user (customize as needed)
-    // Example: set is_current=false for all, is_current=true for selected
-    const { error: clearError } = await supabase
-      .from("households")
-      .update({ is_current: false })
-      .eq("is_current", true);
-    const { error: setError } = await supabase
-      .from("households")
-      .update({ is_current: true })
-      .eq("id", householdId);
-    if (clearError || setError) {
-      setLoading(false);
-      throw new Error("Failed to switch household");
-    }
+    const { error } = await supabase
+      .from("profiles")
+      .update({ current_household_id: householdId })
+      .eq("id", userId);
+    setLoading(false);
     await refresh();
+    if (error) throw error;
   };
 
-  // Create a new household for this user
+  // Create a new household (originator is the current user)
   const createHousehold = async (name: string) => {
+    if (!userId) return false;
     setLoading(true);
-    // You may want to set originator_id from the authenticated user
+    // Insert household and membership
     const { data, error } = await supabase
       .from("households")
-      .insert([{ name }]);
-    if (error) {
+      .insert([{ name, originator_id: userId }])
+      .select()
+      .single();
+    if (error || !data) {
       setLoading(false);
       return false;
     }
+    // Add user as member
+    await supabase
+      .from("household_members")
+      .insert([{ user_id: userId, household_id: data.id }]);
     await refresh();
     return true;
   };
@@ -80,33 +80,20 @@ export function useHousehold() {
       .from("households")
       .update({ name: newName })
       .eq("id", currentHousehold.id);
-    if (error) {
-      setLoading(false);
-      return false;
-    }
+    setLoading(false);
     await refresh();
-    return true;
+    return !error;
   };
 
-  // --- Data Fetch & State ---
-
+  // Refresh Households
   const refresh = useCallback(async () => {
     setLoading(true);
-    try {
-      const [current, households] = await Promise.all([
-        fetchCurrentHousehold(),
-        fetchUserHouseholds(),
-      ]);
-      setCurrentHousehold(current);
-      setUserHouseholds(households);
-      setIsOriginator(current?.role === "originator");
-    } catch (err) {
-      setCurrentHousehold(null);
-      setUserHouseholds([]);
-      setIsOriginator(false);
-    }
+    const households = await fetchUserHouseholds();
+    setUserHouseholds(households);
+    setCurrentHousehold(households[0] || null);
+    setIsOriginator((households[0]?.originator_id ?? "") === userId);
     setLoading(false);
-  }, []);
+  }, [userId]);
 
   useEffect(() => {
     refresh();
