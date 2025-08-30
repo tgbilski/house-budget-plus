@@ -1,37 +1,40 @@
 import { useState, useEffect } from "react";
-import { supabase } from "@/lib/supabaseClient"; // adjust this path if needed
+import { supabase } from "@/lib/supabaseClient";
 
 type Invite = {
   id: string;
   email: string;
   status: string;
+  household_id: string;
   // ...other fields
 };
 
-export function useHouseholdInvites() {
+export function useHouseholdInvites(userId?: string) {
   const [pendingInvites, setPendingInvites] = useState<Invite[]>([]);
   const [loading, setLoading] = useState(false);
 
   const refresh = async () => {
+    if (!userId) return;
     setLoading(true);
-    // Get pending invites for the current user (adjust as needed)
+    // Show invites sent to this user's email; you may need to fetch the email from the user's profile
     const { data, error } = await supabase
       .from("household_invites")
       .select("*")
-      .eq("status", "pending");
+      .eq("status", "pending")
+      .eq("user_id", userId); // or .eq("email", userEmail)
     setPendingInvites(data || []);
     setLoading(false);
   };
 
   useEffect(() => {
     refresh();
-  }, []);
+  }, [userId]);
 
-  const sendInvite = async (email: string) => {
+  const sendInvite = async (email: string, household_id: string) => {
     setLoading(true);
     const { error } = await supabase
       .from("household_invites")
-      .insert([{ email, status: "pending" }]);
+      .insert([{ email, household_id, status: "pending" }]);
     await refresh();
     return !error;
   };
