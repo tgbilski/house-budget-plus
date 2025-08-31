@@ -69,8 +69,10 @@ export const Breadcrumbs: React.FC = () => {
                   ) : (
                     <BreadcrumbLink asChild>
                       <Link to={crumb.href} className="flex items-center gap-1">
-                        {index === 0 && <Home className="h-4 w-4" />}
-                        {crumb.label}
+                        <div className="flex items-center gap-1">
+                          {index === 0 && <Home className="h-4 w-4" />}
+                          <span>{crumb.label}</span>
+                        </div>
                       </Link>
                     </BreadcrumbLink>
                   )}

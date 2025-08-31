@@ -264,7 +264,10 @@ export const RSSFeed: React.FC<RSSFeedProps> = ({
                           rel="noopener noreferrer"
                           className="flex items-center justify-center gap-1"
                         >
-                          Read More <ExternalLink className="h-3 w-3" />
+                          <div className="flex items-center justify-center gap-1">
+                            <span>Read More</span>
+                            <ExternalLink className="h-3 w-3" />
+                          </div>
                         </a>
                       </Button>
                     </CardContent>
@@ -352,7 +355,10 @@ export const RSSFeed: React.FC<RSSFeedProps> = ({
                             rel="noopener noreferrer"
                             className="flex items-center justify-center gap-1"
                           >
-                            Read More <ExternalLink className="h-3 w-3" />
+                            <div className="flex items-center justify-center gap-1">
+                              <span>Read More</span>
+                              <ExternalLink className="h-3 w-3" />
+                            </div>
                           </a>
                         </Button>
                       </CardContent>

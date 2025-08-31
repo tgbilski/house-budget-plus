@@ -78,8 +78,10 @@ export function AppSidebar() {
                       )}
                       title={!open && !isMobile ? item.title : undefined}
                     >
-                      <item.icon className="h-5 w-5 flex-shrink-0" />
-                      {(open || isMobile) && <span>{item.title}</span>}
+                      <div className="flex items-center gap-3">
+                        <item.icon className="h-5 w-5 flex-shrink-0" />
+                        {(open || isMobile) && <span>{item.title}</span>}
+                      </div>
                     </NavLink>
                   </SidebarMenuButton>
                 </SidebarMenuItem>

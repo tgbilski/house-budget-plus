@@ -96,7 +96,7 @@ export const InternalLinks: React.FC<InternalLinksProps> = ({
               </p>
               <Button asChild variant="outline" className="w-full">
                 <Link to={tool.href}>
-                  Try This Tool
+                  <span>Try This Tool</span>
                 </Link>
               </Button>
             </CardContent>
