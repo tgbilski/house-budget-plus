@@ -43,9 +43,11 @@ import {
 
 interface HouseholdSwitcherProps {
   className?: string;
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
 }
 
-export function HouseholdSwitcher({ className }: HouseholdSwitcherProps) {
+export function HouseholdSwitcher({ className, open, onOpenChange }: HouseholdSwitcherProps) {
   const { user } = useAuth();
   
   // Household switching, listing, creating, renaming
@@ -78,7 +80,7 @@ export function HouseholdSwitcher({ className }: HouseholdSwitcherProps) {
   const { subscribed } = useSubscription();
 
   // UI State
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(open || false);
   const [newHouseholdName, setNewHouseholdName] = useState("");
   const [isCreating, setIsCreating] = useState(false);
   const [inviteEmail, setInviteEmail] = useState("");
@@ -132,14 +134,16 @@ export function HouseholdSwitcher({ className }: HouseholdSwitcherProps) {
 
   // Dialog stays open if explicitly open, not on focus loss
   return (
-    <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <DialogTrigger asChild>
-        <Button variant="ghost" size="sm" className={className}>
-          <Home className="h-4 w-4 mr-2" />
-          {currentHousehold?.name || "No Household"}
-          {isOriginator && <Crown className="h-3 w-3 ml-1" />}
-        </Button>
-      </DialogTrigger>
+    <Dialog open={open !== undefined ? open : isOpen} onOpenChange={onOpenChange || setIsOpen}>
+      {!open && (
+        <DialogTrigger asChild>
+          <Button variant="ghost" size="sm" className={className}>
+            <Home className="h-4 w-4 mr-2" />
+            {currentHousehold?.name || "No Household"}
+            {isOriginator && <Crown className="h-3 w-3 ml-1" />}
+          </Button>
+        </DialogTrigger>
+      )}
       <DialogContent className="max-w-md" onOpenAutoFocus={e => e.preventDefault()}>
         <DialogHeader>
           <DialogTitle>Household Management</DialogTitle>

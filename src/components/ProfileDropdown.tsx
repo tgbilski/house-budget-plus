@@ -10,7 +10,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
-import { Settings, LogOut, Crown } from 'lucide-react';
+import { Settings, LogOut, Crown, Home } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { useProfile } from '@/hooks/useProfile';
 import { useSubscription } from '@/hooks/useSubscription';
@@ -23,6 +23,7 @@ const ProfileDropdown: React.FC = () => {
   const { profile, getInitials, truncateEmail } = useProfile();
   const { subscribed, subscriptionTier } = useSubscription();
   const [settingsOpen, setSettingsOpen] = useState(false);
+  const [householdOpen, setHouseholdOpen] = useState(false);
 
   const displayEmail = profile?.email || '';
 
@@ -66,9 +67,10 @@ const ProfileDropdown: React.FC = () => {
             </div>
           </DropdownMenuLabel>
           <DropdownMenuSeparator />
-          <div className="px-2 py-1.5">
-            <HouseholdSwitcher className="w-full justify-start" />
-          </div>
+          <DropdownMenuItem onClick={() => setHouseholdOpen(true)}>
+            <Home className="mr-2 h-4 w-4" />
+            <span>Household Settings</span>
+          </DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem asChild>
             <Link to="/settings" className="flex items-center w-full">
@@ -87,6 +89,11 @@ const ProfileDropdown: React.FC = () => {
       <ProfileSettings 
         open={settingsOpen} 
         onOpenChange={setSettingsOpen} 
+      />
+      
+      <HouseholdSwitcher 
+        open={householdOpen} 
+        onOpenChange={setHouseholdOpen} 
       />
     </>
   );
