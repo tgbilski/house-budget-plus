@@ -67,8 +67,10 @@ export const SocialShare: React.FC<SocialShareProps> = ({
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant="outline" size="sm">
-          <Share2 className="h-4 w-4 mr-2" />
-          Share
+          <div className="flex items-center gap-2">
+            <Share2 className="h-4 w-4" />
+            <span>Share</span>
+          </div>
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56 bg-background border shadow-lg z-50">

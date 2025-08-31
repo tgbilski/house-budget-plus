@@ -130,7 +130,9 @@ export default function AIInsights() {
                   <CardContent className="p-8 text-center">
                     <p className="text-xl font-semibold mb-6 text-gray-900">Please sign in to access AI Insights</p>
                     <Button asChild className="mt-4 bg-purple-600 hover:bg-purple-700 text-white transition-all duration-300 transform hover:scale-105 shadow-lg">
-                      <Link to="/auth">Sign In Now</Link>
+                      <Link to="/auth">
+                        <span>Sign In Now</span>
+                      </Link>
                     </Button>
                   </CardContent>
                 </Card>
