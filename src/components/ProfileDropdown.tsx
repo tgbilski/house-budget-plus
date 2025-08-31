@@ -32,11 +32,13 @@ const ProfileDropdown: React.FC = () => {
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button variant="ghost" className="relative h-8 w-8 rounded-full">
-            <Avatar className="h-8 w-8">
-              <AvatarFallback className="text-sm font-medium">
-                {getInitials()}
-              </AvatarFallback>
-            </Avatar>
+            <div>
+              <Avatar className="h-8 w-8">
+                <AvatarFallback className="text-sm font-medium">
+                  {getInitials()}
+                </AvatarFallback>
+              </Avatar>
+            </div>
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent className="w-60" align="end" forceMount>
@@ -74,8 +76,10 @@ const ProfileDropdown: React.FC = () => {
           <DropdownMenuSeparator />
           <DropdownMenuItem asChild>
             <Link to="/settings" className="flex items-center w-full">
-              <Settings className="mr-2 h-4 w-4" />
-              <span>Settings</span>
+              <div className="flex items-center w-full">
+                <Settings className="mr-2 h-4 w-4" />
+                <span>Settings</span>
+              </div>
             </Link>
           </DropdownMenuItem>
           <DropdownMenuSeparator />
