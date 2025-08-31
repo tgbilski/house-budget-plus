@@ -240,8 +240,10 @@ export const ChallengesCard: React.FC = () => {
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogTrigger asChild>
             <Button size="sm">
-              <Plus className="h-4 w-4 mr-2" />
-              New Challenge
+              <div className="flex items-center">
+                <Plus className="h-4 w-4 mr-2" />
+                <span>New Challenge</span>
+              </div>
             </Button>
           </DialogTrigger>
           <DialogContent className="max-w-md">

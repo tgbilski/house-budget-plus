@@ -99,16 +99,19 @@ const HeroSectionContent = () => (
           Smart financial planning tools with AI insights. Track expenses, compare vendors, and make informed decisions that save you money. Join a community of smart savers today!
         </p>
         <div className="flex flex-col sm:flex-row gap-3 md:gap-4 justify-center mb-10 max-w-md mx-auto">
-          <Button asChild size="lg" className="w-full sm:w-auto text-base px-6 py-4 shadow-lg hover:shadow-xl transition-shadow">
-            <Link to="/budget">
-              Budget Calculator <ArrowRight className="ml-2 h-4 w-4" />
-            </Link>
-          </Button>
-          <Button asChild variant="outline" size="lg" className="w-full sm:w-auto text-base px-6 py-4 border-2">
-            <Link to="/ai-insights">
-              AI Insights
-            </Link>
-          </Button>
+          <Button asChild size="lg" className="w-full sm:w-auto text-base px-6 py-4 shadow-lg hover:shadow-xl transition-shadow">
+            <Link to="/budget">
+              <div className="flex items-center">
+                <span>Budget Calculator</span>
+                <ArrowRight className="ml-2 h-4 w-4" />
+              </div>
+            </Link>
+          </Button>
+          <Button asChild variant="outline" size="lg" className="w-full sm:w-auto text-base px-6 py-4 border-2">
+            <Link to="/ai-insights">
+              <span>AI Insights</span>
+            </Link>
+          </Button>
         </div>
       </div>
 
@@ -206,12 +209,14 @@ const CTASection = () => (
         Join our community and take control of your finances with our free tools
       </p>
       <div className="flex flex-col sm:flex-row gap-3 md:gap-4 justify-center mb-6 md:mb-8 max-w-md mx-auto">
-        <Button asChild size="lg" className="w-full sm:w-auto text-base px-6 py-3">
-          <Link to="/auth">
-            <span className="block sm:inline">Sign up for free</span>
-            <ArrowRight className="ml-2 h-4 w-4" />
-          </Link>
-        </Button>
+        <Button asChild size="lg" className="w-full sm:w-auto text-base px-6 py-3">
+          <Link to="/auth">
+            <div className="flex items-center">
+              <span className="block sm:inline">Sign up for free</span>
+              <ArrowRight className="ml-2 h-4 w-4" />
+            </div>
+          </Link>
+        </Button>
         <Button
           asChild
           variant="outline"
@@ -293,8 +298,10 @@ const PromoCard = () => (
     <CardDescription className="text-gray-600 mb-4">
       Get instant, AI-powered recommendations to help you save more every month.
     </CardDescription>
-    <Button asChild>
-      <Link to="/ai-insights">Explore AI Insights</Link>
-    </Button>
+    <Button asChild>
+      <Link to="/ai-insights">
+        <span>Explore AI Insights</span>
+      </Link>
+    </Button>
   </Card>
 );
