@@ -37,12 +37,12 @@ const Header: React.FC = () => {
           {user ? (
             <ProfileDropdown />
           ) : (
-            <Link to="/auth">
-              <Button size="sm" className="flex items-center space-x-2">
+            <Button asChild size="sm">
+              <Link to="/auth" className="flex items-center space-x-2">
                 <User className="h-4 w-4" />
                 <span className="hidden sm:inline">Sign In</span>
-              </Button>
-            </Link>
+              </Link>
+            </Button>
           )}
         </div>
       </div>

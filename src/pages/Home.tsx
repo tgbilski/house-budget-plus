@@ -211,21 +211,20 @@ const CTASection = () => (
       <div className="flex flex-col sm:flex-row gap-3 md:gap-4 justify-center mb-6 md:mb-8 max-w-md mx-auto">
         <Button asChild size="lg" className="w-full sm:w-auto text-base px-6 py-3">
           <Link to="/auth">
-            <div className="flex items-center">
+            <div className="flex items-center justify-center">
               <span className="block sm:inline">Sign up for free</span>
               <ArrowRight className="ml-2 h-4 w-4" />
             </div>
           </Link>
         </Button>
-        <Button
-          asChild
-          variant="outline"
-          size="lg"
-          className="w-full sm:w-auto text-base px-6 py-3 cursor-pointer"
-          onClick={() => window.location.href = 'mailto:homebudgetcalculator@gmail.com?subject=Budget Calculator Feedback'}
-        >
-          <span>Get Support</span>
-        </Button>
+        <Button
+          variant="outline"
+          size="lg"
+          className="w-full sm:w-auto text-base px-6 py-3 cursor-pointer"
+          onClick={() => window.location.href = 'mailto:homebudgetcalculator@gmail.com?subject=Budget Calculator Feedback'}
+        >
+          Get Support
+        </Button>
       </div>
       <p className="text-sm text-gray-500 px-2">
         No credit card required • Start saving in under 2 minutes
