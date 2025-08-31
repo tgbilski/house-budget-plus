@@ -138,9 +138,11 @@ export function HouseholdSwitcher({ className, open, onOpenChange }: HouseholdSw
       {!open && (
         <DialogTrigger asChild>
           <Button variant="ghost" size="sm" className={className}>
-            <Home className="h-4 w-4 mr-2" />
-            {currentHousehold?.name || "No Household"}
-            {isOriginator && <Crown className="h-3 w-3 ml-1" />}
+            <div className="flex items-center">
+              <Home className="h-4 w-4 mr-2" />
+              <span>{currentHousehold?.name || "No Household"}</span>
+              {isOriginator && <Crown className="h-3 w-3 ml-1" />}
+            </div>
           </Button>
         </DialogTrigger>
       )}
