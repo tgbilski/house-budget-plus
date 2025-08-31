@@ -1,11 +1,19 @@
 import { useState, useEffect } from "react";
-import { supabase } from "@/lib/supabaseClient";
+import { supabase } from "@/integrations/supabase/client";
 
 type Member = {
   id: string;
   user_id: string;
   household_id: string;
-  // ...add additional fields as needed
+  role: string;
+  can_edit: boolean;
+  can_view: boolean;
+  joined_at: string;
+  profiles?: {
+    first_name?: string;
+    last_name?: string;
+    email?: string;
+  };
 };
 
 export function useHouseholdMembers(householdId?: string) {
@@ -17,7 +25,14 @@ export function useHouseholdMembers(householdId?: string) {
     setLoading(true);
     const { data, error } = await supabase
       .from("household_members")
-      .select("*")
+      .select(`
+        *,
+        profiles:user_id (
+          first_name,
+          last_name,
+          email
+        )
+      `)
       .eq("household_id", householdId);
     setMembers(data || []);
     setLoading(false);

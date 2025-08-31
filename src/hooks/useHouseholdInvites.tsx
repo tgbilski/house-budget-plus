@@ -1,12 +1,17 @@
 import { useState, useEffect } from "react";
-import { supabase } from "@/lib/supabaseClient";
+import { supabase } from "@/integrations/supabase/client";
 
 type Invite = {
   id: string;
-  email: string;
+  invited_email: string;
   status: string;
   household_id: string;
-  // ...other fields
+  household_name?: string;
+  invited_by: string;
+  invited_user_id?: string;
+  expires_at: string;
+  created_at: string;
+  updated_at: string;
 };
 
 export function useHouseholdInvites(userId?: string) {
@@ -19,9 +24,12 @@ export function useHouseholdInvites(userId?: string) {
     // Show invites sent to this user's email; you may need to fetch the email from the user's profile
     const { data, error } = await supabase
       .from("household_invites")
-      .select("*")
+      .select(`
+        *,
+        households!inner(name)
+      `)
       .eq("status", "pending")
-      .eq("user_id", userId); // or .eq("email", userEmail)
+      .eq("invited_user_id", userId);
     setPendingInvites(data || []);
     setLoading(false);
   };

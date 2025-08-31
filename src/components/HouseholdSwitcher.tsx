@@ -24,7 +24,8 @@ import {
 } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { useHousehold } from "@/hooks/useHousehold";
+import { useHouseholdContext } from "@/providers/HouseholdProvider";
+import { useAuth } from "@/hooks/useAuth";
 import { useSubscription } from "@/hooks/useSubscription";
 import { useHouseholdInvites } from "@/hooks/useHouseholdInvites";
 import { useHouseholdMembers } from "@/hooks/useHouseholdMembers";
@@ -45,6 +46,8 @@ interface HouseholdSwitcherProps {
 }
 
 export function HouseholdSwitcher({ className }: HouseholdSwitcherProps) {
+  const { user } = useAuth();
+  
   // Household switching, listing, creating, renaming
   const {
     currentHousehold,
@@ -54,7 +57,7 @@ export function HouseholdSwitcher({ className }: HouseholdSwitcherProps) {
     switchHousehold,
     createHousehold,
     renameHousehold,
-  } = useHousehold();
+  } = useHouseholdContext();
 
   // Invites
   const {
@@ -63,13 +66,13 @@ export function HouseholdSwitcher({ className }: HouseholdSwitcherProps) {
     acceptInvite,
     declineInvite,
     loading: invitesLoading,
-  } = useHouseholdInvites();
+  } = useHouseholdInvites(user?.id);
 
   // Members
   const {
     members: householdMembers,
     loading: membersLoading,
-  } = useHouseholdMembers();
+  } = useHouseholdMembers(currentHousehold?.id);
 
   // Subscription
   const { subscribed } = useSubscription();
@@ -95,9 +98,9 @@ export function HouseholdSwitcher({ className }: HouseholdSwitcherProps) {
 
   // Handle member invite
   const handleInvite = async () => {
-    if (!inviteEmail.trim()) return;
+    if (!inviteEmail.trim() || !currentHousehold?.id) return;
     setIsInviting(true);
-    const ok = await sendInvite(inviteEmail.trim());
+    const ok = await sendInvite(inviteEmail.trim(), currentHousehold.id);
     if (ok) setInviteEmail("");
     setIsInviting(false);
   };
@@ -314,7 +317,7 @@ export function HouseholdSwitcher({ className }: HouseholdSwitcherProps) {
                     <Card key={invite.id} className="border-blue-200 bg-blue-50">
                       <CardContent className="p-3">
                         <p className="text-sm mb-2">
-                          Invited to household <span className="font-semibold">{invite.household_name}</span>
+                          Invited to household <span className="font-semibold">{(invite as any).households?.name || 'Unknown Household'}</span>
                         </p>
                         <div className="flex gap-2">
                           <Button
