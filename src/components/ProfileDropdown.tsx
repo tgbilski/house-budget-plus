@@ -66,11 +66,9 @@ const ProfileDropdown: React.FC = () => {
             </div>
           </DropdownMenuLabel>
           <DropdownMenuSeparator />
-          <DropdownMenuItem asChild>
-            <div className="w-full p-0">
-              <HouseholdSwitcher className="w-full justify-start p-2" />
-            </div>
-          </DropdownMenuItem>
+          <div className="px-2 py-1.5">
+            <HouseholdSwitcher className="w-full justify-start" />
+          </div>
           <DropdownMenuSeparator />
           <DropdownMenuItem asChild>
             <Link to="/settings" className="flex items-center w-full">
