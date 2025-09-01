@@ -39,31 +39,42 @@ export function useHouseholdInvites(userId?: string) {
   }, [userId]);
 
   const sendInvite = async (email: string, household_id: string) => {
+    if (!userId) return false;
     setLoading(true);
     const { error } = await supabase
       .from("household_invites")
-      .insert([{ email, household_id, status: "pending" }]);
+      .insert([{ 
+        invited_email: email, 
+        household_id, 
+        status: "pending",
+        invited_by: userId
+      }]);
     await refresh();
+    setLoading(false);
     return !error;
   };
 
   const acceptInvite = async (inviteId: string) => {
+    if (!userId) return false;
     setLoading(true);
     const { error } = await supabase
       .from("household_invites")
       .update({ status: "accepted" })
       .eq("id", inviteId);
     await refresh();
+    setLoading(false);
     return !error;
   };
 
   const declineInvite = async (inviteId: string) => {
+    if (!userId) return false;
     setLoading(true);
     const { error } = await supabase
       .from("household_invites")
       .update({ status: "declined" })
       .eq("id", inviteId);
     await refresh();
+    setLoading(false);
     return !error;
   };
 

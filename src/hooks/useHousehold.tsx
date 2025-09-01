@@ -81,42 +81,72 @@ export function useHousehold(userId?: string) {
   const createHousehold = async (name: string) => {
     if (!userId) return false;
     setLoading(true);
-    // Insert household and membership
-    const { data, error } = await supabase
-      .from("households")
-      .insert([{ name, originator_id: userId }])
-      .select()
-      .single();
-    if (error || !data) {
-      setLoading(false);
-      return false;
-    }
-    // Add user as member with originator role
-    await supabase
-      .from("household_members")
-      .insert([{ user_id: userId, household_id: data.id, role: 'originator' }]);
     
-    // Set as current household
-    await supabase
-      .from("profiles")
-      .update({ current_household_id: data.id })
-      .eq("user_id", userId);
+    try {
+      // Insert household and membership
+      const { data, error } = await supabase
+        .from("households")
+        .insert([{ name, originator_id: userId }])
+        .select()
+        .single();
+        
+      if (error || !data) {
+        console.error("Error creating household:", error);
+        return false;
+      }
       
-    await refresh();
-    return true;
+      // Add user as member with originator role
+      const { error: memberError } = await supabase
+        .from("household_members")
+        .insert([{ user_id: userId, household_id: data.id, role: 'originator' }]);
+      
+      if (memberError) {
+        console.error("Error adding user as member:", memberError);
+        return false;
+      }
+      
+      // Set as current household
+      const { error: profileError } = await supabase
+        .from("profiles")
+        .update({ current_household_id: data.id })
+        .eq("user_id", userId);
+      
+      if (profileError) {
+        console.error("Error updating current household:", profileError);
+      }
+        
+      await refresh();
+      return true;
+    } catch (error) {
+      console.error("Error in createHousehold:", error);
+      return false;
+    } finally {
+      setLoading(false);
+    }
   };
 
   // Rename the current household
   const renameHousehold = async (newName: string) => {
-    if (!currentHousehold) return false;
+    if (!currentHousehold || !userId) return false;
     setLoading(true);
-    const { error } = await supabase
-      .from("households")
-      .update({ name: newName })
-      .eq("id", currentHousehold.id);
-    setLoading(false);
-    await refresh();
-    return !error;
+    
+    try {
+      const { error } = await supabase
+        .from("households")
+        .update({ name: newName })
+        .eq("id", currentHousehold.id)
+        .eq("originator_id", userId); // Only allow originator to rename
+      
+      if (error) throw error;
+      
+      await refresh();
+      return true;
+    } catch (error) {
+      console.error("Error renaming household:", error);
+      return false;
+    } finally {
+      setLoading(false);
+    }
   };
 
   // Refresh Households
