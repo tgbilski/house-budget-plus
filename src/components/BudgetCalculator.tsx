@@ -20,6 +20,7 @@ interface ExpenseItem {
 
 interface BudgetCalculatorProps {
   id: string;
+  calculatorNumber?: number;
   onRemove: () => void;
   showRemove: boolean;
   pageType?: string;
@@ -44,6 +45,7 @@ const defaultExpenses: ExpenseItem[] = [
 
 const BudgetCalculator: React.FC<BudgetCalculatorProps> = ({ 
   id, 
+  calculatorNumber,
   onRemove, 
   showRemove, 
   pageType = 'monthly_budget',
@@ -180,6 +182,8 @@ const BudgetCalculator: React.FC<BudgetCalculatorProps> = ({
         page_type: pageType,
         income: monthlyIncome,
         expenses: expensesData as any
+      }, {
+        onConflict: 'user_id,calculator_id,page_type'
       });
 
     if (error) {
@@ -309,7 +313,7 @@ const BudgetCalculator: React.FC<BudgetCalculatorProps> = ({
         <div className="flex items-center justify-between">
           <div className="flex-1">
             <Label htmlFor={`owner-${id}`} className="text-xs sm:text-sm font-medium text-muted-foreground">
-              Owner / Renter
+              Calculator {calculatorNumber} - Owner / Renter
             </Label>
             <Input
               id={`owner-${id}`}

@@ -47,7 +47,7 @@ const MonthlyBudget: React.FC = () => {
   const [calculators, setCalculators] = useState<Calculator[]>([{ id: '1' }]);
   const [budgetData, setBudgetData] = useState<Record<string, { income: number; expenses: number }>>({});
   const [calculatorNames, setCalculatorNames] = useState<Record<string, string>>({});
-  const { currency, setCurrency } = useCurrency();
+  const { currency } = useCurrency();
   const { user } = useAuth();
   const { earnBadge } = useBadges();
 
@@ -95,7 +95,9 @@ const MonthlyBudget: React.FC = () => {
 
     if (data && data.length > 0) {
       const uniqueCalculators = [...new Set(data.map(item => item.calculator_id))];
-      setCalculators(uniqueCalculators.map(id => ({ id })));
+      // Sort calculator IDs numerically
+      const sortedCalculators = uniqueCalculators.sort((a, b) => parseInt(a) - parseInt(b));
+      setCalculators(sortedCalculators.map(id => ({ id })));
     }
   };
 
@@ -103,8 +105,41 @@ const MonthlyBudget: React.FC = () => {
     if (calculators.length >= 4) {
       return; // Limit to 4 calculators
     }
-    const newId = (parseInt(calculators[calculators.length - 1].id) + 1).toString();
-    setCalculators([...calculators, { id: newId }]);
+    // Find the next available number (1-4)
+    const existingIds = calculators.map(c => parseInt(c.id));
+    let newId = 1;
+    while (existingIds.includes(newId) && newId <= 4) {
+      newId++;
+    }
+    setCalculators([...calculators, { id: newId.toString() }]);
+  };
+
+  const removeCalculator = async (calculatorId: string) => {
+    if (!user) return;
+
+    // Delete from database
+    await supabase
+      .from('budget_data')
+      .delete()
+      .eq('user_id', user.id)
+      .eq('calculator_id', calculatorId)
+      .eq('page_type', 'monthly_budget');
+
+    // Remove from state
+    setCalculators(calculators.filter(c => c.id !== calculatorId));
+    
+    // Clean up related state
+    setBudgetData(prev => {
+      const newData = { ...prev };
+      delete newData[calculatorId];
+      return newData;
+    });
+    
+    setCalculatorNames(prev => {
+      const newNames = { ...prev };
+      delete newNames[calculatorId];
+      return newNames;
+    });
   };
   
   const handleNameChange = (id: string, name: string) => {
@@ -147,27 +182,6 @@ const MonthlyBudget: React.FC = () => {
             </p>
           </div>
           
-          <div className="absolute top-6 right-6 flex items-center gap-2">
-            <Globe className="h-4 w-4 text-muted-foreground" />
-            <Select value={currency.code} onValueChange={(value) => {
-              const selectedCurrency = currencies.find(c => c.code === value);
-              if (selectedCurrency) setCurrency(selectedCurrency);
-            }}>
-              <SelectTrigger className="w-[150px] md:w-[180px] border-none text-sm bg-gray-50/50">
-                <SelectValue placeholder="Currency" />
-              </SelectTrigger>
-              <SelectContent>
-                {currencies.map((curr) => (
-                  <SelectItem key={curr.code} value={curr.code}>
-                    <span className="flex items-center gap-2">
-                      <span className="font-mono">{curr.symbol}</span>
-                      <span>{curr.name}</span>
-                    </span>
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8 mt-4">
             {summaryData.map((item) => (
@@ -186,8 +200,9 @@ const MonthlyBudget: React.FC = () => {
               <div key={calculator.id} className="w-full md:w-auto min-w-[300px] flex-1">
                 <BudgetCalculator
                   id={calculator.id}
+                  calculatorNumber={parseInt(calculator.id)}
                   showRemove={calculators.length > 1}
-                  onRemove={() => setCalculators(calculators.filter(c => c.id !== calculator.id))}
+                  onRemove={() => removeCalculator(calculator.id)}
                   onNameChange={handleNameChange}
                   pageType="monthly_budget"
                 />
