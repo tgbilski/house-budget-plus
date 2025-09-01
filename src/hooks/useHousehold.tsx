@@ -29,25 +29,52 @@ export function useHousehold(userId?: string) {
     return memberships.map((m: any) => m.household);
   };
 
-  // Fetch the household marked as "current" for this user (if you have such logic)
-  // Otherwise, just pick the first one
+  // Fetch the household marked as "current" for this user
   const fetchCurrentHousehold = async () => {
+    if (!userId) return null;
+    
+    // Get user's current household preference
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("current_household_id")
+      .eq("user_id", userId)
+      .single();
+    
     const households = await fetchUserHouseholds();
+    
+    // If user has a preferred household and it exists in their memberships, use it
+    if (profile?.current_household_id) {
+      const preferredHousehold = households.find(h => h.id === profile.current_household_id);
+      if (preferredHousehold) {
+        return preferredHousehold;
+      }
+    }
+    
+    // Otherwise, return the first household
     return households[0] || null;
   };
 
-  // Switch the current household (this is app-specific logic; you may need to persist this in user profile, etc.)
+  // Switch the current household
   const switchHousehold = async (householdId: string) => {
-    // Example: update a "current_household_id" column in the user's profile
     if (!userId) return;
     setLoading(true);
-    const { error } = await supabase
-      .from("profiles")
-      .update({ current_household_id: householdId })
-      .eq("id", userId);
-    setLoading(false);
-    await refresh();
-    if (error) throw error;
+    
+    try {
+      // Update user's current household preference
+      const { error } = await supabase
+        .from("profiles")
+        .update({ current_household_id: householdId })
+        .eq("user_id", userId);
+      
+      if (error) throw error;
+      
+      // Refresh to get the new current household
+      await refresh();
+    } catch (error) {
+      console.error("Error switching household:", error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   // Create a new household (originator is the current user)
@@ -64,10 +91,17 @@ export function useHousehold(userId?: string) {
       setLoading(false);
       return false;
     }
-    // Add user as member
+    // Add user as member with originator role
     await supabase
       .from("household_members")
-      .insert([{ user_id: userId, household_id: data.id }]);
+      .insert([{ user_id: userId, household_id: data.id, role: 'originator' }]);
+    
+    // Set as current household
+    await supabase
+      .from("profiles")
+      .update({ current_household_id: data.id })
+      .eq("user_id", userId);
+      
     await refresh();
     return true;
   };
@@ -89,9 +123,11 @@ export function useHousehold(userId?: string) {
   const refresh = useCallback(async () => {
     setLoading(true);
     const households = await fetchUserHouseholds();
+    const currentHh = await fetchCurrentHousehold();
+    
     setUserHouseholds(households);
-    setCurrentHousehold(households[0] || null);
-    setIsOriginator((households[0]?.originator_id ?? "") === userId);
+    setCurrentHousehold(currentHh);
+    setIsOriginator((currentHh?.originator_id ?? "") === userId);
     setLoading(false);
   }, [userId]);
 

@@ -236,8 +236,8 @@ export function HouseholdSwitcher({ className, open, onOpenChange }: HouseholdSw
                   <SelectContent>
                     {userHouseholds.map(h => (
                       <SelectItem key={h.id} value={h.id}>
-                        <span>{h.name}</span>
-                        {h.originator_id === currentHousehold?.originator_id && (
+                       <span>{h.name}</span>
+                        {h.originator_id === user?.id && (
                           <Crown className="h-3 w-3 text-amber-500 ml-1" />
                         )}
                       </SelectItem>
