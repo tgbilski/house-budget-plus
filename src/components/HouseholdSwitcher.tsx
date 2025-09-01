@@ -94,7 +94,15 @@ export function HouseholdSwitcher({ className, open, onOpenChange }: HouseholdSw
     if (!newHouseholdName.trim()) return;
     setIsCreating(true);
     const ok = await createHousehold(newHouseholdName.trim());
-    if (ok) setNewHouseholdName("");
+    if (ok) {
+      setNewHouseholdName("");
+      // Close the dialog
+      if (onOpenChange) {
+        onOpenChange(false);
+      } else {
+        setIsOpen(false);
+      }
+    }
     setIsCreating(false);
   };
 
@@ -125,7 +133,9 @@ export function HouseholdSwitcher({ className, open, onOpenChange }: HouseholdSw
     setIsRenaming(true);
     const ok = await renameHousehold(editableName.trim());
     setIsRenaming(false);
-    if (ok) setRenaming(false);
+    if (ok) {
+      setRenaming(false);
+    }
   };
 
   // Loading handling
