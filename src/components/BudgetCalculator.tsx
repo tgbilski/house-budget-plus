@@ -7,6 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { useCurrency } from '@/hooks/useCurrency';
 import { useAuth } from '@/hooks/useAuth';
+import { useHouseholdContext } from '@/providers/HouseholdProvider';
 import { generateBudgetPDF } from '@/utils/pdfGenerator';
 import { supabase } from '@/integrations/supabase/client';
 import { StreamingServiceSelector } from './StreamingServiceSelector';
@@ -51,8 +52,9 @@ const BudgetCalculator: React.FC<BudgetCalculatorProps> = ({
   pageType = 'monthly_budget',
   onNameChange
 }) => {
-  const { currency } = useCurrency();
   const { user } = useAuth();
+  const { currentHousehold } = useHouseholdContext();
+  const { currency } = useCurrency();
   const [ownerName, setOwnerName] = useState('');
   const [monthlyIncome, setMonthlyIncome] = useState(0);
   const [expenses, setExpenses] = useState<ExpenseItem[]>(defaultExpenses);
@@ -62,10 +64,10 @@ const BudgetCalculator: React.FC<BudgetCalculatorProps> = ({
 
   // When the component loads, check for saved data and set the owner name.
   useEffect(() => {
-    if (user) {
+    if (user && currentHousehold) {
       loadData();
     }
-  }, [user, id, pageType]);
+  }, [user, currentHousehold, id, pageType]);
 
   // Set up event listener for AI autofill
   useEffect(() => {
@@ -116,6 +118,7 @@ const BudgetCalculator: React.FC<BudgetCalculatorProps> = ({
       .from('budget_data')
       .select('*')
       .eq('user_id', user.id)
+      .eq('household_id', currentHousehold?.id)
       .eq('calculator_id', id)
       .eq('page_type', pageType)
       .order('created_at', { ascending: false })
@@ -178,12 +181,13 @@ const BudgetCalculator: React.FC<BudgetCalculatorProps> = ({
       .from('budget_data')
       .upsert({
         user_id: user.id,
+        household_id: currentHousehold?.id,
         calculator_id: id,
         page_type: pageType,
         income: monthlyIncome,
         expenses: expensesData as any
       }, {
-        onConflict: 'user_id,calculator_id,page_type'
+        onConflict: 'user_id,calculator_id,page_type,household_id'
       });
 
     if (error) {

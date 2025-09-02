@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '@/hooks/useAuth';
+import { useHouseholdContext } from '@/providers/HouseholdProvider';
 import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -34,6 +35,7 @@ interface SavingsGoal {
 
 const SavingsGoals = () => {
   const { user } = useAuth();
+  const { currentHousehold } = useHouseholdContext();
   const [savingsGoals, setSavingsGoals] = useState<SavingsGoal[]>([]);
   const [currentGoalId, setCurrentGoalId] = useState<string | null>(null);
   const [editingGoalId, setEditingGoalId] = useState<string | null>(null);
@@ -52,9 +54,9 @@ const SavingsGoals = () => {
   const currentGoal = savingsGoals.find(g => g.id === currentGoalId);
 
   useEffect(() => {
-    if (user) {
+    if (user && currentHousehold) {
       loadSavingsGoals();
-    } else {
+    } else if (!user) {
       const defaultGoal = {
         id: 'temp-1',
         title: 'My Savings Goal',
@@ -65,7 +67,7 @@ const SavingsGoals = () => {
       setCurrentGoalId(defaultGoal.id);
       setLoading(false);
     }
-  }, [user]);
+  }, [user, currentHousehold]);
 
   useEffect(() => {
     if (currentGoalId) {
@@ -83,6 +85,7 @@ const SavingsGoals = () => {
         .from('savings_goals')
         .select('*')
         .eq('user_id', user?.id)
+        .eq('household_id', currentHousehold?.id)
         .order('created_at', { ascending: true });
 
       if (fetchError) throw fetchError;
@@ -121,6 +124,7 @@ const SavingsGoals = () => {
         .from('savings_goals')
         .insert([{
           user_id: user?.id,
+          household_id: currentHousehold?.id,
           title: `Goal ${savingsGoals.length + 1}`,
           target_amount: 0,
           current_amount: 0
