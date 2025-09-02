@@ -93,11 +93,23 @@ const HeroSectionContent = () => (
     <div className="w-full max-w-4xl mx-auto relative z-10 pt-24 md:pt-28">
       <div className="text-center mb-10">
         <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 text-gray-900 leading-tight">
-          Own Your <span className="text-primary">House Budget</span>
-        </h1>
-        <p className="text-base md:text-lg text-gray-600 max-w-3xl mx-auto mb-8 leading-relaxed">
-          Smart financial planning tools with AI insights. Track expenses, compare vendors, and make informed decisions that save you money. Join a community of smart savers today!
-        </p>
+          Own Your <span className="text-primary">House Budget</span>
+        </h1>
+        <p className="text-base md:text-lg text-gray-600 max-w-3xl mx-auto mb-8 leading-relaxed">
+          <strong>Your data stays yours.</strong> No bank connections required. Our AI helps you develop a personalized financial plan using only the data you choose to share. Sign up for free and remain anonymous if you wish!
+        </p>
+        <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-8 mx-auto max-w-2xl">
+          <div className="flex items-center justify-center gap-2 text-green-700 mb-2">
+            <Users className="h-5 w-5" />
+            <span className="font-semibold">Privacy-First Financial Planning</span>
+          </div>
+          <ul className="text-sm text-green-600 space-y-1">
+            <li>• No bank account or credit card connections</li>
+            <li>• AI-powered insights without compromising privacy</li>
+            <li>• You control exactly what data to share</li>
+            <li>• Free to use, anonymous signup option</li>
+          </ul>
+        </div>
         <div className="flex flex-col sm:flex-row gap-3 md:gap-4 justify-center mb-10 max-w-md mx-auto">
           <Button asChild size="lg" className="w-full sm:w-auto text-base px-6 py-4 shadow-lg hover:shadow-xl transition-shadow">
             <Link to="/budget">
