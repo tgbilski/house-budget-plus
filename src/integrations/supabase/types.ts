@@ -892,6 +892,10 @@ export type Database = {
         }
         Returns: boolean
       }
+      is_household_originator: {
+        Args: { _household_id: string; _user_id: string }
+        Returns: boolean
+      }
       update_user_streak: {
         Args: {
           _activity_date?: string

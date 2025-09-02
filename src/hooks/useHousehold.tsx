@@ -79,10 +79,15 @@ export function useHousehold(userId?: string) {
 
   // Create a new household (originator is the current user)
   const createHousehold = async (name: string) => {
-    if (!userId) return false;
+    console.log("Creating household with name:", name, "userId:", userId);
+    if (!userId) {
+      console.log("No userId found, returning false");
+      return false;
+    }
     setLoading(true);
     
     try {
+      console.log("Step 1: Creating household...");
       // Insert household and membership
       const { data, error } = await supabase
         .from("households")
@@ -95,7 +100,10 @@ export function useHousehold(userId?: string) {
         return false;
       }
       
+      console.log("Step 2: Household created successfully:", data);
+      
       // Add user as member with originator role
+      console.log("Step 3: Adding user as member...");
       const { error: memberError } = await supabase
         .from("household_members")
         .insert([{ user_id: userId, household_id: data.id, role: 'originator' }]);
@@ -105,7 +113,10 @@ export function useHousehold(userId?: string) {
         return false;
       }
       
+      console.log("Step 4: User added as member successfully");
+      
       // Set as current household
+      console.log("Step 5: Setting as current household...");
       const { error: profileError } = await supabase
         .from("profiles")
         .update({ current_household_id: data.id })
@@ -114,8 +125,10 @@ export function useHousehold(userId?: string) {
       if (profileError) {
         console.error("Error updating current household:", profileError);
       }
-        
+      
+      console.log("Step 6: Current household set, refreshing...");
       await refresh();
+      console.log("Step 7: Household creation completed successfully");
       return true;
     } catch (error) {
       console.error("Error in createHousehold:", error);
