@@ -93,17 +93,24 @@ export function HouseholdSwitcher({ className, open, onOpenChange }: HouseholdSw
   const handleCreateHousehold = async () => {
     if (!newHouseholdName.trim()) return;
     setIsCreating(true);
-    const ok = await createHousehold(newHouseholdName.trim());
-    if (ok) {
-      setNewHouseholdName("");
-      // Close the dialog
-      if (onOpenChange) {
-        onOpenChange(false);
-      } else {
-        setIsOpen(false);
+    try {
+      const success = await createHousehold(newHouseholdName.trim());
+      if (success) {
+        setNewHouseholdName("");
+        // Close the dialog
+        if (onOpenChange) {
+          onOpenChange(false);
+        } else {
+          setIsOpen(false);
+        }
+        // Force a page refresh to show data in new household context
+        window.location.reload();
       }
+    } catch (error) {
+      console.error("Failed to create household:", error);
+    } finally {
+      setIsCreating(false);
     }
-    setIsCreating(false);
   };
 
   // Handle member invite
