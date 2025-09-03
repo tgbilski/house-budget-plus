@@ -357,6 +357,7 @@ export type Database = {
           extracted_text: string | null
           file_name: string
           file_size: number | null
+          household_id: string | null
           id: string
           processed_at: string | null
           processing_error: string | null
@@ -369,6 +370,7 @@ export type Database = {
           extracted_text?: string | null
           file_name: string
           file_size?: number | null
+          household_id?: string | null
           id?: string
           processed_at?: string | null
           processing_error?: string | null
@@ -381,13 +383,22 @@ export type Database = {
           extracted_text?: string | null
           file_name?: string
           file_size?: number | null
+          household_id?: string | null
           id?: string
           processed_at?: string | null
           processing_error?: string | null
           processing_status?: string
           user_id?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "pdf_processing_logs_household_id_fkey"
+            columns: ["household_id"]
+            isOneToOne: false
+            referencedRelation: "households"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       profiles: {
         Row: {
@@ -583,6 +594,7 @@ export type Database = {
           created_at: string
           data: Json | null
           description: string
+          household_id: string | null
           id: string
           insight_type: string
           is_read: boolean | null
@@ -595,6 +607,7 @@ export type Database = {
           created_at?: string
           data?: Json | null
           description: string
+          household_id?: string | null
           id?: string
           insight_type: string
           is_read?: boolean | null
@@ -607,6 +620,7 @@ export type Database = {
           created_at?: string
           data?: Json | null
           description?: string
+          household_id?: string | null
           id?: string
           insight_type?: string
           is_read?: boolean | null
@@ -615,7 +629,15 @@ export type Database = {
           user_id?: string
           valid_until?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "user_insights_household_id_fkey"
+            columns: ["household_id"]
+            isOneToOne: false
+            referencedRelation: "households"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       user_roles: {
         Row: {
@@ -645,6 +667,7 @@ export type Database = {
         Row: {
           created_at: string
           current_streak: number | null
+          household_id: string | null
           id: string
           last_activity_date: string | null
           longest_streak: number | null
@@ -655,6 +678,7 @@ export type Database = {
         Insert: {
           created_at?: string
           current_streak?: number | null
+          household_id?: string | null
           id?: string
           last_activity_date?: string | null
           longest_streak?: number | null
@@ -665,6 +689,7 @@ export type Database = {
         Update: {
           created_at?: string
           current_streak?: number | null
+          household_id?: string | null
           id?: string
           last_activity_date?: string | null
           longest_streak?: number | null
@@ -672,7 +697,15 @@ export type Database = {
           updated_at?: string
           user_id?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "user_streaks_household_id_fkey"
+            columns: ["household_id"]
+            isOneToOne: false
+            referencedRelation: "households"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       vacation_options: {
         Row: {
