@@ -10,6 +10,7 @@ import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { useAuth } from '@/hooks/useAuth';
+import { useHouseholdContext } from '@/providers/HouseholdProvider';
 import { useCurrency } from '@/hooks/useCurrency';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
@@ -61,6 +62,7 @@ const challengeTypes = [
 
 export const ChallengesCard: React.FC = () => {
   const { user } = useAuth();
+  const { currentHousehold } = useHouseholdContext();
   const { currency } = useCurrency();
   
   const formatCurrency = (amount: number) => {
@@ -81,10 +83,10 @@ export const ChallengesCard: React.FC = () => {
   });
 
   useEffect(() => {
-    if (user) {
+    if (user && currentHousehold) {
       fetchChallenges();
     }
-  }, [user]);
+  }, [user, currentHousehold]);
 
   const fetchChallenges = async () => {
     if (!user) return;
@@ -94,6 +96,7 @@ export const ChallengesCard: React.FC = () => {
         .from('challenges')
         .select('*')
         .eq('user_id', user.id)
+        .eq('household_id', currentHousehold?.id)
         .order('created_at', { ascending: false });
 
       if (error) throw error;
@@ -116,6 +119,7 @@ export const ChallengesCard: React.FC = () => {
 
       const challengeData = {
         user_id: user.id,
+        household_id: currentHousehold?.id,
         challenge_type: formData.challenge_type,
         title: formData.title || selectedType?.title || 'Custom Challenge',
         description: formData.description || selectedType?.description || '',

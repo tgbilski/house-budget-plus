@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Plus, Edit2, Check, Trash2, DollarSign } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
+import { useHouseholdContext } from '@/providers/HouseholdProvider';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { GiftItem } from './GiftItem';
@@ -31,6 +32,7 @@ interface GiftCardProps {
 
 export function GiftCard({ initialData, onDelete, onSave }: GiftCardProps) {
   const { user } = useAuth();
+  const { currentHousehold } = useHouseholdContext();
   const { toast } = useToast();
   const [isEditingTitle, setIsEditingTitle] = useState(!initialData?.id);
   const [listData, setListData] = useState<GiftListData>({
@@ -116,6 +118,7 @@ export function GiftCard({ initialData, onDelete, onSave }: GiftCardProps) {
           .from('gift_lists')
           .insert({
             user_id: user.id,
+            household_id: currentHousehold?.id,
             list_title: listData.list_title,
             budget_target: listData.budget_target || 0
           })

@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Plus } from 'lucide-react';
 import { GiftCard } from '@/components/GiftCard';
 import { useAuth } from '@/hooks/useAuth';
+import { useHouseholdContext } from '@/providers/HouseholdProvider';
 import { useBadges } from '@/hooks/useBadges';
 import { supabase } from '@/integrations/supabase/client';
 
@@ -19,6 +20,7 @@ interface GiftListData {
 
 export function Gifts() {
   const { user } = useAuth();
+  const { currentHousehold } = useHouseholdContext();
   const { earnBadge } = useBadges();
 
   // Listen for badge earning events
@@ -35,10 +37,10 @@ export function Gifts() {
   const [showNewCard, setShowNewCard] = useState(false);
 
   useEffect(() => {
-    if (user) {
+    if (user && currentHousehold) {
       loadGiftLists();
     }
-  }, [user]);
+  }, [user, currentHousehold]);
 
   const loadGiftLists = async () => {
     try {
@@ -46,6 +48,7 @@ export function Gifts() {
         .from('gift_lists')
         .select('*')
         .eq('user_id', user?.id)
+        .eq('household_id', currentHousehold?.id)
         .order('created_at', { ascending: false });
 
       if (error) throw error;

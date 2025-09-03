@@ -8,6 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
 import { useAuth } from '@/hooks/useAuth';
+import { useHouseholdContext } from '@/providers/HouseholdProvider';
 import { useCurrency } from '@/hooks/useCurrency';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
@@ -28,6 +29,7 @@ interface Streak {
 
 export const DailyCheckin: React.FC = () => {
   const { user } = useAuth();
+  const { currentHousehold } = useHouseholdContext();
   const { currency } = useCurrency();
   
   const formatCurrency = (amount: number) => {
@@ -61,10 +63,10 @@ export const DailyCheckin: React.FC = () => {
   ];
 
   useEffect(() => {
-    if (user) {
+    if (user && currentHousehold) {
       fetchData();
     }
-  }, [user]);
+  }, [user, currentHousehold]);
 
   const fetchData = async () => {
     if (!user) return;
@@ -77,6 +79,7 @@ export const DailyCheckin: React.FC = () => {
         .from('daily_checkins')
         .select('*')
         .eq('user_id', user.id)
+        .eq('household_id', currentHousehold?.id)
         .eq('date', today)
         .single();
 
@@ -87,6 +90,7 @@ export const DailyCheckin: React.FC = () => {
         .from('daily_checkins')
         .select('*')
         .eq('user_id', user.id)
+        .eq('household_id', currentHousehold?.id)
         .order('date', { ascending: false })
         .limit(7);
 
@@ -119,6 +123,7 @@ export const DailyCheckin: React.FC = () => {
 
       const checkinData = {
         user_id: user.id,
+        household_id: currentHousehold?.id,
         date: today,
         amount,
         category: formData.category || null,
@@ -129,7 +134,7 @@ export const DailyCheckin: React.FC = () => {
       // Upsert checkin
       const { error } = await supabase
         .from('daily_checkins')
-        .upsert(checkinData, { onConflict: 'user_id,date' });
+        .upsert(checkinData, { onConflict: 'user_id,date,household_id' });
 
       if (error) throw error;
 
