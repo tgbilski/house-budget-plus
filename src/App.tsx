@@ -6,7 +6,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { HelmetProvider } from 'react-helmet-async';
 import { AuthProvider } from "@/hooks/useAuth";
 import { SubscriptionProvider } from "@/hooks/useSubscription";
-import { HouseholdProvider } from "@/providers/HouseholdProvider";
+import { HouseholdProvider, useHouseholdContext } from "@/providers/HouseholdProvider";
 import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar";
 import Header from "@/components/Header";
 import { AppSidebar } from "@/components/AppSidebar";
@@ -51,6 +51,29 @@ const currencies = [
   { code: 'GBP', symbol: '£', name: 'British Pound' },
 ];
 
+// Main App Routes Component (needs to be inside HouseholdProvider)
+const AppRoutes = () => {
+  const { currentHousehold } = useHouseholdContext();
+  
+  return (
+    <Routes key={currentHousehold?.id || 'no-household'}>
+      <Route path="/" element={<Home />} />
+      <Route path="/budget" element={<MonthlyBudget />} />
+      <Route path="/savings" element={<SavingsGoals />} />
+      <Route path="/home" element={<Home />} />
+      <Route path="/compare-prices" element={<CompareVendors />} />
+      <Route path="/vacation" element={<Vacation />} />
+      <Route path="/engagement" element={<Engagement />} />
+      <Route path="/auth" element={<Auth />} />
+      <Route path="/settings" element={<UserSettings />} />
+      <Route path="/gifts" element={<Gifts />} />
+      <Route path="/ai-insights" element={<AIInsights />} />
+      <Route path="/subscription-success" element={<SubscriptionSuccess />} />
+      <Route path="*" element={<NotFound />} />
+    </Routes>
+  );
+};
+
 const App = () => {
   const [currency, setCurrency] = useState(defaultCurrency);
   const isMobile = useIsMobile();
@@ -77,23 +100,9 @@ const App = () => {
                     <Header />
                     <div className="flex flex-1 relative">
                       <AppSidebar />
-                      <main className="flex-1 p-2 sm:p-4 md:p-6 w-full">
-                        <Routes>
-                          <Route path="/" element={<Home />} />
-                          <Route path="/budget" element={<MonthlyBudget />} />
-                          <Route path="/savings" element={<SavingsGoals />} />
-                          <Route path="/home" element={<Home />} />
-                          <Route path="/compare-prices" element={<CompareVendors />} />
-                          <Route path="/vacation" element={<Vacation />} />
-                          <Route path="/engagement" element={<Engagement />} />
-                          <Route path="/auth" element={<Auth />} />
-                          <Route path="/settings" element={<UserSettings />} />
-                          <Route path="/gifts" element={<Gifts />} />
-                          <Route path="/ai-insights" element={<AIInsights />} />
-                          <Route path="/subscription-success" element={<SubscriptionSuccess />} />
-                          <Route path="*" element={<NotFound />} />
-                        </Routes>
-                      </main>
+                       <main className="flex-1 p-2 sm:p-4 md:p-6 w-full">
+                         <AppRoutes />
+                       </main>
                     </div>
                   </div>
                 </SidebarProvider>
