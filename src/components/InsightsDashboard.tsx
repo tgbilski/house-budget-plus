@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useAuth } from '@/hooks/useAuth';
+import { useHouseholdContext } from '@/providers/HouseholdProvider';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 
@@ -46,6 +47,7 @@ const priorityConfig = {
 
 export const InsightsDashboard: React.FC = () => {
   const { user } = useAuth();
+  const { currentHousehold } = useHouseholdContext();
   const { toast } = useToast();
   
   const [insights, setInsights] = useState<Insight[]>([]);
@@ -53,13 +55,13 @@ export const InsightsDashboard: React.FC = () => {
   const [isGenerating, setIsGenerating] = useState(false);
 
   useEffect(() => {
-    if (user) {
+    if (user && currentHousehold) {
       fetchInsights();
     }
-  }, [user]);
+  }, [user, currentHousehold]);
 
   const fetchInsights = async () => {
-    if (!user) return;
+    if (!user || !currentHousehold) return;
 
     try {
       setIsLoading(true);
@@ -67,6 +69,7 @@ export const InsightsDashboard: React.FC = () => {
         .from('user_insights')
         .select('*')
         .eq('user_id', user.id)
+        .eq('household_id', currentHousehold.id)
         .order('priority', { ascending: true })
         .order('created_at', { ascending: false });
 

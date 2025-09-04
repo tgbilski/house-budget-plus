@@ -570,6 +570,7 @@ export type Database = {
           badge_type: string
           created_at: string
           earned_at: string
+          household_id: string | null
           id: string
           user_id: string
         }
@@ -577,6 +578,7 @@ export type Database = {
           badge_type: string
           created_at?: string
           earned_at?: string
+          household_id?: string | null
           id?: string
           user_id: string
         }
@@ -584,10 +586,19 @@ export type Database = {
           badge_type?: string
           created_at?: string
           earned_at?: string
+          household_id?: string | null
           id?: string
           user_id?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "user_badges_household_id_fkey"
+            columns: ["household_id"]
+            isOneToOne: false
+            referencedRelation: "households"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       user_insights: {
         Row: {

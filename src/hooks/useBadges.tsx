@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from './useAuth';
+import { useHouseholdContext } from '@/providers/HouseholdProvider';
 import { toast } from 'sonner';
 
 export type BadgeType = 
@@ -80,11 +81,12 @@ export const BADGE_INFO: Record<BadgeType, BadgeInfo> = {
 
 export const useBadges = () => {
   const { user } = useAuth();
+  const { currentHousehold } = useHouseholdContext();
   const [badges, setBadges] = useState<Badge[]>([]);
   const [loading, setLoading] = useState(true);
 
   const fetchBadges = async () => {
-    if (!user) {
+    if (!user || !currentHousehold) {
       setBadges([]);
       setLoading(false);
       return;
@@ -95,6 +97,7 @@ export const useBadges = () => {
         .from('user_badges')
         .select('*')
         .eq('user_id', user.id)
+        .eq('household_id', currentHousehold.id)
         .order('earned_at', { ascending: false });
 
       if (error) throw error;
@@ -107,7 +110,7 @@ export const useBadges = () => {
   };
 
   const earnBadge = async (badgeType: BadgeType) => {
-    if (!user) return;
+    if (!user || !currentHousehold) return;
 
     // Check if badge already earned
     const hasEarned = badges.some(badge => badge.badge_type === badgeType);
@@ -118,6 +121,7 @@ export const useBadges = () => {
         .from('user_badges')
         .insert({
           user_id: user.id,
+          household_id: currentHousehold.id,
           badge_type: badgeType
         })
         .select()
@@ -152,7 +156,7 @@ export const useBadges = () => {
 
   useEffect(() => {
     fetchBadges();
-  }, [user]);
+  }, [user, currentHousehold]);
 
   return {
     badges,
