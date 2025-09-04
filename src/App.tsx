@@ -7,7 +7,7 @@ import { HelmetProvider } from 'react-helmet-async';
 import { AuthProvider } from "@/hooks/useAuth";
 import { SubscriptionProvider } from "@/hooks/useSubscription";
 import { HouseholdProvider, useHouseholdContext } from "@/providers/HouseholdProvider";
-import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar";
+import { SidebarProvider } from "@/components/ui/sidebar";
 import Header from "@/components/Header";
 import { AppSidebar } from "@/components/AppSidebar";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -45,12 +45,6 @@ export const CurrencyContext = createContext<CurrencyContextType>({
 
 const queryClient = new QueryClient();
 
-const currencies = [
-  { code: 'USD', symbol: '$', name: 'US Dollar' },
-  { code: 'EUR', symbol: '€', name: 'Euro' },
-  { code: 'GBP', symbol: '£', name: 'British Pound' },
-];
-
 // Main App Routes Component (needs to be inside HouseholdProvider)
 const AppRoutes = () => {
   const { currentHousehold } = useHouseholdContext();
@@ -81,38 +75,38 @@ const App = () => {
   return (
     <HelmetProvider>
       <QueryClientProvider client={queryClient}>
-      <TooltipProvider>
-        <Toaster />
-        <Sonner />
-        <AuthProvider>
-          <SubscriptionProvider>
-            <HouseholdProvider>
-              <CurrencyContext.Provider value={{ currency, setCurrency }}>
-              <BrowserRouter>
-                <SidebarProvider defaultOpen={isMobile ? false : false}>
-                  <div 
-                    className="min-h-screen w-full flex flex-col relative"
-                    style={{ 
-                      backgroundColor: 'hsl(213, 50%, 22%)',
-                      backgroundImage: 'repeating-linear-gradient(45deg, transparent, transparent 40px, rgba(255,255,255,0.04) 40px, rgba(255,255,255,0.04) 42px)'
-                    }}
-                  >
-                    <Header />
-                    <div className="flex flex-1 relative">
-                      <AppSidebar />
-                       <main className="flex-1 p-2 sm:p-4 md:p-6 w-full">
-                         <AppRoutes />
-                       </main>
-                    </div>
-                  </div>
-                </SidebarProvider>
-              </BrowserRouter>
-            </CurrencyContext.Provider>
-            </HouseholdProvider>
-          </SubscriptionProvider>
-        </AuthProvider>
-      </TooltipProvider>
-    </QueryClientProvider>
+        <TooltipProvider>
+          <Toaster />
+          <Sonner />
+          <AuthProvider>
+            <SubscriptionProvider>
+              <HouseholdProvider>
+                <CurrencyContext.Provider value={{ currency, setCurrency }}>
+                  <BrowserRouter>
+                    <SidebarProvider defaultOpen={isMobile ? false : false}>
+                      <div 
+                        className="min-h-screen w-full flex flex-col relative"
+                        style={{ 
+                          backgroundColor: 'hsl(213, 50%, 22%)',
+                          backgroundImage: 'repeating-linear-gradient(45deg, transparent, transparent 40px, rgba(255,255,255,0.04) 40px, rgba(255,255,255,0.04) 42px)'
+                        }}
+                      >
+                        <Header />
+                        <div className="flex flex-1 relative">
+                          <AppSidebar />
+                          <main className="flex-1 p-2 sm:p-4 md:p-6 w-full">
+                            <AppRoutes />
+                          </main>
+                        </div>
+                      </div>
+                    </SidebarProvider>
+                  </BrowserRouter>
+                </CurrencyContext.Provider>
+              </HouseholdProvider>
+            </SubscriptionProvider>
+          </AuthProvider>
+        </TooltipProvider>
+      </QueryClientProvider>
     </HelmetProvider>
   );
 };
