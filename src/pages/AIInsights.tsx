@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { sanitizeHTML } from '@/utils/sanitize';
 import { useSubscription } from "@/hooks/useSubscription";
 import { useAuth } from "@/hooks/useAuth";
 import { useBadges } from "@/hooks/useBadges";
@@ -72,7 +73,9 @@ export default function AIInsights() {
       .replace(/^- (.+)$/gm, '<div>• $1</div>')
       .replace(/^\* (.+)$/gm, '<div>• $1</div>')
       .replace(/\n/g, '<br>');
-    return `<div>${processed}</div>`;
+    
+    // Sanitize the HTML to prevent XSS attacks
+    return sanitizeHTML(`<div>${processed}</div>`);
   };
 
   return (
@@ -86,41 +89,41 @@ export default function AIInsights() {
       {/* Main Container for the Hero section */}
       <div className="container mx-auto px-4 relative overflow-hidden">
         {/* Mascot Image - Absolutely positioned outside the card */}
-        <div className="absolute top-[calc(0px-10px)] left-1/2 -translate-x-1/2 z-20">
+        <div className="absolute top-[-20px] left-1/2 -translate-x-1/2 z-20">
           <img
             src="/lovable-uploads/ed809955-ef71-4d81-b072-945082f4380a.png"
             alt="Budget Calculator mascot"
-            className="w-36 h-36 md:w-48 md:h-48 object-contain"
+            className="w-32 h-32 md:w-40 md:h-40 object-contain hover:scale-110 transition-transform duration-300"
           />
         </div>
 
-        {/* Hero Section Card - Replicating Home Page Layout */}
-        <div className="relative py-8 md:py-12 px-4 rounded-2xl mx-4 shadow-xl overflow-visible bg-white mt-16 md:mt-20">
-          <div className="w-full max-w-4xl mx-auto relative z-10 pt-24 md:pt-28">
-            <div className="text-center mb-10">
-              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 text-gray-900 leading-tight">
+        {/* Hero Section Card */}
+        <div className="relative py-12 md:py-16 px-4 rounded-2xl mx-4 shadow-xl overflow-visible bg-white mt-16 md:mt-20">
+          <div className="w-full max-w-6xl mx-auto relative z-10 pt-20 md:pt-24">
+            <div className="text-center mb-12">
+              <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold mb-6 text-gray-900 leading-tight">
                 AI Financial Insights
               </h1>
-              <p className="text-base md:text-lg text-gray-600 max-w-3xl mx-auto mb-8 leading-relaxed">
-                Unlock intelligent, **personalized financial advice** powered by advanced artificial intelligence to master your money.
+              <p className="text-lg md:text-xl text-gray-600 max-w-4xl mx-auto mb-8 leading-relaxed">
+                Unlock intelligent, personalized financial advice powered by advanced artificial intelligence to master your money.
               </p>
             </div>
 
-            {/* Chatbot feature directly in the hero section */}
-            <div className="max-w-4xl mx-auto">
+            {/* AI Insights Interface */}
+            <div className="max-w-4xl mx-auto space-y-6">
               {subLoading && (
                 <div className="flex justify-center items-center h-40 text-gray-600">
                   <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-                  <span className="ml-3">Loading your subscription…</span>
+                  <span className="ml-3 text-lg">Loading your subscription…</span>
                 </div>
               )}
 
               {errorMsg && (
-                <div className="text-center text-red-500 mb-4">{errorMsg}</div>
+                <div className="text-center text-red-500 mb-6 p-4 bg-red-50 rounded-lg border border-red-200">{errorMsg}</div>
               )}
 
               {typeof subscribed === "undefined" && !subLoading && (
-                <div className="text-center text-gray-500 mb-4">
+                <div className="text-center text-gray-500 mb-6 p-4 bg-gray-50 rounded-lg border border-gray-200">
                   Unable to determine your subscription status. Please refresh or try again.
                 </div>
               )}

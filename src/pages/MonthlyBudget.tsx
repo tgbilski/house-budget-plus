@@ -165,39 +165,39 @@ const MonthlyBudget: React.FC = () => {
         canonical="https://www.housebudgetcalculator.com/budget"
       />
       <div className="relative pt-8 pb-16">
-        <div
-          className="w-full max-w-6xl mx-auto px-4"
-        >
+        <div className="w-full max-w-7xl mx-auto px-4 space-y-8">
+          {/* Header Section */}
           <div className="relative py-8 text-center">
-            <div className="flex items-center justify-center gap-4 mb-4">
+            <div className="flex items-center justify-center gap-4 mb-6">
               <img 
                 src="/lovable-uploads/ed809955-ef71-4d81-b072-945082f4380a.png" 
                 alt="Calculator mascot" 
-                className="w-12 h-12 object-contain"
+                className="w-16 h-16 object-contain"
               />
             </div>
-            <h1 className="text-3xl md:text-4xl font-bold mb-2 text-gray-900">Monthly Budget Calculator</h1>
-            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+            <h1 className="text-4xl md:text-5xl font-bold mb-4 text-gray-900">Monthly Budget Calculator</h1>
+            <p className="text-lg md:text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
               Take control of your finances by tracking every dollar of your household income and expenses.
             </p>
           </div>
           
-          
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8 mt-4">
+          {/* Summary Cards */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {summaryData.map((item) => (
-              <div key={item.title} className="bg-white rounded-xl shadow-md p-6 border border-gray-100 flex items-center justify-between">
+              <div key={item.title} className="bg-white rounded-xl shadow-lg p-6 border border-gray-100 flex items-center justify-between hover:shadow-xl transition-shadow duration-300">
                 <div>
-                  <h3 className="text-xl font-semibold text-gray-600 mb-1">{item.title}</h3>
-                  <p className={`text-3xl font-bold ${item.color}`}>{currency.symbol}{item.value.toLocaleString()}</p>
+                  <h3 className="text-lg font-semibold text-gray-600 mb-2">{item.title}</h3>
+                  <p className={`text-2xl md:text-3xl font-bold ${item.color}`}>{currency.symbol}{item.value.toLocaleString()}</p>
                 </div>
-                <item.icon className={`w-10 h-10 ${item.color}`} />
+                <item.icon className={`w-12 h-12 ${item.color}`} />
               </div>
             ))}
           </div>
 
-          <div className="flex flex-col md:flex-row flex-wrap justify-center items-start gap-4 mb-8">
+          {/* Budget Calculators and Health Gauge */}
+          <div className="flex flex-col xl:flex-row justify-center items-start gap-6">
             {calculators.map((calculator) => (
-              <div key={calculator.id} className="w-full md:w-auto min-w-[300px] flex-1">
+              <div key={calculator.id} className="w-full xl:w-auto min-w-[320px] flex-1">
                 <BudgetCalculator
                   id={calculator.id}
                   calculatorNumber={parseInt(calculator.id)}
@@ -208,7 +208,7 @@ const MonthlyBudget: React.FC = () => {
                 />
               </div>
             ))}
-            <div className="w-full md:w-auto min-w-[300px] max-w-xs flex-shrink-0 flex justify-center">
+            <div className="w-full xl:w-auto min-w-[320px] max-w-md flex-shrink-0 flex justify-center">
               <BudgetHealthGauge 
                 income={totalIncome} 
                 totalExpenses={totalExpenses} 
@@ -216,37 +216,40 @@ const MonthlyBudget: React.FC = () => {
             </div>
           </div>
 
-          <div className="text-center my-8">
+          {/* Add Calculator Button */}
+          <div className="text-center">
             <Button 
               onClick={addCalculator} 
               disabled={calculators.length >= 4}
-              className="group transition-all duration-300 transform-gpu hover:scale-105"
+              size="lg"
+              className="group transition-all duration-300 transform-gpu hover:scale-105 px-8 py-4"
             >
-              <Plus className="h-4 w-4 mr-2" /> 
+              <Plus className="h-5 w-5 mr-2" /> 
               Add Another Budget {calculators.length >= 4 ? '(Max 4)' : `(${calculators.length}/4)`}
             </Button>
           </div>
 
-          <section className="py-16 bg-white text-gray-900 rounded-2xl shadow-xl border border-gray-100 mt-8">
-            <div className="w-full max-w-4xl mx-auto text-center px-4">
-              <h2 className="text-2xl md:text-3xl font-bold mb-6">
+          {/* Benefits Section */}
+          <section className="py-16 bg-white text-gray-900 rounded-2xl shadow-xl border border-gray-100">
+            <div className="w-full max-w-5xl mx-auto text-center px-6">
+              <h2 className="text-3xl md:text-4xl font-bold mb-8">
                 Take Control of Your Finances
               </h2>
-              <p className="text-lg text-gray-600 mb-8">
+              <p className="text-lg md:text-xl text-gray-600 mb-12">
                 Use our comprehensive budget calculator to plan your financial future and achieve your goals.
               </p>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div className="bg-gray-50 rounded-lg p-6 border border-gray-200">
-                  <h3 className="font-semibold mb-2">Track Every Dollar</h3>
-                  <p className="text-sm text-gray-600">Monitor income and expenses to see exactly where your money goes each month.</p>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div className="bg-gray-50 rounded-xl p-8 border border-gray-200 hover:shadow-lg transition-shadow duration-300">
+                  <h3 className="font-semibold text-lg mb-3">Track Every Dollar</h3>
+                  <p className="text-gray-600">Monitor income and expenses to see exactly where your money goes each month.</p>
                 </div>
-                <div className="bg-gray-50 rounded-lg p-6 border border-gray-200">
-                  <h3 className="font-semibold mb-2">Plan for the Future</h3>
-                  <p className="text-sm text-gray-600">Build emergency funds and save for major purchases with clear financial planning.</p>
+                <div className="bg-gray-50 rounded-xl p-8 border border-gray-200 hover:shadow-lg transition-shadow duration-300">
+                  <h3 className="font-semibold text-lg mb-3">Plan for the Future</h3>
+                  <p className="text-gray-600">Build emergency funds and save for major purchases with clear financial planning.</p>
                 </div>
-                <div className="bg-gray-50 rounded-lg p-6 border border-gray-200">
-                  <h3 className="font-semibold mb-2">Multiple Scenarios</h3>
-                  <p className="text-sm text-gray-600">Create separate budgets for different household members or financial situations.</p>
+                <div className="bg-gray-50 rounded-xl p-8 border border-gray-200 hover:shadow-lg transition-shadow duration-300">
+                  <h3 className="font-semibold text-lg mb-3">Multiple Scenarios</h3>
+                  <p className="text-gray-600">Create separate budgets for different household members or financial situations.</p>
                 </div>
               </div>
             </div>
