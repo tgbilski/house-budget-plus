@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 
 // Adjust these types to match your table columns
@@ -14,26 +14,20 @@ export function useHousehold(userId?: string) {
   const [isOriginator, setIsOriginator] = useState(false);
   const [loading, setLoading] = useState(true);
 
-  // Fetch all households where the user is a member
   const fetchUserHouseholds = async () => {
     if (!userId) return [];
-    // Find all households the user belongs to
     const { data: memberships, error: membershipsError } = await supabase
       .from("household_members")
       .select("household_id, household:households(*)")
       .eq("user_id", userId);
 
     if (membershipsError || !memberships) return [];
-
-    // Extract households
     return memberships.map((m: any) => m.household);
   };
 
-  // Fetch the household marked as "current" for this user
   const fetchCurrentHousehold = async () => {
     if (!userId) return null;
     
-    // Get user's current household preference
     const { data: profile } = await supabase
       .from("profiles")
       .select("current_household_id")
@@ -42,7 +36,6 @@ export function useHousehold(userId?: string) {
     
     const households = await fetchUserHouseholds();
     
-    // If user has a preferred household and it exists in their memberships, use it
     if (profile?.current_household_id) {
       const preferredHousehold = households.find(h => h.id === profile.current_household_id);
       if (preferredHousehold) {
@@ -50,7 +43,6 @@ export function useHousehold(userId?: string) {
       }
     }
     
-    // Otherwise, return the first household
     return households[0] || null;
   };
 
@@ -60,7 +52,13 @@ export function useHousehold(userId?: string) {
     setLoading(true);
     
     try {
-      // Update user's current household preference
+      // Find the new household in the existing list to update the UI instantly
+      const newHousehold = userHouseholds.find(h => h.id === householdId);
+      if (newHousehold) {
+          setCurrentHousehold(newHousehold);
+      }
+
+      // Then, update the backend
       const { error } = await supabase
         .from("profiles")
         .update({ current_household_id: householdId })
@@ -68,7 +66,7 @@ export function useHousehold(userId?: string) {
       
       if (error) throw error;
       
-      // Refresh to get the new current household
+      // Finally, trigger a full refresh in the background to ensure all state is consistent
       await refresh();
     } catch (error) {
       console.error("Error switching household:", error);
@@ -88,7 +86,6 @@ export function useHousehold(userId?: string) {
     
     try {
       console.log("Step 1: Creating household...");
-      // Insert household and membership
       const { data, error } = await supabase
         .from("households")
         .insert([{ name, originator_id: userId }])
@@ -102,7 +99,6 @@ export function useHousehold(userId?: string) {
       
       console.log("Step 2: Household created successfully:", data);
       
-      // Add user as member with originator role
       console.log("Step 3: Adding user as member...");
       const { error: memberError } = await supabase
         .from("household_members")
@@ -115,7 +111,6 @@ export function useHousehold(userId?: string) {
       
       console.log("Step 4: User added as member successfully");
       
-      // Set as current household
       console.log("Step 5: Setting as current household...");
       const { error: profileError } = await supabase
         .from("profiles")
@@ -126,6 +121,7 @@ export function useHousehold(userId?: string) {
         console.error("Error updating current household:", profileError);
       }
       
+      setIsOriginator(true);
       console.log("Step 6: Current household set, refreshing...");
       await refresh();
       console.log("Step 7: Household creation completed successfully");
@@ -148,7 +144,7 @@ export function useHousehold(userId?: string) {
         .from("households")
         .update({ name: newName })
         .eq("id", currentHousehold.id)
-        .eq("originator_id", userId); // Only allow originator to rename
+        .eq("originator_id", userId);
       
       if (error) throw error;
       
@@ -163,7 +159,7 @@ export function useHousehold(userId?: string) {
   };
 
   // Refresh Households
-  const refresh = useCallback(async () => {
+  const refresh = async () => {
     setLoading(true);
     const households = await fetchUserHouseholds();
     const currentHh = await fetchCurrentHousehold();
@@ -172,11 +168,13 @@ export function useHousehold(userId?: string) {
     setCurrentHousehold(currentHh);
     setIsOriginator((currentHh?.originator_id ?? "") === userId);
     setLoading(false);
-  }, [userId]);
+  };
 
   useEffect(() => {
-    refresh();
-  }, [refresh]);
+    if (userId) {
+      refresh();
+    }
+  }, [userId]);
 
   return {
     currentHousehold,
