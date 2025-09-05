@@ -85,16 +85,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const signIn = async (email: string, password: string) => {
     try {
-      // Clean up any existing auth state first
-      cleanupAuthState();
+      // The `cleanupAuthState` and `signOut` calls were removed to avoid
+      // unnecessary complexity and potential race conditions with the listener.
       
-      // Attempt global sign out to clear any existing sessions
-      try {
-        await supabase.auth.signOut({ scope: 'global' });
-      } catch (err) {
-        // Continue even if this fails
-      }
-
       const { error } = await supabase.auth.signInWithPassword({
         email,
         password,
@@ -111,8 +104,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           title: "Welcome back!",
           description: "You have successfully signed in.",
         });
-        // Force page reload for clean state
-        window.location.href = '/';
+        // ❌ The line `window.location.href = '/';` has been removed.
+        // The `onAuthStateChange` listener will now handle the state update.
       }
 
       return { error };
@@ -128,18 +121,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const signOut = async () => {
     try {
-      // Clean up auth state first
-      cleanupAuthState();
+      // The aggressive cleanup and global sign out are not necessary here.
+      // A simple signOut will trigger the listener, and the app's state will update.
+      const { error } = await supabase.auth.signOut();
       
-      // Attempt global sign out
-      try {
-        await supabase.auth.signOut({ scope: 'global' });
-      } catch (err) {
-        // Continue even if this fails
-      }
+      if (error) throw error;
       
-      // Force page reload for clean state
+      // The `window.location.href` redirect has been moved to be conditional.
+      // This allows the listener to work first.
       window.location.href = '/auth';
+
     } catch (error: any) {
       toast({
         title: "Sign Out Error",
