@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { sanitizeHTML } from '@/utils/sanitize';
 import { useSubscription } from "@/hooks/useSubscription";
 import { useAuth } from "@/hooks/useAuth";
 import { useBadges } from "@/hooks/useBadges";
@@ -72,7 +73,9 @@ export default function AIInsights() {
       .replace(/^- (.+)$/gm, '<div>• $1</div>')
       .replace(/^\* (.+)$/gm, '<div>• $1</div>')
       .replace(/\n/g, '<br>');
-    return `<div>${processed}</div>`;
+    
+    // Sanitize the HTML to prevent XSS attacks
+    return sanitizeHTML(`<div>${processed}</div>`);
   };
 
   return (

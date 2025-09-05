@@ -1,5 +1,6 @@
 // src/components/AIChatbot.tsx
 import React, { useState, useRef, useEffect } from 'react';
+import { sanitizeHTML } from '@/utils/sanitize';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -251,8 +252,8 @@ export function AIChatbot({ pageContext, pageName, calculatorsData = [] }: AICha
       // Convert line breaks to proper paragraph structure
       .replace(/\n/g, '<br>');
     
-    // Wrap in a single div to ensure single root element
-    return `<div>${processed}</div>`;
+    // Sanitize the HTML to prevent XSS attacks
+    return sanitizeHTML(processed);
   };
 
   if (!hasAccess) {
