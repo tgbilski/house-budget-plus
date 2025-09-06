@@ -116,16 +116,16 @@ export function useHousehold(userId?: string) {
       }
     }
 
-    // If no preferred household was found or set, default to the first one in the list
+    // If no preferred household was found or set, default to the last one in the list
     if (!currentHhToReturn && households.length > 0) {
-      const firstHousehold = households[0];
-      console.log("No preferred household found or set. Defaulting to the first one:", firstHousehold);
-      currentHhToReturn = firstHousehold;
+      const lastHousehold = households[households.length - 1];
+      console.log("No preferred household found or set. Defaulting to the last one:", lastHousehold);
+      currentHhToReturn = lastHousehold;
       
       // Update the user's profile to reflect this new current household
       const { error: updateError } = await supabase
         .from("profiles")
-        .update({ current_household_id: firstHousehold.id })
+        .update({ current_household_id: lastHousehold.id })
         .eq("user_id", userId);
 
       console.log("fetchCurrentHousehold - update profile result:", updateError);
