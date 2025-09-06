@@ -3,8 +3,6 @@ import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
-  CardHeader,
-  CardTitle,
 } from "@/components/ui/card";
 import {
   Dialog,
@@ -14,7 +12,6 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import {
   Select,
   SelectContent,
@@ -22,7 +19,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Badge } from "@/components/ui/badge";
 import { useHouseholdContext } from "../providers/HouseholdProvider";
 import { useAuth } from "../hooks/useAuth";
 import { useSubscription } from "../hooks/useSubscription";
@@ -32,7 +28,6 @@ import {
   Home,
   Plus,
   Crown,
-  Mail,
   Check,
   X,
   Pencil,
@@ -47,7 +42,7 @@ interface HouseholdSwitcherProps {
 
 export function HouseholdSwitcher({ className, open, onOpenChange }: HouseholdSwitcherProps) {
   const { user } = useAuth();
-  
+
   const {
     currentHousehold,
     userHouseholds,
@@ -81,8 +76,7 @@ export function HouseholdSwitcher({ className, open, onOpenChange }: HouseholdSw
   const [renaming, setRenaming] = useState(false);
   const [editableName, setEditableName] = useState("");
   const [isRenaming, setIsRenaming] = useState(false);
-  
-  // This function is now cleaner and provides a better UX.
+
   const handleCreateHousehold = async () => {
     if (!newHouseholdName.trim()) return;
     setIsCreating(true);
@@ -90,8 +84,6 @@ export function HouseholdSwitcher({ className, open, onOpenChange }: HouseholdSw
       const success = await createHousehold(newHouseholdName.trim());
       if (success) {
         setNewHouseholdName("");
-        // **FIXED**: No more page reload! The state will update reactively.
-        // The dialog is closed, and the new household will appear as current.
         if (onOpenChange) {
           onOpenChange(false);
         } else {
@@ -100,7 +92,6 @@ export function HouseholdSwitcher({ className, open, onOpenChange }: HouseholdSw
       }
     } catch (error) {
       console.error("Failed to create household:", error);
-      // You could add user-facing error handling here (e.g., a toast notification)
     } finally {
       setIsCreating(false);
     }
@@ -138,7 +129,6 @@ export function HouseholdSwitcher({ className, open, onOpenChange }: HouseholdSw
   const anyLoading =
     householdLoading || invitesLoading || membersLoading || isCreating || isInviting || isRenaming;
 
-  // The rest of your JSX was perfectly fine and required no changes.
   return (
     <Dialog open={open !== undefined ? open : isOpen} onOpenChange={onOpenChange || setIsOpen}>
       {!open && (
@@ -169,67 +159,67 @@ export function HouseholdSwitcher({ className, open, onOpenChange }: HouseholdSw
 
         {!anyLoading && (
           <div className="space-y-6">
-            {/* Current Household & Rename */}
-            {currentHousehold && (
-              <div>
-                <h3 className="font-medium mb-2">Current Household</h3>
-                <Card className="border-primary/20">
-                  <CardContent className="p-3 flex items-center justify-between">
-                    <div>
-                      {!renaming ? (
-                        <div className="flex items-center">
-                          <span className="font-medium">{currentHousehold.name}</span>
-                          {isOriginator && (
-                            <Crown className="h-4 w-4 text-amber-500 ml-2" />
-                          )}
-                        </div>
-                      ) : (
-                        <div className="flex gap-2 items-center">
-                          <Input
-                            value={editableName}
-                            onChange={e => setEditableName(e.target.value)}
-                            className="w-auto"
-                            disabled={isRenaming}
-                          />
-                          <Button
-                            variant="secondary"
-                            size="icon"
-                            onClick={handleRename}
-                            disabled={isRenaming}
-                          >
-                            {isRenaming ? <Loader2 className="h-4 w-4 animate-spin" /> : <Check className="h-4 w-4" />}
-                          </Button>
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            onClick={() => setRenaming(false)}
-                            disabled={isRenaming}
-                          >
-                            <X className="h-4 w-4" />
-                          </Button>
-                        </div>
-                      )}
-                      <p className="text-xs text-muted-foreground">
-                        {householdMembers.length} member
-                        {householdMembers.length !== 1 ? "s" : ""}
-                        {isOriginator && " • You are the owner"}
-                      </p>
-                    </div>
-                    {isOriginator && !renaming && (
-                      <Button
-                        size="icon"
-                        variant="ghost"
-                        className="ml-2"
-                        onClick={startRenaming}
-                        aria-label="Rename household"
-                      >
-                        <Pencil className="h-4 w-4" />
-                      </Button>
+            {/* Always show Current Household card */}
+            <div>
+              <h3 className="font-medium mb-2">Current Household</h3>
+              <Card className="border-primary/20">
+                <CardContent className="p-3 flex items-center justify-between">
+                  <div>
+                    {!renaming ? (
+                      <div className="flex items-center">
+                        <span className="font-medium">
+                          {currentHousehold?.name || "No Household selected"}
+                        </span>
+                        {isOriginator && currentHousehold && (
+                          <Crown className="h-4 w-4 text-amber-500 ml-2" />
+                        )}
+                      </div>
+                    ) : (
+                      <div className="flex gap-2 items-center">
+                        <Input
+                          value={editableName}
+                          onChange={e => setEditableName(e.target.value)}
+                          className="w-auto"
+                          disabled={isRenaming || !currentHousehold}
+                        />
+                        <Button
+                          variant="secondary"
+                          size="icon"
+                          onClick={handleRename}
+                          disabled={isRenaming || !currentHousehold}
+                        >
+                          {isRenaming ? <Loader2 className="h-4 w-4 animate-spin" /> : <Check className="h-4 w-4" />}
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => setRenaming(false)}
+                          disabled={isRenaming}
+                        >
+                          <X className="h-4 w-4" />
+                        </Button>
+                      </div>
                     )}
-                  </CardContent>
-                </Card>
-              </div>
-            )}
+                    <p className="text-xs text-muted-foreground">
+                      {(householdMembers?.length ?? 0)} member
+                      {(householdMembers?.length ?? 0) !== 1 ? "s" : ""}
+                      {isOriginator && currentHousehold && " • You are the owner"}
+                    </p>
+                  </div>
+                  {isOriginator && currentHousehold && !renaming && (
+                    <Button
+                      size="icon"
+                      variant="ghost"
+                      className="ml-2"
+                      onClick={startRenaming}
+                      aria-label="Rename household"
+                    >
+                      <Pencil className="h-4 w-4" />
+                    </Button>
+                  )}
+                </CardContent>
+              </Card>
+            </div>
 
             {/* Switch Household */}
             {userHouseholds.length > 1 && (
@@ -237,11 +227,12 @@ export function HouseholdSwitcher({ className, open, onOpenChange }: HouseholdSw
                 <h3 className="font-medium mb-2">Switch Household</h3>
                 <Select
                   value={currentHousehold?.id || ""}
-                  onValueChange={(id) => {
+                  onValueChange={id => {
                     switchHousehold(id);
                     if (onOpenChange) onOpenChange(false);
                     else setIsOpen(false);
                   }}
+                  disabled={userHouseholds.length === 0}
                 >
                   <SelectTrigger>
                     <SelectValue placeholder="Select household" />
@@ -262,34 +253,32 @@ export function HouseholdSwitcher({ className, open, onOpenChange }: HouseholdSw
 
             {/* Create New Household */}
             <div>
-                <h3 className="font-medium mb-2">Create New Household</h3>
-                {!subscribed && userHouseholds.length >= 1 ? (
-                  <Card className="border-amber-200 bg-amber-50">
-                    <CardContent className="p-3">
-                      <p className="text-sm text-amber-800">
-                        Premium subscription required to create additional households.
-                      </p>
-                    </CardContent>
-                  </Card>
-                ) : (
-                  <div className="flex gap-2">
-                    <Input
-                      placeholder="New household name"
-                      value={newHouseholdName}
-                      onChange={e => setNewHouseholdName(e.target.value)}
-                      disabled={isCreating}
-                    />
-                    <Button
-                      onClick={handleCreateHousehold}
-                      disabled={!newHouseholdName.trim() || isCreating}
-                    >
-                      {isCreating ? <Loader2 className="h-4 w-4 animate-spin" /> : <Plus className="h-4 w-4" />}
-                    </Button>
-                  </div>
-                )}
-              </div>
-
-            {/* Other sections (Invite, Pending, Members) can remain as they were */}
+              <h3 className="font-medium mb-2">Create New Household</h3>
+              {!subscribed && userHouseholds.length >= 1 ? (
+                <Card className="border-amber-200 bg-amber-50">
+                  <CardContent className="p-3">
+                    <p className="text-sm text-amber-800">
+                      Premium subscription required to create additional households.
+                    </p>
+                  </CardContent>
+                </Card>
+              ) : (
+                <div className="flex gap-2">
+                  <Input
+                    placeholder="New household name"
+                    value={newHouseholdName}
+                    onChange={e => setNewHouseholdName(e.target.value)}
+                    disabled={isCreating}
+                  />
+                  <Button
+                    onClick={handleCreateHousehold}
+                    disabled={!newHouseholdName.trim() || isCreating}
+                  >
+                    {isCreating ? <Loader2 className="h-4 w-4 animate-spin" /> : <Plus className="h-4 w-4" />}
+                  </Button>
+                </div>
+              )}
+            </div>
           </div>
         )}
       </DialogContent>
