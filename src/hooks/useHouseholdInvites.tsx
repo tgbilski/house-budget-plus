@@ -21,7 +21,14 @@ export function useHouseholdInvites(userId?: string) {
   const refresh = async () => {
     if (!userId) return;
     setLoading(true);
-    // Show invites sent to this user's email; you may need to fetch the email from the user's profile
+    
+    // Get user's email first
+    const { data: userData } = await supabase.auth.getUser();
+    const userEmail = userData?.user?.email;
+    
+    console.log("Refreshing invites for userId:", userId, "email:", userEmail);
+    
+    // Show invites sent to this user's email or user_id
     const { data, error } = await supabase
       .from("household_invites")
       .select(`
@@ -29,7 +36,9 @@ export function useHouseholdInvites(userId?: string) {
         households!inner(name)
       `)
       .eq("status", "pending")
-      .eq("invited_user_id", userId);
+      .or(`invited_user_id.eq.${userId},invited_email.eq.${userEmail}`);
+    
+    console.log("Invites query result:", { data, error });
     setPendingInvites(data || []);
     setLoading(false);
   };
@@ -57,11 +66,19 @@ export function useHouseholdInvites(userId?: string) {
   const acceptInvite = async (inviteId: string) => {
     if (!userId) return false;
     setLoading(true);
-    const { error } = await supabase
-      .from("household_invites")
-      .update({ status: "accepted" })
-      .eq("id", inviteId);
-    await refresh();
+    
+    // Use the accept_household_invite function instead
+    const { data, error } = await supabase
+      .rpc('accept_household_invite', { _invite_id: inviteId });
+    
+    console.log("Accept invite result:", { data, error });
+    
+    if (!error) {
+      await refresh();
+      // Refresh the page to reload household context
+      window.location.reload();
+    }
+    
     setLoading(false);
     return !error;
   };
