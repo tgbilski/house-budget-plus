@@ -948,6 +948,10 @@ export type Database = {
         }
         Returns: undefined
       }
+      user_household_ids: {
+        Args: { _user_id: string }
+        Returns: string[]
+      }
     }
     Enums: {
       app_role: "admin" | "moderator" | "user"
