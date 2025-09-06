@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 
 // Adjust these types to match your table columns
@@ -14,15 +14,52 @@ export function useHousehold(userId?: string) {
   const [isOriginator, setIsOriginator] = useState(false);
   const [loading, setLoading] = useState(true);
 
-  // Helper function to fetch all households a user belongs to
+  // Function to create a household for a brand new user
+  const createAndSetDefaultHousehold = async () => {
+    if (!userId) return null;
+
+    try {
+      // Create a default household for the user
+      const { data: household, error: householdError } = await supabase
+        .from("households")
+        .insert([{ name: "My Household", originator_id: userId }])
+        .select()
+        .single();
+
+      if (householdError) throw householdError;
+
+      // Add the user as a member
+      const { error: memberError } = await supabase
+        .from("household_members")
+        .insert([{ user_id: userId, household_id: household.id, role: 'originator' }]);
+
+      if (memberError) throw memberError;
+
+      // Update the user's profile to point to this new household
+      const { error: profileError } = await supabase
+        .from("profiles")
+        .update({ current_household_id: household.id })
+        .eq("user_id", userId);
+
+      if (profileError) throw profileError;
+
+      return household;
+    } catch (error) {
+      console.error("Error creating and setting default household:", error);
+      return null;
+    }
+  };
+
+
+  // Fetch all households where the user is a member
   const fetchUserHouseholds = async () => {
     if (!userId) {
       console.log("fetchUserHouseholds - no userId provided");
       return [];
     }
-    
+
     console.log("fetchUserHouseholds - fetching for userId:", userId);
-    
+
     const { data: memberships, error: membershipsError } = await supabase
       .from("household_members")
       .select("household_id, household:households(*)")
@@ -48,7 +85,17 @@ export function useHousehold(userId?: string) {
     
     console.log("fetchCurrentHousehold - fetching for userId:", userId);
     
-    // 1. Fetch the user's profile to get their preferred household ID
+    // 1. Fetch all households the user is a member of
+    const households = await fetchUserHouseholds();
+    console.log("fetchCurrentHousehold - households:", households);
+
+    // FIX: If the user has no households, create a new one for them immediately
+    if (households.length === 0) {
+      console.log("fetchCurrentHousehold - no households found, creating default.");
+      return await createAndSetDefaultHousehold();
+    }
+
+    // 2. Fetch the user's profile to get their preferred household ID
     const { data: profile, error: profileError } = await supabase
       .from("profiles")
       .select("current_household_id")
@@ -56,10 +103,6 @@ export function useHousehold(userId?: string) {
       .single();
     
     console.log("fetchCurrentHousehold - profile:", { profile, profileError });
-    
-    // 2. Fetch all households the user is a member of
-    const households = await fetchUserHouseholds();
-    console.log("fetchCurrentHousehold - households:", households);
     
     // 3. Check if the user's profile has a current household ID set
     if (profile?.current_household_id) {
@@ -70,22 +113,21 @@ export function useHousehold(userId?: string) {
       }
     }
     
-    // 4. If no preferred household is set, and the user has at least one household,
-    //    automatically set the first one as their current household.
-    if (households.length > 0 && !profile?.current_household_id) {
-        const firstHousehold = households[0];
-        if (firstHousehold) {
-            console.log("No current household set. Defaulting to the first one:", firstHousehold);
-            const { error: updateError } = await supabase
-                .from("profiles")
-                .update({ current_household_id: firstHousehold.id })
-                .eq("user_id", userId);
-            
-            console.log("fetchCurrentHousehold - update profile result:", updateError);
-            
-            // Return the first household, which will now be the new current household
-            return firstHousehold;
-        }
+    // 4. If no preferred household is set, automatically set the first one as their current household.
+    if (!profile?.current_household_id) {
+      const firstHousehold = households[0];
+      if (firstHousehold) {
+        console.log("No current household set. Defaulting to the first one:", firstHousehold);
+        const { error: updateError } = await supabase
+          .from("profiles")
+          .update({ current_household_id: firstHousehold.id })
+          .eq("user_id", userId);
+        
+        console.log("fetchCurrentHousehold - update profile result:", updateError);
+        
+        // Return the first household, which will now be the new current household
+        return firstHousehold;
+      }
     }
 
     // 5. If there are no households or a current household is already set, return the first one or null
