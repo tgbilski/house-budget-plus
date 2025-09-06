@@ -61,6 +61,11 @@ export function HouseholdSwitcher({ className, open, onOpenChange }: HouseholdSw
     renameHousehold,
   } = useHouseholdContext();
 
+  // Debug logs for household switcher
+  console.log("HouseholdSwitcher - currentHousehold:", currentHousehold);
+  console.log("HouseholdSwitcher - userHouseholds:", userHouseholds);
+  console.log("HouseholdSwitcher - householdLoading:", householdLoading);
+
   // Invites
   const {
     pendingInvites,
