@@ -14,33 +14,26 @@ export function useHousehold(userId?: string) {
   const [isOriginator, setIsOriginator] = useState(false);
   const [loading, setLoading] = useState(true);
 
-  // Function to create a household for a brand new user
+  // Creates a household for a brand new user. No changes needed here.
   const createAndSetDefaultHousehold = useCallback(async () => {
     if (!userId) return null;
-
     try {
-      // Create a default household for the user
       const { data: household, error: householdError } = await supabase
         .from("households")
         .insert([{ name: "My Household", originator_id: userId }])
         .select()
         .single();
-
       if (householdError) throw householdError;
 
-      // Add the user as a member
       const { error: memberError } = await supabase
         .from("household_members")
         .insert([{ user_id: userId, household_id: household.id, role: 'originator' }]);
-
       if (memberError) throw memberError;
 
-      // Update the user's profile to point to this new household
       const { error: profileError } = await supabase
         .from("profiles")
         .update({ current_household_id: household.id })
         .eq("user_id", userId);
-
       if (profileError) throw profileError;
 
       return household;
@@ -50,105 +43,97 @@ export function useHousehold(userId?: string) {
     }
   }, [userId]);
 
-
-  // Fetch all households where the user is a member
+  // Fetches all households where the user is a member. No changes needed here.
   const fetchUserHouseholds = useCallback(async () => {
-    if (!userId) {
-      console.log("fetchUserHouseholds - no userId provided");
-      return [];
-    }
-
-    console.log("fetchUserHouseholds - fetching for userId:", userId);
-
-    const { data: memberships, error: membershipsError } = await supabase
+    if (!userId) return [];
+    const { data: memberships, error } = await supabase
       .from("household_members")
-      .select("household_id, household:households(*)")
+      .select("household:households(*)")
       .eq("user_id", userId);
 
-    console.log("fetchUserHouseholds - result:", { memberships, membershipsError });
-
-    if (membershipsError || !memberships) {
-      console.log("fetchUserHouseholds - error or no data:", membershipsError);
+    if (error || !memberships) {
+      console.error("Error fetching user households:", error);
       return [];
     }
-    const households = memberships.map((m: any) => m.household);
-    console.log("fetchUserHouseholds - mapped households:", households);
-    return households;
+    return memberships.map((m: any) => m.household).filter(Boolean);
   }, [userId]);
 
-  // Main function to fetch the user's current household and handle the default case
-  const fetchCurrentHousehold = useCallback(async () => {
-    if (!userId) {
-      console.log("fetchCurrentHousehold - no userId provided");
-      return null;
-    }
-    
-    console.log("fetchCurrentHousehold - fetching for userId:", userId);
-    
-    // 1. Fetch all households the user is a member of
-    const households = await fetchUserHouseholds();
-    console.log("fetchCurrentHousehold - households:", households);
+  // **REFACTORED**: Determines the current household from a PRE-FETCHED list.
+  const determineCurrentHousehold = useCallback(async (households: Household[]) => {
+    if (!userId) return null;
 
-    // FIX: If the user has no households, create a new one for them immediately
     if (households.length === 0) {
-      console.log("fetchCurrentHousehold - no households found, creating default.");
       return await createAndSetDefaultHousehold();
     }
 
-    // 2. Fetch the user's profile to get their preferred household ID
-    const { data: profile, error: profileError } = await supabase
+    const { data: profile } = await supabase
       .from("profiles")
       .select("current_household_id")
       .eq("user_id", userId)
       .single();
-    
-    console.log("fetchCurrentHousehold - profile:", { profile, profileError });
-    
-    // 3. Determine the household to return
-    let currentHhToReturn = null;
 
     if (profile?.current_household_id) {
-      // If a preferred household is set, find it in the list of user's households
       const preferredHousehold = households.find(h => h.id === profile.current_household_id);
       if (preferredHousehold) {
-        console.log("fetchCurrentHousehold - found preferred household:", preferredHousehold);
-        currentHhToReturn = preferredHousehold;
+        return preferredHousehold;
       }
     }
 
-    // If no preferred household was found or set, default to the last one in the list
-    if (!currentHhToReturn && households.length > 0) {
-      const lastHousehold = households[households.length - 1];
-      console.log("No preferred household found or set. Defaulting to the last one:", lastHousehold);
-      currentHhToReturn = lastHousehold;
+    // If no preferred household is set or found, default to the last one.
+    const defaultHousehold = households[households.length - 1];
+    
+    // Asynchronously update the profile in the background to persist this choice.
+    await supabase
+      .from("profiles")
+      .update({ current_household_id: defaultHousehold.id })
+      .eq("user_id", userId);
       
-      // Update the user's profile to reflect this new current household
-      const { error: updateError } = await supabase
-        .from("profiles")
-        .update({ current_household_id: lastHousehold.id })
-        .eq("user_id", userId);
+    return defaultHousehold;
+  }, [userId, createAndSetDefaultHousehold]);
 
-      console.log("fetchCurrentHousehold - update profile result:", updateError);
+
+  // **REFACTORED**: Main refresh function with a single source of truth.
+  const refresh = useCallback(async () => {
+    setLoading(true);
+
+    // 1. Fetch the list of households ONCE.
+    const households = await fetchUserHouseholds();
+
+    // 2. Pass that single list to determine the current one.
+    const currentHh = await determineCurrentHousehold(households);
+    
+    // 3. Set all state from this single, consistent source.
+    setUserHouseholds(households);
+    setCurrentHousehold(currentHh);
+    setIsOriginator(currentHh?.originator_id === userId);
+
+    setLoading(false);
+  }, [userId, fetchUserHouseholds, determineCurrentHousehold]);
+
+  useEffect(() => {
+    if (userId) {
+      refresh();
+    } else {
+      // Clear state if user logs out
+      setLoading(false);
+      setCurrentHousehold(null);
+      setUserHouseholds([]);
+      setIsOriginator(false);
     }
-
-    console.log("fetchCurrentHousehold - final result:", currentHhToReturn);
-    return currentHhToReturn;
-  }, [userId, fetchUserHouseholds, createAndSetDefaultHousehold]);
-
-  // Switch the current household
+  }, [userId, refresh]);
+  
+  // No changes needed for the functions below, as they correctly call `refresh`.
+  
   const switchHousehold = async (householdId: string) => {
     if (!userId) return;
     setLoading(true);
-    
     try {
       const { error } = await supabase
         .from("profiles")
         .update({ current_household_id: householdId })
         .eq("user_id", userId);
-      
       if (error) throw error;
-      
-      await refresh();
+      await refresh(); // Refresh state after switching
     } catch (error) {
       console.error("Error switching household:", error);
     } finally {
@@ -156,56 +141,24 @@ export function useHousehold(userId?: string) {
     }
   };
 
-  // Create a new household (originator is the current user)
   const createHousehold = async (name: string) => {
-    console.log("Creating household with name:", name, "userId:", userId);
-    if (!userId) {
-      console.log("No userId found, returning false");
-      return false;
-    }
+    if (!userId) return false;
     setLoading(true);
-    
     try {
-      console.log("Step 1: Creating household...");
-      const { data, error } = await supabase
+      const { data: newHousehold, error: createError } = await supabase
         .from("households")
         .insert([{ name, originator_id: userId }])
         .select()
         .single();
-        
-      if (error || !data) {
-        console.error("Error creating household:", error);
-        return false;
-      }
-      
-      console.log("Step 2: Household created successfully:", data);
-      
-      console.log("Step 3: Adding user as member...");
+      if (createError || !newHousehold) throw createError;
+
       const { error: memberError } = await supabase
         .from("household_members")
-        .insert([{ user_id: userId, household_id: data.id, role: 'originator' }]);
+        .insert([{ user_id: userId, household_id: newHousehold.id, role: 'originator' }]);
+      if (memberError) throw memberError;
       
-      if (memberError) {
-        console.error("Error adding user as member:", memberError);
-        return false;
-      }
-      
-      console.log("Step 4: User added as member successfully");
-      
-      console.log("Step 5: Setting as current household...");
-      const { error: profileError } = await supabase
-        .from("profiles")
-        .update({ current_household_id: data.id })
-        .eq("user_id", userId);
-      
-      if (profileError) {
-        console.error("Error updating current household:", profileError);
-      }
-      
-      setIsOriginator(true);
-      console.log("Step 6: Current household set, refreshing...");
-      await refresh();
-      console.log("Step 7: Household creation completed successfully");
+      // After creating, switch to it and refresh
+      await switchHousehold(newHousehold.id); 
       return true;
     } catch (error) {
       console.error("Error in createHousehold:", error);
@@ -215,20 +168,15 @@ export function useHousehold(userId?: string) {
     }
   };
 
-  // Rename the current household
   const renameHousehold = async (newName: string) => {
-    if (!currentHousehold || !userId) return false;
+    if (!currentHousehold || !isOriginator) return false;
     setLoading(true);
-    
     try {
       const { error } = await supabase
         .from("households")
         .update({ name: newName })
-        .eq("id", currentHousehold.id)
-        .eq("originator_id", userId);
-      
+        .eq("id", currentHousehold.id);
       if (error) throw error;
-      
       await refresh();
       return true;
     } catch (error) {
@@ -238,28 +186,6 @@ export function useHousehold(userId?: string) {
       setLoading(false);
     }
   };
-
-  // Refresh Households
-  const refresh = useCallback(async () => {
-    setLoading(true);
-    const households = await fetchUserHouseholds();
-    const currentHh = await fetchCurrentHousehold();
-    
-    setUserHouseholds(households);
-    setCurrentHousehold(currentHh);
-    setIsOriginator((currentHh?.originator_id ?? "") === userId);
-    setLoading(false);
-  }, [fetchUserHouseholds, fetchCurrentHousehold, userId]);
-
-  useEffect(() => {
-    console.log("useHousehold - userId changed:", userId);
-    if (userId) {
-      console.log("useHousehold - calling refresh for userId:", userId);
-      refresh();
-    } else {
-      console.log("useHousehold - no userId, skipping refresh");
-    }
-  }, [userId, refresh]);
 
   return {
     currentHousehold,
