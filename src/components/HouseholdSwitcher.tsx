@@ -170,66 +170,6 @@ export function HouseholdSwitcher({ className, open, onOpenChange }: HouseholdSw
         {!anyLoading && (
           <div className="space-y-6">
             {/* Current Household & Rename */}
-            {currentHousehold && (
-              <div>
-                <h3 className="font-medium mb-2">Current Household</h3>
-                <Card className="border-primary/20">
-                  <CardContent className="p-3 flex items-center justify-between">
-                    <div>
-                      {!renaming ? (
-                        <div className="flex items-center">
-                          <span className="font-medium">{currentHousehold.name}</span>
-                          {isOriginator && (
-                            <Crown className="h-4 w-4 text-amber-500 ml-2" />
-                          )}
-                        </div>
-                      ) : (
-                        <div className="flex gap-2 items-center">
-                          <Input
-                            value={editableName}
-                            onChange={e => setEditableName(e.target.value)}
-                            className="w-auto"
-                            disabled={isRenaming}
-                          />
-                          <Button
-                            variant="secondary"
-                            size="icon"
-                            onClick={handleRename}
-                            disabled={isRenaming}
-                          >
-                            {isRenaming ? <Loader2 className="h-4 w-4 animate-spin" /> : <Check className="h-4 w-4" />}
-                          </Button>
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            onClick={() => setRenaming(false)}
-                            disabled={isRenaming}
-                          >
-                            <X className="h-4 w-4" />
-                          </Button>
-                        </div>
-                      )}
-                      <p className="text-xs text-muted-foreground">
-                        {householdMembers.length} member
-                        {householdMembers.length !== 1 ? "s" : ""}
-                        {isOriginator && " • You are the owner"}
-                      </p>
-                    </div>
-                    {isOriginator && !renaming && (
-                      <Button
-                        size="icon"
-                        variant="ghost"
-                        className="ml-2"
-                        onClick={startRenaming}
-                        aria-label="Rename household"
-                      >
-                        <Pencil className="h-4 w-4" />
-                      </Button>
-                    )}
-                  </CardContent>
-                </Card>
-              </div>
-            )}
 
             {/* Switch Household */}
             {userHouseholds.length > 1 && (
