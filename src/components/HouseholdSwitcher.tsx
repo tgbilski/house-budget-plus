@@ -221,39 +221,35 @@ export function HouseholdSwitcher({ className, open, onOpenChange }: HouseholdSw
               </Card>
             </div>
 
-            {/* Switch Household - always visible */}
-            <div>
-              <h3 className="font-medium mb-2">Switch Household</h3>
-              <Select
-                value={currentHousehold?.id || ""}
-                onValueChange={id => {
-                  switchHousehold(id);
-                  if (onOpenChange) onOpenChange(false);
-                  else setIsOpen(false);
-                }}
-                disabled={userHouseholds.length === 0}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Select household" />
-                </SelectTrigger>
-                <SelectContent>
-                  {userHouseholds.length === 0 ? (
-                    <SelectItem value="" disabled>
-                      No households available
-                    </SelectItem>
-                  ) : (
-                    userHouseholds.map(h => (
+            {/* Switch Household */}
+            {userHouseholds.length > 1 && (
+              <div>
+                <h3 className="font-medium mb-2">Switch Household</h3>
+                <Select
+                  value={currentHousehold?.id || ""}
+                  onValueChange={id => {
+                    switchHousehold(id);
+                    if (onOpenChange) onOpenChange(false);
+                    else setIsOpen(false);
+                  }}
+                  disabled={userHouseholds.length === 0}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select household" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {userHouseholds.map(h => (
                       <SelectItem key={h.id} value={h.id} className="flex items-center">
                         <span>{h.name}</span>
                         {h.originator_id === user?.id && (
                           <Crown className="h-3 w-3 text-amber-500 ml-auto" />
                         )}
                       </SelectItem>
-                    ))
-                  )}
-                </SelectContent>
-              </Select>
-            </div>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            )}
 
             {/* Create New Household */}
             <div>
