@@ -24,11 +24,11 @@ import {
 } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { useHouseholdContext } from "@/providers/HouseholdProvider";
-import { useAuth } from "@/hooks/useAuth";
-import { useSubscription } from "@/hooks/useSubscription";
-import { useHouseholdInvites } from "@/hooks/useHouseholdInvites";
-import { useHouseholdMembers } from "@/hooks/useHouseholdMembers";
+import { useHouseholdContext } from "../providers/HouseholdProvider";
+import { useAuth } from "../hooks/useAuth";
+import { useSubscription } from "../hooks/useSubscription";
+import { useHouseholdInvites } from "../hooks/useHouseholdInvites";
+import { useHouseholdMembers } from "../hooks/useHouseholdMembers";
 import {
   Home,
   Plus,
@@ -162,7 +162,11 @@ export function HouseholdSwitcher({ className, open, onOpenChange }: HouseholdSw
           <Button variant="ghost" size="sm" className={className}>
             <div className="flex items-center">
               <Home className="h-4 w-4 mr-2" />
-              <span>{currentHousehold?.name || "No Household"}</span>
+              <span>
+                {householdLoading
+                  ? "Loading..."
+                  : currentHousehold?.name || "No Household"}
+              </span>
               {isOriginator && <Crown className="h-3 w-3 ml-1" />}
             </div>
           </Button>
