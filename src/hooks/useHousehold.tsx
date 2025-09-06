@@ -15,7 +15,7 @@ export function useHousehold(userId?: string) {
   const [loading, setLoading] = useState(true);
 
   // Function to create a household for a brand new user
-  const createAndSetDefaultHousehold = async () => {
+  const createAndSetDefaultHousehold = useCallback(async () => {
     if (!userId) return null;
 
     try {
@@ -48,11 +48,11 @@ export function useHousehold(userId?: string) {
       console.error("Error creating and setting default household:", error);
       return null;
     }
-  };
+  }, [userId]);
 
 
   // Fetch all households where the user is a member
-  const fetchUserHouseholds = async () => {
+  const fetchUserHouseholds = useCallback(async () => {
     if (!userId) {
       console.log("fetchUserHouseholds - no userId provided");
       return [];
@@ -74,10 +74,10 @@ export function useHousehold(userId?: string) {
     const households = memberships.map((m: any) => m.household);
     console.log("fetchUserHouseholds - mapped households:", households);
     return households;
-  };
+  }, [userId]);
 
   // Main function to fetch the user's current household and handle the default case
-  const fetchCurrentHousehold = async () => {
+  const fetchCurrentHousehold = useCallback(async () => {
     if (!userId) {
       console.log("fetchCurrentHousehold - no userId provided");
       return null;
@@ -134,7 +134,7 @@ export function useHousehold(userId?: string) {
     const result = households[0] || null;
     console.log("fetchCurrentHousehold - final result:", result);
     return result;
-  };
+  }, [userId, fetchUserHouseholds, createAndSetDefaultHousehold]);
 
   // Switch the current household
   const switchHousehold = async (householdId: string) => {
@@ -241,7 +241,7 @@ export function useHousehold(userId?: string) {
   };
 
   // Refresh Households
-  const refresh = async () => {
+  const refresh = useCallback(async () => {
     setLoading(true);
     const households = await fetchUserHouseholds();
     const currentHh = await fetchCurrentHousehold();
@@ -250,7 +250,7 @@ export function useHousehold(userId?: string) {
     setCurrentHousehold(currentHh);
     setIsOriginator((currentHh?.originator_id ?? "") === userId);
     setLoading(false);
-  };
+  }, [fetchUserHouseholds, fetchCurrentHousehold, userId]);
 
   useEffect(() => {
     console.log("useHousehold - userId changed:", userId);
@@ -260,7 +260,7 @@ export function useHousehold(userId?: string) {
     } else {
       console.log("useHousehold - no userId, skipping refresh");
     }
-  }, [userId]);
+  }, [userId, refresh]);
 
   return {
     currentHousehold,
