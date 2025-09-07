@@ -79,33 +79,34 @@ export default function AIInsights() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 text-gray-900 relative">
+    <div className="min-h-screen overflow-x-hidden relative">
       <SEO
         title="AI Budget Insights - Personal Financial Advisor"
         description="Get personalized financial advice using AI. Analyze your budget data and receive expert insights to optimize your spending and savings."
         keywords="AI financial advisor, budget insights, personal finance, money management, financial optimization"
       />
 
-      {/* Main Container for the Hero section */}
-      <div className="container mx-auto px-4 relative overflow-hidden">
-        {/* Mascot Image - Absolutely positioned outside the card */}
-        <div className="absolute top-[-20px] left-1/2 -translate-x-1/2 z-20">
-          <img
-            src="/lovable-uploads/ed809955-ef71-4d81-b072-945082f4380a.png"
-            alt="Budget Calculator mascot"
-            className="w-32 h-32 md:w-40 md:h-40 object-contain hover:scale-110 transition-transform duration-300"
-          />
-        </div>
-
-        {/* Hero Section Card */}
-        <div className="relative py-12 md:py-16 px-4 rounded-2xl mx-4 shadow-xl overflow-visible bg-white mt-16 md:mt-20">
+      {/* Main content sections */}
+      <div className="space-y-4">
+        {/* Hero Section - matching Home page format */}
+        <section className="relative py-12 md:py-16 px-4 rounded-2xl mx-4 shadow-xl overflow-visible bg-white mt-16 md:mt-20">
+          {/* Mascot Image - Absolutely positioned just above the title */}
+          <div className="absolute top-[-60px] left-1/2 -translate-x-1/2 z-20">
+            <img
+              src="/lovable-uploads/ed809955-ef71-4d81-b072-945082f4380a.png"
+              alt="Budget Calculator mascot"
+              className="w-32 h-32 md:w-40 md:h-40 object-contain hover:scale-110 transition-transform duration-300"
+            />
+          </div>
+          
           <div className="w-full max-w-6xl mx-auto relative z-10 pt-20 md:pt-24">
+            {/* Main Hero Content */}
             <div className="text-center mb-12">
-              <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold mb-6 text-gray-900 leading-tight">
-                AI Financial Insights
+              <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-6 text-gray-900 leading-tight">
+                AI <span className="text-primary">Financial Insights</span>
               </h1>
-              <p className="text-lg md:text-xl text-gray-600 max-w-4xl mx-auto mb-8 leading-relaxed">
-                Unlock intelligent, personalized financial advice powered by advanced artificial intelligence to master your money.
+              <p className="text-lg md:text-xl text-gray-600 max-w-4xl mx-auto mb-10 leading-relaxed">
+                <strong>Unlock intelligent, personalized financial advice</strong> powered by advanced artificial intelligence to help you master your money and optimize your budget.
               </p>
             </div>
 
@@ -207,10 +208,10 @@ export default function AIInsights() {
                     )}
                   </CardContent>
                 </Card>
-              )}
+            )}
             </div>
           </div>
-        </div>
+        </section>
       </div>
     </div>
   );
