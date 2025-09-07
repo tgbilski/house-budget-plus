@@ -99,35 +99,45 @@ const HeroSectionContent = () => (
           <strong>Your data stays yours.</strong> No bank connections required. Our AI helps you develop a personalized financial plan using only the data you choose to share.
         </p>
         
-        {/* Value Propositions with Icons */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10 max-w-5xl mx-auto">
-          <div className="flex flex-col items-center text-center p-6 bg-white/80 backdrop-blur-sm rounded-xl border border-gray-200 hover:shadow-lg transition-all duration-300">
+        {/* Step-by-step Value Propositions */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10 max-w-5xl mx-auto">
+          <div className="flex flex-col items-start text-left p-6 bg-white/80 backdrop-blur-sm rounded-xl border border-gray-200 hover:shadow-lg transition-all duration-300">
+            <div className="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mb-4 hover:scale-110 transition-transform duration-300">
+              <UserCheck className="h-8 w-8" />
+            </div>
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">Step 1: Sign up for free to start saving your data!</h3>
+            <p className="text-sm text-gray-600 leading-relaxed">
+              Get started instantly with no credit card required and keep all your financial data secure.
+            </p>
+          </div>
+          
+          <div className="flex flex-col items-start text-left p-6 bg-white/80 backdrop-blur-sm rounded-xl border border-gray-200 hover:shadow-lg transition-all duration-300">
+            <div className="w-16 h-16 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mb-4 hover:scale-110 transition-transform duration-300">
+              <Users className="h-8 w-8" />
+            </div>
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">Step 2: Create a household to budget monthly expenses, compare home project estimates or even plan holiday gift lists!</h3>
+            <p className="text-sm text-gray-600 leading-relaxed">
+              Build comprehensive budgets for your family and track everything from daily expenses to special projects.
+            </p>
+          </div>
+          
+          <div className="flex flex-col items-start text-left p-6 bg-white/80 backdrop-blur-sm rounded-xl border border-gray-200 hover:shadow-lg transition-all duration-300">
+            <div className="w-16 h-16 bg-purple-100 text-purple-600 rounded-full flex items-center justify-center mb-4 hover:scale-110 transition-transform duration-300">
+              <Brain className="h-8 w-8" />
+            </div>
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">Step 3: Subscribe to ask AI for assistance and for sharing your household data with friends or family members!</h3>
+            <p className="text-sm text-gray-600 leading-relaxed">
+              Unlock AI-powered insights and collaborate with family members on your financial goals.
+            </p>
+          </div>
+          
+          <div className="flex flex-col items-start text-left p-6 bg-white/80 backdrop-blur-sm rounded-xl border border-gray-200 hover:shadow-lg transition-all duration-300">
             <div className="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mb-4 hover:scale-110 transition-transform duration-300">
               <Shield className="h-8 w-8" />
             </div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">Anonymous Budgeting</h3>
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">Step 4: Never connect to credit cards or bank accounts! You stay anonymous! Why should anyone have access to your accounts?</h3>
             <p className="text-sm text-gray-600 leading-relaxed">
-              Never connect to credit cards or bank statements for anonymous budgeting
-            </p>
-          </div>
-          
-          <div className="flex flex-col items-center text-center p-6 bg-white/80 backdrop-blur-sm rounded-xl border border-gray-200 hover:shadow-lg transition-all duration-300">
-            <div className="w-16 h-16 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mb-4 hover:scale-110 transition-transform duration-300">
-              <Brain className="h-8 w-8" />
-            </div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">AI-Powered Insights</h3>
-            <p className="text-sm text-gray-600 leading-relaxed">
-              Leverage AI insights regarding the data you share
-            </p>
-          </div>
-          
-          <div className="flex flex-col items-center text-center p-6 bg-white/80 backdrop-blur-sm rounded-xl border border-gray-200 hover:shadow-lg transition-all duration-300">
-            <div className="w-16 h-16 bg-purple-100 text-purple-600 rounded-full flex items-center justify-center mb-4 hover:scale-110 transition-transform duration-300">
-              <Users className="h-8 w-8" />
-            </div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">Family Budgets</h3>
-            <p className="text-sm text-gray-600 leading-relaxed">
-              Build household budgets you can share with family members
+              Maintain complete privacy and control over your financial data with anonymous budgeting.
             </p>
           </div>
         </div>
