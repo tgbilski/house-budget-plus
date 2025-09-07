@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Star, Plus, Edit3, Trash2, Edit2, Check, X } from 'lucide-react';
+import { Star, Plus, Edit3, Trash2, Edit2, Check, X, Scale, Building, Calendar, Phone, DollarSign, Award, Filter } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -7,19 +7,14 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
 import { Textarea } from '@/components/ui/textarea';
+import { Badge } from '@/components/ui/badge';
 import { useAuth } from '@/hooks/useAuth';
 import { useCurrency } from '@/hooks/useCurrency';
 import { useBadges } from '@/hooks/useBadges';
 import { supabase } from '@/integrations/supabase/client';
-
 import { useToast } from '@/hooks/use-toast';
 import { SEO } from '@/components/SEO';
 import { seoData } from '@/utils/seoData';
-import { Breadcrumbs } from '@/components/Breadcrumbs';
-import { InternalLinks } from '@/components/InternalLinks';
-import { SocialShare } from '@/components/SocialShare';
-import { FAQ } from '@/components/FAQ';
-import { vendorComparisonFAQs } from '@/utils/faqData';
 import { AIChatbot } from '@/components/AIChatbot';
 import { WarningBanner } from '@/components/WarningBanner';
 
@@ -54,14 +49,13 @@ interface VendorCardProps {
   onRemove: () => void;
   showRemove: boolean;
   currency: any;
+  isCompact?: boolean;
 }
 
-const VendorCard: React.FC<VendorCardProps> = ({ quote, onUpdate, onRemove, showRemove, currency }) => {
+// Modern, compact vendor card component
+const VendorCard: React.FC<VendorCardProps> = ({ quote, onUpdate, onRemove, showRemove, currency, isCompact = false }) => {
   const [localQuote, setLocalQuote] = useState<VendorQuote>(quote);
-  
-  // Check if this is a new/empty card to start in editing mode
-  const isEmpty = !quote.vendor_name && quote.estimate_amount === 0 && !quote.contact_info;
-  const [isEditing, setIsEditing] = useState(isEmpty);
+  const [isEditing, setIsEditing] = useState(!quote.vendor_name && quote.estimate_amount === 0);
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
@@ -69,7 +63,6 @@ const VendorCard: React.FC<VendorCardProps> = ({ quote, onUpdate, onRemove, show
         onUpdate(localQuote);
       }
     }, 500);
-
     return () => clearTimeout(timeoutId);
   }, [localQuote, quote, onUpdate]);
 
@@ -88,229 +81,115 @@ const VendorCard: React.FC<VendorCardProps> = ({ quote, onUpdate, onRemove, show
     return factors.filter(Boolean).length;
   };
 
-  const starCount = getStarCount();
+  const getBadgeColor = (count: number) => {
+    if (count >= 4) return 'bg-green-100 text-green-800';
+    if (count >= 2) return 'bg-yellow-100 text-yellow-800';
+    return 'bg-red-100 text-red-800';
+  };
 
   if (isEditing) {
     return (
-      <Card className="w-full max-w-md mx-auto shadow-lg border border-border">
-        <CardHeader className="pb-4">
-          <div className="flex items-start justify-between">
-            <div className="w-full">
-              <Label htmlFor={`vendor-${quote.id}`} className="text-sm font-medium text-muted-foreground">
-                Vendor/Company
-              </Label>
-              <Input
-                id={`vendor-${quote.id}`}
-                placeholder="Company name..."
-                value={localQuote.vendor_name}
-                onChange={(e) => updateField('vendor_name', e.target.value)}
-                className="mt-1 font-semibold"
-              />
-            </div>
-            {showRemove && (
-              <div className="ml-4 flex items-center">
-                <Button
-                  variant="destructive"
-                  size="sm"
-                  onClick={onRemove}
-                >
-                  <Trash2 className="h-4 w-4" />
-                </Button>
+      <Card className="hover:shadow-lg transition-all duration-200 border-l-4 border-l-primary">
+        <CardHeader className="pb-4 space-y-4">
+          <div className="flex justify-between items-start">
+            <div className="flex-1 space-y-4">
+              <div>
+                <Label className="text-sm font-medium">Vendor Name</Label>
+                <Input
+                  placeholder="Company name..."
+                  value={localQuote.vendor_name}
+                  onChange={(e) => updateField('vendor_name', e.target.value)}
+                  className="mt-1"
+                />
               </div>
+              
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label className="text-sm font-medium">Estimate</Label>
+                  <div className="relative">
+                    <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                    <Input
+                      type="number"
+                      step="0.01"
+                      value={localQuote.estimate_amount || ''}
+                      onChange={(e) => updateField('estimate_amount', parseFloat(e.target.value) || 0)}
+                      className="pl-10"
+                      placeholder="0.00"
+                    />
+                  </div>
+                </div>
+                
+                <div>
+                  <Label className="text-sm font-medium">Date</Label>
+                  <Input
+                    type="date"
+                    value={localQuote.date_received}
+                    onChange={(e) => updateField('date_received', e.target.value)}
+                  />
+                </div>
+              </div>
+
+              <div>
+                <Label className="text-sm font-medium">Contact Info</Label>
+                <Input
+                  value={localQuote.contact_info}
+                  onChange={(e) => updateField('contact_info', e.target.value)}
+                  placeholder="Phone, email, etc."
+                />
+              </div>
+            </div>
+            
+            {showRemove && (
+              <Button variant="ghost" size="sm" onClick={onRemove} className="text-destructive">
+                <Trash2 className="h-4 w-4" />
+              </Button>
             )}
           </div>
         </CardHeader>
 
         <CardContent className="space-y-4">
           <div>
-            <Label className="text-sm font-semibold text-foreground">
-              Estimate Amount
-            </Label>
-            <div className="relative mt-1">
-              <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground">
-                {currency.symbol}
-              </span>
-              <Input
-                type="number"
-                step="0.01"
-                value={localQuote.estimate_amount || ''}
-                onChange={(e) => updateField('estimate_amount', parseFloat(e.target.value) || 0)}
-                className="pl-8 text-lg font-bold text-primary [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                placeholder="0.00"
-              />
+            <Label className="text-sm font-medium mb-3 block">Quick Evaluation</Label>
+            <div className="grid grid-cols-2 gap-2">
+              {[
+                { key: 'liked_sales_rep' as keyof VendorQuote, label: 'Good Rep' },
+                { key: 'offers_financing' as keyof VendorQuote, label: 'Financing' },
+                { key: 'good_timing' as keyof VendorQuote, label: 'Good Timing' },
+                { key: 'trustworthy' as keyof VendorQuote, label: 'Trustworthy' },
+                { key: 'responsive' as keyof VendorQuote, label: 'Responsive' }
+              ].map(({ key, label }) => (
+                <Button
+                  key={key}
+                  variant={localQuote[key] ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => updateField(key, !localQuote[key])}
+                  className="h-8 text-xs"
+                >
+                  {label}
+                </Button>
+              ))}
             </div>
           </div>
 
           <div>
-            <Label className="text-sm font-medium text-muted-foreground">
-              Contact Info
-            </Label>
-            <Input
-              value={localQuote.contact_info}
-              onChange={(e) => updateField('contact_info', e.target.value)}
-              placeholder="Phone, email, etc."
-              className="mt-1"
-            />
-          </div>
-
-          <div>
-            <Label className="text-sm font-medium text-muted-foreground">
-              Date Received
-            </Label>
-            <Input
-              type="date"
-              value={localQuote.date_received}
-              onChange={(e) => updateField('date_received', e.target.value)}
-              className="mt-1"
-            />
-          </div>
-
-          <div className="pt-4 border-t">
-            <h3 className="text-sm font-semibold text-foreground mb-3">Vendor Evaluation</h3>
-            
-            <div className="space-y-4">
-              <div className="p-3 border border-border rounded-lg">
-                <div className="text-sm mb-3">Did you like the sales rep?</div>
-                <div className="flex gap-2">
-                  <Button
-                    variant={localQuote.liked_sales_rep === true ? "default" : "outline"}
-                    size="sm"
-                    onClick={() => updateField('liked_sales_rep', true)}
-                    className="flex-1"
-                  >
-                    Yes
-                  </Button>
-                  <Button
-                    variant={localQuote.liked_sales_rep === false ? "destructive" : "outline"}
-                    size="sm"
-                    onClick={() => updateField('liked_sales_rep', false)}
-                    className="flex-1"
-                  >
-                    No
-                  </Button>
-                </div>
-              </div>
-
-              <div className="p-3 border border-border rounded-lg">
-                <div className="text-sm mb-3">Do they offer financing?</div>
-                <div className="flex gap-2">
-                  <Button
-                    variant={localQuote.offers_financing === true ? "default" : "outline"}
-                    size="sm"
-                    onClick={() => updateField('offers_financing', true)}
-                    className="flex-1"
-                  >
-                    Yes
-                  </Button>
-                  <Button
-                    variant={localQuote.offers_financing === false ? "destructive" : "outline"}
-                    size="sm"
-                    onClick={() => updateField('offers_financing', false)}
-                    className="flex-1"
-                  >
-                    No
-                  </Button>
-                </div>
-              </div>
-
-              <div className="p-3 border border-border rounded-lg">
-                <div className="text-sm mb-3">Is timing good?</div>
-                <div className="flex gap-2">
-                  <Button
-                    variant={localQuote.good_timing === true ? "default" : "outline"}
-                    size="sm"
-                    onClick={() => updateField('good_timing', true)}
-                    className="flex-1"
-                  >
-                    Yes
-                  </Button>
-                  <Button
-                    variant={localQuote.good_timing === false ? "destructive" : "outline"}
-                    size="sm"
-                    onClick={() => updateField('good_timing', false)}
-                    className="flex-1"
-                  >
-                    No
-                  </Button>
-                </div>
-              </div>
-
-              <div className="p-3 border border-border rounded-lg">
-                <div className="text-sm mb-3">Are they trustworthy?</div>
-                <div className="flex gap-2">
-                  <Button
-                    variant={localQuote.trustworthy === true ? "default" : "outline"}
-                    size="sm"
-                    onClick={() => updateField('trustworthy', true)}
-                    className="flex-1"
-                  >
-                    Yes
-                  </Button>
-                  <Button
-                    variant={localQuote.trustworthy === false ? "destructive" : "outline"}
-                    size="sm"
-                    onClick={() => updateField('trustworthy', false)}
-                    className="flex-1"
-                  >
-                    No
-                  </Button>
-                </div>
-              </div>
-
-              <div className="p-3 border border-border rounded-lg">
-                <div className="text-sm mb-3">Responsive?</div>
-                <div className="flex gap-2">
-                  <Button
-                    variant={localQuote.responsive === true ? "default" : "outline"}
-                    size="sm"
-                    onClick={() => updateField('responsive', true)}
-                    className="flex-1"
-                  >
-                    Yes
-                  </Button>
-                  <Button
-                    variant={localQuote.responsive === false ? "destructive" : "outline"}
-                    size="sm"
-                    onClick={() => updateField('responsive', false)}
-                    className="flex-1"
-                  >
-                    No
-                  </Button>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div>
-            <Label className="text-sm font-medium text-muted-foreground">
-              Notes
-            </Label>
+            <Label className="text-sm font-medium">Notes</Label>
             <Textarea
               value={localQuote.notes}
               onChange={(e) => updateField('notes', e.target.value)}
-              placeholder="Additional notes about the vendor or quote..."
+              placeholder="Additional notes..."
               rows={2}
-              className="mt-1"
+              className="resize-none"
             />
           </div>
 
-          <div className="flex justify-center gap-2 pt-4 border-t mt-4">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setIsEditing(false)}
-            >
+          <div className="flex gap-2 pt-2">
+            <Button onClick={() => setIsEditing(false)} size="sm" className="flex-1">
               <Check className="h-4 w-4 mr-1" />
               Save
             </Button>
             {showRemove && (
-              <Button
-                variant="destructive"
-                size="sm"
-                onClick={onRemove}
-              >
-                <Trash2 className="h-4 w-4 mr-1" />
-                Delete
+              <Button variant="destructive" size="sm" onClick={onRemove}>
+                <Trash2 className="h-4 w-4" />
               </Button>
             )}
           </div>
@@ -319,75 +198,88 @@ const VendorCard: React.FC<VendorCardProps> = ({ quote, onUpdate, onRemove, show
     );
   }
 
-  // Summary view
+  // Summary view - more compact and modern
+  const starCount = getStarCount();
+  
   return (
-    <Card className="w-full max-w-md mx-auto shadow-lg border border-border hover:shadow-xl transition-shadow">
-      <CardContent className="p-6">
-        <div className="flex items-start justify-between mb-4">
+    <Card className="hover:shadow-lg transition-all duration-200 cursor-pointer group border-l-4 border-l-primary/20 hover:border-l-primary">
+      <CardContent className="p-4">
+        <div className="flex justify-between items-start mb-3">
           <div className="flex-1">
-            <h3 className="font-semibold text-lg mb-1">
-              {localQuote.vendor_name || 'Untitled Vendor'}
-            </h3>
-            <div className="text-2xl font-bold text-primary">
-              {currency.symbol}{localQuote.estimate_amount?.toFixed(2) || '0.00'}
+            <div className="flex items-center gap-2 mb-2">
+              <Building className="h-4 w-4 text-muted-foreground" />
+              <h3 className="font-semibold text-base truncate">
+                {localQuote.vendor_name || 'Untitled Vendor'}
+              </h3>
+            </div>
+            <div className="flex items-center gap-1 mb-2">
+              <DollarSign className="h-4 w-4 text-green-600" />
+              <span className="text-xl font-bold text-primary">
+                {currency.symbol}{localQuote.estimate_amount?.toLocaleString() || '0'}
+              </span>
             </div>
           </div>
-          <div className="flex items-center gap-2">
-            <div className="flex items-center gap-1">
-              {[1, 2, 3, 4, 5].map((starIndex) => (
-                <Star
-                  key={starIndex}
-                  className={`h-4 w-4 ${
-                    starIndex <= starCount
-                      ? 'fill-yellow-400 text-yellow-400'
-                      : 'text-gray-300'
-                  }`}
-                />
-              ))}
+          
+          <div className="flex flex-col items-end gap-2">
+            <Badge className={getBadgeColor(starCount)}>
+              {starCount}/5 Stars
+            </Badge>
+            <div className="flex gap-1">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setIsEditing(true)}
+                className="h-8 w-8 p-0 opacity-0 group-hover:opacity-100 transition-opacity"
+              >
+                <Edit3 className="h-4 w-4" />
+              </Button>
+              {showRemove && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={onRemove}
+                  className="h-8 w-8 p-0 opacity-0 group-hover:opacity-100 transition-opacity text-destructive"
+                >
+                  <Trash2 className="h-4 w-4" />
+                </Button>
+              )}
             </div>
           </div>
         </div>
 
-        {localQuote.contact_info && (
-          <div className="mb-3">
-            <span className="text-sm text-muted-foreground">Contact: </span>
-            <span className="text-sm">{localQuote.contact_info}</span>
-          </div>
-        )}
-
-        {localQuote.date_received && (
-          <div className="mb-4">
-            <span className="text-sm text-muted-foreground">Date: </span>
-            <span className="text-sm">{new Date(localQuote.date_received).toLocaleDateString()}</span>
-          </div>
-        )}
-
-        {localQuote.notes && (
-          <div className="mb-4">
-            <p className="text-sm text-muted-foreground line-clamp-2">{localQuote.notes}</p>
-          </div>
-        )}
-
-        <div className="flex items-center justify-between">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => setIsEditing(true)}
-            className="flex items-center gap-2"
-          >
-            <Edit3 className="h-4 w-4" />
-            Edit Details
-          </Button>
-          {showRemove && (
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={onRemove}
-              className="text-destructive hover:text-destructive"
-            >
-              <Trash2 className="h-4 w-4" />
-            </Button>
+        <div className="space-y-2 text-sm">
+          {localQuote.contact_info && (
+            <div className="flex items-center gap-2 text-muted-foreground">
+              <Phone className="h-3 w-3" />
+              <span className="truncate">{localQuote.contact_info}</span>
+            </div>
           )}
+          
+          {localQuote.date_received && (
+            <div className="flex items-center gap-2 text-muted-foreground">
+              <Calendar className="h-3 w-3" />
+              <span>{new Date(localQuote.date_received).toLocaleDateString()}</span>
+            </div>
+          )}
+
+          {localQuote.notes && (
+            <p className="text-muted-foreground text-xs line-clamp-2 mt-2">
+              {localQuote.notes}
+            </p>
+          )}
+
+          {/* Quick indicators */}
+          <div className="flex gap-1 flex-wrap mt-2">
+            {localQuote.offers_financing && (
+              <Badge variant="secondary" className="text-xs">Financing</Badge>
+            )}
+            {localQuote.trustworthy && (
+              <Badge variant="secondary" className="text-xs">Trusted</Badge>
+            )}
+            {localQuote.responsive && (
+              <Badge variant="secondary" className="text-xs">Responsive</Badge>
+            )}
+          </div>
         </div>
       </CardContent>
     </Card>
@@ -402,8 +294,7 @@ const CompareVendors: React.FC = () => {
   const [editingProjectId, setEditingProjectId] = useState<string | null>(null);
   const [editingTitle, setEditingTitle] = useState('');
   const [newProjectName, setNewProjectName] = useState('');
-  const [deletingProject, setDeletingProject] = useState<string | null>(null);
-  const [savingProject, setSavingProject] = useState(false);
+  const [sortBy, setSortBy] = useState<'amount' | 'rating' | 'date'>('amount');
   const { user } = useAuth();
   const { currency } = useCurrency();
   const { toast } = useToast();
@@ -413,7 +304,6 @@ const CompareVendors: React.FC = () => {
     if (user) {
       loadProjects();
     } else {
-      // Initialize with a default project for non-authenticated users
       const defaultProject: VendorProject = {
         id: 'default',
         user_id: 'guest',
@@ -466,7 +356,6 @@ const CompareVendors: React.FC = () => {
         setSelectedProject(projects[0]);
       }
     } else {
-      // Create default project if none exist
       const { data: newProject } = await supabase
         .from('vendor_projects')
         .insert({ user_id: user.id, title: 'My Project' })
@@ -497,265 +386,258 @@ const CompareVendors: React.FC = () => {
     if (data && data.length > 0) {
       setQuotes(data);
     } else {
-      // Create default blank quote for new projects
-      await createBlankQuote(selectedProject.id);
+      createDefaultQuote(selectedProject);
     }
   };
 
-  const createBlankQuote = async (projectId: string) => {
-    if (!user) return;
+  const addNewQuote = async () => {
+    const newQuote: VendorQuote = {
+      id: `temp-${Date.now()}`,
+      project_id: selectedProject?.id || 'default',
+      vendor_name: '',
+      estimate_amount: 0,
+      contact_info: '',
+      notes: '',
+      liked_sales_rep: false,
+      offers_financing: false,
+      good_timing: false,
+      trustworthy: false,
+      responsive: false,
+      date_received: new Date().toISOString().split('T')[0]
+    };
 
-    const { data: newQuote } = await supabase
-      .from('vendor_quotes')
-      .insert({ project_id: projectId })
-      .select()
-      .single();
-
-    if (newQuote) {
-      setQuotes([newQuote]);
-    }
+    setQuotes(prev => [...prev, newQuote]);
   };
 
-  const saveQuote = async (quote: VendorQuote) => {
-    if (!user || !selectedProject) return;
-
-    const { error } = await supabase
-      .from('vendor_quotes')
-      .upsert({
-        id: quote.id,
-        project_id: quote.project_id,
-        vendor_name: quote.vendor_name,
-        estimate_amount: quote.estimate_amount,
-        contact_info: quote.contact_info,
-        notes: quote.notes,
-        liked_sales_rep: quote.liked_sales_rep,
-        offers_financing: quote.offers_financing,
-        good_timing: quote.good_timing,
-        trustworthy: quote.trustworthy,
-        responsive: quote.responsive,
-        date_received: quote.date_received
-      });
-
-    if (error) {
-      console.error('Error saving quote:', error);
-    } else {
-      earnBadge('compare_vendors');
-    }
-  };
-
-  const updateVendorCard = (updatedQuote: VendorQuote) => {
-    setQuotes(quotes.map(quote => 
-      quote.id === updatedQuote.id ? updatedQuote : quote
-    ));
-    
-    if (user) {
-      saveQuote(updatedQuote);
-    }
-  };
-
-  const createNewProject = () => {
-    setIsNewProject(true);
-    setSelectedProject(null);
-    setNewProjectName('');
-  };
-
-  const saveNewProject = async (projectName: string) => {
-    if (!projectName.trim() || savingProject) return;
-    
-    setSavingProject(true);
-    
-    try {
-      if (user) {
-        const { data: newProject } = await supabase
-          .from('vendor_projects')
-          .insert({ user_id: user.id, title: projectName.trim() })
-          .select()
-          .single();
-
-        if (newProject) {
-          const updatedProjects = [...allProjects, newProject];
-          setAllProjects(updatedProjects);
-          setSelectedProject(newProject);
-          setIsNewProject(false);
-          setNewProjectName('');
-          
-          // Create default blank quote for new project
-          await createBlankQuote(newProject.id);
-        }
-      } else {
-        // For non-authenticated users
-        const newProject: VendorProject = {
-          id: Date.now().toString(),
-          user_id: 'guest',
-          title: projectName.trim(),
-          created_at: new Date().toISOString(),
-          updated_at: new Date().toISOString()
-        };
-        
-        const updatedProjects = [...allProjects, newProject];
-        setAllProjects(updatedProjects);
-        setSelectedProject(newProject);
-        setIsNewProject(false);
-        setNewProjectName('');
-        createDefaultQuote(newProject);
-      }
-    } finally {
-      setSavingProject(false);
-    }
-  };
-
-  const startEditingProject = (projectId: string) => {
-    const project = allProjects.find(p => p.id === projectId);
-    if (project) {
-      setEditingProjectId(projectId);
-      setEditingTitle(project.title);
-    }
-  };
-
-  const updateProjectTitle = async (projectId: string, newTitle: string) => {
-    if (!newTitle.trim()) {
-      setEditingProjectId(null);
+  const updateQuote = async (updatedQuote: VendorQuote) => {
+    if (!user) {
+      setQuotes(prev => prev.map(q => q.id === updatedQuote.id ? updatedQuote : q));
       return;
     }
 
     try {
-      if (user) {
+      if (updatedQuote.id.startsWith('temp-')) {
+        const { data, error } = await supabase
+          .from('vendor_quotes')
+          .insert([{
+            project_id: selectedProject?.id,
+            vendor_name: updatedQuote.vendor_name,
+            estimate_amount: updatedQuote.estimate_amount,
+            contact_info: updatedQuote.contact_info,
+            notes: updatedQuote.notes,
+            liked_sales_rep: updatedQuote.liked_sales_rep,
+            offers_financing: updatedQuote.offers_financing,
+            good_timing: updatedQuote.good_timing,
+            trustworthy: updatedQuote.trustworthy,
+            responsive: updatedQuote.responsive,
+            date_received: updatedQuote.date_received
+          }])
+          .select()
+          .single();
+
+        if (error) throw error;
+
+        setQuotes(prev => prev.map(q => q.id === updatedQuote.id ? data : q));
+        earnBadge('comparison_master');
+      } else {
         const { error } = await supabase
+          .from('vendor_quotes')
+          .update({
+            vendor_name: updatedQuote.vendor_name,
+            estimate_amount: updatedQuote.estimate_amount,
+            contact_info: updatedQuote.contact_info,
+            notes: updatedQuote.notes,
+            liked_sales_rep: updatedQuote.liked_sales_rep,
+            offers_financing: updatedQuote.offers_financing,
+            good_timing: updatedQuote.good_timing,
+            trustworthy: updatedQuote.trustworthy,
+            responsive: updatedQuote.responsive,
+            date_received: updatedQuote.date_received
+          })
+          .eq('id', updatedQuote.id);
+
+        if (error) throw error;
+
+        setQuotes(prev => prev.map(q => q.id === updatedQuote.id ? updatedQuote : q));
+      }
+    } catch (error) {
+      console.error('Error updating quote:', error);
+      toast({ title: "Error", description: "Failed to save quote", variant: "destructive" });
+    }
+  };
+
+  const removeQuote = async (quoteId: string) => {
+    if (quotes.length <= 1) {
+      toast({ title: "Cannot delete", description: "Must have at least one quote", variant: "destructive" });
+      return;
+    }
+
+    setQuotes(prev => prev.filter(q => q.id !== quoteId));
+
+    if (user && !quoteId.startsWith('temp-')) {
+      try {
+        await supabase.from('vendor_quotes').delete().eq('id', quoteId);
+      } catch (error) {
+        console.error('Error deleting quote:', error);
+      }
+    }
+  };
+
+  const createNewProject = async () => {
+    if (!newProjectName.trim()) return;
+
+    if (!user) {
+      const tempProject: VendorProject = {
+        id: `temp-${Date.now()}`,
+        user_id: 'guest',
+        title: newProjectName.trim(),
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString()
+      };
+      setAllProjects(prev => [...prev, tempProject]);
+      setSelectedProject(tempProject);
+      setNewProjectName('');
+      setIsNewProject(false);
+      createDefaultQuote(tempProject);
+      return;
+    }
+
+    try {
+      const { data: newProject, error } = await supabase
+        .from('vendor_projects')
+        .insert([{ user_id: user.id, title: newProjectName.trim() }])
+        .select()
+        .single();
+
+      if (error) throw error;
+
+      setAllProjects(prev => [...prev, newProject]);
+      setSelectedProject(newProject);
+      setNewProjectName('');
+      setIsNewProject(false);
+      createDefaultQuote(newProject);
+      toast({ title: "Success", description: "New project created!" });
+    } catch (error) {
+      console.error('Error creating project:', error);
+      toast({ title: "Error", description: "Failed to create project", variant: "destructive" });
+    }
+  };
+
+  const updateProjectTitle = async (projectId: string, newTitle: string) => {
+    if (!newTitle.trim()) return;
+
+    setAllProjects(prev => prev.map(p => p.id === projectId ? { ...p, title: newTitle.trim() } : p));
+    setEditingProjectId(null);
+
+    if (user && !projectId.startsWith('temp-')) {
+      try {
+        await supabase
           .from('vendor_projects')
           .update({ title: newTitle.trim() })
           .eq('id', projectId);
-
-        if (error) throw error;
+      } catch (error) {
+        console.error('Error updating project title:', error);
       }
-
-      const updatedProjects = allProjects.map(p => 
-        p.id === projectId ? { ...p, title: newTitle.trim() } : p
-      );
-      setAllProjects(updatedProjects);
-      
-      if (selectedProject?.id === projectId) {
-        setSelectedProject({ ...selectedProject, title: newTitle.trim() });
-      }
-      
-      setEditingProjectId(null);
-      setEditingTitle('');
-    } catch (error) {
-      console.error('Error updating project title:', error);
-      setEditingProjectId(null);
     }
   };
 
   const deleteProject = async (projectId: string) => {
-    if (allProjects.length <= 1 || deletingProject) return;
-    
-    setDeletingProject(projectId);
-    
-    try {
-      if (user) {
-        const { error } = await supabase
-          .from('vendor_projects')
-          .delete()
-          .eq('id', projectId);
+    if (allProjects.length <= 1) {
+      toast({ title: "Cannot delete", description: "Must have at least one project", variant: "destructive" });
+      return;
+    }
 
-        if (error) throw error;
-      }
+    const newProjects = allProjects.filter(p => p.id !== projectId);
+    setAllProjects(newProjects);
+    setSelectedProject(newProjects[0]);
 
-      const updatedProjects = allProjects.filter(p => p.id !== projectId);
-      setAllProjects(updatedProjects);
-      
-      if (selectedProject?.id === projectId) {
-        setSelectedProject(updatedProjects.length > 0 ? updatedProjects[0] : null);
-        setIsNewProject(false);
+    if (user && !projectId.startsWith('temp-')) {
+      try {
+        await supabase.from('vendor_projects').delete().eq('id', projectId);
+        await supabase.from('vendor_quotes').delete().eq('project_id', projectId);
+      } catch (error) {
+        console.error('Error deleting project:', error);
       }
-      
-    } catch (error) {
-      console.error('Error deleting project:', error);
-    } finally {
-      setDeletingProject(null);
     }
   };
 
-  const addVendorCard = async () => {
-    if (!selectedProject) return;
-
-    if (user) {
-      const { data: newQuote } = await supabase
-        .from('vendor_quotes')
-        .insert({ project_id: selectedProject.id })
-        .select()
-        .single();
-
-      if (newQuote) {
-        setQuotes([...quotes, newQuote]);
-      }
-    } else {
-      const newQuote: VendorQuote = {
-        id: Date.now().toString(),
-        project_id: selectedProject.id,
-        vendor_name: '',
-        estimate_amount: 0,
-        contact_info: '',
-        notes: '',
-        liked_sales_rep: false,
-        offers_financing: false,
-        good_timing: false,
-        trustworthy: false,
-        responsive: false,
-        date_received: new Date().toISOString().split('T')[0]
-      };
-      setQuotes([...quotes, newQuote]);
+  const sortedQuotes = [...quotes].sort((a, b) => {
+    switch (sortBy) {
+      case 'amount':
+        return a.estimate_amount - b.estimate_amount;
+      case 'rating':
+        const getRating = (q: VendorQuote) => [q.liked_sales_rep, q.offers_financing, q.good_timing, q.trustworthy, q.responsive].filter(Boolean).length;
+        return getRating(b) - getRating(a);
+      case 'date':
+        return new Date(b.date_received).getTime() - new Date(a.date_received).getTime();
+      default:
+        return 0;
     }
+  });
+
+  const getLowestQuote = () => {
+    const validQuotes = quotes.filter(q => q.estimate_amount > 0);
+    return validQuotes.length > 0 ? Math.min(...validQuotes.map(q => q.estimate_amount)) : 0;
   };
 
-  const removeVendorCard = async (quoteId: string) => {
-    if (quotes.length <= 1) return; // Always keep at least one card
-    
-    if (user) {
-      const { error } = await supabase
-        .from('vendor_quotes')
-        .delete()
-        .eq('id', quoteId);
-
-      if (error) {
-        console.error('Error deleting quote:', error);
-        return;
-      }
-    }
-
-    setQuotes(quotes.filter(quote => quote.id !== quoteId));
+  const getHighestQuote = () => {
+    const validQuotes = quotes.filter(q => q.estimate_amount > 0);
+    return validQuotes.length > 0 ? Math.max(...validQuotes.map(q => q.estimate_amount)) : 0;
   };
-
-  const getLowestEstimate = () => {
-    if (quotes.length === 0) return null;
-    const estimates = quotes.map(quote => quote.estimate_amount).filter(amount => amount > 0);
-    return estimates.length > 0 ? Math.min(...estimates) : null;
-  };
-
-  const lowestEstimate = getLowestEstimate();
 
   return (
-    <div className="min-h-screen">
-      <SEO {...seoData.compareVendors} />
-      
-      {/* Hero Section with Light Background */}
-      <div className="relative bg-white text-gray-900 py-8 rounded-2xl mx-4 mt-4 mb-6 shadow-xl">
-        <div className="container mx-auto px-4 relative z-10">
-          <div className="text-center">
-            <Star className="h-10 w-10 mx-auto mb-4 text-primary" />
-            <h1 className="text-xl md:text-2xl font-bold mb-2 text-gray-900">Compare Vendors</h1>
-            <p className="text-sm md:text-base text-gray-600 mb-4">Get quotes, compare prices, and evaluate vendors side by side</p>
+    <div className="min-h-screen bg-gray-50">
+      <SEO
+        title={seoData.compareVendors.title}
+        description={seoData.compareVendors.description}
+        keywords={seoData.compareVendors.keywords}
+        structuredData={seoData.compareVendors.structuredData}
+        canonical="https://www.housebudgetcalculator.com/compare-prices"
+      />
+
+      {/* Modern Header */}
+      <div className="bg-white shadow-sm border-b">
+        <div className="max-w-7xl mx-auto px-4 py-6">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <Scale className="h-8 w-8 text-primary" />
+              <div>
+                <h1 className="text-2xl font-bold text-gray-900">Vendor Comparison</h1>
+                <p className="text-sm text-gray-600">Compare quotes and find the best value</p>
+              </div>
+            </div>
+            
+            {quotes.filter(q => q.estimate_amount > 0).length > 1 && (
+              <div className="text-right">
+                <div className="text-sm text-gray-600">Savings Potential</div>
+                <div className="text-2xl font-bold text-green-600">
+                  {currency.symbol}{(getHighestQuote() - getLowestQuote()).toLocaleString()}
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>
 
-      <div className="container mx-auto px-4 py-8">
+      <div className="max-w-7xl mx-auto px-4 py-6">
         <WarningBanner />
 
-        <div className="text-center mb-8">
-          
-          {/* Project Tabs */}
-          <div className="mb-6">
-            <div className="flex items-center gap-2 mb-4 flex-wrap">
+        {/* Project Selector */}
+        <Card className="mb-6">
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-lg font-semibold">Projects</h2>
+              <Button 
+                onClick={() => setIsNewProject(true)} 
+                size="sm"
+                variant="outline"
+              >
+                <Plus className="h-4 w-4 mr-2" />
+                New Project
+              </Button>
+            </div>
+
+            <div className="flex gap-2 flex-wrap">
               {allProjects.map((project) => (
                 <div key={project.id} className="flex items-center gap-1">
                   {editingProjectId === project.id ? (
@@ -763,172 +645,122 @@ const CompareVendors: React.FC = () => {
                       <Input
                         value={editingTitle}
                         onChange={(e) => setEditingTitle(e.target.value)}
-                        className="h-8 w-32 text-sm"
+                        className="h-8 w-32"
                         onKeyDown={(e) => {
                           if (e.key === 'Enter') updateProjectTitle(project.id, editingTitle);
                           if (e.key === 'Escape') setEditingProjectId(null);
                         }}
+                        onBlur={() => updateProjectTitle(project.id, editingTitle)}
                         autoFocus
                       />
                       <Button size="sm" variant="ghost" onClick={() => updateProjectTitle(project.id, editingTitle)} className="h-8 w-8 p-0">
                         <Check className="h-3 w-3" />
                       </Button>
-                      <Button size="sm" variant="ghost" onClick={() => setEditingProjectId(null)} className="h-8 w-8 p-0">
-                        <X className="h-3 w-3" />
-                      </Button>
-                      {allProjects.length > 1 && (
-                        <button 
-                          onClick={(e) => {
-                            e.preventDefault();
-                            e.stopPropagation();
-                            deleteProject(project.id);
-                            setEditingProjectId(null);
-                          }}
-                          className="h-8 w-8 text-red-500 hover:text-red-700 hover:bg-red-50 rounded flex items-center justify-center"
-                          title="Delete project"
-                          type="button"
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </button>
-                      )}
                     </div>
                   ) : (
                     <div className="flex items-center gap-1">
-                      <div className="relative group">
+                      <Button
+                        variant={selectedProject?.id === project.id ? "default" : "outline"}
+                        size="sm"
+                        onClick={() => setSelectedProject(project)}
+                        className="relative group"
+                      >
+                        {project.title}
                         <Button
-                          variant={selectedProject?.id === project.id ? "default" : "outline"}
+                          variant="ghost"
                           size="sm"
-                          onClick={() => {
-                            setSelectedProject(project);
-                            setIsNewProject(false);
-                          }}
-                          className={`pr-8 ${selectedProject?.id === project.id ? 'border-2 border-white' : ''}`}
-                        >
-                          {project.title}
-                        </Button>
-                        <button
+                          className="absolute -right-1 -top-1 h-5 w-5 p-0 opacity-0 group-hover:opacity-100 transition-opacity"
                           onClick={(e) => {
                             e.stopPropagation();
-                            startEditingProject(project.id);
+                            setEditingProjectId(project.id);
+                            setEditingTitle(project.title);
                           }}
-                          className="absolute right-1 top-1/2 -translate-y-1/2 h-6 w-6 p-0 opacity-0 group-hover:opacity-100 transition-opacity hover:bg-white/20 rounded flex items-center justify-center"
-                          title="Edit project name"
                         >
                           <Edit2 className="h-3 w-3" />
-                        </button>
-                      </div>
+                        </Button>
+                      </Button>
+                      {allProjects.length > 1 && (
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => deleteProject(project.id)}
+                          className="h-8 w-8 p-0 text-destructive"
+                        >
+                          <Trash2 className="h-3 w-3" />
+                        </Button>
+                      )}
                     </div>
                   )}
                 </div>
               ))}
-              
-              {/* Add Project Plus Button */}
-              {isNewProject ? (
+
+              {isNewProject && (
                 <div className="flex items-center gap-1">
                   <Input
                     value={newProjectName}
                     onChange={(e) => setNewProjectName(e.target.value)}
-                    placeholder="Project name"
-                    className="h-8 w-32 text-sm"
+                    placeholder="Project name..."
+                    className="h-8 w-32"
                     onKeyDown={(e) => {
-                      if (e.key === 'Enter') saveNewProject(newProjectName);
-                      if (e.key === 'Escape') {
-                        setIsNewProject(false);
-                        setNewProjectName('');
-                      }
+                      if (e.key === 'Enter') createNewProject();
+                      if (e.key === 'Escape') setIsNewProject(false);
                     }}
                     autoFocus
                   />
-                  <Button size="sm" variant="ghost" onClick={() => saveNewProject(newProjectName)} className="h-8 w-8 p-0">
+                  <Button size="sm" onClick={createNewProject} className="h-8 w-8 p-0">
                     <Check className="h-3 w-3" />
                   </Button>
-                  <Button size="sm" variant="ghost" onClick={() => {
-                    setIsNewProject(false);
-                    setNewProjectName('');
-                  }} className="h-8 w-8 p-0">
+                  <Button size="sm" variant="ghost" onClick={() => setIsNewProject(false)} className="h-8 w-8 p-0">
                     <X className="h-3 w-3" />
                   </Button>
                 </div>
-              ) : (
-                <Button 
-                  onClick={createNewProject} 
-                  size="sm" 
-                  variant="outline"
-                  className="h-8 w-8 p-0 rounded-full border-dashed"
-                >
-                  <Plus className="h-3 w-3" />
-                </Button>
               )}
             </div>
-            
-            {!isNewProject && quotes.length > 0 && lowestEstimate && (
-              <div className="text-sm text-muted-foreground mb-4">
-                Lowest estimate: {currency.symbol}{lowestEstimate.toFixed(2)}
-              </div>
-            )}
-          </div>
-        </div>
+          </CardContent>
+        </Card>
 
-        <div className="w-full max-w-6xl mx-auto px-4">
-          <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6 mb-8 w-full">
-            {quotes.map((quote) => (
-              <VendorCard
-                key={quote.id}
-                quote={quote}
-                onUpdate={updateVendorCard}
-                onRemove={() => removeVendorCard(quote.id)}
-                showRemove={quotes.length > 1}
-                currency={currency}
-              />
-            ))}
-
-            {!isNewProject && selectedProject && (
-              <div className="w-full flex items-center justify-center col-span-1 lg:col-span-2 xl:col-span-3">
-                <Button
-                  onClick={addVendorCard}
-                  variant="outline"
-                  size="lg"
-                  className="h-20 w-20 rounded-full border-2 border-dashed border-primary hover:bg-primary/5"
-                >
-                  <Plus className="h-8 w-8 text-primary" />
-                </Button>
-              </div>
-            )}
-          </div>
-        </div>
-
-        <section className="py-16 px-4 bg-white text-gray-900 relative mt-16 rounded-2xl mx-4 shadow-xl">
-          <div className="w-full max-w-4xl mx-auto text-center relative z-10 px-4">
-            <h2 className="text-2xl md:text-3xl font-bold mb-6 text-gray-900">
-              Make Smarter Vendor Decisions
-            </h2>
-            <p className="text-lg mb-8 text-gray-600">
-              Compare quotes, evaluate vendors, and save money on your home improvement projects
-            </p>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-              <div className="bg-gray-50 rounded-lg p-6 border border-gray-200">
-                <h3 className="font-semibold mb-2 text-gray-900">Side-by-Side Comparison</h3>
-                <p className="text-sm text-gray-600">Easily compare multiple vendor quotes and services in one organized view</p>
-              </div>
-              <div className="bg-gray-50 rounded-lg p-6 border border-gray-200">
-                <h3 className="font-semibold mb-2 text-gray-900">Vendor Evaluation</h3>
-                <p className="text-sm text-gray-600">Rate vendors on key factors like trustworthiness, responsiveness, and financing options</p>
-              </div>
-              <div className="bg-gray-50 rounded-lg p-6 border border-gray-200">
-                <h3 className="font-semibold mb-2 text-gray-900">Save Your Favorites</h3>
-                <p className="text-sm text-gray-600">Keep track of top-rated vendors and their quotes for future reference</p>
-              </div>
+        {/* Controls */}
+        <div className="flex justify-between items-center mb-6">
+          <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2">
+              <Filter className="h-4 w-4 text-gray-500" />
+              <Select value={sortBy} onValueChange={(value: 'amount' | 'rating' | 'date') => setSortBy(value)}>
+                <SelectTrigger className="w-40">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="amount">Price (Low to High)</SelectItem>
+                  <SelectItem value="rating">Rating (High to Low)</SelectItem>
+                  <SelectItem value="date">Date (Newest First)</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
           </div>
-        </section>
 
-        <FAQ faqs={vendorComparisonFAQs} />
-        <InternalLinks currentPage="/compare-prices" category="comparison" />
+          <Button onClick={addNewQuote} className="gap-2">
+            <Plus className="h-4 w-4" />
+            Add Quote
+          </Button>
+        </div>
+
+        {/* Quotes Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+          {sortedQuotes.map((quote) => (
+            <VendorCard
+              key={quote.id}
+              quote={quote}
+              onUpdate={updateQuote}
+              onRemove={() => removeQuote(quote.id)}
+              showRemove={quotes.length > 1}
+              currency={currency}
+            />
+          ))}
+        </div>
       </div>
 
       <AIChatbot 
-        pageContext="This is the Compare Vendors page where users can compare quotes and vendors for various services. Users can add vendor information, quotes, ratings, and track important details like financing options, timing, trustworthiness, and responsiveness. This helps users make informed decisions when choosing service providers."
-        pageName="Compare Vendors"
+        pageContext="This is the Vendor Comparison page where users can create projects and compare vendor quotes. Each quote includes vendor details, pricing, contact info, and evaluation criteria."
+        pageName="Vendor Comparison"
       />
     </div>
   );

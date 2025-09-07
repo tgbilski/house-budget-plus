@@ -7,15 +7,13 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Progress } from '@/components/ui/progress';
-import { Plus, Target, Edit2, Check, X, AlertTriangle, Trash2, Calendar, LeafyGreen } from 'lucide-react';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Badge } from '@/components/ui/badge';
+import { Plus, Target, Edit2, Check, X, AlertTriangle, Trash2, Calendar, DollarSign, TrendingUp, Award, ChevronDown, ChevronUp } from 'lucide-react';
 import { AIChatbot } from '@/components/AIChatbot';
 import { toast } from 'sonner';
 import { SEO } from '@/components/SEO';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Link } from 'react-router-dom';
-import * as Collapsible from '@radix-ui/react-collapsible';
-import { ChevronDown } from 'lucide-react';
 
 interface SavingsEntry {
   id: string;
@@ -45,11 +43,10 @@ const SavingsGoals = () => {
   const [savingsData, setSavingsData] = useState<Record<string, number>>({});
   const [localInputValues, setLocalInputValues] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(true);
-  const [isGlossaryOpen, setIsGlossaryOpen] = useState(false);
-  const [whatIfAmount, setWhatIfAmount] = useState('');
+  const [expandedMonth, setExpandedMonth] = useState<number | null>(null);
 
   const years = Array.from({ length: 11 }, (_, i) => (new Date().getFullYear() - 5 + i).toString());
-  const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+  const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
   const currentGoal = savingsGoals.find(g => g.id === currentGoalId);
 
@@ -315,353 +312,279 @@ const SavingsGoals = () => {
     return getTotalSaved() / monthsWithSavings;
   };
 
-  const getEstimatedCompletionDate = (monthlyAddition = 0) => {
+  const getEstimatedCompletionDate = () => {
     if (!currentGoal) return null;
     const remainingAmount = currentGoal.target_amount - getTotalSaved();
     if (remainingAmount <= 0) return "Goal achieved!";
     const averageMonthlySavings = getAverageMonthlySavings();
-    const newMonthlySavings = averageMonthlySavings + monthlyAddition;
-    if (newMonthlySavings <= 0) return null;
-    const monthsToComplete = Math.ceil(remainingAmount / newMonthlySavings);
+    if (averageMonthlySavings <= 0) return null;
+    const monthsToComplete = Math.ceil(remainingAmount / averageMonthlySavings);
     const completionDate = new Date();
     completionDate.setMonth(completionDate.getMonth() + monthsToComplete);
-    return completionDate.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+    return completionDate.toLocaleDateString('en-US', { year: 'numeric', month: 'long' });
   };
 
   if (loading) {
     return (
-      <div className="w-full max-w-6xl mx-auto px-4 py-8">
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="animate-pulse space-y-4">
-          <div className="h-8 bg-gray-200 rounded w-1/3"></div>
-          <div className="h-16 bg-gray-200 rounded"></div>
-          <div className="h-64 bg-gray-200 rounded"></div>
+          <div className="h-8 bg-gray-200 rounded w-64"></div>
+          <div className="h-16 bg-gray-200 rounded w-80"></div>
+          <div className="h-64 bg-gray-200 rounded w-96"></div>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen overflow-x-hidden">
+    <div className="min-h-screen bg-gray-50">
       <SEO
         title="Savings Goals - Track Your Monthly Savings"
         description="Track your monthly savings with an interactive yearly table and editable goals."
         keywords="savings goals, monthly savings, financial planning, money tracker"
       />
 
-      <div className="relative bg-white text-gray-900 py-8 overflow-x-hidden rounded-2xl mx-4 mt-4 mb-6 shadow-xl">
-        <div className="w-full max-w-sm sm:max-w-md md:max-w-4xl mx-auto px-4 relative z-10">
-          <div className="text-center">
-            <Target className="h-10 w-10 mx-auto mb-4 text-primary" />
-            <h1 className="text-xl md:text-2xl font-bold mb-2 text-gray-900">Savings Tracker</h1>
-            <p className="text-sm md:text-base text-gray-600 mb-4">Track your monthly savings progress with an easy-to-use yearly table</p>
+      {/* Modern Header */}
+      <div className="bg-white shadow-sm border-b">
+        <div className="max-w-7xl mx-auto px-4 py-6">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <Target className="h-8 w-8 text-primary" />
+              <div>
+                <h1 className="text-2xl font-bold text-gray-900">Savings Tracker</h1>
+                <p className="text-sm text-gray-600">Track your progress toward financial goals</p>
+              </div>
+            </div>
+            
+            {currentGoal && currentGoal.target_amount > 0 && (
+              <div className="text-right">
+                <div className="text-sm text-gray-600">Progress</div>
+                <div className="text-2xl font-bold text-primary">
+                  {getProgressPercentage().toFixed(1)}%
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>
 
-      <div className="w-full max-w-sm sm:max-w-md md:max-w-4xl mx-auto px-4 py-6 md:py-8">
+      <div className="max-w-7xl mx-auto px-4 py-6">
         {!user && (
-          <Alert className="mb-6 border-yellow-200 bg-yellow-50 dark:border-yellow-800 dark:bg-yellow-950">
-            <AlertTriangle className="h-4 w-4 text-yellow-600 dark:text-yellow-400" />
-            <AlertDescription className="text-yellow-800 dark:text-yellow-200">
-              <strong>Try it out!</strong> You're using savings tracker in demo mode.
-              <Link to="/auth" className="underline font-medium ml-1 hover:text-yellow-900 dark:hover:text-yellow-100">
+          <Alert className="mb-6 border-yellow-200 bg-yellow-50">
+            <AlertTriangle className="h-4 w-4 text-yellow-600" />
+            <AlertDescription className="text-yellow-800">
+              <strong>Demo Mode</strong> - 
+              <Link to="/auth" className="underline font-medium ml-1 hover:text-yellow-900">
                 Sign in to save your progress
-              </Link> and access all features.
+              </Link>
             </AlertDescription>
           </Alert>
         )}
 
-        <div className="mb-6">
-          <div className="flex items-center gap-2 mb-4 flex-wrap">
-            {savingsGoals.map((goal) => (
-              <div key={goal.id} className="flex items-center gap-1">
-                {editingGoalId === goal.id ? (
-                  <div className="flex items-center gap-1">
-                    <Input
-                      value={editingTitle}
-                      onChange={(e) => setEditingTitle(e.target.value)}
-                      className="h-8 w-32 text-sm"
-                      onKeyDown={(e) => {
-                        if (e.key === 'Enter') updateGoalTitle(editingTitle);
-                        if (e.key === 'Escape') setEditingGoalId(null);
-                      }}
-                      onBlur={() => updateGoalTitle(editingTitle)}
-                      autoFocus
-                    />
-                    <Button size="sm" variant="ghost" onClick={() => updateGoalTitle(editingTitle)} className="h-8 w-8 p-0">
-                      <Check className="h-3 w-3" />
-                    </Button>
-                    <Button size="sm" variant="ghost" onClick={() => setEditingGoalId(null)} className="h-8 w-8 p-0">
-                      <X className="h-3 w-3" />
-                    </Button>
-                  </div>
-                ) : (
-                  <div className="flex items-center gap-1">
-                    <div className="relative group">
+        {/* Goals Selector */}
+        <Card className="mb-6">
+          <CardContent className="p-4">
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-lg font-semibold">Savings Goals</h2>
+              <Button onClick={() => createNewGoal()} size="sm" variant="outline">
+                <Plus className="h-4 w-4 mr-2" />
+                New Goal
+              </Button>
+            </div>
+
+            <div className="flex gap-2 flex-wrap">
+              {savingsGoals.map((goal) => (
+                <div key={goal.id} className="flex items-center gap-1">
+                  {editingGoalId === goal.id ? (
+                    <div className="flex items-center gap-1">
+                      <Input
+                        value={editingTitle}
+                        onChange={(e) => setEditingTitle(e.target.value)}
+                        className="h-8 w-32"
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter') updateGoalTitle(editingTitle);
+                          if (e.key === 'Escape') setEditingGoalId(null);
+                        }}
+                        onBlur={() => updateGoalTitle(editingTitle)}
+                        autoFocus
+                      />
+                      <Button size="sm" variant="ghost" onClick={() => updateGoalTitle(editingTitle)} className="h-8 w-8 p-0">
+                        <Check className="h-3 w-3" />
+                      </Button>
+                    </div>
+                  ) : (
+                    <div className="flex items-center gap-1">
                       <Button
                         variant={currentGoalId === goal.id ? "default" : "outline"}
                         size="sm"
                         onClick={() => setCurrentGoalId(goal.id)}
-                        className={`pr-8 ${currentGoalId === goal.id ? 'border-2 border-white' : ''}`}
+                        className="relative group"
                       >
                         {goal.title}
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="absolute -right-1 -top-1 h-5 w-5 p-0 opacity-0 group-hover:opacity-100 transition-opacity"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setEditingGoalId(goal.id);
+                            setEditingTitle(goal.title);
+                          }}
+                        >
+                          <Edit2 className="h-3 w-3" />
+                        </Button>
                       </Button>
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setEditingGoalId(goal.id);
-                          setEditingTitle(goal.title);
-                        }}
-                        className="absolute right-1 top-1/2 -translate-y-1/2 h-6 w-6 p-0 opacity-0 group-hover:opacity-100 transition-opacity hover:bg-white/20 rounded flex items-center justify-center"
-                        title="Edit goal name"
-                      >
-                        <Edit2 className="h-3 w-3" />
-                      </button>
+                      {savingsGoals.length > 1 && (
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => deleteGoal(goal.id)}
+                          className="h-8 w-8 p-0 text-destructive"
+                        >
+                          <Trash2 className="h-3 w-3" />
+                        </Button>
+                      )}
                     </div>
-                  </div>
-                )}
-              </div>
-            ))}
-            <Button
-              onClick={() => createNewGoal()}
-              size="sm"
-              variant="outline"
-              className="h-8 w-8 p-0 rounded-full border-dashed"
-            >
-              <Plus className="h-3 w-3" />
-            </Button>
-          </div>
-        </div>
-
-        <hr className="my-8 border-t-2 border-gray-200 dark:border-gray-700 w-full max-w-xs mx-auto" />
-
-        <Card className="mb-6">
-          <CardContent className="pt-6">
-            <div className="mb-4">
-              <div className="flex justify-between items-center mb-2">
-                <span className="text-sm font-medium text-muted-foreground">Progress towards goal</span>
-                <span className="text-sm font-medium text-muted-foreground">
-                  {getProgressPercentage().toFixed(1)}%
-                </span>
-              </div>
-              <Progress value={getProgressPercentage()} className="h-2" />
-            </div>
-
-            <div className="text-center">
-              <h3 className="text-lg font-semibold text-muted-foreground mb-2">Total Saved</h3>
-              <p className="text-4xl font-bold text-primary">
-                ${getTotalSaved().toLocaleString()}
-              </p>
-              {getEstimatedCompletionDate() && (
-                <p className="text-sm text-gray-500 mt-2 flex items-center justify-center gap-1">
-                  <LeafyGreen className="h-4 w-4 text-green-600" /> On track to reach your goal by: **{getEstimatedCompletionDate()}**
-                </p>
-              )}
+                  )}
+                </div>
+              ))}
             </div>
           </CardContent>
         </Card>
 
-        <hr className="my-8 border-t-2 border-gray-200 dark:border-gray-700 w-full max-w-xs mx-auto" />
-
-        <Card>
-          <CardContent className="pt-4 md:pt-6 p-3 md:p-6">
-            <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between mb-4 md:mb-6">
-              <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:gap-6">
-                <div className="flex items-center gap-2">
-                  <label className="text-sm font-medium whitespace-nowrap">Goal:</label>
+        <div className="grid lg:grid-cols-3 gap-6">
+          {/* Progress Card */}
+          <div className="lg:col-span-1">
+            <Card className="sticky top-4">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Award className="h-5 w-5 text-primary" />
+                  Goal Progress
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                <div>
+                  <div className="flex justify-between text-sm mb-2">
+                    <span>Target Amount</span>
+                    <span className="font-medium">${currentGoal?.target_amount?.toLocaleString() || 0}</span>
+                  </div>
                   <div className="relative">
-                    <span className="absolute left-2 top-1/2 transform -translate-y-1/2 text-muted-foreground text-sm">$</span>
+                    <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
                     <Input
                       type="number"
                       value={localTargetAmount}
-                      onChange={(e) => setLocalTargetAmount(e.target.value)}
-                      onBlur={() => updateGoalTarget(parseFloat(localTargetAmount) || 0)}
-                      onKeyDown={(e) => {
-                        if (e.key === 'Enter') {
-                          (e.target as HTMLInputElement).blur();
-                          updateGoalTarget(parseFloat(localTargetAmount) || 0);
-                        }
+                      onChange={(e) => {
+                        setLocalTargetAmount(e.target.value);
+                        const amount = parseFloat(e.target.value) || 0;
+                        updateGoalTarget(amount);
                       }}
-                      placeholder="0"
-                      className="w-24 md:w-32 pl-5 text-sm [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                      min="0"
-                      step="0.01"
+                      className="pl-10"
+                      placeholder="Enter target amount"
                     />
                   </div>
                 </div>
 
-                <div className="flex items-center gap-2">
-                  <label className="text-sm font-medium flex items-center gap-1">
-                    <Calendar className="h-4 w-4 text-muted-foreground" /> Year:
-                  </label>
+                <div>
+                  <div className="flex justify-between items-center mb-2">
+                    <span className="text-sm">Progress</span>
+                    <span className="text-sm font-medium">{getProgressPercentage().toFixed(1)}%</span>
+                  </div>
+                  <Progress value={getProgressPercentage()} className="h-3" />
+                </div>
+
+                <div className="space-y-3">
+                  <div className="flex justify-between">
+                    <span className="text-sm text-gray-600">Total Saved</span>
+                    <span className="font-bold text-green-600">${getTotalSaved().toLocaleString()}</span>
+                  </div>
+                  
+                  <div className="flex justify-between">
+                    <span className="text-sm text-gray-600">Remaining</span>
+                    <span className="font-medium">${((currentGoal?.target_amount || 0) - getTotalSaved()).toLocaleString()}</span>
+                  </div>
+
+                  {getAverageMonthlySavings() > 0 && (
+                    <div className="flex justify-between">
+                      <span className="text-sm text-gray-600">Avg/Month</span>
+                      <span className="font-medium">${getAverageMonthlySavings().toFixed(0)}</span>
+                    </div>
+                  )}
+
+                  {getEstimatedCompletionDate() && (
+                    <div className="p-3 bg-blue-50 rounded-lg">
+                      <div className="flex items-center gap-2 text-sm">
+                        <Calendar className="h-4 w-4 text-blue-600" />
+                        <span className="text-blue-800">
+                          {getEstimatedCompletionDate()}
+                        </span>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Savings Input Card */}
+          <div className="lg:col-span-2">
+            <Card>
+              <CardHeader>
+                <div className="flex justify-between items-center">
+                  <CardTitle className="flex items-center gap-2">
+                    <TrendingUp className="h-5 w-5 text-primary" />
+                    Monthly Savings - {selectedYear}
+                  </CardTitle>
                   <Select value={selectedYear} onValueChange={setSelectedYear}>
-                    <SelectTrigger className="w-20 md:w-32">
+                    <SelectTrigger className="w-24">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      {years.map((year) => (
-                        <SelectItem key={year} value={year}>
-                          {year}
-                        </SelectItem>
+                      {years.map(year => (
+                        <SelectItem key={year} value={year}>{year}</SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
                 </div>
-              </div>
-
-              {savingsGoals.length > 1 && currentGoalId && (
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => deleteGoal(currentGoalId)}
-                  className="text-destructive hover:text-destructive border-destructive/30 hover:border-destructive w-full md:w-auto"
-                >
-                  <Trash2 className="h-4 w-4 mr-1" />
-                  <span className="hidden sm:inline">Delete Goal</span>
-                  <span className="sm:hidden">Delete</span>
-                </Button>
-              )}
-            </div>
-
-            <div className="overflow-x-auto">
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead className="w-1/2 text-sm">Month</TableHead>
-                    <TableHead className="text-sm">Amount Saved</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                   {months.map((month, index) => {
                     const monthKey = `${selectedYear}-${(index + 1).toString().padStart(2, '0')}`;
+                    const amount = savingsData[monthKey] || 0;
                     const inputValue = localInputValues[monthKey] || '';
-
+                    
                     return (
-                      <TableRow key={month}>
-                        <TableCell className="font-medium text-sm py-2">{month}</TableCell>
-                        <TableCell className="py-2">
+                      <div key={month} className="space-y-2">
+                        <div className="flex justify-between items-center">
+                          <label className="text-sm font-medium">{month}</label>
+                          {amount > 0 && (
+                            <Badge variant="secondary" className="text-xs">
+                              ${amount.toLocaleString()}
+                            </Badge>
+                          )}
+                        </div>
+                        <div className="relative">
+                          <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
                           <Input
                             type="number"
                             value={inputValue}
                             onChange={(e) => handleMonthlyInputChange(index, e.target.value)}
-                            placeholder="0.00"
-                            className="w-20 md:w-32 text-sm [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                            min="0"
-                            step="0.01"
+                            className="pl-10"
+                            placeholder="0"
                           />
-                        </TableCell>
-                      </TableRow>
+                        </div>
+                      </div>
                     );
                   })}
-                </TableBody>
-              </Table>
-            </div>
-
-            <div className="mt-4 p-3 md:p-4 bg-muted rounded-lg">
-              <div className="flex justify-between items-center">
-                <span className="font-semibold text-sm md:text-base">Total for {selectedYear}:</span>
-                <span className="text-base md:text-lg font-bold text-primary">
-                  ${Object.entries(savingsData)
-                    .filter(([key]) => key.startsWith(selectedYear))
-                    .reduce((sum, [, value]) => sum + value, 0)
-                    .toLocaleString()}
-                </span>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="mt-6 mb-6">
-          <CardHeader>
-            <CardTitle className="text-lg">What If I Save More?</CardTitle>
-          </CardHeader>
-          <CardContent className="pt-2">
-            <p className="text-sm text-gray-500 mb-3">
-              See how adding a little extra each month can change your timeline.
-            </p>
-            <div className="flex items-center gap-2 mb-3">
-              <span className="text-lg font-bold text-muted-foreground">$</span>
-              <Input
-                type="number"
-                placeholder="0"
-                value={whatIfAmount}
-                onChange={(e) => setWhatIfAmount(e.target.value)}
-                className="w-24 text-lg [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                min="0"
-              />
-              <span className="text-sm text-gray-600">more per month</span>
-            </div>
-            {whatIfAmount && getEstimatedCompletionDate(parseFloat(whatIfAmount)) && (
-              <p className="text-lg font-semibold">
-                Your new completion date would be: **{getEstimatedCompletionDate(parseFloat(whatIfAmount))}**
-              </p>
-            )}
-          </CardContent>
-        </Card>
-
-        <hr className="my-8 border-t-2 border-gray-200 dark:border-gray-700 w-full max-w-xs mx-auto" />
-
-        <div className="w-full max-w-sm sm:max-w-md md:max-w-4xl mx-auto px-4 py-8">
-          <Collapsible.Root
-            className="w-full"
-            open={isGlossaryOpen}
-            onOpenChange={setIsGlossaryOpen}
-          >
-            <div className="flex items-center justify-between mb-2">
-              <h4 className="text-lg font-bold text-white">Financial Glossary</h4>
-              <Collapsible.Trigger asChild>
-                <Button variant="ghost" size="sm" className="w-9 p-0">
-                  <ChevronDown
-                    className={`h-4 w-4 transition-transform duration-200 ${isGlossaryOpen ? 'rotate-180' : 'rotate-0'}`}
-                  />
-                  <span className="sr-only">Toggle Financial Glossary</span>
-                </Button>
-              </Collapsible.Trigger>
-            </div>
-            <Collapsible.Content className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div className="p-4 bg-muted rounded-lg">
-                <h5 className="font-semibold text-sm mb-1">APY (Annual Percentage Yield)</h5>
-                <p className="text-sm text-gray-600">
-                  The real rate of return earned on an investment, taking into account the effect of compounding interest.
-                </p>
-              </div>
-              <div className="p-4 bg-muted rounded-lg">
-                <h5 className="font-semibold text-sm mb-1">Compound Interest</h5>
-                <p className="text-sm text-gray-600">
-                  Interest earned on both the initial principal and the accumulated interest from previous periods.
-                </p>
-              </div>
-              <div className="p-4 bg-muted rounded-lg">
-                <h5 className="font-semibold text-sm mb-1">Asset Allocation</h5>
-                <p className="text-sm text-gray-600">
-                  An investment strategy that aims to balance risk and reward by dividing a portfolio's assets according to an individual's goals, risk tolerance, and investment horizon.
-                </p>
-              </div>
-              <div className="p-4 bg-muted rounded-lg">
-                <h5 className="font-semibold text-sm mb-1">ROI (Return on Investment)</h5>
-                <p className="text-sm text-gray-600">
-                  A performance measure used to evaluate the efficiency of an investment or to compare the efficiency of a number of different investments.
-                </p>
-              </div>
-              <div className="p-4 bg-muted rounded-lg">
-                <h5 className="font-semibold text-sm mb-1">Emergency Fund</h5>
-                <p className="text-sm text-gray-600">
-                  A personal savings account that is reserved for financial surprises, such as medical emergencies or a sudden job loss.
-                </p>
-              </div>
-              <div className="p-4 bg-muted rounded-lg">
-                <h5 className="font-semibold text-sm mb-1">Diversification</h5>
-                <p className="text-sm text-gray-600">
-                  A risk management strategy that mixes a wide variety of investments within a portfolio.
-                </p>
-              </div>
-            </Collapsible.Content>
-          </Collapsible.Root>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
         </div>
       </div>
 
-      <AIChatbot
-        pageContext="This is the Savings Goals page where users can set and track their savings goals for different years. The page includes a 'What If' calculator for goal projections and an expanded, collapsible financial glossary at the bottom. The core features are editing goals, tracking monthly savings, and viewing progress."
+      <AIChatbot 
+        pageContext="This is the Savings Goals page where users can create multiple savings goals, set target amounts, and track monthly progress toward each goal."
         pageName="Savings Goals"
       />
     </div>

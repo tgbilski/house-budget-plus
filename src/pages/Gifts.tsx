@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
-import { Plus } from 'lucide-react';
+import { Input } from '@/components/ui/input';
+import { Badge } from '@/components/ui/badge';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Plus, Gift, Calendar, DollarSign, Search, Filter, Grid, List } from 'lucide-react';
 import { GiftCard } from '@/components/GiftCard';
 import { useAuth } from '@/hooks/useAuth';
 import { useHouseholdContext } from '@/providers/HouseholdProvider';
 import { useBadges } from '@/hooks/useBadges';
 import { supabase } from '@/integrations/supabase/client';
-
 import { AIChatbot } from '@/components/AIChatbot';
 import { SEO } from '@/components/SEO';
 import { WarningBanner } from '@/components/WarningBanner';
@@ -22,8 +24,11 @@ export function Gifts() {
   const { user } = useAuth();
   const { currentHousehold } = useHouseholdContext();
   const { earnBadge } = useBadges();
+  const [giftLists, setGiftLists] = useState<GiftListData[]>([]);
+  const [showNewCard, setShowNewCard] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
 
-  // Listen for badge earning events
   useEffect(() => {
     const handleEarnBadge = (event: CustomEvent) => {
       const { badgeType } = event.detail;
@@ -33,8 +38,6 @@ export function Gifts() {
     window.addEventListener('earnBadge', handleEarnBadge as EventListener);
     return () => window.removeEventListener('earnBadge', handleEarnBadge as EventListener);
   }, [earnBadge]);
-  const [giftLists, setGiftLists] = useState<GiftListData[]>([]);
-  const [showNewCard, setShowNewCard] = useState(false);
 
   useEffect(() => {
     if (user && currentHousehold) {
@@ -66,51 +69,149 @@ export function Gifts() {
     setShowNewCard(true);
   };
 
+  const filteredLists = giftLists.filter(list =>
+    list.list_title.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
-  const pageContext = "This is the Gifts page where users can create multiple gift list cards for different holidays or birthdays. Each card allows users to enter a gift idea, price, and URL that opens in a new tab. Users can edit the title of each card and all data is saved to their account. The AI assistant can help fill out gift information.";
+  const getTotalLists = () => giftLists.length;
+  const getUpcomingEvents = () => {
+    // This would ideally come from gift list data with dates
+    return ['Holiday Season', 'Birthday Season'];
+  };
 
   return (
-    <div className="min-h-screen overflow-x-hidden">
+    <div className="min-h-screen bg-gray-50">
       <SEO 
         title="Gift Lists"
         description="Organize your gift ideas for holidays and birthdays. Keep track of gift ideas, prices, and links all in one place."
         keywords="gift lists, holiday gifts, birthday gifts, gift ideas, gift planning, gift organization"
       />
       
-      {/* Hero Section with Light Background */}
-      <div className="relative bg-white text-gray-900 py-8 rounded-2xl mx-4 mt-4 mb-6 shadow-xl">
-        <div className="container mx-auto px-4 relative z-10">
-          <div className="text-center">
-            <svg className="h-10 w-10 mx-auto mb-4 text-primary" fill="currentColor" viewBox="0 0 24 24">
-              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
-            </svg>
-            <h1 className="text-xl md:text-2xl font-bold mb-2 text-gray-900">Gift Lists</h1>
-            <p className="text-sm md:text-base text-gray-600 mb-4 max-w-2xl mx-auto">
-              Organize your gift ideas for holidays, birthdays, and special occasions
-            </p>
+      {/* Modern Header */}
+      <div className="bg-white shadow-sm border-b">
+        <div className="max-w-7xl mx-auto px-4 py-6">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <Gift className="h-8 w-8 text-primary" />
+              <div>
+                <h1 className="text-2xl font-bold text-gray-900">Gift Lists</h1>
+                <p className="text-sm text-gray-600">Organize ideas for every occasion</p>
+              </div>
+            </div>
+            
+            <div className="flex items-center gap-4">
+              <div className="text-right">
+                <div className="text-sm text-gray-600">Total Lists</div>
+                <div className="text-2xl font-bold text-primary">{getTotalLists()}</div>
+              </div>
+              <Button onClick={addNewCard} className="gap-2">
+                <Plus className="h-4 w-4" />
+                New List
+              </Button>
+            </div>
           </div>
         </div>
       </div>
-      
-      {/* Main Content Container */}
-      <div className="bg-white rounded-2xl mx-4 my-6 shadow-xl p-6 md:p-8">
-        <div className="w-full max-w-6xl mx-auto">
-          <WarningBanner />
-          
-          <div className="mb-6">
-            <Button 
-              onClick={addNewCard}
-              className="gap-2"
-              size="lg"
-            >
-              <Plus className="h-5 w-5" />
-              Add New Gift List
-            </Button>
+
+      <div className="max-w-7xl mx-auto px-4 py-6">
+        <WarningBanner />
+
+        {/* Stats Cards */}
+        {giftLists.length > 0 && (
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+            <Card>
+              <CardContent className="p-4">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 bg-blue-100 rounded-lg">
+                    <Gift className="h-5 w-5 text-blue-600" />
+                  </div>
+                  <div>
+                    <div className="text-sm text-gray-600">Active Lists</div>
+                    <div className="text-xl font-bold">{giftLists.length}</div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardContent className="p-4">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 bg-green-100 rounded-lg">
+                    <Calendar className="h-5 w-5 text-green-600" />
+                  </div>
+                  <div>
+                    <div className="text-sm text-gray-600">Recent Activity</div>
+                    <div className="text-xl font-bold">
+                      {giftLists.filter(list => {
+                        const created = new Date(list.created_at);
+                        const weekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+                        return created > weekAgo;
+                      }).length}
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardContent className="p-4">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 bg-purple-100 rounded-lg">
+                    <DollarSign className="h-5 w-5 text-purple-600" />
+                  </div>
+                  <div>
+                    <div className="text-sm text-gray-600">Upcoming Events</div>
+                    <div className="text-sm font-medium">
+                      {getUpcomingEvents().slice(0, 2).join(', ')}
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        )}
+
+        {/* Controls */}
+        <div className="flex justify-between items-center mb-6">
+          <div className="flex items-center gap-4">
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+              <Input
+                placeholder="Search gift lists..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-10 w-64"
+              />
+            </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-            {/* Show new card form */}
-            {showNewCard && (
+          <div className="flex items-center gap-2">
+            <Button
+              variant={viewMode === 'grid' ? 'default' : 'outline'}
+              size="sm"
+              onClick={() => setViewMode('grid')}
+            >
+              <Grid className="h-4 w-4" />
+            </Button>
+            <Button
+              variant={viewMode === 'list' ? 'default' : 'outline'}
+              size="sm"
+              onClick={() => setViewMode('list')}
+            >
+              <List className="h-4 w-4" />
+            </Button>
+          </div>
+        </div>
+
+        {/* Gift Lists Grid/List */}
+        <div className={`${
+          viewMode === 'grid' 
+            ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6' 
+            : 'space-y-4'
+        } mb-8`}>
+          {/* New card form */}
+          {showNewCard && (
+            <div className={viewMode === 'list' ? 'max-w-md' : ''}>
               <GiftCard 
                 onDelete={() => setShowNewCard(false)}
                 onSave={() => {
@@ -118,56 +219,87 @@ export function Gifts() {
                   loadGiftLists();
                 }}
               />
-            )}
+            </div>
+          )}
 
-            {/* Existing gift lists */}
-            {giftLists.map((list) => (
+          {/* Existing gift lists */}
+          {filteredLists.map((list) => (
+            <div key={list.id} className={viewMode === 'list' ? 'max-w-md' : ''}>
               <GiftCard
-                key={list.id}
                 initialData={list}
                 onDelete={handleDeleteList}
               />
-            ))}
-          </div>
+            </div>
+          ))}
+        </div>
 
-          {giftLists.length === 0 && !showNewCard && (
-            <div className="text-center py-12">
-              <p className="text-gray-600 mb-4">
-                No gift lists yet. Create your first one to get started!
+        {/* Empty State */}
+        {filteredLists.length === 0 && !showNewCard && (
+          <Card className="border-dashed border-2 border-gray-300">
+            <CardContent className="p-12 text-center">
+              <Gift className="h-12 w-12 mx-auto mb-4 text-gray-400" />
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                {searchQuery ? 'No lists found' : 'No gift lists yet'}
+              </h3>
+              <p className="text-gray-600 mb-6">
+                {searchQuery 
+                  ? 'Try adjusting your search terms'
+                  : 'Create your first gift list to organize ideas for holidays, birthdays, and special occasions'
+                }
               </p>
-            </div>
-          )}
-        </div>
-      </div>
+              {!searchQuery && (
+                <Button onClick={addNewCard} className="gap-2">
+                  <Plus className="h-4 w-4" />
+                  Create Your First List
+                </Button>
+              )}
+            </CardContent>
+          </Card>
+        )}
 
-      {/* Features Section */}
-      <div className="bg-white rounded-2xl mx-4 my-6 shadow-xl p-6 md:p-8">
-        <div className="w-full max-w-4xl mx-auto text-center">
-          <h2 className="text-xl md:text-2xl font-bold mb-6 text-gray-900">
-            Never Miss a Gift Opportunity
-          </h2>
-          <p className="text-base text-gray-600 mb-8">
-            Organize all your gift ideas and track spending for holidays, birthdays, and special occasions
-          </p>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="bg-gray-50 rounded-lg p-6 border border-gray-100">
-              <h3 className="font-semibold mb-2 text-gray-900">Gift Organization</h3>
-              <p className="text-sm text-gray-600">Create separate lists for different occasions and keep all your ideas organized</p>
+        {/* Quick Tips */}
+        <Card className="mt-8">
+          <CardHeader>
+            <CardTitle>Pro Tips</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid md:grid-cols-3 gap-4">
+              <div className="flex items-start gap-3">
+                <div className="p-2 bg-blue-100 rounded-lg mt-1">
+                  <Gift className="h-4 w-4 text-blue-600" />
+                </div>
+                <div>
+                  <h4 className="font-medium mb-1">Stay Organized</h4>
+                  <p className="text-sm text-gray-600">Create separate lists for different occasions like holidays, birthdays, or anniversaries.</p>
+                </div>
+              </div>
+              
+              <div className="flex items-start gap-3">
+                <div className="p-2 bg-green-100 rounded-lg mt-1">
+                  <DollarSign className="h-4 w-4 text-green-600" />
+                </div>
+                <div>
+                  <h4 className="font-medium mb-1">Track Spending</h4>
+                  <p className="text-sm text-gray-600">Add prices and links to track your budget and find the best deals.</p>
+                </div>
+              </div>
+              
+              <div className="flex items-start gap-3">
+                <div className="p-2 bg-purple-100 rounded-lg mt-1">
+                  <Calendar className="h-4 w-4 text-purple-600" />
+                </div>
+                <div>
+                  <h4 className="font-medium mb-1">Plan Ahead</h4>
+                  <p className="text-sm text-gray-600">Start collecting gift ideas throughout the year so you're always prepared.</p>
+                </div>
+              </div>
             </div>
-            <div className="bg-gray-50 rounded-lg p-6 border border-gray-100">
-              <h3 className="font-semibold mb-2 text-gray-900">Budget Tracking</h3>
-              <p className="text-sm text-gray-600">Track prices and links to ensure you stay within your gift-giving budget</p>
-            </div>
-            <div className="bg-gray-50 rounded-lg p-6 border border-gray-100">
-              <h3 className="font-semibold mb-2 text-gray-900">Quick Access</h3>
-              <p className="text-sm text-gray-600">Save direct links to gift items for easy purchasing when you're ready</p>
-            </div>
-          </div>
-        </div>
+          </CardContent>
+        </Card>
       </div>
 
       <AIChatbot 
-        pageContext={pageContext}
+        pageContext="This is the Gifts page where users can create multiple gift list cards for different holidays or birthdays. Each card allows users to enter a gift idea, price, and URL that opens in a new tab. Users can edit the title of each card and all data is saved to their account. The AI assistant can help fill out gift information."
         pageName="Gifts"
       />
     </div>
