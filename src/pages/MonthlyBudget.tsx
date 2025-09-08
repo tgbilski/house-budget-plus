@@ -156,7 +156,7 @@ const MonthlyBudget: React.FC = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-50 text-gray-900 overflow-x-hidden">
+    <div className="min-h-screen bg-background">
       <SEO 
         title={seoData.monthlyBudget.title}
         description={seoData.monthlyBudget.description}
@@ -164,41 +164,63 @@ const MonthlyBudget: React.FC = () => {
         structuredData={seoData.monthlyBudget.structuredData}
         canonical="https://www.housebudgetcalculator.com/budget"
       />
-      <div className="relative pt-8 pb-16">
-        <div className="w-full max-w-7xl mx-auto px-4 space-y-8">
-          {/* Header Section */}
-          <div className="relative py-8 text-center">
-            <div className="flex items-center justify-center gap-4 mb-6">
-              <img 
-                src="/lovable-uploads/ed809955-ef71-4d81-b072-945082f4380a.png" 
-                alt="Calculator mascot" 
-                className="w-16 h-16 object-contain"
-              />
-            </div>
-            <h1 className="text-4xl md:text-5xl font-bold mb-4 text-gray-900">Monthly Budget Calculator</h1>
-            <p className="text-lg md:text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
-              Take control of your finances by tracking every dollar of your household income and expenses.
-            </p>
+      
+      <div className="max-w-6xl mx-auto p-6 space-y-8">
+        {/* Modern Header */}
+        <div className="text-center space-y-4">
+          <div className="inline-flex items-center justify-center w-16 h-16 bg-primary/10 rounded-full mb-4">
+            <img 
+              src="/lovable-uploads/ed809955-ef71-4d81-b072-945082f4380a.png" 
+              alt="Calculator mascot" 
+              className="w-10 h-10 object-contain"
+            />
           </div>
-          
-          {/* Summary Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {summaryData.map((item) => (
-              <div key={item.title} className="bg-white rounded-xl shadow-lg p-6 border border-gray-100 flex items-center justify-between hover:shadow-xl transition-shadow duration-300">
-                <div>
-                  <h3 className="text-lg font-semibold text-gray-600 mb-2">{item.title}</h3>
-                  <p className={`text-2xl md:text-3xl font-bold ${item.color}`}>{currency.symbol}{item.value.toLocaleString()}</p>
-                </div>
-                <item.icon className={`w-12 h-12 ${item.color}`} />
-              </div>
-            ))}
-          </div>
+          <h1 className="text-4xl font-bold text-foreground">Monthly Budget Calculator</h1>
+          <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
+            Take control of your finances by tracking every dollar of your household income and expenses.
+          </p>
+        </div>
 
-          {/* Budget Calculators and Health Gauge */}
-          <div className="flex flex-col xl:flex-row justify-center items-start gap-6">
-            {calculators.map((calculator) => (
-              <div key={calculator.id} className="w-full xl:w-auto min-w-[320px] flex-1">
+        {/* Quick Stats */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {summaryData.map((item) => (
+            <div key={item.title} className="bg-card rounded-xl border p-6 hover:shadow-lg transition-all duration-200">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-muted-foreground">{item.title}</p>
+                  <p className={`text-2xl font-bold ${item.color}`}>
+                    {currency.symbol}{item.value.toLocaleString()}
+                  </p>
+                </div>
+                <div className="p-3 bg-muted rounded-full">
+                  <item.icon className={`w-6 h-6 ${item.color}`} />
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Main Content Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+          {/* Budget Calculators */}
+          <div className="lg:col-span-8 space-y-6">
+            <div className="flex items-center justify-between">
+              <h2 className="text-xl font-semibold">Budget Calculators</h2>
+              <Button 
+                onClick={addCalculator} 
+                disabled={calculators.length >= 4}
+                size="sm"
+                className="gap-2"
+              >
+                <Plus className="h-4 w-4" />
+                Add Budget ({calculators.length}/4)
+              </Button>
+            </div>
+            
+            <div className="space-y-6">
+              {calculators.map((calculator) => (
                 <BudgetCalculator
+                  key={calculator.id}
                   id={calculator.id}
                   calculatorNumber={parseInt(calculator.id)}
                   showRemove={calculators.length > 1}
@@ -206,102 +228,95 @@ const MonthlyBudget: React.FC = () => {
                   onNameChange={handleNameChange}
                   pageType="monthly_budget"
                 />
-              </div>
-            ))}
-            <div className="w-full xl:w-auto min-w-[320px] max-w-md flex-shrink-0 flex justify-center">
+              ))}
+            </div>
+          </div>
+
+          {/* Sidebar */}
+          <div className="lg:col-span-4 space-y-6">
+            {/* Budget Health */}
+            <div className="bg-card rounded-xl border p-6">
+              <h3 className="text-lg font-semibold mb-4">Budget Health</h3>
               <BudgetHealthGauge 
                 income={totalIncome} 
                 totalExpenses={totalExpenses} 
               />
             </div>
-          </div>
 
-          {/* Add Calculator Button */}
-          <div className="text-center">
-            <Button 
-              onClick={addCalculator} 
-              disabled={calculators.length >= 4}
-              size="lg"
-              className="group transition-all duration-300 transform-gpu hover:scale-105 px-8 py-4"
-            >
-              <Plus className="h-5 w-5 mr-2" /> 
-              Add Another Budget {calculators.length >= 4 ? '(Max 4)' : `(${calculators.length}/4)`}
-            </Button>
-          </div>
-
-          {/* Benefits Section */}
-          <section className="py-16 bg-white text-gray-900 rounded-2xl shadow-xl border border-gray-100">
-            <div className="w-full max-w-5xl mx-auto text-center px-6">
-              <h2 className="text-3xl md:text-4xl font-bold mb-8">
-                Take Control of Your Finances
-              </h2>
-              <p className="text-lg md:text-xl text-gray-600 mb-12">
-                Use our comprehensive budget calculator to plan your financial future and achieve your goals.
-              </p>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <div className="bg-gray-50 rounded-xl p-8 border border-gray-200 hover:shadow-lg transition-shadow duration-300">
-                  <h3 className="font-semibold text-lg mb-3">Track Every Dollar</h3>
-                  <p className="text-gray-600">Monitor income and expenses to see exactly where your money goes each month.</p>
+            {/* Quick Tips */}
+            <div className="bg-card rounded-xl border p-6">
+              <h3 className="text-lg font-semibold mb-4">Quick Tips</h3>
+              <div className="space-y-3 text-sm text-muted-foreground">
+                <div className="flex items-start gap-2">
+                  <div className="w-2 h-2 bg-primary rounded-full mt-2 flex-shrink-0"></div>
+                  <p>Track every expense to see where your money really goes</p>
                 </div>
-                <div className="bg-gray-50 rounded-xl p-8 border border-gray-200 hover:shadow-lg transition-shadow duration-300">
-                  <h3 className="font-semibold text-lg mb-3">Plan for the Future</h3>
-                  <p className="text-gray-600">Build emergency funds and save for major purchases with clear financial planning.</p>
+                <div className="flex items-start gap-2">
+                  <div className="w-2 h-2 bg-primary rounded-full mt-2 flex-shrink-0"></div>
+                  <p>Aim to save at least 20% of your income</p>
                 </div>
-                <div className="bg-gray-50 rounded-xl p-8 border border-gray-200 hover:shadow-lg transition-shadow duration-300">
-                  <h3 className="font-semibold text-lg mb-3">Multiple Scenarios</h3>
-                  <p className="text-gray-600">Create separate budgets for different household members or financial situations.</p>
+                <div className="flex items-start gap-2">
+                  <div className="w-2 h-2 bg-primary rounded-full mt-2 flex-shrink-0"></div>
+                  <p>Review and adjust your budget monthly</p>
                 </div>
               </div>
             </div>
-          </section>
+          </div>
+        </div>
 
-          <section className="mt-16 w-full max-w-4xl mx-auto px-4">
-            <div className="bg-card border border-border rounded-lg p-6">
-              <h2 className="text-2xl font-semibold text-foreground mb-4">
-                How to Use the Monthly Budget Calculator
-              </h2>
-              <div className="prose prose-sm text-muted-foreground space-y-4">
-                <p>
-                  Our free Monthly Budget Calculator helps you track and manage your household expenses effectively. Simply enter your monthly income and all your regular expenses to see your financial picture at a glance.
-                </p>
-                
-                <h3 className="text-lg font-medium text-foreground">Key Features:</h3>
-                <ul className="list-disc list-inside space-y-2">
-                  <li>Track monthly income and expenses for multiple household members</li>
-                  <li>Pre-configured expense categories for common household costs</li>
-                  <li>Add up to 10 custom expense categories per person</li>
-                  <li>Real-time calculation of your net budget result</li>
-                  <li>Easy-to-use interface with clear visual feedback</li>
-                  <li>Support for multiple currencies (USD, EUR, GBP, and more)</li>
-                  <li>Save your budgets when you create an account</li>
-                </ul>
+        {/* Features Section */}
+        <div className="bg-card rounded-xl border p-8">
+          <h2 className="text-2xl font-bold text-center mb-8">Why Use Our Budget Calculator?</h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="text-center space-y-3">
+              <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mx-auto">
+                <PiggyBank className="w-6 h-6 text-primary" />
               </div>
+              <h3 className="font-semibold">Track Every Dollar</h3>
+              <p className="text-sm text-muted-foreground">Monitor income and expenses to see exactly where your money goes each month.</p>
             </div>
-          </section>
+            <div className="text-center space-y-3">
+              <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mx-auto">
+                <Receipt className="w-6 h-6 text-primary" />
+              </div>
+              <h3 className="font-semibold">Plan for the Future</h3>
+              <p className="text-sm text-muted-foreground">Build emergency funds and save for major purchases with clear financial planning.</p>
+            </div>
+            <div className="text-center space-y-3">
+              <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mx-auto">
+                <DollarSign className="w-6 h-6 text-primary" />
+              </div>
+              <h3 className="font-semibold">Multiple Scenarios</h3>
+              <p className="text-sm text-muted-foreground">Create separate budgets for different household members or financial situations.</p>
+            </div>
+          </div>
+        </div>
 
+        {/* FAQ and Additional Content */}
+        <div className="space-y-8">
           <FAQ faqs={budgetCalculatorFAQs} />
           <InternalLinks currentPage="/" category="budgeting" />
-          
-          <section className="mt-12 py-8 text-center">
-            <h3 className="text-xl font-semibold text-foreground mb-4">Need Help or Have Feedback?</h3>
-            <p className="text-muted-foreground mb-6">
-              We're here to help you succeed with your budgeting journey. Get in touch with questions, suggestions, or feedback.
-            </p>
-            <Button 
-              variant="outline" 
-              size="lg"
-              onClick={() => window.location.href = 'mailto:homebudgetcalculator@gmail.com?subject=Budget Calculator Feedback'}
-            >
-              Contact Us
-            </Button>
-          </section>
-
-          <AIChatbot 
-            pageContext="This is the Monthly Budget Calculator page where users can input their monthly income and expenses to calculate their net budget. Users can add multiple calculators for different household members or scenarios, select different currencies, and save their data if logged in. The page includes pre-configured expense categories and the ability to add custom expenses."
-            pageName="Monthly Budget Calculator"
-            calculatorsData={Object.entries(calculatorNames).map(([id, name]) => ({ calculatorId: id, ownerName: name }))}
-          />
         </div>
+
+        {/* Contact Section */}
+        <div className="bg-card rounded-xl border p-8 text-center">
+          <h3 className="text-xl font-semibold mb-4">Need Help?</h3>
+          <p className="text-muted-foreground mb-6">
+            Get in touch with questions, suggestions, or feedback about our budget calculator.
+          </p>
+          <Button 
+            variant="outline"
+            onClick={() => window.location.href = 'mailto:homebudgetcalculator@gmail.com?subject=Budget Calculator Feedback'}
+          >
+            Contact Us
+          </Button>
+        </div>
+
+        <AIChatbot 
+          pageContext="This is the Monthly Budget Calculator page where users can input their monthly income and expenses to calculate their net budget. Users can add multiple calculators for different household members or scenarios, select different currencies, and save their data if logged in. The page includes pre-configured expense categories and the ability to add custom expenses."
+          pageName="Monthly Budget Calculator"
+          calculatorsData={Object.entries(calculatorNames).map(([id, name]) => ({ calculatorId: id, ownerName: name }))}
+        />
       </div>
     </div>
   );
