@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Plus, Edit3, Star, Trash2, Edit2, Check, X } from 'lucide-react';
+import { Plus, Edit3, Star, Trash2, Edit2, Check, X, Calendar, MapPin, DollarSign, Plane } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -58,8 +58,6 @@ interface VacationCardProps {
 
 const VacationCard: React.FC<VacationCardProps> = ({ option, onUpdate, onRemove, showRemove, currency }) => {
   const [localOption, setLocalOption] = useState(option);
-  
-  // Default to edit mode for all vacation options
   const [isEditing, setIsEditing] = useState(true);
 
   const updateField = useCallback((field: keyof VacationOption, value: any) => {
@@ -83,7 +81,6 @@ const VacationCard: React.FC<VacationCardProps> = ({ option, onUpdate, onRemove,
     return (localOption.travel_mode_cost || 0) + (localOption.lodging_cost || 0) + (localOption.car_rental_cost || 0);
   };
 
-
   const questions = [
     { key: 'favorable_travel' as const, label: 'Is the mode of travel favorable?' },
     { key: 'destination_safe' as const, label: 'Is the destination safe?' },
@@ -94,15 +91,16 @@ const VacationCard: React.FC<VacationCardProps> = ({ option, onUpdate, onRemove,
 
   if (isEditing) {
     return (
-      <Card className="relative">
-        <CardHeader>
-          <div className="flex justify-between items-start">
-            <CardTitle className="text-lg">Vacation Option</CardTitle>
+      <Card className="border border-border/50 hover:border-border transition-colors">
+        <CardHeader className="pb-4">
+          <div className="flex justify-between items-center">
+            <CardTitle className="text-lg font-semibold">Vacation Option</CardTitle>
             <div className="flex items-center gap-2">
               <Button
                 variant="outline"
                 size="sm"
                 onClick={() => setIsEditing(false)}
+                className="h-8 w-8 p-0"
               >
                 <Check className="h-4 w-4" />
               </Button>
@@ -111,7 +109,7 @@ const VacationCard: React.FC<VacationCardProps> = ({ option, onUpdate, onRemove,
                   variant="ghost"
                   size="sm"
                   onClick={onRemove}
-                  className="text-destructive hover:text-destructive"
+                  className="h-8 w-8 p-0 text-destructive hover:text-destructive hover:bg-destructive/10"
                 >
                   <Trash2 className="h-4 w-4" />
                 </Button>
@@ -119,43 +117,51 @@ const VacationCard: React.FC<VacationCardProps> = ({ option, onUpdate, onRemove,
             </div>
           </div>
         </CardHeader>
-        <CardContent className="space-y-4">
+        <CardContent className="space-y-6">
           {/* Total Cost Display */}
-          <div className="bg-primary/5 border border-primary/20 rounded-lg p-4 mb-4">
+          <div className="bg-primary/5 border border-primary/20 rounded-lg p-4">
             <Label className="text-sm font-medium text-muted-foreground">Total Cost</Label>
             <div className="text-2xl font-bold text-primary">
               {currency.symbol}{getTotalCost().toFixed(2)}
             </div>
           </div>
 
-          <div className="grid grid-cols-1 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <Label htmlFor={`destination-${option.id}`}>Destination</Label>
+              <Label htmlFor={`destination-${option.id}`} className="text-sm font-medium">
+                Destination
+              </Label>
               <Input
                 id={`destination-${option.id}`}
                 value={localOption.destination}
                 onChange={(e) => updateField('destination', e.target.value)}
                 placeholder="Where are you going?"
+                className="mt-1"
               />
             </div>
             <div>
-              <Label htmlFor={`travel-mode-${option.id}`}>Travel Mode</Label>
+              <Label htmlFor={`travel-mode-${option.id}`} className="text-sm font-medium">
+                Travel Mode
+              </Label>
               <Input
                 id={`travel-mode-${option.id}`}
                 value={localOption.travel_mode}
                 onChange={(e) => updateField('travel_mode', e.target.value)}
                 placeholder="Flight, drive, cruise, etc."
+                className="mt-1"
               />
             </div>
           </div>
 
           {/* Cost Fields */}
           <div className="space-y-4">
-            <h4 className="font-medium text-sm">Cost Breakdown</h4>
-            <div className="grid grid-cols-1 gap-4">
+            <h4 className="font-medium">Cost Breakdown</h4>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div>
-                <Label htmlFor={`travel-cost-${option.id}`}>Travel Mode Cost ({currency.symbol})</Label>
-                <div className="relative">
+                <Label htmlFor={`travel-cost-${option.id}`} className="text-sm font-medium">
+                  Travel ({currency.symbol})
+                </Label>
+                <div className="relative mt-1">
                   <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground text-sm">
                     {currency.symbol}
                   </span>
@@ -171,8 +177,10 @@ const VacationCard: React.FC<VacationCardProps> = ({ option, onUpdate, onRemove,
                 </div>
               </div>
               <div>
-                <Label htmlFor={`lodging-cost-${option.id}`}>Lodging Cost ({currency.symbol})</Label>
-                <div className="relative">
+                <Label htmlFor={`lodging-cost-${option.id}`} className="text-sm font-medium">
+                  Lodging ({currency.symbol})
+                </Label>
+                <div className="relative mt-1">
                   <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground text-sm">
                     {currency.symbol}
                   </span>
@@ -188,8 +196,10 @@ const VacationCard: React.FC<VacationCardProps> = ({ option, onUpdate, onRemove,
                 </div>
               </div>
               <div>
-                <Label htmlFor={`rental-cost-${option.id}`}>Car Rental Cost ({currency.symbol})</Label>
-                <div className="relative">
+                <Label htmlFor={`rental-cost-${option.id}`} className="text-sm font-medium">
+                  Car Rental ({currency.symbol})
+                </Label>
+                <div className="relative mt-1">
                   <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground text-sm">
                     {currency.symbol}
                   </span>
@@ -208,30 +218,36 @@ const VacationCard: React.FC<VacationCardProps> = ({ option, onUpdate, onRemove,
           </div>
 
           <div>
-            <Label htmlFor={`contact-${option.id}`}>Contact Info</Label>
+            <Label htmlFor={`contact-${option.id}`} className="text-sm font-medium">
+              Contact Info
+            </Label>
             <Input
               id={`contact-${option.id}`}
               value={localOption.contact}
               onChange={(e) => updateField('contact', e.target.value)}
               placeholder="Travel agent, website, etc."
+              className="mt-1"
             />
           </div>
 
           <div>
-            <Label htmlFor={`notes-${option.id}`}>Notes</Label>
+            <Label htmlFor={`notes-${option.id}`} className="text-sm font-medium">
+              Notes
+            </Label>
             <Textarea
               id={`notes-${option.id}`}
               value={localOption.notes}
               onChange={(e) => updateField('notes', e.target.value)}
               placeholder="Additional details about this vacation option..."
               rows={3}
+              className="mt-1"
             />
           </div>
 
           <div className="space-y-3">
-            <h4 className="font-medium text-sm">Evaluation Questions</h4>
+            <h4 className="font-medium">Evaluation Questions</h4>
             {questions.map((question) => (
-              <div key={question.key} className="flex items-center justify-between p-3 border border-border rounded-lg">
+              <div key={question.key} className="flex items-center justify-between p-3 border border-border rounded-lg bg-muted/20">
                 <span className="text-sm">{question.label}</span>
                 <div className="flex gap-2">
                   <Button
@@ -271,19 +287,20 @@ const VacationCard: React.FC<VacationCardProps> = ({ option, onUpdate, onRemove,
   };
 
   return (
-    <Card className="relative hover:shadow-lg transition-shadow">
+    <Card className="border border-border/50 hover:border-border hover:shadow-md transition-all duration-200">
       <CardContent className="p-6">
         <div className="flex justify-between items-start mb-4">
           <div className="flex-1">
-            <h3 className="font-semibold text-lg mb-1">
+            <h3 className="font-semibold text-lg mb-2">
               {localOption.destination || 'Untitled Destination'}
             </h3>
-            <div className="text-2xl font-bold text-primary">
+            <div className="text-2xl font-bold text-primary mb-2">
               {currency.symbol}{getTotalCost().toFixed(2)}
             </div>
             {localOption.travel_mode && (
-              <div className="text-sm text-muted-foreground mt-1">
-                Travel: {localOption.travel_mode}
+              <div className="flex items-center gap-1 text-sm text-muted-foreground">
+                <Plane className="h-4 w-4" />
+                {localOption.travel_mode}
               </div>
             )}
           </div>
@@ -295,9 +312,9 @@ const VacationCard: React.FC<VacationCardProps> = ({ option, onUpdate, onRemove,
         </div>
 
         {localOption.contact && (
-          <div className="mb-3">
+          <div className="mb-3 p-3 bg-muted/30 rounded-lg">
             <span className="text-sm text-muted-foreground">Contact: </span>
-            <span className="text-sm">{localOption.contact}</span>
+            <span className="text-sm font-medium">{localOption.contact}</span>
           </div>
         )}
 
@@ -322,7 +339,7 @@ const VacationCard: React.FC<VacationCardProps> = ({ option, onUpdate, onRemove,
               variant="ghost"
               size="sm"
               onClick={onRemove}
-              className="text-destructive hover:text-destructive"
+              className="text-destructive hover:text-destructive hover:bg-destructive/10"
             >
               <Trash2 className="h-4 w-4" />
             </Button>
@@ -498,8 +515,6 @@ const Vacation: React.FC = () => {
   };
 
   const removeVacationCard = async (optionId: string) => {
-    if (options.length <= 1) return; // Always keep at least one card
-    
     if (user) {
       const { error } = await supabase
         .from('vacation_options')
@@ -515,138 +530,28 @@ const Vacation: React.FC = () => {
     setOptions(options.filter(option => option.id !== optionId));
   };
 
-  const createNewProject = async () => {
-    if (!newProjectName.trim() || savingProject) return;
-    
-    setSavingProject(true);
-    
-    try {
-      if (user) {
-        const { data: newProject } = await supabase
-          .from('vacation_projects')
-          .insert({ user_id: user.id, title: newProjectName.trim() })
-          .select()
-          .single();
-
-        if (newProject) {
-          const updatedProjects = [...allProjects, newProject];
-          setAllProjects(updatedProjects);
-          setSelectedProject(newProject);
-          setNewProjectName('');
-          setIsCreatingProject(false);
-          
-          // Create default blank option for new project
-          await createBlankOption(newProject.id);
-        }
-      } else {
-        // For non-authenticated users
-        const newProject: VacationProject = {
-          id: Date.now().toString(),
-          user_id: 'guest',
-          title: newProjectName.trim(),
-          created_at: new Date().toISOString(),
-          updated_at: new Date().toISOString()
-        };
-        
-        const updatedProjects = [...allProjects, newProject];
-        setAllProjects(updatedProjects);
-        setSelectedProject(newProject);
-        setNewProjectName('');
-        setIsCreatingProject(false);
-        createDefaultOption(newProject);
-      }
-    } finally {
-      setSavingProject(false);
-    }
-  };
-
-  const startEditingProject = (projectId: string) => {
-    const project = allProjects.find(p => p.id === projectId);
-    if (project) {
-      setEditingProjectId(projectId);
-      setEditingTitle(project.title);
-    }
-  };
-
-  const updateProjectTitle = async (projectId: string, newTitle: string) => {
-    if (!newTitle.trim()) {
-      setEditingProjectId(null);
-      return;
-    }
-
-    try {
-      if (user) {
-        const { error } = await supabase
-          .from('vacation_projects')
-          .update({ title: newTitle.trim() })
-          .eq('id', projectId);
-
-        if (error) throw error;
-      }
-
-      const updatedProjects = allProjects.map(p => 
-        p.id === projectId ? { ...p, title: newTitle.trim() } : p
-      );
-      setAllProjects(updatedProjects);
-      
-      if (selectedProject?.id === projectId) {
-        setSelectedProject({ ...selectedProject, title: newTitle.trim() });
-      }
-      
-      setEditingProjectId(null);
-      setEditingTitle('');
-    } catch (error) {
-      console.error('Error updating project title:', error);
-      setEditingProjectId(null);
-    }
-  };
-
-  const deleteProject = async (projectId: string) => {
-    if (allProjects.length <= 1 || deletingProject) return;
-    
-    setDeletingProject(projectId);
-    
-    try {
-      if (user) {
-        const { error } = await supabase
-          .from('vacation_projects')
-          .delete()
-          .eq('id', projectId);
-
-        if (error) throw error;
-      }
-
-      const updatedProjects = allProjects.filter(p => p.id !== projectId);
-      setAllProjects(updatedProjects);
-      
-      if (selectedProject?.id === projectId) {
-        setSelectedProject(updatedProjects.length > 0 ? updatedProjects[0] : null);
-        setOptions([]);
-      }
-      
-    } catch (error) {
-      console.error('Error deleting project:', error);
-    } finally {
-      setDeletingProject(null);
-    }
-  };
-
-  const addVacationCard = async () => {
+  const addNewOption = async () => {
     if (!selectedProject) return;
 
     if (user) {
-      const { data: newOption } = await supabase
+      const { data: newOption, error } = await supabase
         .from('vacation_options')
         .insert({ project_id: selectedProject.id })
         .select()
         .single();
 
+      if (error) {
+        console.error('Error creating option:', error);
+        return;
+      }
+
       if (newOption) {
         setOptions([...options, newOption]);
       }
     } else {
+      // For non-authenticated users
       const newOption: VacationOption = {
-        id: Date.now().toString(),
+        id: `temp-${Date.now()}`,
         project_id: selectedProject.id,
         destination: '',
         travel_mode: '',
@@ -665,208 +570,471 @@ const Vacation: React.FC = () => {
     }
   };
 
-  const getLowestCost = () => {
+  const createProject = async () => {
+    if (!newProjectName.trim()) return;
+
+    setSavingProject(true);
+    try {
+      if (user) {
+        const { data: newProject, error } = await supabase
+          .from('vacation_projects')
+          .insert({ user_id: user.id, title: newProjectName })
+          .select()
+          .single();
+
+        if (error) throw error;
+
+        if (newProject) {
+          setAllProjects([...allProjects, newProject]);
+          setSelectedProject(newProject);
+          await createBlankOption(newProject.id);
+        }
+      } else {
+        // For non-authenticated users
+        const newProject: VacationProject = {
+          id: `temp-${Date.now()}`,
+          user_id: 'guest',
+          title: newProjectName,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString()
+        };
+        setAllProjects([...allProjects, newProject]);
+        setSelectedProject(newProject);
+        createDefaultOption(newProject);
+      }
+
+      setNewProjectName('');
+      setIsCreatingProject(false);
+    } catch (error) {
+      console.error('Error creating project:', error);
+    } finally {
+      setSavingProject(false);
+    }
+  };
+
+  const updateProjectTitle = async (projectId: string, newTitle: string) => {
+    if (!newTitle.trim()) return;
+
+    try {
+      if (user) {
+        const { error } = await supabase
+          .from('vacation_projects')
+          .update({ title: newTitle })
+          .eq('id', projectId);
+
+        if (error) throw error;
+      }
+
+      setAllProjects(allProjects.map(project =>
+        project.id === projectId ? { ...project, title: newTitle } : project
+      ));
+
+      if (selectedProject?.id === projectId) {
+        setSelectedProject({ ...selectedProject, title: newTitle });
+      }
+
+      setEditingProjectId(null);
+      setEditingTitle('');
+    } catch (error) {
+      console.error('Error updating project:', error);
+    }
+  };
+
+  const deleteProject = async (projectId: string) => {
+    try {
+      if (user) {
+        // Delete all options first
+        await supabase
+          .from('vacation_options')
+          .delete()
+          .eq('project_id', projectId);
+
+        // Then delete the project
+        const { error } = await supabase
+          .from('vacation_projects')
+          .delete()
+          .eq('id', projectId);
+
+        if (error) throw error;
+      }
+
+      const updatedProjects = allProjects.filter(project => project.id !== projectId);
+      setAllProjects(updatedProjects);
+
+      if (selectedProject?.id === projectId) {
+        if (updatedProjects.length > 0) {
+          setSelectedProject(updatedProjects[0]);
+        } else {
+          setSelectedProject(null);
+          setOptions([]);
+        }
+      }
+
+      setDeletingProject(null);
+    } catch (error) {
+      console.error('Error deleting project:', error);
+    }
+  };
+
+  const getTotalCost = () => {
+    return options.reduce((total, option) => {
+      return total + (option.travel_mode_cost || 0) + (option.lodging_cost || 0) + (option.car_rental_cost || 0);
+    }, 0);
+  };
+
+  const getAverageRating = () => {
     if (options.length === 0) return 0;
-    const costs = options.map(option => 
-      (option.travel_mode_cost || 0) + (option.lodging_cost || 0) + (option.car_rental_cost || 0)
-    );
-    return Math.min(...costs);
+    
+    const totalStars = options.reduce((total, option) => {
+      const evaluationFields = [
+        option.favorable_travel,
+        option.destination_safe,
+        option.exciting_option,
+        option.everyone_enjoy,
+        option.memorable
+      ];
+      return total + evaluationFields.filter(Boolean).length;
+    }, 0);
+    
+    return totalStars / options.length;
   };
 
   return (
-    <div className="min-h-screen">
-      <SEO {...seoData.vacation} />
-      
-      {/* Hero Section with Light Background */}
-      <div className="relative bg-white text-gray-900 py-8 rounded-2xl mx-4 mt-4 mb-6 shadow-xl">
-        <div className="container mx-auto px-4 relative z-10">
-          <div className="text-center">
-            <svg className="h-10 w-10 mx-auto mb-4 text-primary" fill="currentColor" viewBox="0 0 24 24">
-              <path d="M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z"/>
-            </svg>
-            <h1 className="text-xl md:text-2xl font-bold mb-2 text-gray-900">Vacation Planning</h1>
-            <p className="text-sm md:text-base text-gray-600 mb-4">Compare destinations, costs, and travel options for your perfect getaway</p>
+    <div className="min-h-screen bg-background">
+      <SEO
+        title="Vacation Planning"
+        description="Plan and compare vacation options. Track costs, destinations, and evaluate your travel choices."
+        keywords="vacation planning, travel comparison, vacation budget, travel costs, vacation options"
+      />
+
+      {/* Modern Header */}
+      <div className="bg-card border-b border-border/50">
+        <div className="max-w-7xl mx-auto px-4 py-6">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="p-2 bg-primary/10 rounded-lg">
+                <MapPin className="h-6 w-6 text-primary" />
+              </div>
+              <div>
+                <h1 className="text-2xl font-bold">Vacation Planning</h1>
+                <p className="text-sm text-muted-foreground">Compare and plan your perfect getaway</p>
+              </div>
+            </div>
+            
+            <div className="flex items-center gap-4">
+              <div className="text-right">
+                <div className="text-sm text-muted-foreground">Total Budget</div>
+                <div className="text-2xl font-bold text-primary">{currency.symbol}{getTotalCost().toFixed(2)}</div>
+              </div>
+              <Button onClick={addNewOption} className="gap-2">
+                <Plus className="h-4 w-4" />
+                Add Option
+              </Button>
+            </div>
           </div>
         </div>
       </div>
 
-      <div className="container mx-auto px-4 py-8">
+      <div className="max-w-7xl mx-auto px-4 py-6">
         <WarningBanner />
 
-        <div className="text-center mb-8">
-          
-          {/* Project Tabs */}
-          <div className="mb-6">
-            <div className="flex items-center gap-2 mb-4 flex-wrap">
+        {/* Stats Cards */}
+        {options.length > 0 && (
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+            <Card>
+              <CardContent className="p-4">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 bg-blue-100 rounded-lg">
+                    <MapPin className="h-5 w-5 text-blue-600" />
+                  </div>
+                  <div>
+                    <div className="text-sm text-muted-foreground">Options</div>
+                    <div className="text-xl font-bold">{options.length}</div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardContent className="p-4">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 bg-green-100 rounded-lg">
+                    <DollarSign className="h-5 w-5 text-green-600" />
+                  </div>
+                  <div>
+                    <div className="text-sm text-muted-foreground">Total Cost</div>
+                    <div className="text-xl font-bold">{currency.symbol}{getTotalCost().toFixed(2)}</div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardContent className="p-4">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 bg-yellow-100 rounded-lg">
+                    <Star className="h-5 w-5 text-yellow-600" />
+                  </div>
+                  <div>
+                    <div className="text-sm text-muted-foreground">Avg Rating</div>
+                    <div className="text-xl font-bold">{getAverageRating().toFixed(1)}/5</div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardContent className="p-4">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 bg-purple-100 rounded-lg">
+                    <Calendar className="h-5 w-5 text-purple-600" />
+                  </div>
+                  <div>
+                    <div className="text-sm text-muted-foreground">Project</div>
+                    <div className="text-lg font-medium truncate">{selectedProject?.title || 'No Project'}</div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        )}
+
+        {/* Project Management */}
+        <Card className="mb-6">
+          <CardHeader>
+            <CardTitle className="flex items-center justify-between">
+              <span>Vacation Projects</span>
+              <Button
+                onClick={() => setIsCreatingProject(true)}
+                size="sm"
+                variant="outline"
+                className="gap-2"
+              >
+                <Plus className="h-4 w-4" />
+                New Project
+              </Button>
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="flex flex-wrap gap-2 mb-4">
               {allProjects.map((project) => (
-                <div key={project.id} className="flex items-center gap-1">
+                <div key={project.id} className="relative">
                   {editingProjectId === project.id ? (
-                    <div className="flex items-center gap-1">
+                    <div className="flex items-center gap-2">
                       <Input
                         value={editingTitle}
                         onChange={(e) => setEditingTitle(e.target.value)}
-                        className="h-8 w-32 text-sm"
                         onKeyDown={(e) => {
-                          if (e.key === 'Enter') updateProjectTitle(project.id, editingTitle);
-                          if (e.key === 'Escape') setEditingProjectId(null);
+                          if (e.key === 'Enter') {
+                            updateProjectTitle(project.id, editingTitle);
+                          } else if (e.key === 'Escape') {
+                            setEditingProjectId(null);
+                            setEditingTitle('');
+                          }
                         }}
+                        className="w-32"
                         autoFocus
                       />
-                      <Button size="sm" variant="ghost" onClick={() => updateProjectTitle(project.id, editingTitle)} className="h-8 w-8 p-0">
-                        <Check className="h-3 w-3" />
+                      <Button
+                        size="sm"
+                        onClick={() => updateProjectTitle(project.id, editingTitle)}
+                      >
+                        <Check className="h-4 w-4" />
                       </Button>
-                      <Button size="sm" variant="ghost" onClick={() => setEditingProjectId(null)} className="h-8 w-8 p-0">
-                        <X className="h-3 w-3" />
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        onClick={() => {
+                          setEditingProjectId(null);
+                          setEditingTitle('');
+                        }}
+                      >
+                        <X className="h-4 w-4" />
                       </Button>
-                      {allProjects.length > 1 && (
-                        <button 
-                          onClick={(e) => {
-                            e.preventDefault();
-                            e.stopPropagation();
-                            deleteProject(project.id);
-                            setEditingProjectId(null);
-                          }}
-                          className="h-8 w-8 text-red-500 hover:text-red-700 hover:bg-red-50 rounded flex items-center justify-center"
-                          title="Delete project"
-                          type="button"
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </button>
-                      )}
                     </div>
                   ) : (
-                    <div className="flex items-center gap-1">
-                      <div className="relative group">
+                    <div className={`flex items-center gap-2 p-2 rounded-lg border cursor-pointer transition-colors ${
+                      selectedProject?.id === project.id 
+                        ? 'bg-primary text-primary-foreground border-primary' 
+                        : 'bg-card hover:bg-muted border-border'
+                    }`}>
+                      <span
+                        onClick={() => setSelectedProject(project)}
+                        className="font-medium"
+                      >
+                        {project.title}
+                      </span>
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        onClick={() => {
+                          setEditingProjectId(project.id);
+                          setEditingTitle(project.title);
+                        }}
+                        className={`h-6 w-6 p-0 ${
+                          selectedProject?.id === project.id ? 'hover:bg-primary-foreground/20' : ''
+                        }`}
+                      >
+                        <Edit2 className="h-3 w-3" />
+                      </Button>
+                      {allProjects.length > 1 && (
                         <Button
-                          variant={selectedProject?.id === project.id ? "default" : "outline"}
                           size="sm"
-                          onClick={() => setSelectedProject(project)}
-                          className={`pr-8 ${selectedProject?.id === project.id ? 'border-2 border-white' : ''}`}
+                          variant="ghost"
+                          onClick={() => setDeletingProject(project.id)}
+                          className={`h-6 w-6 p-0 text-destructive hover:text-destructive ${
+                            selectedProject?.id === project.id ? 'hover:bg-destructive/20' : 'hover:bg-destructive/10'
+                          }`}
                         >
-                          {project.title}
+                          <Trash2 className="h-3 w-3" />
                         </Button>
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            startEditingProject(project.id);
-                          }}
-                          className="absolute right-1 top-1/2 -translate-y-1/2 h-6 w-6 p-0 opacity-0 group-hover:opacity-100 transition-opacity hover:bg-white/20 rounded flex items-center justify-center"
-                          title="Edit project name"
-                        >
-                          <Edit2 className="h-3 w-3" />
-                        </button>
-                      </div>
+                      )}
                     </div>
                   )}
                 </div>
               ))}
-              
-              {/* Add Project Plus Button */}
-              {isCreatingProject ? (
-                <div className="flex items-center gap-1">
-                  <Input
-                    value={newProjectName}
-                    onChange={(e) => setNewProjectName(e.target.value)}
-                    placeholder="Project name"
-                    className="h-8 w-32 text-sm"
-                    onKeyDown={(e) => {
-                      if (e.key === 'Enter') createNewProject();
-                      if (e.key === 'Escape') {
-                        setIsCreatingProject(false);
-                        setNewProjectName('');
-                      }
-                    }}
-                    autoFocus
-                  />
-                  <Button size="sm" variant="ghost" onClick={createNewProject} className="h-8 w-8 p-0">
-                    <Check className="h-3 w-3" />
-                  </Button>
-                  <Button size="sm" variant="ghost" onClick={() => {
+            </div>
+
+            {isCreatingProject && (
+              <div className="flex items-center gap-2 mt-4">
+                <Input
+                  value={newProjectName}
+                  onChange={(e) => setNewProjectName(e.target.value)}
+                  placeholder="Project name"
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                      createProject();
+                    } else if (e.key === 'Escape') {
+                      setIsCreatingProject(false);
+                      setNewProjectName('');
+                    }
+                  }}
+                  autoFocus
+                />
+                <Button
+                  onClick={createProject}
+                  disabled={!newProjectName.trim() || savingProject}
+                >
+                  {savingProject ? 'Creating...' : 'Create'}
+                </Button>
+                <Button
+                  variant="ghost"
+                  onClick={() => {
                     setIsCreatingProject(false);
                     setNewProjectName('');
-                  }} className="h-8 w-8 p-0">
-                    <X className="h-3 w-3" />
-                  </Button>
-                </div>
-              ) : (
-                <Button 
-                  onClick={() => setIsCreatingProject(true)} 
-                  size="sm" 
-                  variant="outline"
-                  className="h-8 w-8 p-0 rounded-full border-dashed"
+                  }}
                 >
-                  <Plus className="h-3 w-3" />
+                  Cancel
                 </Button>
-              )}
-            </div>
-
-            {selectedProject && options.length > 0 && getLowestCost() > 0 && (
-              <div className="text-sm text-muted-foreground mb-4">
-                Lowest estimate: {currency.symbol}{getLowestCost().toFixed(2)}
               </div>
             )}
-          </div>
+          </CardContent>
+        </Card>
+
+        {/* Vacation Options Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 mb-8">
+          {options.map((option, index) => (
+            <VacationCard
+              key={option.id}
+              option={option}
+              onUpdate={updateVacationCard}
+              onRemove={() => removeVacationCard(option.id)}
+              showRemove={options.length > 1}
+              currency={currency}
+            />
+          ))}
         </div>
 
-        <div className="max-w-6xl mx-auto">
-          <div className="grid gap-6">
-            {options.map((option) => (
-              <VacationCard
-                key={option.id}
-                option={option}
-                onUpdate={updateVacationCard}
-                onRemove={() => removeVacationCard(option.id)}
-                showRemove={options.length > 1}
-                currency={currency}
-              />
-            ))}
-          </div>
-
-          {!isCreatingProject && selectedProject && (
-            <div className="flex items-center justify-center mt-6">
-              <Button
-                onClick={addVacationCard}
-                variant="outline"
-                size="lg"
-                className="h-20 w-20 rounded-full border-2 border-dashed border-primary hover:bg-primary/5"
-              >
-                <Plus className="h-8 w-8 text-primary" />
+        {/* Empty State */}
+        {options.length === 0 && (
+          <Card className="border-dashed border-2 border-border">
+            <CardContent className="p-12 text-center">
+              <MapPin className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
+              <h3 className="text-lg font-semibold mb-2">No vacation options yet</h3>
+              <p className="text-muted-foreground mb-6">
+                Start planning your perfect getaway by adding your first vacation option
+              </p>
+              <Button onClick={addNewOption} className="gap-2">
+                <Plus className="h-4 w-4" />
+                Add Your First Option
               </Button>
-            </div>
-          )}
-        </div>
+            </CardContent>
+          </Card>
+        )}
 
-        <section className="py-12 px-4 bg-white text-gray-900 relative mt-12 rounded-2xl mx-4 shadow-xl">
-          <div className="container mx-auto text-center relative z-10">
-            <h2 className="text-2xl md:text-3xl font-bold mb-6 text-gray-900">
-              Plan Your Perfect Vacation
-            </h2>
-            <p className="text-lg mb-8 text-gray-600">
-              Compare destinations, costs, and travel options to make informed vacation decisions
-            </p>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-              <div className="bg-gray-50 rounded-lg p-6 border border-gray-200">
-                <h3 className="font-semibold mb-2 text-gray-900">Budget Planning</h3>
-                <p className="text-sm text-gray-600">Compare costs across different destinations and travel options to stay within budget</p>
+        {/* Quick Tips */}
+        <Card className="mt-8">
+          <CardHeader>
+            <CardTitle>Planning Tips</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid md:grid-cols-3 gap-4">
+              <div className="flex items-start gap-3">
+                <div className="p-2 bg-blue-100 rounded-lg mt-1">
+                  <MapPin className="h-4 w-4 text-blue-600" />
+                </div>
+                <div>
+                  <h4 className="font-medium mb-1">Compare Options</h4>
+                  <p className="text-sm text-muted-foreground">Create multiple vacation options to compare costs, destinations, and overall appeal.</p>
+                </div>
               </div>
-              <div className="bg-gray-50 rounded-lg p-6 border border-gray-200">
-                <h3 className="font-semibold mb-2 text-gray-900">Option Evaluation</h3>
-                <p className="text-sm text-gray-600">Rate each vacation option on safety, excitement, and overall appeal</p>
+              
+              <div className="flex items-start gap-3">
+                <div className="p-2 bg-green-100 rounded-lg mt-1">
+                  <DollarSign className="h-4 w-4 text-green-600" />
+                </div>
+                <div>
+                  <h4 className="font-medium mb-1">Track All Costs</h4>
+                  <p className="text-sm text-muted-foreground">Include travel, lodging, and car rental costs for accurate budget planning.</p>
+                </div>
               </div>
-              <div className="bg-gray-50 rounded-lg p-6 border border-gray-200">
-                <h3 className="font-semibold mb-2 text-gray-900">Dream Tracker</h3>
-                <p className="text-sm text-gray-600">Save and organize multiple vacation ideas for future planning and comparison</p>
+              
+              <div className="flex items-start gap-3">
+                <div className="p-2 bg-purple-100 rounded-lg mt-1">
+                  <Star className="h-4 w-4 text-purple-600" />
+                </div>
+                <div>
+                  <h4 className="font-medium mb-1">Rate Your Options</h4>
+                  <p className="text-sm text-muted-foreground">Use the evaluation questions to rate each option and find your perfect match.</p>
+                </div>
               </div>
             </div>
+          </CardContent>
+        </Card>
+
+        {/* Delete Confirmation Dialog */}
+        {deletingProject && (
+          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+            <Card className="w-full max-w-md mx-4">
+              <CardHeader>
+                <CardTitle>Delete Project</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="mb-4">
+                  Are you sure you want to delete this project? This will also delete all vacation options within it.
+                </p>
+                <div className="flex justify-end gap-2">
+                  <Button
+                    variant="outline"
+                    onClick={() => setDeletingProject(null)}
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    variant="destructive"
+                    onClick={() => deleteProject(deletingProject)}
+                  >
+                    Delete
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
           </div>
-        </section>
-
-        <FAQ faqs={vacationPlanningFAQs} />
-        <InternalLinks currentPage="/vacation" category="planning" />
+        )}
       </div>
 
       <AIChatbot 
-        pageContext="This is the Vacation Planning page where users can plan and budget for their vacations. Users can create different vacation projects, add various expense categories like flights, hotels, activities, and track their vacation budget. The page helps users organize all vacation-related expenses in one place."
+        pageContext="This is the Vacation Planning page where users can create multiple vacation projects and compare different vacation options within each project. Users can track costs, destinations, travel modes, and rate options based on various criteria."
         pageName="Vacation Planning"
       />
     </div>

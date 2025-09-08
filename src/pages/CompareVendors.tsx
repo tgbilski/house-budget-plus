@@ -438,7 +438,7 @@ const CompareVendors: React.FC = () => {
         if (error) throw error;
 
         setQuotes(prev => prev.map(q => q.id === updatedQuote.id ? data : q));
-        earnBadge('comparison_master');
+        earnBadge('compare_vendors');
       } else {
         const { error } = await supabase
           .from('vendor_quotes')
