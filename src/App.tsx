@@ -10,6 +10,7 @@ import { HouseholdProvider, useHouseholdContext } from "@/providers/HouseholdPro
 import { SidebarProvider } from "@/components/ui/sidebar";
 import Header from "@/components/Header";
 import { AppSidebar } from "@/components/AppSidebar";
+import Footer from "@/components/Footer";
 import { useIsMobile } from "@/hooks/use-mobile";
 import Home from "@/pages/Home";
 import MonthlyBudget from "@/pages/MonthlyBudget";
@@ -23,6 +24,11 @@ import UserSettings from "@/pages/UserSettings";
 import Engagement from "@/pages/Engagement";
 import AIInsights from "@/pages/AIInsights";
 import { Gifts } from "@/pages/Gifts";
+import AboutUs from "@/pages/AboutUs";
+import ContactUs from "@/pages/ContactUs";
+import PrivacyPolicy from "@/pages/PrivacyPolicy";
+import TermsAndConditions from "@/pages/TermsAndConditions";
+import Disclaimer from "@/pages/Disclaimer";
 import { useState, createContext } from "react";
 
 interface Currency {
@@ -63,6 +69,11 @@ const AppRoutes = () => {
       <Route path="/gifts" element={<Gifts />} />
       <Route path="/ai-insights" element={<AIInsights />} />
       <Route path="/subscription-success" element={<SubscriptionSuccess />} />
+      <Route path="/about" element={<AboutUs />} />
+      <Route path="/contact" element={<ContactUs />} />
+      <Route path="/privacy" element={<PrivacyPolicy />} />
+      <Route path="/terms" element={<TermsAndConditions />} />
+      <Route path="/disclaimer" element={<Disclaimer />} />
       <Route path="*" element={<NotFound />} />
     </Routes>
   );
@@ -94,11 +105,12 @@ const App = () => {
                         <Header />
                         <div className="flex flex-1 relative">
                           <AppSidebar />
-                          <main className="flex-1 p-2 sm:p-4 md:p-6 w-full">
-                            <AppRoutes />
-                          </main>
-                        </div>
-                      </div>
+                           <main className="flex-1 p-2 sm:p-4 md:p-6 w-full">
+                             <AppRoutes />
+                           </main>
+                         </div>
+                         <Footer />
+                       </div>
                     </SidebarProvider>
                   </BrowserRouter>
                 </CurrencyContext.Provider>
