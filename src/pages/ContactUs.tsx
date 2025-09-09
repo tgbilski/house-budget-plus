@@ -5,11 +5,13 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
-import { Mail, MessageSquare, Phone, MapPin } from 'lucide-react';
+import { MessageSquare } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { supabase } from '@/integrations/supabase/client';
 
 const ContactUs: React.FC = () => {
   const { toast } = useToast();
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -17,13 +19,32 @@ const ContactUs: React.FC = () => {
     message: ''
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    toast({
-      title: "Message Sent!",
-      description: "Thank you for contacting us. We'll get back to you soon.",
-    });
-    setFormData({ name: '', email: '', subject: '', message: '' });
+    setIsSubmitting(true);
+    
+    try {
+      const { error } = await supabase.functions.invoke('send-contact-email', {
+        body: formData
+      });
+
+      if (error) throw error;
+
+      toast({
+        title: "Message Sent!",
+        description: "Thank you for contacting us. We'll get back to you soon.",
+      });
+      setFormData({ name: '', email: '', subject: '', message: '' });
+    } catch (error) {
+      console.error('Error sending email:', error);
+      toast({
+        title: "Error",
+        description: "Failed to send message. Please try again later.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -49,7 +70,7 @@ const ContactUs: React.FC = () => {
           </p>
         </div>
 
-        <div className="grid lg:grid-cols-2 gap-12">
+        <div className="max-w-2xl mx-auto">{/* Centered single column */}
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center space-x-2">
@@ -103,71 +124,22 @@ const ContactUs: React.FC = () => {
                     required
                   />
                 </div>
-                <Button type="submit" className="w-full">
-                  Send Message
+                <Button type="submit" disabled={isSubmitting} className="w-full">
+                  {isSubmitting ? 'Sending...' : 'Send Message'}
                 </Button>
               </form>
             </CardContent>
           </Card>
 
-          <div className="space-y-8">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center space-x-2">
-                  <Mail className="h-6 w-6" />
-                  <span>Email Support</span>
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-gray-600 mb-4">
-                  For general inquiries and support questions:
-                </p>
-                <p className="font-semibold text-primary">support@housebudgetcalculator.com</p>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center space-x-2">
-                  <Phone className="h-6 w-6" />
-                  <span>Phone Support</span>
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-gray-600 mb-4">
-                  Available Monday - Friday, 9 AM - 5 PM EST:
-                </p>
-                <p className="font-semibold text-primary">+1 (555) 123-4567</p>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center space-x-2">
-                  <MapPin className="h-6 w-6" />
-                  <span>Office Location</span>
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-gray-600">
-                  123 Financial Street<br />
-                  Suite 456<br />
-                  New York, NY 10001<br />
-                  United States
-                </p>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardContent className="pt-6">
-                <h3 className="font-semibold mb-3">Frequently Asked Questions</h3>
-                <p className="text-gray-600 text-sm">
-                  Before reaching out, you might find answers to common questions in our FAQ section. 
-                  We've compiled the most helpful information about using our budgeting tools and features.
-                </p>
-              </CardContent>
-            </Card>
-          </div>
+          <Card className="mt-8">
+            <CardContent className="pt-6">
+              <h3 className="font-semibold mb-3">Frequently Asked Questions</h3>
+              <p className="text-gray-600 text-sm">
+                Before reaching out, you might find answers to common questions in our FAQ section. 
+                We've compiled the most helpful information about using our budgeting tools and features.
+              </p>
+            </CardContent>
+          </Card>
         </div>
       </div>
     </>
