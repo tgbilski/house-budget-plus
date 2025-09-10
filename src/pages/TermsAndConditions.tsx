@@ -184,7 +184,7 @@ const TermsAndConditions: React.FC = () => {
             <CardContent>
               <p className="text-gray-600">
                 If you have any questions about these Terms and Conditions, please contact us at 
-                legal@housebudgetcalculator.com.
+                <a href="mailto:homebudgetcalculator@gmail.com" className="text-primary hover:underline">homebudgetcalculator@gmail.com</a>.
               </p>
             </CardContent>
           </Card>

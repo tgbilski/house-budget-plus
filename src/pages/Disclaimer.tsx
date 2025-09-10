@@ -184,7 +184,7 @@ const Disclaimer: React.FC = () => {
             <CardContent>
               <p className="text-gray-600">
                 If you have any questions about this disclaimer or need clarification about the 
-                limitations of our service, please contact us at legal@housebudgetcalculator.com.
+                limitations of our service, please contact us at <a href="mailto:homebudgetcalculator@gmail.com" className="text-primary hover:underline">homebudgetcalculator@gmail.com</a>.
               </p>
             </CardContent>
           </Card>

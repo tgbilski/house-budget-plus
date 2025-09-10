@@ -166,7 +166,7 @@ const PrivacyPolicy: React.FC = () => {
             <CardContent>
               <p className="text-gray-600">
                 If you have any questions about this privacy policy or our data practices, 
-                please contact us at privacy@housebudgetcalculator.com.
+                please contact us at <a href="mailto:homebudgetcalculator@gmail.com" className="text-primary hover:underline">homebudgetcalculator@gmail.com</a>.
               </p>
             </CardContent>
           </Card>
