@@ -105,11 +105,13 @@ const App = () => {
                         <Header />
                         <div className="flex flex-1 relative">
                           <AppSidebar />
-                           <main className="flex-1 p-2 sm:p-4 md:p-6 w-full">
-                             <AppRoutes />
-                           </main>
+                           <div className="flex-1 flex flex-col w-full">
+                             <main className="flex-1 p-2 sm:p-4 md:p-6">
+                               <AppRoutes />
+                             </main>
+                             <Footer />
+                           </div>
                          </div>
-                         <Footer />
                        </div>
                     </SidebarProvider>
                   </BrowserRouter>
