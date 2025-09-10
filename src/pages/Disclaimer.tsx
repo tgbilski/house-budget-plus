@@ -2,6 +2,7 @@ import React from 'react';
 import { SEO } from '@/components/SEO';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { AlertTriangle, Info, Shield, TrendingUp } from 'lucide-react';
+import { AdSense } from '@/components/AdSense';
 
 const Disclaimer: React.FC = () => {
   return (
@@ -188,6 +189,10 @@ const Disclaimer: React.FC = () => {
               </p>
             </CardContent>
           </Card>
+
+          <div className="mt-8">
+            <AdSense adSlot="1234567890" />
+          </div>
         </div>
       </div>
     </>

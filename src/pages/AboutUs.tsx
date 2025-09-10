@@ -3,6 +3,7 @@ import { SEO } from '@/components/SEO';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Users, Target, Heart, TrendingUp } from 'lucide-react';
+import { AdSense } from '@/components/AdSense';
 
 const AboutUs: React.FC = () => {
   return (
@@ -105,6 +106,10 @@ const AboutUs: React.FC = () => {
             </p>
           </CardContent>
         </Card>
+
+        <div className="mt-8">
+          <AdSense adSlot="1234567890" />
+        </div>
       </div>
     </>
   );

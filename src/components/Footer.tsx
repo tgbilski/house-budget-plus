@@ -7,7 +7,7 @@ const Footer: React.FC = () => {
 
   return (
     <footer className="mt-auto bg-gray-50 border-t border-gray-200">
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto px-4 py-8 ml-0 pl-8">{/* Add left padding to align with main content */}
         <div className="grid md:grid-cols-4 gap-8">
           {/* Company Info */}
           <div>
