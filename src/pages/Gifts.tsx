@@ -12,6 +12,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { AIChatbot } from '@/components/AIChatbot';
 import { SEO } from '@/components/SEO';
 import { WarningBanner } from '@/components/WarningBanner';
+import { EtsyProducts } from '@/components/EtsyProducts';
 
 interface GiftListData {
   id: string;
@@ -256,6 +257,9 @@ export function Gifts() {
             </CardContent>
           </Card>
         )}
+
+        {/* Etsy Products Section */}
+        <EtsyProducts shopName="YourEtsyShop" />
 
         {/* Quick Tips */}
         <Card className="mt-8">
