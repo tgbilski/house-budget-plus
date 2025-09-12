@@ -259,7 +259,7 @@ export function Gifts() {
         )}
 
         {/* Etsy Products Section */}
-        <EtsyProducts shopName="YourEtsyShop" />
+        <EtsyProducts shopName="The90sKidShop" />
 
         {/* Quick Tips */}
         <Card className="mt-8">

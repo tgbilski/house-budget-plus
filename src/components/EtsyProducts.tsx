@@ -5,6 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { ExternalLink, Store, Heart, ShoppingCart } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
+import { supabase } from '@/integrations/supabase/client';
 
 interface EtsyProduct {
   listing_id: number;
@@ -97,30 +98,43 @@ export const EtsyProducts: React.FC<EtsyProductsProps> = ({ shopName = '' }) => 
 
     setLoading(true);
     try {
-      // Note: This would need a backend endpoint to handle Etsy API calls
-      // due to CORS restrictions and API key security
-      // For now, we'll use demo data
+      console.log(`Fetching products for shop: ${shop}`);
       
-      console.log(`Would fetch products for shop: ${shop}`);
-      
-      // Simulate API delay
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      setProducts(demoProducts);
-      setCurrentShopName(shop);
-      
-      toast({
-        title: "Products loaded",
-        description: `Showing demo products for ${shop}`,
+      const { data, error } = await supabase.functions.invoke('fetch-etsy-products', {
+        body: { shopName: shop }
       });
+
+      if (error) {
+        console.error('Supabase function error:', error);
+        throw new Error(error.message || 'Failed to fetch products');
+      }
+
+      if (data.error) {
+        console.error('Etsy API error:', data.error);
+        throw new Error(data.error);
+      }
+
+      if (data.success && data.products) {
+        setProducts(data.products);
+        setCurrentShopName(shop);
+        
+        toast({
+          title: "Products loaded successfully!",
+          description: `Found ${data.products.length} products from ${shop}`,
+        });
+      } else {
+        throw new Error('No products found');
+      }
     } catch (error) {
       console.error('Error fetching Etsy products:', error);
       toast({
-        title: "Error",
-        description: "Failed to fetch products. Using demo data.",
+        title: "Error loading products",
+        description: error.message || "Failed to fetch products. Please check your shop name and try again.",
         variant: "destructive",
       });
-      setProducts(demoProducts);
+      
+      // Don't set demo products on error - let user know it failed
+      setProducts([]);
     } finally {
       setLoading(false);
     }
