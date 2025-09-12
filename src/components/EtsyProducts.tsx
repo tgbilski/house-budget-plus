@@ -158,93 +158,106 @@ export const EtsyProducts: React.FC<EtsyProductsProps> = ({ shopName = '' }) => 
   }, [shopName]);
 
   return (
-    <Card className="mt-8">
+    <Card className="mt-8 border-2 border-orange-200 bg-gradient-to-br from-orange-50 to-amber-50">
       <CardHeader>
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="p-2 bg-orange-100 rounded-lg">
-              <Store className="h-5 w-5 text-orange-600" />
+            <div className="p-3 bg-gradient-to-r from-orange-500 to-amber-500 rounded-lg shadow-lg">
+              <Store className="h-6 w-6 text-white" />
             </div>
             <div>
-              <CardTitle>My Etsy Products</CardTitle>
-              <p className="text-sm text-muted-foreground">
-                Showcase your handmade creations
+              <CardTitle className="text-xl text-orange-900">Suggested Gifts</CardTitle>
+              <p className="text-sm text-orange-700 font-medium">
+                🎁 Handcrafted items perfect for gift-giving • Support our shop!
               </p>
             </div>
           </div>
+          <Badge variant="secondary" className="bg-orange-200 text-orange-800 font-semibold">
+            Exclusive
+          </Badge>
         </div>
       </CardHeader>
       
       <CardContent>
-        <div className="flex gap-3 mb-6">
-          <Input
-            placeholder="Enter your Etsy shop name"
-            value={inputShopName}
-            onChange={(e) => setInputShopName(e.target.value)}
-            className="flex-1"
-          />
-          <Button 
-            onClick={() => fetchEtsyProducts(inputShopName)}
-            disabled={loading}
-            className="gap-2"
-          >
-            <Store className="h-4 w-4" />
-            {loading ? 'Loading...' : 'Load Products'}
-          </Button>
-        </div>
+        {!currentShopName && (
+          <div className="flex gap-3 mb-6 p-4 bg-white/60 rounded-lg border border-orange-200">
+            <Input
+              placeholder="Enter your Etsy shop name to showcase products"
+              value={inputShopName}
+              onChange={(e) => setInputShopName(e.target.value)}
+              className="flex-1 border-orange-200 focus:border-orange-400"
+            />
+            <Button 
+              onClick={() => fetchEtsyProducts(inputShopName)}
+              disabled={loading}
+              className="gap-2 bg-orange-600 hover:bg-orange-700"
+            >
+              <Store className="h-4 w-4" />
+              {loading ? 'Loading...' : 'Showcase Products'}
+            </Button>
+          </div>
+        )}
 
         {currentShopName && (
-          <div className="mb-4">
-            <Badge variant="outline" className="gap-2">
-              <Store className="h-3 w-3" />
-              {currentShopName}
+          <div className="mb-6 text-center">
+            <Badge variant="outline" className="gap-2 text-orange-700 border-orange-300 bg-white/80 px-4 py-2">
+              <Store className="h-4 w-4" />
+              Shop: {currentShopName}
             </Badge>
+            <p className="text-sm text-orange-600 mt-2">
+              Click any product to visit our Etsy shop and purchase!
+            </p>
           </div>
         )}
 
         {products.length > 0 && (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {products.map((product) => (
-              <Card key={product.listing_id} className="group hover:shadow-lg transition-shadow">
-                <div className="aspect-square overflow-hidden rounded-t-lg">
+              <Card key={product.listing_id} className="group hover:shadow-xl transition-all duration-300 border-orange-200 hover:border-orange-300 bg-white/90 backdrop-blur-sm">
+                <div className="aspect-square overflow-hidden rounded-t-lg relative">
                   <img
                     src={product.images[0]?.url_170x135 || '/placeholder.svg'}
                     alt={product.title}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform"
+                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
                   />
+                  <div className="absolute top-2 right-2">
+                    <Badge className="bg-orange-500 text-white shadow-lg">
+                      Gift Idea
+                    </Badge>
+                  </div>
                 </div>
                 
                 <CardContent className="p-4">
-                  <h4 className="font-medium text-sm line-clamp-2 mb-2">
+                  <h4 className="font-semibold text-sm line-clamp-2 mb-2 text-gray-900">
                     {product.title}
                   </h4>
                   
-                  <div className="flex items-center justify-between mb-3">
-                    <span className="font-bold text-primary">
+                  <div className="flex items-center justify-between mb-4">
+                    <span className="font-bold text-lg text-orange-600">
                       {formatPrice(product.price)}
                     </span>
-                    <Badge variant="secondary" className="text-xs">
-                      {product.quantity} left
+                    <Badge variant="secondary" className="text-xs bg-orange-100 text-orange-700">
+                      {product.quantity} available
                     </Badge>
                   </div>
 
-                  <div className="flex gap-2">
+                  <div className="space-y-2">
                     <Button
                       size="sm"
-                      variant="outline"
                       onClick={() => window.open(product.url, '_blank')}
-                      className="flex-1 gap-1"
+                      className="w-full gap-2 bg-orange-600 hover:bg-orange-700 text-white font-medium"
                     >
-                      <ExternalLink className="h-3 w-3" />
-                      View
+                      <ShoppingCart className="h-4 w-4" />
+                      Buy on Etsy
                     </Button>
                     <Button
                       size="sm"
+                      variant="outline"
                       onClick={() => addToGiftList(product)}
-                      className="flex-1 gap-1"
+                      className="w-full gap-2 border-orange-300 text-orange-700 hover:bg-orange-50"
                     >
-                      <Heart className="h-3 w-3" />
-                      Add
+                      <Heart className="h-4 w-4" />
+                      Save to List
                     </Button>
                   </div>
                 </CardContent>
@@ -254,23 +267,32 @@ export const EtsyProducts: React.FC<EtsyProductsProps> = ({ shopName = '' }) => 
         )}
 
         {products.length === 0 && !loading && currentShopName && (
-          <div className="text-center py-8 text-muted-foreground">
-            <Store className="h-12 w-12 mx-auto mb-2 opacity-50" />
-            <p>No products found for this shop</p>
+          <div className="text-center py-12 text-orange-600">
+            <Store className="h-16 w-16 mx-auto mb-4 opacity-60" />
+            <h3 className="text-lg font-semibold mb-2">No products found</h3>
+            <p className="text-sm">Check your shop name or try again later</p>
           </div>
         )}
 
-        <div className="mt-6 p-4 bg-orange-50 rounded-lg border border-orange-200">
-          <div className="flex items-start gap-3">
-            <Store className="h-5 w-5 text-orange-600 mt-0.5" />
-            <div className="text-sm">
-              <p className="font-medium text-orange-900 mb-1">Connect Your Etsy Shop</p>
-              <p className="text-orange-700">
-                Enter your Etsy shop name to display your products here. Visitors can easily add your items to their gift lists. 
-                <span className="block mt-1 text-xs">
-                  Note: Currently showing demo products. Full Etsy API integration requires backend setup.
-                </span>
+        <div className="mt-6 p-6 bg-gradient-to-r from-orange-100 to-amber-100 rounded-xl border-2 border-orange-200">
+          <div className="flex items-start gap-4">
+            <div className="p-3 bg-orange-500 rounded-full">
+              <Store className="h-6 w-6 text-white" />
+            </div>
+            <div className="flex-1">
+              <h3 className="font-bold text-orange-900 mb-2 text-lg">🛍️ Shop Owner?</h3>
+              <p className="text-orange-800 mb-3 leading-relaxed">
+                Showcase your handcrafted products as suggested gifts! Enter your Etsy shop name above to display your items. 
+                When visitors click "Buy on Etsy", they'll go directly to your shop to make a purchase.
               </p>
+              <div className="bg-white/60 p-3 rounded-lg border border-orange-200">
+                <p className="text-sm text-orange-700">
+                  <strong>💡 Pro tip:</strong> This drives real traffic and sales to your Etsy shop while providing gift inspiration to users.
+                  <span className="block mt-1 text-xs opacity-75">
+                    Currently showing demo products. Contact support for full Etsy API integration.
+                  </span>
+                </p>
+              </div>
             </div>
           </div>
         </div>
