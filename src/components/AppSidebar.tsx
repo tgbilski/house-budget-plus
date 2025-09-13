@@ -51,15 +51,11 @@ export function AppSidebar() {
     <Sidebar 
       collapsible={isMobile ? "offcanvas" : "icon"}
       className={cn(
-        // Mobile: standard sidebar behavior
-        isMobile ? "relative" : 
-        // Desktop: floating sidebar positioned fixed with top margin below header, min height for content
-        "fixed left-4 z-40 shadow-2xl rounded-xl border backdrop-blur-sm bg-background/95 min-h-[400px]",
-        // Width based on open state - desktop only
+        "h-full border-r bg-sidebar",
+        isMobile && "relative",
         !isMobile && (open ? "w-64" : "w-14")
       )}
-      style={!isMobile ? { top: '80px' } : undefined}
-      variant={isMobile ? "sidebar" : "floating"}
+      variant="sidebar"
     >
       <SidebarContent className={cn(!isMobile && "p-2")}>
         <SidebarGroup>
