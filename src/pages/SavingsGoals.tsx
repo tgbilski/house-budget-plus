@@ -14,6 +14,7 @@ import { toast } from 'sonner';
 import { SEO } from '@/components/SEO';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Link } from 'react-router-dom';
+import { cn } from '@/lib/utils';
 
 interface SavingsEntry {
   id: string;
@@ -396,50 +397,66 @@ const SavingsGoals = () => {
               {savingsGoals.map((goal) => (
                 <div key={goal.id} className="flex items-center gap-1">
                   {editingGoalId === goal.id ? (
-                    <div className="flex items-center gap-1">
+                    <div className="flex items-center gap-2">
                       <Input
                         value={editingTitle}
                         onChange={(e) => setEditingTitle(e.target.value)}
-                        className="h-8 w-32"
+                        className="h-10 w-48 text-lg font-semibold border-2 border-primary"
                         onKeyDown={(e) => {
                           if (e.key === 'Enter') updateGoalTitle(editingTitle);
                           if (e.key === 'Escape') setEditingGoalId(null);
                         }}
                         onBlur={() => updateGoalTitle(editingTitle)}
                         autoFocus
+                        placeholder="Goal name..."
                       />
-                      <Button size="sm" variant="ghost" onClick={() => updateGoalTitle(editingTitle)} className="h-8 w-8 p-0">
-                        <Check className="h-3 w-3" />
+                      <Button size="sm" onClick={() => updateGoalTitle(editingTitle)} className="h-10">
+                        <Check className="h-4 w-4" />
                       </Button>
                     </div>
                   ) : (
                     <div className="flex items-center gap-1">
-                      <Button
-                        variant={currentGoalId === goal.id ? "default" : "outline"}
-                        size="sm"
+                      <div 
+                        className={cn(
+                          "group relative cursor-pointer transition-all",
+                          currentGoalId === goal.id 
+                            ? "bg-primary text-primary-foreground" 
+                            : "bg-muted hover:bg-muted/80",
+                          "rounded-lg px-4 py-3 border-2",
+                          currentGoalId === goal.id && "border-primary",
+                          currentGoalId !== goal.id && "border-transparent hover:border-muted-foreground/20"
+                        )}
                         onClick={() => setCurrentGoalId(goal.id)}
-                        className="relative group"
                       >
-                        {goal.title}
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          className="absolute -right-1 -top-1 h-5 w-5 p-0 opacity-0 group-hover:opacity-100 transition-opacity"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setEditingGoalId(goal.id);
-                            setEditingTitle(goal.title);
-                          }}
-                        >
-                          <Edit2 className="h-3 w-3" />
-                        </Button>
-                      </Button>
+                        <div className="flex items-center justify-between min-w-0">
+                          <span className="text-lg font-semibold truncate pr-2">
+                            {goal.title}
+                          </span>
+                          <div className="flex items-center gap-1 flex-shrink-0">
+                            <div className="opacity-0 group-hover:opacity-100 transition-opacity text-xs bg-black/10 px-2 py-1 rounded whitespace-nowrap">
+                              Click to edit
+                            </div>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              className="opacity-0 group-hover:opacity-100 transition-opacity h-6 w-6 p-0"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setEditingGoalId(goal.id);
+                                setEditingTitle(goal.title);
+                              }}
+                            >
+                              <Edit2 className="h-3 w-3" />
+                            </Button>
+                          </div>
+                        </div>
+                      </div>
                       {savingsGoals.length > 1 && (
                         <Button
                           variant="ghost"
                           size="sm"
                           onClick={() => deleteGoal(goal.id)}
-                          className="h-8 w-8 p-0 text-destructive"
+                          className="h-8 w-8 p-0 text-destructive hover:bg-red-50"
                         >
                           <Trash2 className="h-3 w-3" />
                         </Button>

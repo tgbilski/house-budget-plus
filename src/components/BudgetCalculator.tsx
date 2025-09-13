@@ -313,33 +313,44 @@ const BudgetCalculator: React.FC<BudgetCalculatorProps> = ({
 
   return (
     <Card className="w-full max-w-sm sm:max-w-md mx-auto shadow-lg border border-border" data-calculator-id={id}>
-      <CardHeader className="pb-3">
-        <div className="flex items-center justify-between">
-          <div className="flex-1">
-            <Label htmlFor={`owner-${id}`} className="text-xs sm:text-sm font-medium text-muted-foreground">
-              Calculator {calculatorNumber} - Owner / Renter
+      <CardHeader className="pb-4">
+        <div className="space-y-3">
+          {/* Prominent title section */}
+          <div className="group">
+            <Label className="text-xs text-muted-foreground mb-2 block">
+              Calculator {calculatorNumber} Owner
             </Label>
-            <Input
-              id={`owner-${id}`}
-              placeholder="Enter name..."
-              value={ownerName}
-              onChange={(e) => {
-                const newName = e.target.value;
-                setOwnerName(newName);
-                onNameChange(id, newName); // Call the new prop
-              }}
-              className="mt-1 h-8 text-sm"
-            />
+            <div className="flex items-center gap-2">
+              <Input
+                id={`owner-${id}`}
+                placeholder="Enter owner name..."
+                value={ownerName}
+                onChange={(e) => {
+                  const newName = e.target.value;
+                  setOwnerName(newName);
+                  onNameChange(id, newName);
+                }}
+                className="text-lg font-semibold h-10 border-2 focus:border-primary transition-colors"
+              />
+              <div className="text-xs text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+                Owner name
+              </div>
+            </div>
           </div>
+          
+          {/* Remove button */}
           {showRemove && (
-            <Button
-              variant="destructive"
-              size="sm"
-              onClick={onRemove}
-              className="ml-4"
-            >
-              <Trash2 className="h-4 w-4" />
-            </Button>
+            <div className="flex justify-end">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={onRemove}
+                className="text-destructive hover:text-destructive hover:bg-red-50"
+              >
+                <Trash2 className="h-4 w-4 mr-2" />
+                Remove Calculator
+              </Button>
+            </div>
           )}
         </div>
       </CardHeader>

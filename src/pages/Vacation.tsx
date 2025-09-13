@@ -816,7 +816,7 @@ const Vacation: React.FC = () => {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="flex flex-wrap gap-2 mb-4">
+            <div className="flex flex-wrap gap-3 mb-4">
               {allProjects.map((project) => (
                 <div key={project.id} className="relative">
                   {editingProjectId === project.id ? (
@@ -832,12 +832,14 @@ const Vacation: React.FC = () => {
                             setEditingTitle('');
                           }
                         }}
-                        className="w-32"
+                        className="text-lg font-semibold h-12 w-48 border-2 border-primary"
+                        placeholder="Project name..."
                         autoFocus
                       />
                       <Button
                         size="sm"
                         onClick={() => updateProjectTitle(project.id, editingTitle)}
+                        className="h-10"
                       >
                         <Check className="h-4 w-4" />
                       </Button>
@@ -848,47 +850,59 @@ const Vacation: React.FC = () => {
                           setEditingProjectId(null);
                           setEditingTitle('');
                         }}
+                        className="h-10"
                       >
                         <X className="h-4 w-4" />
                       </Button>
                     </div>
                   ) : (
-                    <div className={`flex items-center gap-2 p-2 rounded-lg border cursor-pointer transition-colors ${
+                    <div className={`group relative cursor-pointer transition-all rounded-lg border-2 p-4 ${
                       selectedProject?.id === project.id 
                         ? 'bg-primary text-primary-foreground border-primary' 
-                        : 'bg-card hover:bg-muted border-border'
+                        : 'bg-card hover:bg-muted border-border hover:border-muted-foreground/20'
                     }`}>
-                      <span
+                      <div
                         onClick={() => setSelectedProject(project)}
-                        className="font-medium"
+                        className="flex items-center justify-between min-w-0"
                       >
-                        {project.title}
-                      </span>
-                      <Button
-                        size="sm"
-                        variant="ghost"
-                        onClick={() => {
-                          setEditingProjectId(project.id);
-                          setEditingTitle(project.title);
-                        }}
-                        className={`h-6 w-6 p-0 ${
-                          selectedProject?.id === project.id ? 'hover:bg-primary-foreground/20' : ''
-                        }`}
-                      >
-                        <Edit2 className="h-3 w-3" />
-                      </Button>
-                      {allProjects.length > 1 && (
-                        <Button
-                          size="sm"
-                          variant="ghost"
-                          onClick={() => setDeletingProject(project.id)}
-                          className={`h-6 w-6 p-0 text-destructive hover:text-destructive ${
-                            selectedProject?.id === project.id ? 'hover:bg-destructive/20' : 'hover:bg-destructive/10'
-                          }`}
-                        >
-                          <Trash2 className="h-3 w-3" />
-                        </Button>
-                      )}
+                        <span className="text-lg font-semibold truncate pr-2">
+                          {project.title}
+                        </span>
+                        <div className="flex items-center gap-1 flex-shrink-0">
+                          <div className="opacity-0 group-hover:opacity-100 transition-opacity text-xs bg-black/10 px-2 py-1 rounded whitespace-nowrap">
+                            Click to edit
+                          </div>
+                          <Button
+                            size="sm"
+                            variant="ghost"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setEditingProjectId(project.id);
+                              setEditingTitle(project.title);
+                            }}
+                            className={`h-6 w-6 p-0 opacity-0 group-hover:opacity-100 transition-opacity ${
+                              selectedProject?.id === project.id ? 'hover:bg-primary-foreground/20' : ''
+                            }`}
+                          >
+                            <Edit2 className="h-3 w-3" />
+                          </Button>
+                          {allProjects.length > 1 && (
+                            <Button
+                              size="sm"
+                              variant="ghost"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setDeletingProject(project.id);
+                              }}
+                              className={`h-6 w-6 p-0 text-destructive hover:text-destructive opacity-0 group-hover:opacity-100 transition-opacity ${
+                                selectedProject?.id === project.id ? 'hover:bg-destructive/20' : 'hover:bg-destructive/10'
+                              }`}
+                            >
+                              <Trash2 className="h-3 w-3" />
+                            </Button>
+                          )}
+                        </div>
+                      </div>
                     </div>
                   )}
                 </div>

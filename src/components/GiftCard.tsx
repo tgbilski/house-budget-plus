@@ -199,47 +199,56 @@ export function GiftCard({ initialData, onDelete, onSave }: GiftCardProps) {
 
   return (
     <Card className="w-full bg-white border-gray-200 text-gray-900 shadow-lg hover:shadow-xl transition-all duration-300">
-      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-        {isEditingTitle ? (
-          <div className="flex items-center gap-2 flex-1">
-            <Input
-              value={listData.list_title}
-              onChange={(e) => handleTitleChange(e.target.value)}
-              className="text-lg font-semibold bg-white border-gray-300 text-gray-900"
-              placeholder="Gift list title"
-            />
-            <Button
-              size="sm"
-              variant="ghost"
-              onClick={saveListTitle}
-              className="hover:bg-gray-100"
-            >
-              <Check className="h-4 w-4" />
-            </Button>
-          </div>
-        ) : (
-          <div className="flex items-center gap-2 flex-1">
-            <CardTitle className="text-lg text-gray-900">{listData.list_title}</CardTitle>
-            <Button
-              size="sm"
-              variant="ghost"
-              onClick={() => setIsEditingTitle(true)}
-              className="hover:bg-gray-100"
-            >
-              <Edit2 className="h-4 w-4" />
-            </Button>
-          </div>
-        )}
+      <CardHeader className="pb-4">
+        {/* Prominent title section */}
+        <div className="space-y-3">
+          {isEditingTitle ? (
+            <div className="flex items-center gap-2">
+              <Input
+                value={listData.list_title}
+                onChange={(e) => handleTitleChange(e.target.value)}
+                className="text-xl font-bold bg-white border-2 border-primary text-gray-900 h-12"
+                placeholder="Enter gift list title..."
+                autoFocus
+              />
+              <Button
+                size="sm"
+                onClick={saveListTitle}
+                className="h-10 px-3"
+              >
+                <Check className="h-4 w-4" />
+              </Button>
+            </div>
+          ) : (
+            <div className="group cursor-pointer" onClick={() => setIsEditingTitle(true)}>
+              <div className="flex items-center justify-between">
+                <h2 className="text-xl font-bold text-gray-900 group-hover:text-primary transition-colors">
+                  {listData.list_title}
+                </h2>
+                <div className="flex items-center gap-2">
+                  <div className="opacity-0 group-hover:opacity-100 transition-opacity text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded">
+                    Click to edit
+                  </div>
+                  <Edit2 className="h-4 w-4 text-gray-400 group-hover:text-primary transition-colors" />
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
         
+        {/* Action buttons */}
         {listData.id && (
-          <Button
-            size="sm"
-            variant="ghost"
-            onClick={handleDeleteList}
-            className="text-destructive hover:text-destructive hover:bg-red-50"
-          >
-            <Trash2 className="h-4 w-4" />
-          </Button>
+          <div className="flex justify-end">
+            <Button
+              size="sm"
+              variant="ghost"
+              onClick={handleDeleteList}
+              className="text-destructive hover:text-destructive hover:bg-red-50"
+            >
+              <Trash2 className="h-4 w-4 mr-2" />
+              Delete List
+            </Button>
+          </div>
         )}
       </CardHeader>
 
