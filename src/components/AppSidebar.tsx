@@ -42,7 +42,6 @@ export function AppSidebar() {
 
   const handleLinkClick = (e: React.MouseEvent) => {
     if (isMobile) {
-      // Close mobile sidebar properly
       setOpenMobile(false);
     }
   };
@@ -51,10 +50,19 @@ export function AppSidebar() {
     <Sidebar 
       collapsible={isMobile ? "offcanvas" : "icon"}
       className={cn(
-        "h-full border-r bg-sidebar",
-        isMobile && "relative",
-        !isMobile && (open ? "w-64" : "w-14")
+        // On desktop: fixed position, starts below 64px header, full height minus header
+        !isMobile && "fixed left-0 z-30 border-r bg-sidebar transition-all",
+        // On mobile: relative as before
+        isMobile && "relative border-r bg-sidebar",
+        // Width logic
+        !isMobile && (open ? "w-64" : "w-14"),
+        "h-full"
       )}
+      // Only apply top/height on desktop
+      style={!isMobile 
+        ? { top: "64px", height: "calc(100vh - 64px)" }
+        : undefined
+      }
       variant="sidebar"
     >
       <SidebarContent className={cn(!isMobile && "p-2")}>
