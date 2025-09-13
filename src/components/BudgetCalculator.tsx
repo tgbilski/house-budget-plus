@@ -330,9 +330,9 @@ const BudgetCalculator: React.FC<BudgetCalculatorProps> = ({
                   setOwnerName(newName);
                   onNameChange(id, newName);
                 }}
-                className="text-lg font-semibold h-10 border-2 focus:border-primary transition-colors"
+                className="text-base sm:text-lg font-semibold h-9 sm:h-10 border-2 focus:border-primary transition-colors flex-1 min-w-0"
               />
-              <div className="text-xs text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+              <div className="hidden sm:block text-xs text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap flex-shrink-0">
                 Owner name
               </div>
             </div>

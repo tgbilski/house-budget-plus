@@ -395,13 +395,13 @@ const SavingsGoals = () => {
 
             <div className="flex gap-2 flex-wrap">
               {savingsGoals.map((goal) => (
-                <div key={goal.id} className="flex items-center gap-1">
+                <div key={goal.id} className="flex items-center gap-1 w-full sm:w-auto">
                   {editingGoalId === goal.id ? (
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-2 w-full sm:w-auto">
                       <Input
                         value={editingTitle}
                         onChange={(e) => setEditingTitle(e.target.value)}
-                        className="h-10 w-48 text-lg font-semibold border-2 border-primary"
+                        className="h-9 sm:h-10 w-full sm:w-48 text-base sm:text-lg font-semibold border-2 border-primary"
                         onKeyDown={(e) => {
                           if (e.key === 'Enter') updateGoalTitle(editingTitle);
                           if (e.key === 'Escape') setEditingGoalId(null);
@@ -410,36 +410,36 @@ const SavingsGoals = () => {
                         autoFocus
                         placeholder="Goal name..."
                       />
-                      <Button size="sm" onClick={() => updateGoalTitle(editingTitle)} className="h-10">
+                      <Button size="sm" onClick={() => updateGoalTitle(editingTitle)} className="h-9 sm:h-10 flex-shrink-0">
                         <Check className="h-4 w-4" />
                       </Button>
                     </div>
                   ) : (
-                    <div className="flex items-center gap-1">
+                    <div className="flex items-center gap-1 w-full sm:w-auto">
                       <div 
                         className={cn(
-                          "group relative cursor-pointer transition-all",
+                          "group relative cursor-pointer transition-all flex-1 sm:flex-none",
                           currentGoalId === goal.id 
                             ? "bg-primary text-primary-foreground" 
                             : "bg-muted hover:bg-muted/80",
-                          "rounded-lg px-4 py-3 border-2",
+                          "rounded-lg px-3 sm:px-4 py-2 sm:py-3 border-2",
                           currentGoalId === goal.id && "border-primary",
                           currentGoalId !== goal.id && "border-transparent hover:border-muted-foreground/20"
                         )}
                         onClick={() => setCurrentGoalId(goal.id)}
                       >
                         <div className="flex items-center justify-between min-w-0">
-                          <span className="text-lg font-semibold truncate pr-2">
+                          <span className="text-base sm:text-lg font-semibold truncate pr-2">
                             {goal.title}
                           </span>
                           <div className="flex items-center gap-1 flex-shrink-0">
-                            <div className="opacity-0 group-hover:opacity-100 transition-opacity text-xs bg-black/10 px-2 py-1 rounded whitespace-nowrap">
+                            <div className="hidden sm:block opacity-0 group-hover:opacity-100 transition-opacity text-xs bg-black/10 px-2 py-1 rounded whitespace-nowrap">
                               Click to edit
                             </div>
                             <Button
                               variant="ghost"
                               size="sm"
-                              className="opacity-0 group-hover:opacity-100 transition-opacity h-6 w-6 p-0"
+                              className="opacity-0 group-hover:opacity-100 transition-opacity h-6 w-6 p-0 flex-shrink-0"
                               onClick={(e) => {
                                 e.stopPropagation();
                                 setEditingGoalId(goal.id);
@@ -456,7 +456,7 @@ const SavingsGoals = () => {
                           variant="ghost"
                           size="sm"
                           onClick={() => deleteGoal(goal.id)}
-                          className="h-8 w-8 p-0 text-destructive hover:bg-red-50"
+                          className="h-8 w-8 p-0 text-destructive hover:bg-red-50 flex-shrink-0"
                         >
                           <Trash2 className="h-3 w-3" />
                         </Button>

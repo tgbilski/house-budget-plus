@@ -816,9 +816,9 @@ const Vacation: React.FC = () => {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="flex flex-wrap gap-3 mb-4">
+            <div className="flex flex-wrap gap-2 sm:gap-3 mb-4">
               {allProjects.map((project) => (
-                <div key={project.id} className="relative">
+                <div key={project.id} className="relative w-full sm:w-auto">
                   {editingProjectId === project.id ? (
                     <div className="flex items-center gap-2">
                       <Input
@@ -832,14 +832,14 @@ const Vacation: React.FC = () => {
                             setEditingTitle('');
                           }
                         }}
-                        className="text-lg font-semibold h-12 w-48 border-2 border-primary"
+                        className="text-base sm:text-lg font-semibold h-10 sm:h-12 w-full sm:w-48 border-2 border-primary"
                         placeholder="Project name..."
                         autoFocus
                       />
                       <Button
                         size="sm"
                         onClick={() => updateProjectTitle(project.id, editingTitle)}
-                        className="h-10"
+                        className="h-10 flex-shrink-0"
                       >
                         <Check className="h-4 w-4" />
                       </Button>
@@ -850,26 +850,26 @@ const Vacation: React.FC = () => {
                           setEditingProjectId(null);
                           setEditingTitle('');
                         }}
-                        className="h-10"
+                        className="h-10 flex-shrink-0"
                       >
                         <X className="h-4 w-4" />
                       </Button>
                     </div>
                   ) : (
-                    <div className={`group relative cursor-pointer transition-all rounded-lg border-2 p-4 ${
+                    <div className={`group relative cursor-pointer transition-all rounded-lg border-2 p-3 sm:p-4 w-full sm:w-auto ${
                       selectedProject?.id === project.id 
                         ? 'bg-primary text-primary-foreground border-primary' 
                         : 'bg-card hover:bg-muted border-border hover:border-muted-foreground/20'
                     }`}>
                       <div
                         onClick={() => setSelectedProject(project)}
-                        className="flex items-center justify-between min-w-0"
+                        className="flex items-start justify-between gap-2 min-w-0"
                       >
-                        <span className="text-lg font-semibold truncate pr-2">
+                        <span className="text-base sm:text-lg font-semibold truncate pr-2 flex-1 break-words">
                           {project.title}
                         </span>
                         <div className="flex items-center gap-1 flex-shrink-0">
-                          <div className="opacity-0 group-hover:opacity-100 transition-opacity text-xs bg-black/10 px-2 py-1 rounded whitespace-nowrap">
+                          <div className="hidden sm:block opacity-0 group-hover:opacity-100 transition-opacity text-xs bg-black/10 px-2 py-1 rounded whitespace-nowrap">
                             Click to edit
                           </div>
                           <Button
@@ -880,7 +880,7 @@ const Vacation: React.FC = () => {
                               setEditingProjectId(project.id);
                               setEditingTitle(project.title);
                             }}
-                            className={`h-6 w-6 p-0 opacity-0 group-hover:opacity-100 transition-opacity ${
+                            className={`h-6 w-6 p-0 opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0 ${
                               selectedProject?.id === project.id ? 'hover:bg-primary-foreground/20' : ''
                             }`}
                           >
@@ -894,7 +894,7 @@ const Vacation: React.FC = () => {
                                 e.stopPropagation();
                                 setDeletingProject(project.id);
                               }}
-                              className={`h-6 w-6 p-0 text-destructive hover:text-destructive opacity-0 group-hover:opacity-100 transition-opacity ${
+                              className={`h-6 w-6 p-0 text-destructive hover:text-destructive opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0 ${
                                 selectedProject?.id === project.id ? 'hover:bg-destructive/20' : 'hover:bg-destructive/10'
                               }`}
                             >

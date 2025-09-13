@@ -207,29 +207,29 @@ export function GiftCard({ initialData, onDelete, onSave }: GiftCardProps) {
               <Input
                 value={listData.list_title}
                 onChange={(e) => handleTitleChange(e.target.value)}
-                className="text-xl font-bold bg-white border-2 border-primary text-gray-900 h-12"
+                className="text-lg sm:text-xl font-bold bg-white border-2 border-primary text-gray-900 h-10 sm:h-12 flex-1 min-w-0"
                 placeholder="Enter gift list title..."
                 autoFocus
               />
               <Button
                 size="sm"
                 onClick={saveListTitle}
-                className="h-10 px-3"
+                className="h-10 px-2 sm:px-3 flex-shrink-0"
               >
                 <Check className="h-4 w-4" />
               </Button>
             </div>
           ) : (
             <div className="group cursor-pointer" onClick={() => setIsEditingTitle(true)}>
-              <div className="flex items-center justify-between">
-                <h2 className="text-xl font-bold text-gray-900 group-hover:text-primary transition-colors">
+              <div className="flex items-start justify-between gap-2">
+                <h2 className="text-lg sm:text-xl font-bold text-gray-900 group-hover:text-primary transition-colors flex-1 min-w-0 break-words">
                   {listData.list_title}
                 </h2>
-                <div className="flex items-center gap-2">
-                  <div className="opacity-0 group-hover:opacity-100 transition-opacity text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded">
+                <div className="flex items-center gap-1 flex-shrink-0">
+                  <div className="hidden sm:block opacity-0 group-hover:opacity-100 transition-opacity text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded whitespace-nowrap">
                     Click to edit
                   </div>
-                  <Edit2 className="h-4 w-4 text-gray-400 group-hover:text-primary transition-colors" />
+                  <Edit2 className="h-4 w-4 text-gray-400 group-hover:text-primary transition-colors flex-shrink-0" />
                 </div>
               </div>
             </div>
