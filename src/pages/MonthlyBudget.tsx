@@ -4,7 +4,7 @@ import { Plus, Globe, PiggyBank, Receipt, DollarSign } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import BudgetCalculator from '@/components/BudgetCalculator';
-import { BudgetHealthGauge } from '@/components/BudgetHealthGauge';
+
 import { useCurrency } from '@/hooks/useCurrency';
 import { useAuth } from '@/hooks/useAuth';
 import { useBadges } from '@/hooks/useBadges';
@@ -234,15 +234,6 @@ const MonthlyBudget: React.FC = () => {
 
           {/* Sidebar */}
           <div className="lg:col-span-4 space-y-6">
-            {/* Budget Health */}
-            <div className="bg-card rounded-xl border p-6">
-              <h3 className="text-lg font-semibold mb-4">Budget Health</h3>
-              <BudgetHealthGauge 
-                income={totalIncome} 
-                totalExpenses={totalExpenses} 
-              />
-            </div>
-
             {/* Quick Tips */}
             <div className="bg-card rounded-xl border p-6">
               <h3 className="text-lg font-semibold mb-4">Quick Tips</h3>
