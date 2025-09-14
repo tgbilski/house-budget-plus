@@ -71,6 +71,34 @@ const ScrollIndicator = () => (
 // Consolidated Hero and Social Proof section
 const HeroSectionContent = () => (
   <section className="relative py-8 md:py-12 px-4 rounded-2xl mx-4 shadow-xl overflow-visible bg-white mt-16 md:mt-20">
+    {/* Spiral notepad holes at the top */}
+    <div className="absolute top-4 left-0 right-0 flex justify-center space-x-8 z-30">
+      {[...Array(8)].map((_, i) => (
+        <div
+          key={i}
+          className="w-4 h-4 bg-gray-300 rounded-full shadow-inner border-2 border-gray-400"
+          style={{
+            background: 'radial-gradient(circle at 30% 30%, #f0f0f0, #d0d0d0)',
+            boxShadow: 'inset 0 2px 4px rgba(0,0,0,0.3), 0 1px 2px rgba(0,0,0,0.1)'
+          }}
+        />
+      ))}
+    </div>
+    
+    {/* Red margin line */}
+    <div className="absolute top-16 left-8 bottom-8 w-0.5 bg-red-300 opacity-60 z-20"></div>
+    
+    {/* Subtle horizontal lines for notepad effect */}
+    <div className="absolute inset-0 z-10 pointer-events-none">
+      {[...Array(20)].map((_, i) => (
+        <div
+          key={i}
+          className="absolute left-0 right-0 h-px bg-blue-100 opacity-30"
+          style={{ top: `${100 + i * 25}px` }}
+        />
+      ))}
+    </div>
+
     {/* Mascot Image - Absolutely positioned just above the title */}
     <div className="absolute top-[-60px] left-1/2 -translate-x-1/2 z-20">
       <img
