@@ -101,7 +101,7 @@ const HeroSectionContent = () => (
         
         {/* Step-by-step Value Propositions */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10 max-w-5xl mx-auto">
-          <div className="flex flex-col items-start text-left p-6 bg-white/80 backdrop-blur-sm rounded-xl border border-gray-200 hover:shadow-lg transition-all duration-300 shadow-lg">
+          <div className="flex flex-col items-start text-left p-6 bg-[#eaeff0] backdrop-blur-sm rounded-xl border border-gray-200 hover:shadow-lg transition-all duration-300 shadow-lg">
             <div className="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mb-4 hover:scale-110 transition-transform duration-300">
               <UserCheck className="h-8 w-8" />
             </div>
@@ -111,7 +111,7 @@ const HeroSectionContent = () => (
             </p>
           </div>
           
-          <div className="flex flex-col items-start text-left p-6 bg-white/80 backdrop-blur-sm rounded-xl border border-gray-200 hover:shadow-lg transition-all duration-300 shadow-lg">
+          <div className="flex flex-col items-start text-left p-6 bg-[#eaeff0] backdrop-blur-sm rounded-xl border border-gray-200 hover:shadow-lg transition-all duration-300 shadow-lg">
             <div className="w-16 h-16 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mb-4 hover:scale-110 transition-transform duration-300">
               <Users className="h-8 w-8" />
             </div>
@@ -121,7 +121,7 @@ const HeroSectionContent = () => (
             </p>
           </div>
           
-          <div className="flex flex-col items-start text-left p-6 bg-white/80 backdrop-blur-sm rounded-xl border border-gray-200 hover:shadow-lg transition-all duration-300 shadow-lg">
+          <div className="flex flex-col items-start text-left p-6 bg-[#eaeff0] backdrop-blur-sm rounded-xl border border-gray-200 hover:shadow-lg transition-all duration-300 shadow-lg">
             <div className="w-16 h-16 bg-purple-100 text-purple-600 rounded-full flex items-center justify-center mb-4 hover:scale-110 transition-transform duration-300">
               <Brain className="h-8 w-8" />
             </div>
@@ -131,7 +131,7 @@ const HeroSectionContent = () => (
             </p>
           </div>
           
-          <div className="flex flex-col items-start text-left p-6 bg-white/80 backdrop-blur-sm rounded-xl border border-gray-200 hover:shadow-lg transition-all duration-300 shadow-lg">
+          <div className="flex flex-col items-start text-left p-6 bg-[#eaeff0] backdrop-blur-sm rounded-xl border border-gray-200 hover:shadow-lg transition-all duration-300 shadow-lg">
             <div className="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mb-4 hover:scale-110 transition-transform duration-300">
               <Shield className="h-8 w-8" />
             </div>
@@ -183,7 +183,7 @@ const AllToolsGrid = () => (
         {toolsData.map((tool, index) => (
           <Link to={tool.href} key={index} className="block">
             <Card
-              className={`group relative hover:shadow-xl transition-all duration-300 border-2 hover:border-primary/20 cursor-pointer hover:scale-105 h-full animate-fade-in bg-white`}
+              className={`group relative hover:shadow-xl transition-all duration-300 border-2 hover:border-primary/20 cursor-pointer hover:scale-105 h-full animate-fade-in bg-[#eaeff0]`}
               style={{ animationDelay: `${index * 0.1}s` }}
             >
               <CardHeader className="p-6">
