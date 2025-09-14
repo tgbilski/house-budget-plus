@@ -10,6 +10,7 @@ import { HouseholdProvider, useHouseholdContext } from "@/providers/HouseholdPro
 import { SidebarProvider } from "@/components/ui/sidebar";
 import Header from "@/components/Header";
 import { AppSidebar } from "@/components/AppSidebar";
+import ScrollToTop from "@/components/ScrollToTop";
 import Footer from "@/components/Footer";
 import { useIsMobile } from "@/hooks/use-mobile";
 import Home from "@/pages/Home";
@@ -94,6 +95,7 @@ const App = () => {
               <HouseholdProvider>
                 <CurrencyContext.Provider value={{ currency, setCurrency }}>
                   <BrowserRouter>
+                    <ScrollToTop />
                     <SidebarProvider defaultOpen={isMobile ? false : false}>
                       <div 
                         className="min-h-screen w-full flex flex-col relative"
