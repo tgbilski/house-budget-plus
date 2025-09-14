@@ -70,7 +70,7 @@ const ScrollIndicator = () => (
 
 // Consolidated Hero and Social Proof section
 const HeroSectionContent = () => (
-  <section className="relative py-12 md:py-16 px-4 rounded-2xl mx-4 shadow-xl overflow-visible bg-white mt-16 md:mt-20">
+  <section className="relative py-8 md:py-12 px-4 rounded-2xl mx-4 shadow-xl overflow-visible bg-white mt-16 md:mt-20">
     {/* Mascot Image - Absolutely positioned just above the title */}
     <div className="absolute top-[-60px] left-1/2 -translate-x-1/2 z-20">
       <img
@@ -89,21 +89,21 @@ const HeroSectionContent = () => (
       />
     </div>
     
-    <div className="w-full max-w-6xl mx-auto relative z-10 pt-20 md:pt-24">
+    <div className="w-full max-w-6xl mx-auto relative z-10 pt-16 md:pt-20">
       {/* Main Hero Content */}
-      <div className="text-center mb-12">
-        <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-6 text-gray-900 leading-tight">
+      <div className="text-center mb-8">
+        <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 text-gray-900 leading-tight">
           Own Your <span className="text-primary">House Budget</span>
         </h1>
-        <p className="text-lg md:text-xl text-gray-600 max-w-4xl mx-auto mb-10 leading-relaxed">
+        <p className="text-base md:text-lg text-gray-600 max-w-4xl mx-auto mb-6 leading-relaxed">
           <strong>Your data stays yours.</strong> No bank connections required. Our AI helps you develop a personalized financial plan using only the data you choose to share.
         </p>
         
         {/* Step-by-step Value Propositions */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10 max-w-5xl mx-auto">
-          <div className="flex flex-col items-start text-left p-6 bg-[#eaeff0] backdrop-blur-sm rounded-xl border border-gray-200 hover:shadow-lg transition-all duration-300 shadow-lg">
-            <div className="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mb-4 hover:scale-110 transition-transform duration-300">
-              <UserCheck className="h-8 w-8" />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6 max-w-5xl mx-auto">
+          <div className="flex flex-col items-start text-left p-4 bg-[#eaeff0] backdrop-blur-sm rounded-xl border border-gray-200 hover:shadow-lg transition-all duration-300 shadow-lg">
+            <div className="w-12 h-12 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mb-3 hover:scale-110 transition-transform duration-300">
+              <UserCheck className="h-6 w-6" />
             </div>
             <h3 className="text-lg font-semibold text-gray-900 mb-2">Step 1: Sign up for free</h3>
             <p className="text-sm text-gray-600 leading-relaxed">
@@ -111,9 +111,9 @@ const HeroSectionContent = () => (
             </p>
           </div>
           
-          <div className="flex flex-col items-start text-left p-6 bg-[#eaeff0] backdrop-blur-sm rounded-xl border border-gray-200 hover:shadow-lg transition-all duration-300 shadow-lg">
-            <div className="w-16 h-16 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mb-4 hover:scale-110 transition-transform duration-300">
-              <Users className="h-8 w-8" />
+          <div className="flex flex-col items-start text-left p-4 bg-[#eaeff0] backdrop-blur-sm rounded-xl border border-gray-200 hover:shadow-lg transition-all duration-300 shadow-lg">
+            <div className="w-12 h-12 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mb-3 hover:scale-110 transition-transform duration-300">
+              <Users className="h-6 w-6" />
             </div>
             <h3 className="text-lg font-semibold text-gray-900 mb-2">Step 2: Create your household budget</h3>
             <p className="text-sm text-gray-600 leading-relaxed">
@@ -121,9 +121,9 @@ const HeroSectionContent = () => (
             </p>
           </div>
           
-          <div className="flex flex-col items-start text-left p-6 bg-[#eaeff0] backdrop-blur-sm rounded-xl border border-gray-200 hover:shadow-lg transition-all duration-300 shadow-lg">
-            <div className="w-16 h-16 bg-purple-100 text-purple-600 rounded-full flex items-center justify-center mb-4 hover:scale-110 transition-transform duration-300">
-              <Brain className="h-8 w-8" />
+          <div className="flex flex-col items-start text-left p-4 bg-[#eaeff0] backdrop-blur-sm rounded-xl border border-gray-200 hover:shadow-lg transition-all duration-300 shadow-lg">
+            <div className="w-12 h-12 bg-purple-100 text-purple-600 rounded-full flex items-center justify-center mb-3 hover:scale-110 transition-transform duration-300">
+              <Brain className="h-6 w-6" />
             </div>
             <h3 className="text-lg font-semibold text-gray-900 mb-2">Step 3: Upgrade for AI insights</h3>
             <p className="text-sm text-gray-600 leading-relaxed">
@@ -131,9 +131,9 @@ const HeroSectionContent = () => (
             </p>
           </div>
           
-          <div className="flex flex-col items-start text-left p-6 bg-[#eaeff0] backdrop-blur-sm rounded-xl border border-gray-200 hover:shadow-lg transition-all duration-300 shadow-lg">
-            <div className="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mb-4 hover:scale-110 transition-transform duration-300">
-              <Shield className="h-8 w-8" />
+          <div className="flex flex-col items-start text-left p-4 bg-[#eaeff0] backdrop-blur-sm rounded-xl border border-gray-200 hover:shadow-lg transition-all duration-300 shadow-lg">
+            <div className="w-12 h-12 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mb-3 hover:scale-110 transition-transform duration-300">
+              <Shield className="h-6 w-6" />
             </div>
             <h3 className="text-lg font-semibold text-gray-900 mb-2">Step 4: Stay completely private</h3>
             <p className="text-sm text-gray-600 leading-relaxed">
@@ -143,8 +143,8 @@ const HeroSectionContent = () => (
         </div>
 
         {/* CTA Buttons */}
-        <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8 max-w-md mx-auto">
-          <Button asChild size="lg" className="w-full sm:w-auto text-base px-8 py-4 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
+        <div className="flex flex-col sm:flex-row gap-4 justify-center mb-6 max-w-md mx-auto">
+          <Button asChild size="lg" className="w-full sm:w-auto text-base px-6 py-3 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
             <Link to="/budget">
               <div className="flex items-center">
                 <span>Start Budgeting</span>
@@ -152,7 +152,7 @@ const HeroSectionContent = () => (
               </div>
             </Link>
           </Button>
-          <Button asChild variant="outline" size="lg" className="w-full sm:w-auto text-base px-8 py-4 border-2 hover:bg-gray-50 transition-all duration-300">
+          <Button asChild variant="outline" size="lg" className="w-full sm:w-auto text-base px-6 py-3 border-2 hover:bg-gray-50 transition-all duration-300">
             <Link to="/ai-insights">
               <span>Try AI Insights</span>
             </Link>
