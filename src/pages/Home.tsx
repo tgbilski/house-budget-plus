@@ -76,92 +76,72 @@ const HeroSectionContent = () => (
         {/* Step-by-step Value Propositions */}
        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6 max-w-5xl mx-auto">
   <Card asChild className="group relative hover:shadow-xl transition-all duration-300 border-2 hover:border-primary/20 cursor-pointer hover:scale-105 h-full animate-fade-in bg-[#eaeff0]">
-    <Link to="/auth" className="block w-full">
-      <CardHeader className="p-6">
-        <div className="flex items-start gap-4">
-          <div className="flex flex-col items-center flex-shrink-0">
-            <div className="w-12 h-12 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mb-3 hover:scale-110 transition-transform duration-300">
-              <UserCheck className="h-6 w-6" />
-            </div>
-            <div className="flex items-center text-sm text-primary group-hover:translate-x-1 transition-transform duration-300">
-              <ArrowRight className="h-4 w-4" />
-            </div>
+    <Link to="/auth" className="block w-full h-full">
+      <CardHeader className="p-6 flex flex-col justify-center h-full text-center">
+        <div className="flex flex-col items-center">
+          <div className="w-12 h-12 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mb-3 hover:scale-110 transition-transform duration-300">
+            <UserCheck className="h-6 w-6" />
           </div>
-          <div className="flex-1">
-            <CardTitle className="text-lg font-semibold text-gray-900 mb-2 group-hover:text-primary transition-colors">Step 1: Sign up for free</CardTitle>
-            <CardDescription className="text-sm text-gray-600 leading-relaxed">
-              No credit card required.
-            </CardDescription>
-          </div>
+          <CardTitle className="text-lg font-semibold text-gray-900 mb-2 group-hover:text-primary transition-colors uppercase">Step 1: Sign up for free</CardTitle>
+          <CardDescription className="text-sm text-gray-600 leading-relaxed">
+            Create an account with your email.
+            <br />
+            No credit card required.
+          </CardDescription>
         </div>
       </CardHeader>
     </Link>
   </Card>
 
   <Card asChild className="group relative hover:shadow-xl transition-all duration-300 border-2 hover:border-primary/20 cursor-pointer hover:scale-105 h-full animate-fade-in bg-[#eaeff0]">
-    <Link to="/budget" className="block w-full">
-      <CardHeader className="p-6">
-        <div className="flex items-start gap-4">
-          <div className="flex flex-col items-center flex-shrink-0">
-            <div className="w-12 h-12 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mb-3 hover:scale-110 transition-transform duration-300">
-              <Calculator className="h-6 w-6" />
-            </div>
-            <div className="flex items-center text-sm text-primary group-hover:translate-x-1 transition-transform duration-300">
-              <ArrowRight className="h-4 w-4" />
-            </div>
+    <Link to="/budget" className="block w-full h-full">
+      <CardHeader className="p-6 flex flex-col justify-center h-full text-center">
+        <div className="flex flex-col items-center">
+          <div className="w-12 h-12 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mb-3 hover:scale-110 transition-transform duration-300">
+            <Calculator className="h-6 w-6" />
           </div>
-          <div className="flex-1">
-            <CardTitle className="text-lg font-semibold text-gray-900 mb-2 group-hover:text-primary transition-colors">Step 2: Create budget</CardTitle>
-            <CardDescription className="text-sm text-gray-600 leading-relaxed">
-              Track monthly expenses.
-            </CardDescription>
-          </div>
+          <CardTitle className="text-lg font-semibold text-gray-900 mb-2 group-hover:text-primary transition-colors uppercase">Step 2: Create a budget</CardTitle>
+          <CardDescription className="text-sm text-gray-600 leading-relaxed">
+            Link your bank accounts to our secure app.
+            <br />
+            Automatically track monthly expenses.
+          </CardDescription>
         </div>
       </CardHeader>
     </Link>
   </Card>
 
   <Card asChild className="group relative hover:shadow-xl transition-all duration-300 border-2 hover:border-primary/20 cursor-pointer hover:scale-105 h-full animate-fade-in bg-[#eaeff0]">
-    <Link to="/savings" className="block w-full">
-      <CardHeader className="p-6">
-        <div className="flex items-start gap-4">
-          <div className="flex flex-col items-center flex-shrink-0">
-            <div className="w-12 h-12 bg-green-100 text-green-600 rounded-full flex items-center justify-center mb-3 hover:scale-110 transition-transform duration-300">
-              <Target className="h-6 w-6" />
-            </div>
-            <div className="flex items-center text-sm text-primary group-hover:translate-x-1 transition-transform duration-300">
-              <ArrowRight className="h-4 w-4" />
-            </div>
+    <Link to="/savings" className="block w-full h-full">
+      <CardHeader className="p-6 flex flex-col justify-center h-full text-center">
+        <div className="flex flex-col items-center">
+          <div className="w-12 h-12 bg-green-100 text-green-600 rounded-full flex items-center justify-center mb-3 hover:scale-110 transition-transform duration-300">
+            <Target className="h-6 w-6" />
           </div>
-          <div className="flex-1">
-            <CardTitle className="text-lg font-semibold text-gray-900 mb-2 group-hover:text-primary transition-colors">Step 3: Set Savings Goals</CardTitle>
-            <CardDescription className="text-sm text-gray-600 leading-relaxed">
-              Define financial goals.
-            </CardDescription>
-          </div>
+          <CardTitle className="text-lg font-semibold text-gray-900 mb-2 group-hover:text-primary transition-colors uppercase">Step 3: Set savings goals</CardTitle>
+          <CardDescription className="text-sm text-gray-600 leading-relaxed">
+            Define your financial goals for the future.
+            <br />
+            Track your progress effortlessly.
+          </CardDescription>
         </div>
       </CardHeader>
     </Link>
   </Card>
 
   <Card asChild className="group relative hover:shadow-xl transition-all duration-300 border-2 hover:border-primary/20 cursor-pointer hover:scale-105 h-full animate-fade-in bg-[#eaeff0]">
-    <Link to="/subscription-success" className="block w-full">
-      <CardHeader className="p-6">
-        <div className="flex items-start gap-4">
-          <div className="flex flex-col items-center flex-shrink-0">
-            <div className="w-12 h-12 bg-purple-100 text-purple-600 rounded-full flex items-center justify-center mb-3 hover:scale-110 transition-transform duration-300">
-              <Brain className="h-6 w-6" />
-            </div>
-            <div className="flex items-center text-sm text-primary group-hover:translate-x-1 transition-transform duration-300">
-              <ArrowRight className="h-4 w-4" />
-            </div>
+    <Link to="/subscription-success" className="block w-full h-full">
+      <CardHeader className="p-6 flex flex-col justify-center h-full text-center">
+        <div className="flex flex-col items-center">
+          <div className="w-12 h-12 bg-purple-100 text-purple-600 rounded-full flex items-center justify-center mb-3 hover:scale-110 transition-transform duration-300">
+            <Brain className="h-6 w-6" />
           </div>
-          <div className="flex-1">
-            <CardTitle className="text-lg font-semibold text-gray-900 mb-2 group-hover:text-primary transition-colors">Step 4: Get AI Insights</CardTitle>
-            <CardDescription className="text-sm text-gray-600 leading-relaxed">
-              AI-powered Insight.
-            </CardDescription>
-          </div>
+          <CardTitle className="text-lg font-semibold text-gray-900 mb-2 group-hover:text-primary transition-colors uppercase">Step 4: Get AI insights</CardTitle>
+          <CardDescription className="text-sm text-gray-600 leading-relaxed">
+            Receive personalized advice on your finances.
+            <br />
+            Our AI-powered insights help you save more.
+          </CardDescription>
         </div>
       </CardHeader>
     </Link>
