@@ -91,7 +91,7 @@ const HeroSectionContent = () => (
                     <div className="flex-1">
                       <CardTitle className="text-lg font-semibold text-gray-900 mb-2 group-hover:text-primary transition-colors">Step 1: Sign up for free</CardTitle>
                       <CardDescription className="text-sm text-gray-600 leading-relaxed">
-                        Create your account instantly with no credit card required.
+                        No credit card required.
                       </CardDescription>
                     </div>
                   </div>
@@ -116,7 +116,7 @@ const HeroSectionContent = () => (
                     <div className="flex-1">
                       <CardTitle className="text-lg font-semibold text-gray-900 mb-2 group-hover:text-primary transition-colors">Step 2: Create budget</CardTitle>
                       <CardDescription className="text-sm text-gray-600 leading-relaxed">
-                        Track monthly expenses and manage your household budget.
+                        Track monthly expenses.
                       </CardDescription>
                     </div>
                   </div>
@@ -141,7 +141,7 @@ const HeroSectionContent = () => (
                     <div className="flex-1">
                       <CardTitle className="text-lg font-semibold text-gray-900 mb-2 group-hover:text-primary transition-colors">Step 3: Set Savings Goals</CardTitle>
                       <CardDescription className="text-sm text-gray-600 leading-relaxed">
-                        Define financial goals and track your progress.
+                        Define financial goals.
                       </CardDescription>
                     </div>
                   </div>
@@ -166,7 +166,7 @@ const HeroSectionContent = () => (
                     <div className="flex-1">
                       <CardTitle className="text-lg font-semibold text-gray-900 mb-2 group-hover:text-primary transition-colors">Step 4: Get AI Insights</CardTitle>
                       <CardDescription className="text-sm text-gray-600 leading-relaxed">
-                        Access AI-powered recommendations for your finances.
+                        AI-powered Insight.
                       </CardDescription>
                     </div>
                   </div>
