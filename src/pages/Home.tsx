@@ -57,7 +57,7 @@ const HeroSectionContent = () => (
     {/* Background house image */}
     <div className="absolute inset-0">
       <img
-        src="/lovable-uploads/d46481b3-e5b7-454b-b44e-4e96eb93a00f.png"
+        src="/lovable-uploads/new-house-background.png"
         alt="House background"
         className="w-full h-full object-cover rounded-2xl opacity-20"
       />
@@ -76,50 +76,102 @@ const HeroSectionContent = () => (
         {/* Step-by-step Value Propositions */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6 max-w-5xl mx-auto">
           <Button asChild className="h-auto p-0 bg-transparent hover:bg-transparent">
-            <Link to="/auth" className="flex flex-col items-start text-left p-4 bg-[#eaeff0] backdrop-blur-sm rounded-xl border border-gray-200 hover:shadow-lg transition-all duration-300 shadow-lg hover:scale-105">
-              <div className="w-12 h-12 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mb-3 hover:scale-110 transition-transform duration-300">
-                <UserCheck className="h-6 w-6" />
-              </div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">Step 1: Sign up for free</h3>
-              <p className="text-sm text-gray-600 leading-relaxed">
-                Create your account instantly with no credit card required.
-              </p>
+            <Link to="/auth" className="block">
+              <Card className="group relative hover:shadow-xl transition-all duration-300 border-2 hover:border-primary/20 cursor-pointer hover:scale-105 h-full animate-fade-in bg-[#eaeff0]">
+                <CardHeader className="p-6">
+                  <div className="flex items-start gap-4">
+                    <div className="flex flex-col items-center flex-shrink-0">
+                      <div className="w-12 h-12 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mb-3 hover:scale-110 transition-transform duration-300">
+                        <UserCheck className="h-6 w-6" />
+                      </div>
+                      <div className="flex items-center text-sm text-primary group-hover:translate-x-1 transition-transform duration-300">
+                        <ArrowRight className="h-4 w-4" />
+                      </div>
+                    </div>
+                    <div className="flex-1">
+                      <CardTitle className="text-lg font-semibold text-gray-900 mb-2 group-hover:text-primary transition-colors">Step 1: Sign up for free</CardTitle>
+                      <CardDescription className="text-sm text-gray-600 leading-relaxed">
+                        Create your account instantly with no credit card required.
+                      </CardDescription>
+                    </div>
+                  </div>
+                </CardHeader>
+              </Card>
             </Link>
           </Button>
           
           <Button asChild className="h-auto p-0 bg-transparent hover:bg-transparent">
-            <Link to="/budget" className="flex flex-col items-start text-left p-4 bg-[#eaeff0] backdrop-blur-sm rounded-xl border border-gray-200 hover:shadow-lg transition-all duration-300 shadow-lg hover:scale-105">
-              <div className="w-12 h-12 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mb-3 hover:scale-110 transition-transform duration-300">
-                <Calculator className="h-6 w-6" />
-              </div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">Step 2: Create your household budget</h3>
-              <p className="text-sm text-gray-600 leading-relaxed">
-                Track monthly expenses, compare project estimates, and plan gift budgets.
-              </p>
+            <Link to="/budget" className="block">
+              <Card className="group relative hover:shadow-xl transition-all duration-300 border-2 hover:border-primary/20 cursor-pointer hover:scale-105 h-full animate-fade-in bg-[#eaeff0]">
+                <CardHeader className="p-6">
+                  <div className="flex items-start gap-4">
+                    <div className="flex flex-col items-center flex-shrink-0">
+                      <div className="w-12 h-12 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mb-3 hover:scale-110 transition-transform duration-300">
+                        <Calculator className="h-6 w-6" />
+                      </div>
+                      <div className="flex items-center text-sm text-primary group-hover:translate-x-1 transition-transform duration-300">
+                        <ArrowRight className="h-4 w-4" />
+                      </div>
+                    </div>
+                    <div className="flex-1">
+                      <CardTitle className="text-lg font-semibold text-gray-900 mb-2 group-hover:text-primary transition-colors">Step 2: Create your household budget</CardTitle>
+                      <CardDescription className="text-sm text-gray-600 leading-relaxed">
+                        Track monthly expenses, compare project estimates, and plan gift budgets.
+                      </CardDescription>
+                    </div>
+                  </div>
+                </CardHeader>
+              </Card>
             </Link>
           </Button>
           
           <Button asChild className="h-auto p-0 bg-transparent hover:bg-transparent">
-            <Link to="/savings" className="flex flex-col items-start text-left p-4 bg-[#eaeff0] backdrop-blur-sm rounded-xl border border-gray-200 hover:shadow-lg transition-all duration-300 shadow-lg hover:scale-105">
-              <div className="w-12 h-12 bg-green-100 text-green-600 rounded-full flex items-center justify-center mb-3 hover:scale-110 transition-transform duration-300">
-                <Target className="h-6 w-6" />
-              </div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">Step 3: Set Savings Goals</h3>
-              <p className="text-sm text-gray-600 leading-relaxed">
-                Define your financial goals and track your progress toward achieving them.
-              </p>
+            <Link to="/savings" className="block">
+              <Card className="group relative hover:shadow-xl transition-all duration-300 border-2 hover:border-primary/20 cursor-pointer hover:scale-105 h-full animate-fade-in bg-[#eaeff0]">
+                <CardHeader className="p-6">
+                  <div className="flex items-start gap-4">
+                    <div className="flex flex-col items-center flex-shrink-0">
+                      <div className="w-12 h-12 bg-green-100 text-green-600 rounded-full flex items-center justify-center mb-3 hover:scale-110 transition-transform duration-300">
+                        <Target className="h-6 w-6" />
+                      </div>
+                      <div className="flex items-center text-sm text-primary group-hover:translate-x-1 transition-transform duration-300">
+                        <ArrowRight className="h-4 w-4" />
+                      </div>
+                    </div>
+                    <div className="flex-1">
+                      <CardTitle className="text-lg font-semibold text-gray-900 mb-2 group-hover:text-primary transition-colors">Step 3: Set Savings Goals</CardTitle>
+                      <CardDescription className="text-sm text-gray-600 leading-relaxed">
+                        Define your financial goals and track your progress toward achieving them.
+                      </CardDescription>
+                    </div>
+                  </div>
+                </CardHeader>
+              </Card>
             </Link>
           </Button>
           
           <Button asChild className="h-auto p-0 bg-transparent hover:bg-transparent">
-            <Link to="/subscription-success" className="flex flex-col items-start text-left p-4 bg-[#eaeff0] backdrop-blur-sm rounded-xl border border-gray-200 hover:shadow-lg transition-all duration-300 shadow-lg hover:scale-105">
-              <div className="w-12 h-12 bg-purple-100 text-purple-600 rounded-full flex items-center justify-center mb-3 hover:scale-110 transition-transform duration-300">
-                <Brain className="h-6 w-6" />
-              </div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">Step 4: Get AI Insights</h3>
-              <p className="text-sm text-gray-600 leading-relaxed">
-                Access AI-powered recommendations and share data with family members.
-              </p>
+            <Link to="/subscription-success" className="block">
+              <Card className="group relative hover:shadow-xl transition-all duration-300 border-2 hover:border-primary/20 cursor-pointer hover:scale-105 h-full animate-fade-in bg-[#eaeff0]">
+                <CardHeader className="p-6">
+                  <div className="flex items-start gap-4">
+                    <div className="flex flex-col items-center flex-shrink-0">
+                      <div className="w-12 h-12 bg-purple-100 text-purple-600 rounded-full flex items-center justify-center mb-3 hover:scale-110 transition-transform duration-300">
+                        <Brain className="h-6 w-6" />
+                      </div>
+                      <div className="flex items-center text-sm text-primary group-hover:translate-x-1 transition-transform duration-300">
+                        <ArrowRight className="h-4 w-4" />
+                      </div>
+                    </div>
+                    <div className="flex-1">
+                      <CardTitle className="text-lg font-semibold text-gray-900 mb-2 group-hover:text-primary transition-colors">Step 4: Get AI Insights</CardTitle>
+                      <CardDescription className="text-sm text-gray-600 leading-relaxed">
+                        Access AI-powered recommendations and share data with family members.
+                      </CardDescription>
+                    </div>
+                  </div>
+                </CardHeader>
+              </Card>
             </Link>
           </Button>
         </div>
