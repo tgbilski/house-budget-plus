@@ -114,9 +114,9 @@ const HeroSectionContent = () => (
                       </div>
                     </div>
                     <div className="flex-1">
-                      <CardTitle className="text-lg font-semibold text-gray-900 mb-2 group-hover:text-primary transition-colors">Step 2: Create your household budget</CardTitle>
+                      <CardTitle className="text-lg font-semibold text-gray-900 mb-2 group-hover:text-primary transition-colors">Step 2: Create budget</CardTitle>
                       <CardDescription className="text-sm text-gray-600 leading-relaxed">
-                        Track monthly expenses, compare project estimates, and plan gift budgets.
+                        Track monthly expenses and manage your household budget.
                       </CardDescription>
                     </div>
                   </div>
@@ -141,7 +141,7 @@ const HeroSectionContent = () => (
                     <div className="flex-1">
                       <CardTitle className="text-lg font-semibold text-gray-900 mb-2 group-hover:text-primary transition-colors">Step 3: Set Savings Goals</CardTitle>
                       <CardDescription className="text-sm text-gray-600 leading-relaxed">
-                        Define your financial goals and track your progress toward achieving them.
+                        Define financial goals and track your progress.
                       </CardDescription>
                     </div>
                   </div>
@@ -166,7 +166,7 @@ const HeroSectionContent = () => (
                     <div className="flex-1">
                       <CardTitle className="text-lg font-semibold text-gray-900 mb-2 group-hover:text-primary transition-colors">Step 4: Get AI Insights</CardTitle>
                       <CardDescription className="text-sm text-gray-600 leading-relaxed">
-                        Access AI-powered recommendations and share data with family members.
+                        Access AI-powered recommendations for your finances.
                       </CardDescription>
                     </div>
                   </div>
@@ -186,7 +186,7 @@ const HeroSectionContent = () => (
 
 const OtherToolsGrid = () => (
   <section className="py-12 md:py-16 px-4 bg-white rounded-2xl mx-4 my-8 shadow-xl relative overflow-hidden">
-    <div className="w-full max-w-7xl mx-auto">
+    <div className="w-full max-w-4xl mx-auto">
       <div className="text-center mb-10">
         <h2 className="text-2xl md:text-3xl font-bold mb-4 text-gray-900">
           Other Great Tools
@@ -196,7 +196,7 @@ const OtherToolsGrid = () => (
         </p>
       </div>
       
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 relative z-10">
+      <div className="grid grid-cols-1 gap-6 relative z-10 max-w-2xl mx-auto">
         {otherToolsData.map((tool, index) => (
           <Link to={tool.href} key={index} className="block">
             <Card
