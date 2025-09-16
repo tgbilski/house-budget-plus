@@ -8,7 +8,7 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
-import { Plus, Target, Edit2, Check, X, AlertTriangle, Trash2, Calendar, DollarSign, TrendingUp, Award, ChevronDown, ChevronUp } from 'lucide-react';
+import { Target, AlertTriangle, Calendar, DollarSign, TrendingUp, Award, ChevronDown, ChevronUp } from 'lucide-react';
 import { AIChatbot } from '@/components/AIChatbot';
 import { toast } from 'sonner';
 import { SEO } from '@/components/SEO';
@@ -30,6 +30,7 @@ interface SavingsGoal {
   current_amount: number;
   description?: string;
   image_url?: string;
+  goal_number: number;
 }
 
 const SavingsGoals = () => {
@@ -37,8 +38,6 @@ const SavingsGoals = () => {
   const { currentHousehold } = useHouseholdContext();
   const [savingsGoals, setSavingsGoals] = useState<SavingsGoal[]>([]);
   const [currentGoalId, setCurrentGoalId] = useState<string | null>(null);
-  const [editingGoalId, setEditingGoalId] = useState<string | null>(null);
-  const [editingTitle, setEditingTitle] = useState('');
   const [localTargetAmount, setLocalTargetAmount] = useState('');
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear().toString());
   const [savingsData, setSavingsData] = useState<Record<string, number>>({});
@@ -55,14 +54,7 @@ const SavingsGoals = () => {
     if (user && currentHousehold) {
       loadSavingsGoals();
     } else if (!user) {
-      const defaultGoal = {
-        id: 'temp-1',
-        title: 'My Savings Goal',
-        target_amount: 0,
-        current_amount: 0
-      };
-      setSavingsGoals([defaultGoal]);
-      setCurrentGoalId(defaultGoal.id);
+      initializeDemoGoals();
       setLoading(false);
     }
   }, [user, currentHousehold]);
@@ -77,6 +69,17 @@ const SavingsGoals = () => {
     }
   }, [currentGoalId, selectedYear, savingsGoals]);
 
+  // Initialize 3 goals for demo users
+  const initializeDemoGoals = () => {
+    const demoGoals = [
+      { id: 'temp-1', title: 'Goal 1', target_amount: 0, current_amount: 0, goal_number: 1 },
+      { id: 'temp-2', title: 'Goal 2', target_amount: 0, current_amount: 0, goal_number: 2 },
+      { id: 'temp-3', title: 'Goal 3', target_amount: 0, current_amount: 0, goal_number: 3 }
+    ];
+    setSavingsGoals(demoGoals);
+    setCurrentGoalId(demoGoals[0].id);
+  };
+
   const loadSavingsGoals = async () => {
     try {
       const { data: goals, error: fetchError } = await supabase
@@ -84,88 +87,47 @@ const SavingsGoals = () => {
         .select('*')
         .eq('user_id', user?.id)
         .eq('household_id', currentHousehold?.id)
-        .order('created_at', { ascending: true });
+        .order('goal_number', { ascending: true });
 
       if (fetchError) throw fetchError;
 
-      if (goals && goals.length > 0) {
+      // Create all 3 goals if they don't exist
+      const existingGoalNumbers = goals?.map(g => g.goal_number) || [];
+      const missingGoals = [];
+      
+      for (let i = 1; i <= 3; i++) {
+        if (!existingGoalNumbers.includes(i)) {
+          missingGoals.push({
+            user_id: user?.id,
+            household_id: currentHousehold?.id,
+            title: `Goal ${i}`,
+            target_amount: 0,
+            current_amount: 0,
+            goal_number: i
+          });
+        }
+      }
+
+      if (missingGoals.length > 0) {
+        const { data: newGoals, error: insertError } = await supabase
+          .from('savings_goals')
+          .insert(missingGoals)
+          .select();
+        
+        if (insertError) throw insertError;
+        
+        const allGoals = [...(goals || []), ...(newGoals || [])].sort((a, b) => a.goal_number - b.goal_number);
+        setSavingsGoals(allGoals);
+        setCurrentGoalId(allGoals[0].id);
+      } else {
         setSavingsGoals(goals);
         setCurrentGoalId(goals[0].id);
-      } else {
-        await createNewGoal(true);
       }
     } catch (error) {
       console.error('Error loading savings goals:', error);
       toast.error('Failed to load savings goals.');
     } finally {
       setLoading(false);
-    }
-  };
-
-  const createNewGoal = async (isInitialLoad = false) => {
-    if (!user) {
-      const tempGoal = {
-        id: `temp-${Date.now()}`,
-        title: `Goal ${savingsGoals.length + 1}`,
-        target_amount: 0,
-        current_amount: 0
-      };
-      const newGoals = [...savingsGoals, tempGoal];
-      setSavingsGoals(newGoals);
-      setCurrentGoalId(tempGoal.id);
-      if (!isInitialLoad) toast.success('New savings goal created! Sign in to save your progress.');
-      return;
-    }
-
-    try {
-      const { data: newGoal, error } = await supabase
-        .from('savings_goals')
-        .insert([{
-          user_id: user?.id,
-          household_id: currentHousehold?.id,
-          title: `Goal ${savingsGoals.length + 1}`,
-          target_amount: 0,
-          current_amount: 0
-        }])
-        .select()
-        .single();
-
-      if (error) throw error;
-
-      const updatedGoals = [...savingsGoals, newGoal];
-      setSavingsGoals(updatedGoals);
-      setCurrentGoalId(newGoal.id);
-      if (!isInitialLoad) toast.success('New savings goal created!');
-    } catch (error) {
-      console.error('Error creating goal:', error);
-      toast.error('Failed to create new goal');
-    }
-  };
-
-  const deleteGoal = async (goalId: string) => {
-    if (savingsGoals.length <= 1) {
-      toast.error('Cannot delete the last remaining goal');
-      return;
-    }
-
-    const newGoals = savingsGoals.filter(goal => goal.id !== goalId);
-    setSavingsGoals(newGoals);
-    setCurrentGoalId(newGoals[0].id);
-    setSavingsData({});
-    setLocalInputValues({});
-
-    if (!user) {
-      toast.success('Goal deleted! Sign in to save your progress.');
-      return;
-    }
-
-    try {
-      const { error } = await supabase.from('savings_goals').delete().eq('id', goalId);
-      if (error) throw error;
-      toast.success('Savings goal deleted!');
-    } catch (error) {
-      console.error('Error deleting goal:', error);
-      toast.error('Failed to delete goal');
     }
   };
 
@@ -244,34 +206,6 @@ const SavingsGoals = () => {
     } catch (error) {
       console.error('Error updating savings:', error);
       toast.error('Failed to update savings amount');
-    }
-  };
-
-  const updateGoalTitle = async (newTitle: string) => {
-    if (!editingGoalId || !newTitle.trim()) return;
-
-    if (!user) {
-      const updatedGoals = savingsGoals.map(goal =>
-        goal.id === editingGoalId ? { ...goal, title: newTitle.trim() } : goal
-      );
-      setSavingsGoals(updatedGoals);
-      setEditingGoalId(null);
-      toast.success('Goal title updated! Sign in to save your progress.');
-      return;
-    }
-
-    try {
-      const { error } = await supabase.from('savings_goals').update({ title: newTitle.trim() }).eq('id', editingGoalId);
-      if (error) throw error;
-      const updatedGoals = savingsGoals.map(goal =>
-        goal.id === editingGoalId ? { ...goal, title: newTitle.trim() } : goal
-      );
-      setSavingsGoals(updatedGoals);
-      setEditingGoalId(null);
-      toast.success('Goal title updated!');
-    } catch (error) {
-      console.error('Error updating title:', error);
-      toast.error('Failed to update goal title');
     }
   };
 
@@ -385,225 +319,151 @@ const SavingsGoals = () => {
         {/* Goals Selector */}
         <Card className="mb-6">
           <CardContent className="p-4">
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="text-lg font-semibold">Savings Goals</h2>
-              <Button onClick={() => createNewGoal()} size="sm" variant="outline">
-                <Plus className="h-4 w-4 mr-2" />
-                New Goal
-              </Button>
-            </div>
-
-            <div className="flex gap-2 flex-wrap">
+            <div className="space-y-2">
               {savingsGoals.map((goal) => (
-                <div key={goal.id} className="flex items-center gap-1 w-full sm:w-auto">
-                  {editingGoalId === goal.id ? (
-                    <div className="flex items-center gap-2 w-full sm:w-auto">
-                      <Input
-                        value={editingTitle}
-                        onChange={(e) => setEditingTitle(e.target.value)}
-                        className="h-9 sm:h-10 w-full sm:w-48 text-base sm:text-lg font-semibold border-2 border-primary"
-                        onKeyDown={(e) => {
-                          if (e.key === 'Enter') updateGoalTitle(editingTitle);
-                          if (e.key === 'Escape') setEditingGoalId(null);
-                        }}
-                        onBlur={() => updateGoalTitle(editingTitle)}
-                        autoFocus
-                        placeholder="Goal name..."
-                      />
-                      <Button size="sm" onClick={() => updateGoalTitle(editingTitle)} className="h-9 sm:h-10 flex-shrink-0">
-                        <Check className="h-4 w-4" />
-                      </Button>
-                    </div>
-                  ) : (
-                    <div className="flex items-center gap-1 w-full sm:w-auto">
-                      <div 
-                        className={cn(
-                          "group relative cursor-pointer transition-all flex-1 sm:flex-none",
-                          currentGoalId === goal.id 
-                            ? "bg-primary text-primary-foreground" 
-                            : "bg-muted hover:bg-muted/80",
-                          "rounded-lg px-3 sm:px-4 py-2 sm:py-3 border-2",
-                          currentGoalId === goal.id && "border-primary",
-                          currentGoalId !== goal.id && "border-transparent hover:border-muted-foreground/20"
-                        )}
-                        onClick={() => setCurrentGoalId(goal.id)}
-                      >
-                        <div className="flex items-center justify-between min-w-0">
-                          <span className="text-base sm:text-lg font-semibold truncate pr-2">
-                            {goal.title}
-                          </span>
-                          <div className="flex items-center gap-1 flex-shrink-0">
-                            <div className="hidden sm:block opacity-0 group-hover:opacity-100 transition-opacity text-xs bg-black/10 px-2 py-1 rounded whitespace-nowrap">
-                              Click to edit
-                            </div>
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              className="opacity-0 group-hover:opacity-100 transition-opacity h-6 w-6 p-0 flex-shrink-0"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                setEditingGoalId(goal.id);
-                                setEditingTitle(goal.title);
-                              }}
-                            >
-                              <Edit2 className="h-3 w-3" />
-                            </Button>
-                          </div>
-                        </div>
+                <div key={goal.id} className="w-full">
+                  <div 
+                    className={cn(
+                      "group relative cursor-pointer transition-all w-full",
+                      currentGoalId === goal.id 
+                        ? "bg-primary text-primary-foreground" 
+                        : "bg-muted hover:bg-muted/80",
+                      "rounded-lg px-4 py-3 border-2",
+                      currentGoalId === goal.id && "border-primary",
+                      currentGoalId !== goal.id && "border-transparent hover:border-muted-foreground/20"
+                    )}
+                    onClick={() => setCurrentGoalId(goal.id)}
+                  >
+                    <div className="flex items-center justify-between min-w-0">
+                      <span className="text-lg font-semibold">
+                        {goal.title}
+                      </span>
+                      <div className="text-sm opacity-75">
+                        ${goal.current_amount.toLocaleString()} / ${goal.target_amount.toLocaleString()}
                       </div>
-                      {savingsGoals.length > 1 && (
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => deleteGoal(goal.id)}
-                          className="h-8 w-8 p-0 text-destructive hover:bg-red-50 flex-shrink-0"
-                        >
-                          <Trash2 className="h-3 w-3" />
-                        </Button>
-                      )}
                     </div>
-                  )}
+                  </div>
                 </div>
               ))}
             </div>
           </CardContent>
         </Card>
 
-        <div className="grid lg:grid-cols-3 gap-6">
-          {/* Progress Card */}
-          <div className="lg:col-span-1">
-            <Card className="sticky top-4">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Award className="h-5 w-5 text-primary" />
-                  Goal Progress
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-6">
-                <div>
-                  <div className="flex justify-between text-sm mb-2">
-                    <span>Target Amount</span>
-                    <span className="font-medium">${currentGoal?.target_amount?.toLocaleString() || 0}</span>
-                  </div>
-                  <div className="relative">
-                    <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
-                    <Input
-                      type="number"
-                      value={localTargetAmount}
-                      onChange={(e) => {
-                        setLocalTargetAmount(e.target.value);
-                        const amount = parseFloat(e.target.value) || 0;
-                        updateGoalTarget(amount);
-                      }}
-                      className="pl-10"
-                      placeholder="Enter target amount"
-                    />
-                  </div>
+        {/* Progress Card */}
+        {currentGoal && (
+          <Card className="mb-6">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Target className="h-5 w-5" />
+                {currentGoal.title} Progress
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              {/* Target Amount Input */}
+              <div className="flex items-center gap-2">
+                <label className="text-sm font-medium w-24">Target:</label>
+                <div className="flex items-center gap-2">
+                  <span className="text-lg">$</span>
+                  <Input
+                    type="number"
+                    value={localTargetAmount}
+                    onChange={(e) => setLocalTargetAmount(e.target.value)}
+                    onBlur={() => {
+                      const amount = parseFloat(localTargetAmount) || 0;
+                      updateGoalTarget(amount);
+                    }}
+                    className="w-32"
+                    placeholder="0"
+                  />
                 </div>
+              </div>
 
-                <div>
-                  <div className="flex justify-between items-center mb-2">
-                    <span className="text-sm">Progress</span>
-                    <span className="text-sm font-medium">{getProgressPercentage().toFixed(1)}%</span>
-                  </div>
-                  <Progress value={getProgressPercentage()} className="h-3" />
-                </div>
-
-                <div className="space-y-3">
-                  <div className="flex justify-between">
-                    <span className="text-sm text-gray-600">Total Saved</span>
-                    <span className="font-bold text-green-600">${getTotalSaved().toLocaleString()}</span>
-                  </div>
-                  
-                  <div className="flex justify-between">
-                    <span className="text-sm text-gray-600">Remaining</span>
-                    <span className="font-medium">${((currentGoal?.target_amount || 0) - getTotalSaved()).toLocaleString()}</span>
-                  </div>
-
-                  {getAverageMonthlySavings() > 0 && (
-                    <div className="flex justify-between">
-                      <span className="text-sm text-gray-600">Avg/Month</span>
-                      <span className="font-medium">${getAverageMonthlySavings().toFixed(0)}</span>
+              {currentGoal.target_amount > 0 && (
+                <>
+                  <div className="space-y-2">
+                    <div className="flex justify-between text-sm">
+                      <span>Progress</span>
+                      <span>{getProgressPercentage().toFixed(1)}%</span>
                     </div>
-                  )}
+                    <Progress value={getProgressPercentage()} className="h-3" />
+                  </div>
 
-                  {getEstimatedCompletionDate() && (
-                    <div className="p-3 bg-blue-50 rounded-lg">
-                      <div className="flex items-center gap-2 text-sm">
-                        <Calendar className="h-4 w-4 text-blue-600" />
-                        <span className="text-blue-800">
-                          {getEstimatedCompletionDate()}
-                        </span>
-                      </div>
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-4">
+                    <div className="text-center">
+                      <div className="text-2xl font-bold text-green-600">${getTotalSaved().toLocaleString()}</div>
+                      <div className="text-xs text-gray-600">Total Saved</div>
                     </div>
-                  )}
-                </div>
-              </CardContent>
-            </Card>
-          </div>
+                    <div className="text-center">
+                      <div className="text-2xl font-bold text-blue-600">${(currentGoal.target_amount - getTotalSaved()).toLocaleString()}</div>
+                      <div className="text-xs text-gray-600">Remaining</div>
+                    </div>
+                    <div className="text-center">
+                      <div className="text-2xl font-bold text-purple-600">${getAverageMonthlySavings().toLocaleString()}</div>
+                      <div className="text-xs text-gray-600">Avg/Month</div>
+                    </div>
+                    <div className="text-center">
+                      <div className="text-lg font-bold text-orange-600">{getEstimatedCompletionDate() || 'N/A'}</div>
+                      <div className="text-xs text-gray-600">Est. Complete</div>
+                    </div>
+                  </div>
+                </>
+              )}
+            </CardContent>
+          </Card>
+        )}
 
-          {/* Savings Input Card */}
-          <div className="lg:col-span-2">
-            <Card>
-              <CardHeader>
-                <div className="flex justify-between items-center">
-                  <CardTitle className="flex items-center gap-2">
-                    <TrendingUp className="h-5 w-5 text-primary" />
-                    Monthly Savings - {selectedYear}
-                  </CardTitle>
-                  <Select value={selectedYear} onValueChange={setSelectedYear}>
-                    <SelectTrigger className="w-24">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {years.map(year => (
-                        <SelectItem key={year} value={year}>{year}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {months.map((month, index) => {
-                    const monthKey = `${selectedYear}-${(index + 1).toString().padStart(2, '0')}`;
-                    const amount = savingsData[monthKey] || 0;
-                    const inputValue = localInputValues[monthKey] || '';
-                    
-                    return (
-                      <div key={month} className="space-y-2">
-                        <div className="flex justify-between items-center">
-                          <label className="text-sm font-medium">{month}</label>
-                          {amount > 0 && (
-                            <Badge variant="secondary" className="text-xs">
-                              ${amount.toLocaleString()}
-                            </Badge>
-                          )}
-                        </div>
-                        <div className="relative">
-                          <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
-                          <Input
-                            type="number"
-                            value={inputValue}
-                            onChange={(e) => handleMonthlyInputChange(index, e.target.value)}
-                            className="pl-10"
-                            placeholder="0"
-                          />
-                        </div>
+        {/* Monthly Savings Input */}
+        <Card className="mb-6">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-base font-medium">Monthly Savings</CardTitle>
+            <Select value={selectedYear} onValueChange={setSelectedYear}>
+              <SelectTrigger className="w-32">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {years.map(year => (
+                  <SelectItem key={year} value={year}>{year}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+              {months.map((month, index) => {
+                const monthKey = `${selectedYear}-${(index + 1).toString().padStart(2, '0')}`;
+                const currentValue = localInputValues[monthKey] || '';
+                const savedAmount = savingsData[monthKey] || 0;
+                
+                return (
+                  <div key={index} className="space-y-2">
+                    <label className="text-sm font-medium text-gray-700">{month}</label>
+                    <div className="relative">
+                      <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">$</span>
+                      <Input
+                        type="number"
+                        value={currentValue}
+                        onChange={(e) => handleMonthlyInputChange(index, e.target.value)}
+                        className="pl-8"
+                        placeholder="0"
+                      />
+                    </div>
+                    {savedAmount > 0 && (
+                      <div className="text-xs text-green-600 font-medium">
+                        Saved: ${savedAmount.toLocaleString()}
                       </div>
-                    );
-                  })}
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          </CardContent>
+        </Card>
+
+        <AIChatbot 
+          pageContext="I'm on the savings goals page where I can track my monthly savings progress toward financial goals."
+          pageName="Savings Goals"
+        />
       </div>
-
-      <AIChatbot 
-        pageContext="This is the Savings Goals page where users can create multiple savings goals, set target amounts, and track monthly progress toward each goal."
-        pageName="Savings Goals"
-      />
     </div>
   );
 };

@@ -75,8 +75,8 @@ const HeroSectionContent = () => (
         
         {/* Step-by-step Value Propositions */}
        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6 max-w-5xl mx-auto">
-  <Card asChild className="group relative hover:shadow-xl transition-all duration-300 border-2 hover:border-primary/20 cursor-pointer hover:scale-105 h-full animate-fade-in bg-[#eaeff0]">
-    <Link to="/auth" className="block w-full h-full">
+  <Link to="/auth" className="block w-full h-full">
+    <Card className="group relative hover:shadow-xl transition-all duration-300 border-2 hover:border-primary/20 cursor-pointer hover:scale-105 h-full animate-fade-in bg-[#eaeff0]">
       <CardHeader className="p-6 flex flex-col justify-center h-full text-center">
         <div className="flex flex-col items-center">
           <div className="w-12 h-12 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mb-3 hover:scale-110 transition-transform duration-300">
@@ -90,11 +90,11 @@ const HeroSectionContent = () => (
           </CardDescription>
         </div>
       </CardHeader>
-    </Link>
-  </Card>
+    </Card>
+  </Link>
 
-  <Card asChild className="group relative hover:shadow-xl transition-all duration-300 border-2 hover:border-primary/20 cursor-pointer hover:scale-105 h-full animate-fade-in bg-[#eaeff0]">
-    <Link to="/budget" className="block w-full h-full">
+  <Link to="/budget" className="block w-full h-full">
+    <Card className="group relative hover:shadow-xl transition-all duration-300 border-2 hover:border-primary/20 cursor-pointer hover:scale-105 h-full animate-fade-in bg-[#eaeff0]">
       <CardHeader className="p-6 flex flex-col justify-center h-full text-center">
         <div className="flex flex-col items-center">
           <div className="w-12 h-12 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mb-3 hover:scale-110 transition-transform duration-300">
@@ -108,11 +108,11 @@ const HeroSectionContent = () => (
           </CardDescription>
         </div>
       </CardHeader>
-    </Link>
-  </Card>
+    </Card>
+  </Link>
 
-  <Card asChild className="group relative hover:shadow-xl transition-all duration-300 border-2 hover:border-primary/20 cursor-pointer hover:scale-105 h-full animate-fade-in bg-[#eaeff0]">
-    <Link to="/savings" className="block w-full h-full">
+  <Link to="/savings" className="block w-full h-full">
+    <Card className="group relative hover:shadow-xl transition-all duration-300 border-2 hover:border-primary/20 cursor-pointer hover:scale-105 h-full animate-fade-in bg-[#eaeff0]">
       <CardHeader className="p-6 flex flex-col justify-center h-full text-center">
         <div className="flex flex-col items-center">
           <div className="w-12 h-12 bg-green-100 text-green-600 rounded-full flex items-center justify-center mb-3 hover:scale-110 transition-transform duration-300">
@@ -126,11 +126,11 @@ const HeroSectionContent = () => (
           </CardDescription>
         </div>
       </CardHeader>
-    </Link>
-  </Card>
+    </Card>
+  </Link>
 
-  <Card asChild className="group relative hover:shadow-xl transition-all duration-300 border-2 hover:border-primary/20 cursor-pointer hover:scale-105 h-full animate-fade-in bg-[#eaeff0]">
-    <Link to="/ai-insights" className="block w-full h-full">
+  <Link to="/ai-insights" className="block w-full h-full">
+    <Card className="group relative hover:shadow-xl transition-all duration-300 border-2 hover:border-primary/20 cursor-pointer hover:scale-105 h-full animate-fade-in bg-[#eaeff0]">
       <CardHeader className="p-6 flex flex-col justify-center h-full text-center">
         <div className="flex flex-col items-center">
           <div className="w-12 h-12 bg-purple-100 text-purple-600 rounded-full flex items-center justify-center mb-3 hover:scale-110 transition-transform duration-300">
@@ -144,8 +144,8 @@ const HeroSectionContent = () => (
           </CardDescription>
         </div>
       </CardHeader>
-    </Link>
-  </Card>
+    </Card>
+  </Link>
 </div>
         
         <p className="text-sm text-gray-500">

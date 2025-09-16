@@ -484,6 +484,7 @@ export type Database = {
           created_at: string
           current_amount: number
           description: string | null
+          goal_number: number
           household_id: string | null
           id: string
           image_url: string | null
@@ -497,6 +498,7 @@ export type Database = {
           created_at?: string
           current_amount?: number
           description?: string | null
+          goal_number: number
           household_id?: string | null
           id?: string
           image_url?: string | null
@@ -510,6 +512,7 @@ export type Database = {
           created_at?: string
           current_amount?: number
           description?: string | null
+          goal_number?: number
           household_id?: string | null
           id?: string
           image_url?: string | null
