@@ -8,7 +8,7 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
-import { Target, AlertTriangle, Calendar, DollarSign, TrendingUp, Award, ChevronDown, ChevronUp } from 'lucide-react';
+import { Target, AlertTriangle, Calendar, DollarSign, TrendingUp, Award, ChevronDown, ChevronUp, Edit2, Check, X } from 'lucide-react';
 import { AIChatbot } from '@/components/AIChatbot';
 import { toast } from 'sonner';
 import { SEO } from '@/components/SEO';
@@ -44,6 +44,8 @@ const SavingsGoals = () => {
   const [localInputValues, setLocalInputValues] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(true);
   const [expandedMonth, setExpandedMonth] = useState<number | null>(null);
+  const [editingGoalId, setEditingGoalId] = useState<string | null>(null);
+  const [editingTitle, setEditingTitle] = useState('');
 
   const years = Array.from({ length: 11 }, (_, i) => (new Date().getFullYear() - 5 + i).toString());
   const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
@@ -293,17 +295,51 @@ const SavingsGoals = () => {
     }
   };
 
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="animate-pulse space-y-4">
-          <div className="h-8 bg-gray-200 rounded w-64"></div>
-          <div className="h-16 bg-gray-200 rounded w-80"></div>
-          <div className="h-64 bg-gray-200 rounded w-96"></div>
-        </div>
-      </div>
-    );
-  }
+  const updateGoalTitle = async (goalId: string, newTitle: string) => {
+    if (!user) {
+      const updatedGoals = savingsGoals.map(goal =>
+        goal.id === goalId ? { ...goal, title: newTitle } : goal
+      );
+      setSavingsGoals(updatedGoals);
+      return;
+    }
+
+    try {
+      const { error } = await supabase
+        .from('savings_goals')
+        .update({ title: newTitle })
+        .eq('id', goalId);
+      
+      if (error) throw error;
+      
+      setSavingsGoals(prevGoals => prevGoals.map(goal =>
+        goal.id === goalId ? { ...goal, title: newTitle } : goal
+      ));
+      
+      toast.success('Goal title updated');
+    } catch (error) {
+      console.error('Error updating goal title:', error);
+      toast.error('Failed to update goal title');
+    }
+  };
+
+  const handleTitleEdit = (goal: SavingsGoal) => {
+    setEditingGoalId(goal.id);
+    setEditingTitle(goal.title);
+  };
+
+  const handleTitleSave = async () => {
+    if (editingGoalId && editingTitle.trim()) {
+      await updateGoalTitle(editingGoalId, editingTitle.trim());
+    }
+    setEditingGoalId(null);
+    setEditingTitle('');
+  };
+
+  const handleTitleCancel = () => {
+    setEditingGoalId(null);
+    setEditingTitle('');
+  };
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -369,9 +405,55 @@ const SavingsGoals = () => {
                     onClick={() => setCurrentGoalId(goal.id)}
                   >
                     <div className="flex items-center justify-between min-w-0">
-                      <span className="text-lg font-semibold">
-                        {goal.title}
-                      </span>
+                      <div className="flex items-center gap-2 min-w-0">
+                        {editingGoalId === goal.id ? (
+                          <div className="flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
+                            <Input
+                              value={editingTitle}
+                              onChange={(e) => setEditingTitle(e.target.value)}
+                              onKeyDown={(e) => {
+                                if (e.key === 'Enter') handleTitleSave();
+                                if (e.key === 'Escape') handleTitleCancel();
+                              }}
+                              className="text-lg font-semibold bg-background text-foreground h-8"
+                              autoFocus
+                            />
+                            <Button
+                              size="sm"
+                              variant="ghost"
+                              onClick={handleTitleSave}
+                              className="h-6 w-6 p-0"
+                            >
+                              <Check className="h-3 w-3" />
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="ghost"
+                              onClick={handleTitleCancel}
+                              className="h-6 w-6 p-0"
+                            >
+                              <X className="h-3 w-3" />
+                            </Button>
+                          </div>
+                        ) : (
+                          <>
+                            <span className="text-lg font-semibold">
+                              {goal.title}
+                            </span>
+                            <Button
+                              size="sm"
+                              variant="ghost"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleTitleEdit(goal);
+                              }}
+                              className="h-6 w-6 p-0 opacity-60 hover:opacity-100"
+                            >
+                              <Edit2 className="h-3 w-3" />
+                            </Button>
+                          </>
+                        )}
+                      </div>
                       <div className="text-sm opacity-75">
                         ${goal.current_amount.toLocaleString()} / ${goal.target_amount.toLocaleString()}
                       </div>
