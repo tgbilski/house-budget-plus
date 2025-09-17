@@ -17,11 +17,14 @@ import { SEO } from '@/components/SEO';
 import { seoData } from '@/utils/seoData';
 import { AIChatbot } from '@/components/AIChatbot';
 import { WarningBanner } from '@/components/WarningBanner';
+import { cn } from '@/lib/utils';
 
 interface VendorProject {
   id: string;
   user_id: string;
   title: string;
+  project_number: number;
+  household_id?: string;
   created_at: string;
   updated_at: string;
 }
@@ -289,12 +292,12 @@ const VendorCard: React.FC<VendorCardProps> = ({ quote, onUpdate, onRemove, show
 const CompareVendors: React.FC = () => {
   const [quotes, setQuotes] = useState<VendorQuote[]>([]);
   const [selectedProject, setSelectedProject] = useState<VendorProject | null>(null);
+  const [currentProjectId, setCurrentProjectId] = useState<string | null>(null);
   const [allProjects, setAllProjects] = useState<VendorProject[]>([]);
-  const [isNewProject, setIsNewProject] = useState(false);
   const [editingProjectId, setEditingProjectId] = useState<string | null>(null);
   const [editingTitle, setEditingTitle] = useState('');
-  const [newProjectName, setNewProjectName] = useState('');
   const [sortBy, setSortBy] = useState<'amount' | 'rating' | 'date'>('amount');
+  const [loading, setLoading] = useState(true);
   const { user } = useAuth();
   const { currency } = useCurrency();
   const { toast } = useToast();
@@ -304,24 +307,28 @@ const CompareVendors: React.FC = () => {
     if (user) {
       loadProjects();
     } else {
-      const defaultProject: VendorProject = {
-        id: 'default',
-        user_id: 'guest',
-        title: 'My Project',
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString()
-      };
-      setAllProjects([defaultProject]);
-      setSelectedProject(defaultProject);
-      createDefaultQuote(defaultProject);
+      initializeDemoProjects();
+      setLoading(false);
     }
   }, [user]);
 
   useEffect(() => {
-    if (selectedProject) {
+    if (currentProjectId) {
       loadQuotes();
     }
-  }, [selectedProject]);
+  }, [currentProjectId]);
+
+  // Initialize 3 projects for demo users
+  const initializeDemoProjects = () => {
+    const demoProjects = [
+      { id: 'temp-1', user_id: 'guest', title: 'Project 1', project_number: 1, created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
+      { id: 'temp-2', user_id: 'guest', title: 'Project 2', project_number: 2, created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
+      { id: 'temp-3', user_id: 'guest', title: 'Project 3', project_number: 3, created_at: new Date().toISOString(), updated_at: new Date().toISOString() }
+    ];
+    setAllProjects(demoProjects);
+    setCurrentProjectId(demoProjects[0].id);
+    setSelectedProject(demoProjects[0]);
+  };
 
   const createDefaultQuote = (project: VendorProject) => {
     const defaultQuote: VendorQuote = {
@@ -344,35 +351,59 @@ const CompareVendors: React.FC = () => {
   const loadProjects = async () => {
     if (!user) return;
 
-    const { data: projects } = await supabase
-      .from('vendor_projects')
-      .select('*')
-      .eq('user_id', user.id)
-      .order('created_at', { ascending: true });
+    try {
+      const { data: projects, error: fetchError } = await supabase
+        .from('vendor_projects')
+        .select('*')
+        .eq('user_id', user?.id)
+        .order('project_number', { ascending: true });
 
-    if (projects && projects.length > 0) {
-      setAllProjects(projects);
-      if (!selectedProject) {
+      if (fetchError) throw fetchError;
+
+      // Create all 3 projects if they don't exist
+      const existingProjectNumbers = projects?.map(p => p.project_number) || [];
+      const missingProjects = [];
+      
+      for (let i = 1; i <= 3; i++) {
+        if (!existingProjectNumbers.includes(i)) {
+          missingProjects.push({
+            user_id: user?.id,
+            title: `Project ${i}`,
+            project_number: i
+          });
+        }
+      }
+
+      if (missingProjects.length > 0) {
+        const { data: newProjects, error: insertError } = await supabase
+          .from('vendor_projects')
+          .insert(missingProjects)
+          .select();
+        
+        if (insertError) throw insertError;
+        
+        const allProjects = [...(projects || []), ...(newProjects || [])].sort((a, b) => a.project_number - b.project_number);
+        setAllProjects(allProjects);
+        setCurrentProjectId(allProjects[0].id);
+        setSelectedProject(allProjects[0]);
+      } else {
+        setAllProjects(projects);
+        setCurrentProjectId(projects[0].id);
         setSelectedProject(projects[0]);
       }
-    } else {
-      const { data: newProject } = await supabase
-        .from('vendor_projects')
-        .insert({ user_id: user.id, title: 'My Project' })
-        .select()
-        .single();
-
-      if (newProject) {
-        setAllProjects([newProject]);
-        setSelectedProject(newProject);
-      }
+    } catch (error) {
+      console.error('Error loading projects:', error);
+      toast({ title: "Error", description: "Failed to load projects", variant: "destructive" });
+    } finally {
+      setLoading(false);
     }
   };
 
   const loadQuotes = async () => {
-    if (!user || !selectedProject) {
-      if (!user && selectedProject) {
-        createDefaultQuote(selectedProject);
+    if (!user || !currentProjectId) {
+      if (!user && currentProjectId) {
+        const project = allProjects.find(p => p.id === currentProjectId);
+        if (project) createDefaultQuote(project);
       }
       return;
     }
@@ -380,20 +411,21 @@ const CompareVendors: React.FC = () => {
     const { data } = await supabase
       .from('vendor_quotes')
       .select('*')
-      .eq('project_id', selectedProject.id)
+      .eq('project_id', currentProjectId)
       .order('created_at', { ascending: true });
 
     if (data && data.length > 0) {
       setQuotes(data);
     } else {
-      createDefaultQuote(selectedProject);
+      const project = allProjects.find(p => p.id === currentProjectId);
+      if (project) createDefaultQuote(project);
     }
   };
 
   const addNewQuote = async () => {
     const newQuote: VendorQuote = {
       id: `temp-${Date.now()}`,
-      project_id: selectedProject?.id || 'default',
+      project_id: currentProjectId || 'default',
       vendor_name: '',
       estimate_amount: 0,
       contact_info: '',
@@ -420,7 +452,7 @@ const CompareVendors: React.FC = () => {
         const { data, error } = await supabase
           .from('vendor_quotes')
           .insert([{
-            project_id: selectedProject?.id,
+            project_id: currentProjectId,
             vendor_name: updatedQuote.vendor_name,
             estimate_amount: updatedQuote.estimate_amount,
             contact_info: updatedQuote.contact_info,
@@ -483,81 +515,77 @@ const CompareVendors: React.FC = () => {
     }
   };
 
-  const createNewProject = async () => {
-    if (!newProjectName.trim()) return;
+  const updateProjectTitle = async (projectId: string, newTitle: string) => {
+    if (!newTitle.trim()) return;
 
     if (!user) {
-      const tempProject: VendorProject = {
-        id: `temp-${Date.now()}`,
-        user_id: 'guest',
-        title: newProjectName.trim(),
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString()
-      };
-      setAllProjects(prev => [...prev, tempProject]);
-      setSelectedProject(tempProject);
-      setNewProjectName('');
-      setIsNewProject(false);
-      createDefaultQuote(tempProject);
+      const updatedProjects = allProjects.map(p =>
+        p.id === projectId ? { ...p, title: newTitle.trim() } : p
+      );
+      setAllProjects(updatedProjects);
       return;
     }
 
     try {
-      const { data: newProject, error } = await supabase
+      const { error } = await supabase
         .from('vendor_projects')
-        .insert([{ user_id: user.id, title: newProjectName.trim() }])
-        .select()
-        .single();
-
+        .update({ title: newTitle.trim() })
+        .eq('id', projectId);
+      
       if (error) throw error;
-
-      setAllProjects(prev => [...prev, newProject]);
-      setSelectedProject(newProject);
-      setNewProjectName('');
-      setIsNewProject(false);
-      createDefaultQuote(newProject);
-      toast({ title: "Success", description: "New project created!" });
+      
+      setAllProjects(prevProjects => prevProjects.map(project =>
+        project.id === projectId ? { ...project, title: newTitle.trim() } : project
+      ));
+      
+      toast({ title: "Success", description: "Project title updated!" });
     } catch (error) {
-      console.error('Error creating project:', error);
-      toast({ title: "Error", description: "Failed to create project", variant: "destructive" });
+      console.error('Error updating project title:', error);
+      toast({ title: "Error", description: "Failed to update project title", variant: "destructive" });
     }
   };
 
-  const updateProjectTitle = async (projectId: string, newTitle: string) => {
-    if (!newTitle.trim()) return;
+  const handleTitleEdit = (project: VendorProject) => {
+    setEditingProjectId(project.id);
+    setEditingTitle(project.title);
+  };
 
-    setAllProjects(prev => prev.map(p => p.id === projectId ? { ...p, title: newTitle.trim() } : p));
+  const handleTitleSave = async () => {
+    if (editingProjectId && editingTitle.trim()) {
+      await updateProjectTitle(editingProjectId, editingTitle.trim());
+    }
     setEditingProjectId(null);
-
-    if (user && !projectId.startsWith('temp-')) {
-      try {
-        await supabase
-          .from('vendor_projects')
-          .update({ title: newTitle.trim() })
-          .eq('id', projectId);
-      } catch (error) {
-        console.error('Error updating project title:', error);
-      }
-    }
+    setEditingTitle('');
   };
 
-  const deleteProject = async (projectId: string) => {
-    if (allProjects.length <= 1) {
-      toast({ title: "Cannot delete", description: "Must have at least one project", variant: "destructive" });
-      return;
-    }
+  const handleTitleCancel = () => {
+    setEditingProjectId(null);
+    setEditingTitle('');
+  };
 
-    const newProjects = allProjects.filter(p => p.id !== projectId);
-    setAllProjects(newProjects);
-    setSelectedProject(newProjects[0]);
+  const resetProjectData = async () => {
+    if (!currentProjectId) return;
 
-    if (user && !projectId.startsWith('temp-')) {
-      try {
-        await supabase.from('vendor_projects').delete().eq('id', projectId);
-        await supabase.from('vendor_quotes').delete().eq('project_id', projectId);
-      } catch (error) {
-        console.error('Error deleting project:', error);
-      }
+    // Clear local state
+    setQuotes([]);
+
+    if (!user) return;
+
+    try {
+      // Delete all quotes for the current project
+      await supabase
+        .from('vendor_quotes')
+        .delete()
+        .eq('project_id', currentProjectId);
+
+      // Create a default quote
+      const project = allProjects.find(p => p.id === currentProjectId);
+      if (project) createDefaultQuote(project);
+
+      toast({ title: "Success", description: "Project data reset successfully" });
+    } catch (error) {
+      console.error('Error resetting project data:', error);
+      toast({ title: "Error", description: "Failed to reset project data", variant: "destructive" });
     }
   };
 
@@ -584,6 +612,18 @@ const CompareVendors: React.FC = () => {
     const validQuotes = quotes.filter(q => q.estimate_amount > 0);
     return validQuotes.length > 0 ? Math.max(...validQuotes.map(q => q.estimate_amount)) : 0;
   };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="animate-pulse space-y-4">
+          <div className="h-8 bg-gray-200 rounded w-64"></div>
+          <div className="h-16 bg-gray-200 rounded w-80"></div>
+          <div className="h-64 bg-gray-200 rounded w-96"></div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -622,99 +662,84 @@ const CompareVendors: React.FC = () => {
       <div className="max-w-7xl mx-auto px-4 py-6">
         <WarningBanner />
 
-        {/* Project Selector */}
+        {/* Projects Selector - Similar to Savings Goals */}
         <Card className="mb-6">
           <CardContent className="p-4">
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-lg font-semibold">Projects</h2>
-              <Button 
-                onClick={() => setIsNewProject(true)} 
-                size="sm"
-                variant="outline"
-              >
-                <Plus className="h-4 w-4 mr-2" />
-                New Project
-              </Button>
-            </div>
-
-            <div className="flex gap-2 flex-wrap">
+            <div className="space-y-2">
               {allProjects.map((project) => (
-                <div key={project.id} className="flex items-center gap-1">
-                  {editingProjectId === project.id ? (
-                    <div className="flex items-center gap-1">
-                      <Input
-                        value={editingTitle}
-                        onChange={(e) => setEditingTitle(e.target.value)}
-                        className="h-8 w-32"
-                        onKeyDown={(e) => {
-                          if (e.key === 'Enter') updateProjectTitle(project.id, editingTitle);
-                          if (e.key === 'Escape') setEditingProjectId(null);
-                        }}
-                        onBlur={() => updateProjectTitle(project.id, editingTitle)}
-                        autoFocus
-                      />
-                      <Button size="sm" variant="ghost" onClick={() => updateProjectTitle(project.id, editingTitle)} className="h-8 w-8 p-0">
-                        <Check className="h-3 w-3" />
-                      </Button>
+                <div key={project.id} className="w-full">
+                  <div 
+                    className={cn(
+                      "group relative cursor-pointer transition-all w-full",
+                      currentProjectId === project.id 
+                        ? "bg-primary text-primary-foreground" 
+                        : "bg-muted hover:bg-muted/80",
+                      "rounded-lg px-4 py-3 border-2",
+                      currentProjectId === project.id && "border-primary",
+                      currentProjectId !== project.id && "border-transparent hover:border-muted-foreground/20"
+                    )}
+                    onClick={() => {
+                      setCurrentProjectId(project.id);
+                      setSelectedProject(project);
+                    }}
+                  >
+                    <div className="flex items-center justify-between min-w-0">
+                      <div className="flex items-center gap-2 min-w-0">
+                        {editingProjectId === project.id ? (
+                          <div className="flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
+                            <Input
+                              value={editingTitle}
+                              onChange={(e) => setEditingTitle(e.target.value)}
+                              onKeyDown={(e) => {
+                                if (e.key === 'Enter') handleTitleSave();
+                                if (e.key === 'Escape') handleTitleCancel();
+                              }}
+                              className="text-lg font-semibold bg-background text-foreground h-8"
+                              autoFocus
+                            />
+                            <Button
+                              size="sm"
+                              variant="ghost"
+                              onClick={handleTitleSave}
+                              className="h-6 w-6 p-0"
+                            >
+                              <Check className="h-3 w-3" />
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="ghost"
+                              onClick={handleTitleCancel}
+                              className="h-6 w-6 p-0"
+                            >
+                              <X className="h-3 w-3" />
+                            </Button>
+                          </div>
+                        ) : (
+                          <>
+                            <span className="text-lg font-semibold">
+                              {project.title}
+                            </span>
+                            <Button
+                              size="sm"
+                              variant="ghost"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleTitleEdit(project);
+                              }}
+                              className="h-6 w-6 p-0 opacity-60 hover:opacity-100"
+                            >
+                              <Edit2 className="h-3 w-3" />
+                            </Button>
+                          </>
+                        )}
+                      </div>
+                      <div className="text-sm opacity-75">
+                        {quotes.filter(q => q.project_id === project.id && q.estimate_amount > 0).length} quotes
+                      </div>
                     </div>
-                  ) : (
-                    <div className="flex items-center gap-1">
-                      <Button
-                        variant={selectedProject?.id === project.id ? "default" : "outline"}
-                        size="sm"
-                        onClick={() => setSelectedProject(project)}
-                        className="relative group"
-                      >
-                        {project.title}
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          className="absolute -right-1 -top-1 h-5 w-5 p-0 opacity-0 group-hover:opacity-100 transition-opacity"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setEditingProjectId(project.id);
-                            setEditingTitle(project.title);
-                          }}
-                        >
-                          <Edit2 className="h-3 w-3" />
-                        </Button>
-                      </Button>
-                      {allProjects.length > 1 && (
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => deleteProject(project.id)}
-                          className="h-8 w-8 p-0 text-destructive"
-                        >
-                          <Trash2 className="h-3 w-3" />
-                        </Button>
-                      )}
-                    </div>
-                  )}
+                  </div>
                 </div>
               ))}
-
-              {isNewProject && (
-                <div className="flex items-center gap-1">
-                  <Input
-                    value={newProjectName}
-                    onChange={(e) => setNewProjectName(e.target.value)}
-                    placeholder="Project name..."
-                    className="h-8 w-32"
-                    onKeyDown={(e) => {
-                      if (e.key === 'Enter') createNewProject();
-                      if (e.key === 'Escape') setIsNewProject(false);
-                    }}
-                    autoFocus
-                  />
-                  <Button size="sm" onClick={createNewProject} className="h-8 w-8 p-0">
-                    <Check className="h-3 w-3" />
-                  </Button>
-                  <Button size="sm" variant="ghost" onClick={() => setIsNewProject(false)} className="h-8 w-8 p-0">
-                    <X className="h-3 w-3" />
-                  </Button>
-                </div>
-              )}
             </div>
           </CardContent>
         </Card>
@@ -735,6 +760,14 @@ const CompareVendors: React.FC = () => {
                 </SelectContent>
               </Select>
             </div>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={resetProjectData}
+              className="text-destructive hover:text-destructive"
+            >
+              Reset Project
+            </Button>
           </div>
 
           <Button onClick={addNewQuote} className="gap-2">

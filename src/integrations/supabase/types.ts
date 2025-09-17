@@ -826,6 +826,7 @@ export type Database = {
           created_at: string
           household_id: string | null
           id: string
+          project_number: number | null
           title: string
           updated_at: string
           user_id: string
@@ -834,6 +835,7 @@ export type Database = {
           created_at?: string
           household_id?: string | null
           id?: string
+          project_number?: number | null
           title: string
           updated_at?: string
           user_id: string
@@ -842,6 +844,7 @@ export type Database = {
           created_at?: string
           household_id?: string | null
           id?: string
+          project_number?: number | null
           title?: string
           updated_at?: string
           user_id?: string
