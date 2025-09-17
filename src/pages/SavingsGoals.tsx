@@ -259,6 +259,40 @@ const SavingsGoals = () => {
     return completionDate.toLocaleDateString('en-US', { year: 'numeric', month: 'long' });
   };
 
+  const resetGoalData = async () => {
+    if (!currentGoalId) return;
+
+    // Clear local state
+    setSavingsData({});
+    setLocalInputValues({});
+
+    if (!user) return;
+
+    try {
+      // Delete all savings entries for the current goal
+      await supabase
+        .from('savings_entries')
+        .delete()
+        .eq('goal_id', currentGoalId);
+
+      // Reset current_amount to 0
+      await supabase
+        .from('savings_goals')
+        .update({ current_amount: 0 })
+        .eq('id', currentGoalId);
+
+      // Update local goals state
+      setSavingsGoals(prevGoals => prevGoals.map(goal => 
+        goal.id === currentGoalId ? { ...goal, current_amount: 0 } : goal
+      ));
+
+      toast.success('Goal data reset successfully');
+    } catch (error) {
+      console.error('Error resetting goal data:', error);
+      toast.error('Failed to reset goal data');
+    }
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
@@ -415,7 +449,17 @@ const SavingsGoals = () => {
         {/* Monthly Savings Input */}
         <Card className="mb-6">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-base font-medium">Monthly Savings</CardTitle>
+            <div className="flex items-center gap-4">
+              <CardTitle className="text-base font-medium">Monthly Savings</CardTitle>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={resetGoalData}
+                className="text-destructive hover:text-destructive"
+              >
+                Reset Goal
+              </Button>
+            </div>
             <Select value={selectedYear} onValueChange={setSelectedYear}>
               <SelectTrigger className="w-32">
                 <SelectValue />
