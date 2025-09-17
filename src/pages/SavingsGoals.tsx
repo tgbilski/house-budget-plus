@@ -406,7 +406,7 @@ const SavingsGoals = () => {
                       const amount = parseFloat(localTargetAmount) || 0;
                       updateGoalTarget(amount);
                     }}
-                    className="w-32"
+                    className="w-32 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                     placeholder="0"
                   />
                 </div>
@@ -487,7 +487,7 @@ const SavingsGoals = () => {
                         type="number"
                         value={currentValue}
                         onChange={(e) => handleMonthlyInputChange(index, e.target.value)}
-                        className="pl-8"
+                        className="pl-8 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                         placeholder="0"
                       />
                     </div>
