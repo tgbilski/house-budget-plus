@@ -491,11 +491,6 @@ const SavingsGoals = () => {
                         placeholder="0"
                       />
                     </div>
-                    {savedAmount > 0 && (
-                      <div className="text-xs text-green-600 font-medium">
-                        Saved: ${savedAmount.toLocaleString()}
-                      </div>
-                    )}
                   </div>
                 );
               })}
