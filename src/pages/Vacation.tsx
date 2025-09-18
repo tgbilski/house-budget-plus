@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Edit3, Star, Check, RefreshCw, Plane } from 'lucide-react';
+import { Edit3, Star, Check, RefreshCw, Plane, Plus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -552,6 +552,10 @@ const Vacation: React.FC = () => {
       const score = evaluationFields.filter(Boolean).length;
       return { ...option, score };
     });
+
+    if (optionsWithScores.length === 0) {
+      return { destination: '', score: 0 };
+    }
 
     return optionsWithScores.reduce((best, current) => 
       current.score > best.score ? current : best
