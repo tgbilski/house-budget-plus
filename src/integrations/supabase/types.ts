@@ -739,6 +739,8 @@ export type Database = {
           travel_mode: string | null
           travel_mode_cost: number | null
           updated_at: string
+          user_id: string
+          vacation_number: number
         }
         Insert: {
           car_rental_cost?: number | null
@@ -757,6 +759,8 @@ export type Database = {
           travel_mode?: string | null
           travel_mode_cost?: number | null
           updated_at?: string
+          user_id: string
+          vacation_number: number
         }
         Update: {
           car_rental_cost?: number | null
@@ -775,6 +779,8 @@ export type Database = {
           travel_mode?: string | null
           travel_mode_cost?: number | null
           updated_at?: string
+          user_id?: string
+          vacation_number?: number
         }
         Relationships: [
           {
