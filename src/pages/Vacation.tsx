@@ -20,7 +20,7 @@ import { SEO } from '@/components/SEO';
 import { InternalLinks } from '@/components/InternalLinks';
 import { SocialShare } from '@/components/SocialShare';
 import { FAQ } from '@/components/FAQ';
-import { Breadcrumbs } from '@/components/Breadcrumbs';
+
 import { WarningBanner } from '@/components/WarningBanner';
 import { seoData } from '@/utils/seoData';
 
