@@ -26,6 +26,7 @@ export type Database = {
           project_id: string | null
           updated_at: string
           user_id: string
+          year: number
         }
         Insert: {
           calculator_id: string
@@ -38,6 +39,7 @@ export type Database = {
           project_id?: string | null
           updated_at?: string
           user_id: string
+          year?: number
         }
         Update: {
           calculator_id?: string
@@ -50,6 +52,7 @@ export type Database = {
           project_id?: string | null
           updated_at?: string
           user_id?: string
+          year?: number
         }
         Relationships: [
           {
@@ -78,6 +81,7 @@ export type Database = {
           title: string
           updated_at: string
           user_id: string
+          year: number
         }
         Insert: {
           challenge_type: string
@@ -95,6 +99,7 @@ export type Database = {
           title: string
           updated_at?: string
           user_id: string
+          year?: number
         }
         Update: {
           challenge_type?: string
@@ -112,6 +117,7 @@ export type Database = {
           title?: string
           updated_at?: string
           user_id?: string
+          year?: number
         }
         Relationships: [
           {
@@ -135,6 +141,7 @@ export type Database = {
           mood_score: number | null
           updated_at: string
           user_id: string
+          year: number
         }
         Insert: {
           amount?: number | null
@@ -147,6 +154,7 @@ export type Database = {
           mood_score?: number | null
           updated_at?: string
           user_id: string
+          year?: number
         }
         Update: {
           amount?: number | null
@@ -159,6 +167,7 @@ export type Database = {
           mood_score?: number | null
           updated_at?: string
           user_id?: string
+          year?: number
         }
         Relationships: [
           {
@@ -209,6 +218,7 @@ export type Database = {
           list_title: string
           updated_at: string
           user_id: string
+          year: number
         }
         Insert: {
           budget_target?: number | null
@@ -218,6 +228,7 @@ export type Database = {
           list_title?: string
           updated_at?: string
           user_id: string
+          year?: number
         }
         Update: {
           budget_target?: number | null
@@ -227,6 +238,7 @@ export type Database = {
           list_title?: string
           updated_at?: string
           user_id?: string
+          year?: number
         }
         Relationships: [
           {
@@ -363,6 +375,7 @@ export type Database = {
           processing_error: string | null
           processing_status: string
           user_id: string | null
+          year: number
         }
         Insert: {
           ai_categorization?: Json | null
@@ -376,6 +389,7 @@ export type Database = {
           processing_error?: string | null
           processing_status?: string
           user_id?: string | null
+          year?: number
         }
         Update: {
           ai_categorization?: Json | null
@@ -389,6 +403,7 @@ export type Database = {
           processing_error?: string | null
           processing_status?: string
           user_id?: string | null
+          year?: number
         }
         Relationships: [
           {
@@ -450,6 +465,7 @@ export type Database = {
           id: string
           notes: string | null
           updated_at: string
+          year: number
         }
         Insert: {
           amount: number
@@ -459,6 +475,7 @@ export type Database = {
           id?: string
           notes?: string | null
           updated_at?: string
+          year?: number
         }
         Update: {
           amount?: number
@@ -468,6 +485,7 @@ export type Database = {
           id?: string
           notes?: string | null
           updated_at?: string
+          year?: number
         }
         Relationships: [
           {
@@ -493,6 +511,7 @@ export type Database = {
           title: string
           updated_at: string
           user_id: string
+          year: number
         }
         Insert: {
           created_at?: string
@@ -507,6 +526,7 @@ export type Database = {
           title: string
           updated_at?: string
           user_id: string
+          year?: number
         }
         Update: {
           created_at?: string
@@ -521,6 +541,7 @@ export type Database = {
           title?: string
           updated_at?: string
           user_id?: string
+          year?: number
         }
         Relationships: [
           {
@@ -576,6 +597,7 @@ export type Database = {
           household_id: string | null
           id: string
           user_id: string
+          year: number
         }
         Insert: {
           badge_type: string
@@ -584,6 +606,7 @@ export type Database = {
           household_id?: string | null
           id?: string
           user_id: string
+          year?: number
         }
         Update: {
           badge_type?: string
@@ -592,6 +615,7 @@ export type Database = {
           household_id?: string | null
           id?: string
           user_id?: string
+          year?: number
         }
         Relationships: [
           {
@@ -616,6 +640,7 @@ export type Database = {
           title: string
           user_id: string
           valid_until: string | null
+          year: number
         }
         Insert: {
           created_at?: string
@@ -629,6 +654,7 @@ export type Database = {
           title: string
           user_id: string
           valid_until?: string | null
+          year?: number
         }
         Update: {
           created_at?: string
@@ -642,6 +668,7 @@ export type Database = {
           title?: string
           user_id?: string
           valid_until?: string | null
+          year?: number
         }
         Relationships: [
           {
@@ -688,6 +715,7 @@ export type Database = {
           streak_type: string
           updated_at: string
           user_id: string
+          year: number
         }
         Insert: {
           created_at?: string
@@ -699,6 +727,7 @@ export type Database = {
           streak_type: string
           updated_at?: string
           user_id: string
+          year?: number
         }
         Update: {
           created_at?: string
@@ -710,6 +739,7 @@ export type Database = {
           streak_type?: string
           updated_at?: string
           user_id?: string
+          year?: number
         }
         Relationships: [
           {
@@ -741,6 +771,7 @@ export type Database = {
           updated_at: string
           user_id: string
           vacation_number: number
+          year: number
         }
         Insert: {
           car_rental_cost?: number | null
@@ -761,6 +792,7 @@ export type Database = {
           updated_at?: string
           user_id: string
           vacation_number: number
+          year?: number
         }
         Update: {
           car_rental_cost?: number | null
@@ -781,6 +813,7 @@ export type Database = {
           updated_at?: string
           user_id?: string
           vacation_number?: number
+          year?: number
         }
         Relationships: [
           {
@@ -800,6 +833,7 @@ export type Database = {
           title: string
           updated_at: string
           user_id: string
+          year: number
         }
         Insert: {
           created_at?: string
@@ -808,6 +842,7 @@ export type Database = {
           title: string
           updated_at?: string
           user_id: string
+          year?: number
         }
         Update: {
           created_at?: string
@@ -816,6 +851,7 @@ export type Database = {
           title?: string
           updated_at?: string
           user_id?: string
+          year?: number
         }
         Relationships: [
           {
@@ -836,6 +872,7 @@ export type Database = {
           title: string
           updated_at: string
           user_id: string
+          year: number
         }
         Insert: {
           created_at?: string
@@ -845,6 +882,7 @@ export type Database = {
           title: string
           updated_at?: string
           user_id: string
+          year?: number
         }
         Update: {
           created_at?: string
@@ -854,6 +892,7 @@ export type Database = {
           title?: string
           updated_at?: string
           user_id?: string
+          year?: number
         }
         Relationships: [
           {
@@ -881,6 +920,7 @@ export type Database = {
           trustworthy: boolean | null
           updated_at: string
           vendor_name: string | null
+          year: number
         }
         Insert: {
           contact_info?: string | null
@@ -897,6 +937,7 @@ export type Database = {
           trustworthy?: boolean | null
           updated_at?: string
           vendor_name?: string | null
+          year?: number
         }
         Update: {
           contact_info?: string | null
@@ -913,6 +954,7 @@ export type Database = {
           trustworthy?: boolean | null
           updated_at?: string
           vendor_name?: string | null
+          year?: number
         }
         Relationships: [
           {
