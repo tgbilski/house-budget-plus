@@ -44,7 +44,7 @@ const currencies = [
 ];
 
 const MonthlyBudget: React.FC = () => {
-  const [calculators, setCalculators] = useState<Calculator[]>([{ id: '1' }]);
+  const [calculators, setCalculators] = useState<Calculator[]>([{ id: '1' }, { id: '2' }]);
   const [budgetData, setBudgetData] = useState<Record<string, { income: number; expenses: number }>>({});
   const [calculatorNames, setCalculatorNames] = useState<Record<string, string>>({});
   const { currency } = useCurrency();
