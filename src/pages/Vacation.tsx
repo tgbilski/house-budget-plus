@@ -10,6 +10,7 @@ import { Badge } from '@/components/ui/badge';
 import { Switch } from '@/components/ui/switch';
 import { toast } from 'sonner';
 import { useAuth } from '@/hooks/useAuth';
+import { useYear } from '@/hooks/useYear';
 import { useCurrency } from '@/hooks/useCurrency';
 import { supabase } from '@/integrations/supabase/client';
 import { Alert, AlertDescription } from '@/components/ui/alert';
@@ -20,6 +21,7 @@ import { SEO } from '@/components/SEO';
 import { InternalLinks } from '@/components/InternalLinks';
 import { SocialShare } from '@/components/SocialShare';
 import { FAQ } from '@/components/FAQ';
+import { YearSelector } from '@/components/YearSelector';
 
 import { WarningBanner } from '@/components/WarningBanner';
 import { seoData } from '@/utils/seoData';
@@ -245,6 +247,7 @@ const Vacation = () => {
   const [editingDestination, setEditingDestination] = useState('');
 
   const { user } = useAuth();
+  const { selectedYear } = useYear();
   const { currency } = useCurrency();
   
   const currentOption = vacationOptions.find(opt => opt.id === currentOptionId);
@@ -256,7 +259,7 @@ const Vacation = () => {
       initializeDemoOptions();
       setLoading(false);
     }
-  }, [user]);
+  }, [user, selectedYear]); // Add selectedYear dependency
 
   useEffect(() => {
     if (vacationOptions.length > 0 && !currentOptionId) {
@@ -270,6 +273,7 @@ const Vacation = () => {
         .from('vacation_options')
         .select('*')
         .eq('user_id', user?.id)
+        .eq('year', selectedYear) // Filter by selected year
         .order('vacation_number', { ascending: true });
 
       if (fetchError) throw fetchError;
@@ -283,6 +287,7 @@ const Vacation = () => {
           missingOptions.push({
             user_id: user?.id,
             vacation_number: i,
+            year: selectedYear, // Include the selected year
             destination: '',
             travel_mode: '',
             travel_mode_cost: 0,
@@ -478,6 +483,13 @@ const Vacation = () => {
                 <p className="text-sm text-gray-600">Plan and budget your dream getaways</p>
               </div>
             </div>
+            
+            <div className="flex items-center gap-4">
+              <YearSelector />
+            </div>
+          </div>
+          
+          <div className="flex items-center justify-end mt-4">
             
             {bestOption && ((bestOption.travel_mode_cost || 0) + (bestOption.lodging_cost || 0) + (bestOption.car_rental_cost || 0)) > 0 && (
               <div className="text-right">

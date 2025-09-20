@@ -7,6 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { useCurrency } from '@/hooks/useCurrency';
 import { useAuth } from '@/hooks/useAuth';
+import { useYear } from '@/hooks/useYear';
 import { useHouseholdContext } from '@/providers/HouseholdProvider';
 import { generateBudgetPDF } from '@/utils/pdfGenerator';
 import { supabase } from '@/integrations/supabase/client';
@@ -54,6 +55,7 @@ const BudgetCalculator: React.FC<BudgetCalculatorProps> = ({
 }) => {
   const { user } = useAuth();
   const { currentHousehold } = useHouseholdContext();
+  const { selectedYear } = useYear();
   const { currency } = useCurrency();
   const [ownerName, setOwnerName] = useState('');
   const [monthlyIncome, setMonthlyIncome] = useState(0);
@@ -64,10 +66,10 @@ const BudgetCalculator: React.FC<BudgetCalculatorProps> = ({
 
   // When the component loads, check for saved data and set the owner name.
   useEffect(() => {
-    if (user && currentHousehold) {
+    if (user && currentHousehold && selectedYear) {
       loadData();
     }
-  }, [user, currentHousehold, id, pageType]);
+  }, [user, currentHousehold, selectedYear, id, pageType]); // Add selectedYear dependency
 
   // Set up event listener for AI autofill
   useEffect(() => {
@@ -184,10 +186,11 @@ const BudgetCalculator: React.FC<BudgetCalculatorProps> = ({
         household_id: currentHousehold?.id,
         calculator_id: id,
         page_type: pageType,
+        year: selectedYear, // Include the selected year
         income: monthlyIncome,
         expenses: expensesData as any
       }, {
-        onConflict: 'user_id,calculator_id,page_type,household_id'
+        onConflict: 'user_id,calculator_id,page_type,household_id,year' // Update conflict resolution to include year
       });
 
     if (error) {

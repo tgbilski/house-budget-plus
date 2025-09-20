@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '@/hooks/useAuth';
+import { useYear } from '@/hooks/useYear';
 import { useHouseholdContext } from '@/providers/HouseholdProvider';
 import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -9,6 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
 import { Target, AlertTriangle, Calendar, DollarSign, TrendingUp, Award, ChevronDown, ChevronUp, Edit2, Check, X } from 'lucide-react';
+import { YearSelector } from '@/components/YearSelector';
 import { AIChatbot } from '@/components/AIChatbot';
 import { toast } from 'sonner';
 import { SEO } from '@/components/SEO';

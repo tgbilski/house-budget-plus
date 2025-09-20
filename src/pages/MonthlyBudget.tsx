@@ -7,6 +7,7 @@ import BudgetCalculator from '@/components/BudgetCalculator';
 
 import { useCurrency } from '@/hooks/useCurrency';
 import { useAuth } from '@/hooks/useAuth';
+import { useYear } from '@/hooks/useYear';
 import { useBadges } from '@/hooks/useBadges';
 import { supabase } from '@/integrations/supabase/client';
 
@@ -16,6 +17,7 @@ import { Breadcrumbs } from '@/components/Breadcrumbs';
 import { InternalLinks } from '@/components/InternalLinks';
 import { SocialShare } from '@/components/SocialShare';
 import { FAQ } from '@/components/FAQ';
+import { YearSelector } from '@/components/YearSelector';
 import { budgetCalculatorFAQs } from '@/utils/faqData';
 import { AIChatbot } from '@/components/AIChatbot';
 
@@ -49,6 +51,7 @@ const MonthlyBudget: React.FC = () => {
   const [calculatorNames, setCalculatorNames] = useState<Record<string, string>>({});
   const { currency } = useCurrency();
   const { user } = useAuth();
+  const { selectedYear } = useYear();
   const { earnBadge } = useBadges();
 
   const totalIncome = Object.values(budgetData).reduce((sum, data) => sum + (data.income || 0), 0);
@@ -82,7 +85,7 @@ const MonthlyBudget: React.FC = () => {
     if (user) {
       loadCalculators();
     }
-  }, [user]);
+  }, [user, selectedYear]); // Add selectedYear dependency
 
   const loadCalculators = async () => {
     if (!user) return;
@@ -168,17 +171,25 @@ const MonthlyBudget: React.FC = () => {
       <div className="max-w-6xl mx-auto p-6 space-y-8">
         {/* Modern Header */}
         <div className="text-center space-y-4">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-primary/10 rounded-full mb-4">
-            <img 
-              src="/lovable-uploads/ed809955-ef71-4d81-b072-945082f4380a.png" 
-              alt="Calculator mascot" 
-              className="w-10 h-10 object-contain"
-            />
+          <div className="flex items-center justify-between">
+            <div className="flex-1" />
+            <div className="flex flex-col items-center space-y-4">
+              <div className="inline-flex items-center justify-center w-16 h-16 bg-primary/10 rounded-full">
+                <img 
+                  src="/lovable-uploads/ed809955-ef71-4d81-b072-945082f4380a.png" 
+                  alt="Calculator mascot" 
+                  className="w-10 h-10 object-contain"
+                />
+              </div>
+              <h1 className="text-4xl font-bold text-foreground">Monthly Budget Calculator</h1>
+              <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
+                Take control of your finances by tracking every dollar of your household income and expenses.
+              </p>
+            </div>
+            <div className="flex-1 flex justify-end">
+              <YearSelector />
+            </div>
           </div>
-          <h1 className="text-4xl font-bold text-foreground">Monthly Budget Calculator</h1>
-          <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-            Take control of your finances by tracking every dollar of your household income and expenses.
-          </p>
         </div>
 
         {/* Quick Stats */}
