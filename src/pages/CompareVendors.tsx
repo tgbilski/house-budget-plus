@@ -18,6 +18,8 @@ import { seoData } from '@/utils/seoData';
 import { AIChatbot } from '@/components/AIChatbot';
 import { WarningBanner } from '@/components/WarningBanner';
 import { cn } from '@/lib/utils';
+import { YearSelector } from '@/components/YearSelector';
+import { useYear } from '@/hooks/useYear';
 
 interface VendorProject {
   id: string;
@@ -646,6 +648,8 @@ const CompareVendors: React.FC = () => {
                 <p className="text-sm text-gray-600">Compare quotes and find the best value</p>
               </div>
             </div>
+            
+            <YearSelector />
             
             {quotes.filter(q => q.estimate_amount > 0).length > 1 && (
               <div className="text-right">

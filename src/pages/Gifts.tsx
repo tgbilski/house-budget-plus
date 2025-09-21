@@ -13,6 +13,8 @@ import { AIChatbot } from '@/components/AIChatbot';
 import { SEO } from '@/components/SEO';
 import { WarningBanner } from '@/components/WarningBanner';
 import { EtsyProducts } from '@/components/EtsyProducts';
+import { YearSelector } from '@/components/YearSelector';
+import { useYear } from '@/hooks/useYear';
 
 interface GiftListData {
   id: string;
@@ -99,6 +101,8 @@ export function Gifts() {
                 <p className="text-sm text-gray-600">Organize ideas for every occasion</p>
               </div>
             </div>
+            
+            <YearSelector />
             
             <div className="flex items-center gap-4">
               <div className="text-right">
