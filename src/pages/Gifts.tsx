@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Plus, Gift, Calendar, DollarSign, Search, Filter, Grid, List } from 'lucide-react';
+import { Plus, Gift, Calendar, DollarSign, Search, Filter, Grid, List, Edit3, Check, X } from 'lucide-react';
 import { GiftCard } from '@/components/GiftCard';
 import { useAuth } from '@/hooks/useAuth';
 import { useHouseholdContext } from '@/providers/HouseholdProvider';
@@ -15,10 +15,15 @@ import { WarningBanner } from '@/components/WarningBanner';
 import { EtsyProducts } from '@/components/EtsyProducts';
 import { YearSelector } from '@/components/YearSelector';
 import { useYear } from '@/hooks/useYear';
+import { cn } from '@/lib/utils';
 
 interface GiftListData {
   id: string;
+  user_id: string;
   list_title: string;
+  budget_target: number;
+  household_id?: string;
+  year: number;
   created_at: string;
   updated_at: string;
 }
@@ -26,61 +31,149 @@ interface GiftListData {
 export function Gifts() {
   const { user } = useAuth();
   const { currentHousehold } = useHouseholdContext();
+  const { selectedYear } = useYear();
   const { earnBadge } = useBadges();
   const [giftLists, setGiftLists] = useState<GiftListData[]>([]);
-  const [showNewCard, setShowNewCard] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
-
-  useEffect(() => {
-    const handleEarnBadge = (event: CustomEvent) => {
-      const { badgeType } = event.detail;
-      earnBadge(badgeType);
-    };
-
-    window.addEventListener('earnBadge', handleEarnBadge as EventListener);
-    return () => window.removeEventListener('earnBadge', handleEarnBadge as EventListener);
-  }, [earnBadge]);
+  const [currentListId, setCurrentListId] = useState<string | null>(null);
+  const [selectedList, setSelectedList] = useState<GiftListData | null>(null);
+  const [editingListId, setEditingListId] = useState<string | null>(null);
+  const [editingTitle, setEditingTitle] = useState('');
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (user && currentHousehold) {
       loadGiftLists();
+    } else {
+      initializeDemoLists();
+      setLoading(false);
     }
-  }, [user, currentHousehold]);
+  }, [user, currentHousehold, selectedYear]);
+
+  // Initialize 4 gift lists for demo users
+  const initializeDemoLists = () => {
+    const demoLists = [
+      { id: 'temp-1', user_id: 'guest', list_title: 'Gift List 1', budget_target: 0, year: selectedYear, created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
+      { id: 'temp-2', user_id: 'guest', list_title: 'Gift List 2', budget_target: 0, year: selectedYear, created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
+      { id: 'temp-3', user_id: 'guest', list_title: 'Gift List 3', budget_target: 0, year: selectedYear, created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
+      { id: 'temp-4', user_id: 'guest', list_title: 'Gift List 4', budget_target: 0, year: selectedYear, created_at: new Date().toISOString(), updated_at: new Date().toISOString() }
+    ];
+    setGiftLists(demoLists);
+    setCurrentListId(demoLists[0].id);
+    setSelectedList(demoLists[0]);
+  };
 
   const loadGiftLists = async () => {
+    if (!user || !currentHousehold) return;
+
     try {
-      const { data, error } = await supabase
+      const { data: lists, error: fetchError } = await supabase
         .from('gift_lists')
         .select('*')
-        .eq('user_id', user?.id)
-        .eq('household_id', currentHousehold?.id)
-        .order('created_at', { ascending: false });
+        .eq('user_id', user.id)
+        .eq('household_id', currentHousehold.id)
+        .eq('year', selectedYear)
+        .order('created_at', { ascending: true });
 
-      if (error) throw error;
-      setGiftLists(data || []);
+      if (fetchError) throw fetchError;
+
+      // Create all 4 gift lists if they don't exist
+      const existingTitles = lists?.map(l => l.list_title) || [];
+      const missingLists = [];
+      
+      for (let i = 1; i <= 4; i++) {
+        const title = `Gift List ${i}`;
+        if (!existingTitles.includes(title)) {
+          missingLists.push({
+            user_id: user.id,
+            household_id: currentHousehold.id,
+            list_title: title,
+            budget_target: 0,
+            year: selectedYear
+          });
+        }
+      }
+
+      if (missingLists.length > 0) {
+        const { data: newLists, error: insertError } = await supabase
+          .from('gift_lists')
+          .insert(missingLists)
+          .select();
+        
+        if (insertError) throw insertError;
+        
+        const allLists = [...(lists || []), ...(newLists || [])].sort((a, b) => a.list_title.localeCompare(b.list_title));
+        setGiftLists(allLists);
+        setCurrentListId(allLists[0].id);
+        setSelectedList(allLists[0]);
+      } else {
+        const sortedLists = lists.sort((a, b) => a.list_title.localeCompare(b.list_title));
+        setGiftLists(sortedLists);
+        setCurrentListId(sortedLists[0].id);
+        setSelectedList(sortedLists[0]);
+      }
     } catch (error) {
       console.error('Error loading gift lists:', error);
+    } finally {
+      setLoading(false);
     }
   };
 
-  const handleDeleteList = (id: string) => {
-    setGiftLists(prev => prev.filter(list => list.id !== id));
+  const selectList = (list: GiftListData) => {
+    setCurrentListId(list.id);
+    setSelectedList(list);
   };
 
-  const addNewCard = () => {
-    setShowNewCard(true);
+  const startEditing = (list: GiftListData) => {
+    setEditingListId(list.id);
+    setEditingTitle(list.list_title);
   };
 
-  const filteredLists = giftLists.filter(list =>
-    list.list_title.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const saveTitle = async (list: GiftListData) => {
+    if (!user) {
+      // For demo users, just update local state
+      setGiftLists(prev => prev.map(l => 
+        l.id === list.id ? { ...l, list_title: editingTitle } : l
+      ));
+      if (selectedList?.id === list.id) {
+        setSelectedList({ ...list, list_title: editingTitle });
+      }
+    } else {
+      // For authenticated users, update database
+      const { error } = await supabase
+        .from('gift_lists')
+        .update({ list_title: editingTitle })
+        .eq('id', list.id);
 
-  const getTotalLists = () => giftLists.length;
-  const getUpcomingEvents = () => {
-    // This would ideally come from gift list data with dates
-    return ['Holiday Season', 'Birthday Season'];
+      if (!error) {
+        setGiftLists(prev => prev.map(l => 
+          l.id === list.id ? { ...l, list_title: editingTitle } : l
+        ));
+        if (selectedList?.id === list.id) {
+          setSelectedList({ ...list, list_title: editingTitle });
+        }
+      }
+    }
+    
+    setEditingListId(null);
+    setEditingTitle('');
   };
+
+  const cancelEditing = () => {
+    setEditingListId(null);
+    setEditingTitle('');
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="animate-pulse space-y-4">
+          <div className="h-8 bg-gray-200 rounded w-64"></div>
+          <div className="h-16 bg-gray-200 rounded w-80"></div>
+          <div className="h-64 bg-gray-200 rounded w-96"></div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -103,17 +196,6 @@ export function Gifts() {
             </div>
             
             <YearSelector />
-            
-            <div className="flex items-center gap-4">
-              <div className="text-right">
-                <div className="text-sm text-gray-600">Total Lists</div>
-                <div className="text-2xl font-bold text-primary">{getTotalLists()}</div>
-              </div>
-              <Button onClick={addNewCard} className="gap-2">
-                <Plus className="h-4 w-4" />
-                New List
-              </Button>
-            </div>
           </div>
         </div>
       </div>
@@ -121,145 +203,93 @@ export function Gifts() {
       <div className="max-w-7xl mx-auto px-4 py-6">
         <WarningBanner />
 
-        {/* Stats Cards */}
-        {giftLists.length > 0 && (
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-            <Card>
-              <CardContent className="p-4">
-                <div className="flex items-center gap-3">
-                  <div className="p-2 bg-blue-100 rounded-lg">
-                    <Gift className="h-5 w-5 text-blue-600" />
-                  </div>
-                  <div>
-                    <div className="text-sm text-gray-600">Active Lists</div>
-                    <div className="text-xl font-bold">{giftLists.length}</div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardContent className="p-4">
-                <div className="flex items-center gap-3">
-                  <div className="p-2 bg-green-100 rounded-lg">
-                    <Calendar className="h-5 w-5 text-green-600" />
-                  </div>
-                  <div>
-                    <div className="text-sm text-gray-600">Recent Activity</div>
-                    <div className="text-xl font-bold">
-                      {giftLists.filter(list => {
-                        const created = new Date(list.created_at);
-                        const weekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
-                        return created > weekAgo;
-                      }).length}
+        {/* Gift Lists Selector - Similar to other pages */}
+        <Card className="mb-6">
+          <CardContent className="p-4">
+            <div className="space-y-2">
+              {giftLists.map((list) => (
+                <div key={list.id} className="w-full">
+                  <div 
+                    className={cn(
+                      "group relative cursor-pointer transition-all w-full",
+                      currentListId === list.id 
+                        ? "bg-primary text-primary-foreground" 
+                        : "bg-muted hover:bg-muted/80",
+                      "rounded-lg px-4 py-3 border-2",
+                      currentListId === list.id && "border-primary",
+                      "flex items-center justify-between"
+                    )}
+                    onClick={() => selectList(list)}
+                  >
+                    <div className="flex items-center gap-3">
+                      <Gift className="h-5 w-5" />
+                      {editingListId === list.id ? (
+                        <div className="flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
+                          <Input
+                            value={editingTitle}
+                            onChange={(e) => setEditingTitle(e.target.value)}
+                            className="h-8 text-sm"
+                            onKeyDown={(e) => {
+                              if (e.key === 'Enter') saveTitle(list);
+                              if (e.key === 'Escape') cancelEditing();
+                            }}
+                            autoFocus
+                          />
+                          <Button size="sm" onClick={() => saveTitle(list)}>
+                            <Check className="h-3 w-3" />
+                          </Button>
+                          <Button size="sm" variant="outline" onClick={cancelEditing}>
+                            <X className="h-3 w-3" />
+                          </Button>
+                        </div>
+                      ) : (
+                        <>
+                          <span className="font-medium">{list.list_title}</span>
+                          <Badge variant="secondary" className="ml-2">
+                            {selectedYear}
+                          </Badge>
+                        </>
+                      )}
                     </div>
+                    
+                    {editingListId !== list.id && (
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          startEditing(list);
+                        }}
+                        className={cn(
+                          "h-8 w-8 p-0 opacity-0 group-hover:opacity-100 transition-opacity",
+                          currentListId === list.id && "text-primary-foreground hover:text-primary-foreground"
+                        )}
+                      >
+                        <Edit3 className="h-4 w-4" />
+                      </Button>
+                    )}
                   </div>
                 </div>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardContent className="p-4">
-                <div className="flex items-center gap-3">
-                  <div className="p-2 bg-purple-100 rounded-lg">
-                    <DollarSign className="h-5 w-5 text-purple-600" />
-                  </div>
-                  <div>
-                    <div className="text-sm text-gray-600">Upcoming Events</div>
-                    <div className="text-sm font-medium">
-                      {getUpcomingEvents().slice(0, 2).join(', ')}
-                    </div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        )}
-
-        {/* Controls */}
-        <div className="flex justify-between items-center mb-6">
-          <div className="flex items-center gap-4">
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
-              <Input
-                placeholder="Search gift lists..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-10 w-64"
-              />
+              ))}
             </div>
-          </div>
+          </CardContent>
+        </Card>
 
-          <div className="flex items-center gap-2">
-            <Button
-              variant={viewMode === 'grid' ? 'default' : 'outline'}
-              size="sm"
-              onClick={() => setViewMode('grid')}
-            >
-              <Grid className="h-4 w-4" />
-            </Button>
-            <Button
-              variant={viewMode === 'list' ? 'default' : 'outline'}
-              size="sm"
-              onClick={() => setViewMode('list')}
-            >
-              <List className="h-4 w-4" />
-            </Button>
-          </div>
-        </div>
-
-        {/* Gift Lists Grid/List */}
-        <div className={`${
-          viewMode === 'grid' 
-            ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6' 
-            : 'space-y-4'
-        } mb-8`}>
-          {/* New card form */}
-          {showNewCard && (
-            <div className={viewMode === 'list' ? 'max-w-md' : ''}>
-              <GiftCard 
-                onDelete={() => setShowNewCard(false)}
-                onSave={() => {
-                  setShowNewCard(false);
-                  loadGiftLists();
-                }}
-              />
+        {/* Selected Gift List Content */}
+        {selectedList && (
+          <div className="space-y-6">
+            <div className="flex items-center justify-between">
+              <h2 className="text-xl font-semibold text-gray-900">
+                {selectedList.list_title}
+              </h2>
             </div>
-          )}
 
-          {/* Existing gift lists */}
-          {filteredLists.map((list) => (
-            <div key={list.id} className={viewMode === 'list' ? 'max-w-md' : ''}>
-              <GiftCard
-                initialData={list}
-                onDelete={handleDeleteList}
-              />
-            </div>
-          ))}
-        </div>
-
-        {/* Empty State */}
-        {filteredLists.length === 0 && !showNewCard && (
-          <Card className="border-dashed border-2 border-gray-300">
-            <CardContent className="p-12 text-center">
-              <Gift className="h-12 w-12 mx-auto mb-4 text-gray-400" />
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                {searchQuery ? 'No lists found' : 'No gift lists yet'}
-              </h3>
-              <p className="text-gray-600 mb-6">
-                {searchQuery 
-                  ? 'Try adjusting your search terms'
-                  : 'Create your first gift list to organize ideas for holidays, birthdays, and special occasions'
-                }
-              </p>
-              {!searchQuery && (
-                <Button onClick={addNewCard} className="gap-2">
-                  <Plus className="h-4 w-4" />
-                  Create Your First List
-                </Button>
-              )}
-            </CardContent>
-          </Card>
+            {/* Gift Card Component */}
+            <GiftCard 
+              initialData={selectedList}
+              onSave={loadGiftLists}
+            />
+          </div>
         )}
 
         {/* Etsy Products Section */}
@@ -278,7 +308,7 @@ export function Gifts() {
                 </div>
                 <div>
                   <h4 className="font-medium mb-1">Stay Organized</h4>
-                  <p className="text-sm text-gray-600">Create separate lists for different occasions like holidays, birthdays, or anniversaries.</p>
+                  <p className="text-sm text-gray-600">Use separate lists for different occasions like holidays, birthdays, or anniversaries.</p>
                 </div>
               </div>
               
@@ -307,7 +337,7 @@ export function Gifts() {
       </div>
 
       <AIChatbot 
-        pageContext="This is the Gifts page where users can create multiple gift list cards for different holidays or birthdays. Each card allows users to enter a gift idea, price, and URL that opens in a new tab. Users can edit the title of each card and all data is saved to their account. The AI assistant can help fill out gift information."
+        pageContext="This is the Gifts page where users can select from 4 predefined gift lists (Gift List 1-4) for different occasions. Each list allows users to enter gift ideas, prices, and URLs. Users can edit the titles of each list and all data is saved by year and household. The AI assistant can help fill out gift information."
         pageName="Gifts"
       />
     </div>
