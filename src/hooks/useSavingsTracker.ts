@@ -78,6 +78,8 @@ export function useSavingsTracker({ user, currentHousehold }: UseSavingsTrackerP
             year: year,
             title: `Goal ${i}`,
             goal_number: i,
+            target_amount: 0,  // FIX: Ensure new goals have a default target
+            current_amount: 0, // FIX: Ensure new goals have a default current amount
           });
         }
       }
