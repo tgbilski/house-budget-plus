@@ -102,9 +102,9 @@ const HeroSectionContent = () => (
           </div>
           <CardTitle className="text-lg font-semibold text-gray-900 mb-2 group-hover:text-primary transition-colors uppercase">Step 2: Create a budget</CardTitle>
           <CardDescription className="text-sm text-gray-600 leading-relaxed">
-            No need for bank accounts, type in your data.
+            Create a Household & track monthly expenses.
             <br />
-            Automatically track monthly expenses.
+            Income minus expenses!
           </CardDescription>
         </div>
       </CardHeader>
