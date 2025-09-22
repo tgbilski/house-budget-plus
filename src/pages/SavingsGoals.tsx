@@ -1,39 +1,43 @@
-// ...imports remain unchanged
-const SavingsGoals = () => {
-  // ...state declarations remain unchanged
+import React, { useState, useEffect } from 'react';
+import { useAuth } from '@/hooks/useAuth';
+import { useYear } from '@/hooks/useYear';
+import { useHouseholdContext } from '@/providers/HouseholdProvider';
+import { supabase } from '@/integrations/supabase/client';
+
+const SavingsGoals: React.FC = () => {
   const { user } = useAuth();
   const { currentHousehold } = useHouseholdContext();
   const { selectedYear } = useYear();
-  // ...
 
-  // When inserting or updating, include the 'year' field
-  const saveSavingsEntry = async (goalId: string, amount: number, monthKey: string) => {
-    const entryDate = `${monthKey}-01`;
-    if (!user || !goalId) return;
+  const [savingsGoals, setSavingsGoals] = useState<any[]>([]);
+  const [currentGoalId, setCurrentGoalId] = useState<string | null>(null);
 
-    try {
-      const { data: existingEntry } = await supabase
-        .from('savings_entries')
-        .select('id')
-        .eq('goal_id', goalId)
-        .eq('entry_month', entryDate)
-        .eq('year', selectedYear)
-        .single();
+  useEffect(() => {
+    if (user && currentHousehold) {
+      loadSavingsGoals();
+    }
+    // eslint-disable-next-line
+  }, [user, currentHousehold, selectedYear]);
 
-      if (existingEntry) {
-        if (amount === 0) {
-          await supabase.from('savings_entries').delete().eq('id', existingEntry.id);
-        } else {
-          await supabase.from('savings_entries').update({ amount, year: selectedYear }).eq('id', existingEntry.id);
-        }
-      } else if (amount > 0) {
-        await supabase.from('savings_entries').insert([{ goal_id: goalId, amount, entry_month: entryDate, year: selectedYear }]);
-      }
-    } catch (error) {
-      console.error('Error updating savings entry:', error);
+  const loadSavingsGoals = async () => {
+    const { data } = await supabase
+      .from('savings_goals')
+      .select('*')
+      .eq('user_id', user.id)
+      .eq('household_id', currentHousehold.id)
+      .eq('year', selectedYear);
+
+    if (data && data.length > 0) {
+      setSavingsGoals(data);
+      setCurrentGoalId(data[0].id);
     }
   };
 
-  // ...rest of component, including rendering and event handlers
+  return (
+    <div>
+      {/* ...your savings goals UI here... */}
+    </div>
+  );
 };
+
 export default SavingsGoals;
