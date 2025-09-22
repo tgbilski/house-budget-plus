@@ -3,24 +3,25 @@ import { useState, useEffect, useMemo, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 
-export interface VacationOption {
+// Corresponds to your 'Vacation_Projects' table
+export interface VacationProject {
   id: string;
   user_id: string;
-  year: number;
+  title: string;
   vacation_number: number;
+  year: number;
+}
+
+// Corresponds to your 'Vacation_Options' table
+export interface VacationOption {
+  id: string;
+  vacation_id: string; // Foreign key to VacationProject
   destination: string;
-  travel_mode: string;
   travel_mode_cost: number;
   lodging_cost: number;
   car_rental_cost: number;
   notes: string;
-  family_friendly: boolean;
-  good_weather: boolean;
-  activities_available: boolean;
-  affordable: boolean;
-  relaxing: boolean;
-  adventurous: boolean;
-  memorable: boolean;
+  // ... add other evaluation fields if they exist on this table
 }
 
 interface UseVacationPlannerProps {
@@ -29,94 +30,111 @@ interface UseVacationPlannerProps {
 }
 
 export function useVacationPlanner({ user, year }: UseVacationPlannerProps) {
+  const [vacations, setVacations] = useState<VacationProject[]>([]);
   const [options, setOptions] = useState<VacationOption[]>([]);
+  const [currentVacationId, setCurrentVacationId] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  
-  // ADDED: State to track the current selection and editing
-  const [currentOptionId, setCurrentOptionId] = useState<string | null>(null);
-  const [editingState, setEditingState] = useState<{ id: string | null; title: string }>({ id: null, title: '' });
 
-  const loadVacationOptions = useCallback(async () => {
+  const loadVacations = useCallback(async () => {
     setIsLoading(true);
-    let baseOptions: VacationOption[] = Array.from({ length: 3 }, (_, i) => ({
-      id: `temp-${i + 1}-${Date.now()}`, user_id: user?.id || 'guest', year, vacation_number: i + 1, destination: '', 
-      travel_mode: '', travel_mode_cost: 0, lodging_cost: 0, car_rental_cost: 0, notes: '', 
-      family_friendly: false, good_weather: false, activities_available: false, affordable: false, 
-      relaxing: false, adventurous: false, memorable: false
+    let baseVacations: VacationProject[] = Array.from({ length: 3 }, (_, i) => ({
+      id: `temp-${i + 1}-${Date.now()}`, user_id: user?.id || 'guest', year, title: `Vacation ${i + 1}`, vacation_number: i + 1
     }));
 
     if (user) {
       try {
-        const { data: dbOptions, error } = await supabase.from('vacation_options').select('*').eq('user_id', user.id).eq('year', year);
+        const { data: dbVacations, error } = await supabase.from('vacation_projects').select('*').eq('user_id', user.id).eq('year', year);
         if (error) throw error;
-        if (dbOptions && dbOptions.length > 0) {
-          dbOptions.forEach(dbOption => {
-            const index = baseOptions.findIndex(opt => opt.vacation_number === dbOption.vacation_number);
-            if (index !== -1) { baseOptions[index] = dbOption; }
+        if (dbVacations?.length) {
+          dbVacations.forEach(dbVacation => {
+            const index = baseVacations.findIndex(p => p.vacation_number === dbVacation.vacation_number);
+            if (index !== -1) { baseVacations[index] = dbVacation; }
           });
         }
       } catch (error) {
-        toast.error("Failed to load vacation plans.");
+        toast.error("Failed to load vacations.");
       }
     }
-
-    setOptions(baseOptions);
-    // ADDED: Set the current ID to the first option by default
-    if (baseOptions.length > 0) {
-      setCurrentOptionId(currentId => 
-        baseOptions.some(opt => opt.id === currentId) ? currentId : baseOptions[0].id
-      );
+    
+    setVacations(baseVacations);
+    if (baseVacations.length > 0) {
+      setCurrentVacationId(currentId => baseVacations.some(p => p.id === currentId) ? currentId : baseVacations[0].id);
     }
     setIsLoading(false);
   }, [user, year]);
 
-  useEffect(() => { loadVacationOptions(); }, [loadVacationOptions]);
+  const loadOptions = useCallback(async () => {
+    if (!currentVacationId) {
+      setOptions([]);
+      return;
+    };
 
-  const updateVacationOption = async (optionId: string, updates: Partial<VacationOption>) => {
-    setOptions(prev => prev.map(opt => (opt.id === optionId ? { ...opt, ...updates } : opt)));
-    if (!user || optionId.startsWith('temp-')) return;
-    const { error } = await supabase.from('vacation_options').update(updates).eq('id', optionId);
+    if (!user || currentVacationId.startsWith('temp-')) {
+      // Create a default empty option for demo/newly created vacations
+      setOptions([{
+        id: `demo-option-${Date.now()}`, vacation_id: currentVacationId, destination: '', travel_mode_cost: 0,
+        lodging_cost: 0, car_rental_cost: 0, notes: '',
+      }]);
+      return;
+    }
+
+    const { data, error } = await supabase.from('vacation_options').select('*').eq('vacation_id', currentVacationId);
     if (error) {
-      toast.error("Failed to save your changes.");
-      loadVacationOptions();
+      toast.error("Failed to load vacation options.");
+      setOptions([]);
+    } else if (data?.length) {
+      setOptions(data);
+    } else {
+      // If no options exist for a real vacation, create a default one
+      const { data: newOption } = await supabase.from('vacation_options').insert({ vacation_id: currentVacationId, destination: '' }).select().single();
+      setOptions(newOption ? [newOption] : []);
+    }
+  }, [currentVacationId, user]);
+
+  useEffect(() => { loadVacations(); }, [loadVacations]);
+  useEffect(() => { loadOptions(); }, [loadOptions]);
+
+  const addOption = () => {
+    if (!currentVacationId) return;
+    const newOption: VacationOption = {
+      id: `temp-${Date.now()}`, vacation_id: currentVacationId, destination: '',
+      travel_mode_cost: 0, lodging_cost: 0, car_rental_cost: 0, notes: '',
+    };
+    setOptions(prev => [...prev, newOption]);
+  };
+  
+  const updateOption = async (updatedOption: VacationOption) => {
+    setOptions(prev => prev.map(o => o.id === updatedOption.id ? updatedOption : o));
+    if (!user) return;
+    const { id, ...optionData } = updatedOption;
+    try {
+      if (id.startsWith('temp-') || id.startsWith('demo-')) {
+        const { data: newRecord, error } = await supabase.from('vacation_options').insert({ ...optionData, vacation_id: currentVacationId }).select().single();
+        if (error) throw error;
+        setOptions(prev => prev.map(o => o.id === id ? newRecord : o));
+      } else {
+        const { error } = await supabase.from('vacation_options').update(optionData).eq('id', id);
+        if (error) throw error;
+      }
+    } catch(error) {
+      toast.error("Failed to save option.");
+      loadOptions(); // Revert on failure
     }
   };
+  
+  const removeOption = async (optionId: string) => { /* ... similar to removeQuote ... */ };
+  const updateVacationTitle = async (vacationId: string, title: string) => { /* ... similar to updateProjectTitle ... */ };
 
-  // ADDED: Function to specifically update the destination title
-  const updateDestinationTitle = async (optionId: string, destination: string) => {
-    await updateVacationOption(optionId, { destination });
-    setEditingState({ id: null, title: '' }); // Exit editing mode
-    toast.success("Destination updated!");
-  };
-
-  const resetVacationOption = async (optionId: string) => {
-    const resetData = {
-      destination: '', travel_mode: '', travel_mode_cost: 0, lodging_cost: 0, car_rental_cost: 0,
-      notes: '', family_friendly: false, good_weather: false, activities_available: false,
-      affordable: false, relaxing: false, adventurous: false, memorable: false
-    };
-    await updateVacationOption(optionId, resetData);
-    toast.success(`Vacation option has been reset.`);
-  };
-
-  // ADDED: A memoized value to easily find the currently selected option object
-  const currentOption = useMemo(() => options.find(opt => opt.id === currentOptionId), [options, currentOptionId]);
-
-  const totalBudget = useMemo(() => { /* ... Unchanged ... */ });
-  const bestOption = useMemo(() => { /* ... Unchanged ... */ });
 
   return {
+    vacations,
     options,
+    currentVacationId,
     isLoading,
-    totalBudget,
-    bestOption,
-    currentOption,      // ADDED
-    currentOptionId,    // ADDED
-    editingState,       // ADDED
-    setCurrentOptionId, // ADDED
-    setEditingState,    // ADDED
-    updateVacationOption,
-    updateDestinationTitle, // ADDED
-    resetVacationOption,
+    setCurrentVacationId,
+    addOption,
+    removeOption,
+    updateOption,
+    updateVacationTitle,
   };
 }
