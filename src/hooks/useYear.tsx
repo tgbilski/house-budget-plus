@@ -19,19 +19,26 @@ export const YearProvider = ({ children }: { children: ReactNode }) => {
   ).sort((a, b) => a - b); // Sort in ascending order
 
   useEffect(() => {
-    // Store selected year in localStorage for persistence
-    localStorage.setItem('selectedYear', selectedYear.toString());
+    // Store selected year in sessionStorage for current session persistence
+    sessionStorage.setItem('selectedYear', selectedYear.toString());
   }, [selectedYear]);
 
   useEffect(() => {
-    // Restore selected year from localStorage on load
-    const stored = localStorage.getItem('selectedYear');
+    // Restore selected year from sessionStorage on load (session persistence)
+    const stored = sessionStorage.getItem('selectedYear');
     if (stored) {
       const year = parseInt(stored);
       if (availableYears.includes(year)) {
         setSelectedYear(year);
       }
     }
+  }, [availableYears]);
+
+  // Reset to current year when component unmounts (on logout/session end)
+  useEffect(() => {
+    return () => {
+      sessionStorage.removeItem('selectedYear');
+    };
   }, []);
 
   return (
