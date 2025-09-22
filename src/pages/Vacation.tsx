@@ -1,6 +1,6 @@
 // src/pages/Vacation.tsx
 import React from 'react';
-import { Plane } from 'lucide-react';
+import { Plane, Plus } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { useYear } from '@/hooks/useYear';
 import { useCurrency } from '@/hooks/useCurrency';
@@ -9,11 +9,8 @@ import { SEO } from '@/components/SEO';
 import { WarningBanner } from '@/components/WarningBanner';
 import { seoData } from '@/utils/seoData';
 import { useVacationPlanner } from '@/hooks/useVacationPlanner';
-import { VacationCard } from '@/components/VacationCard';
+import { VacationOptionCard } from '@/components/VacationOptionCard'; // Renaming for clarity
 import { VacationSelector } from '@/components/VacationSelector';
-import { Link } from 'react-router-dom';
-import { Alert, AlertDescription } from '@/components/ui/alert';
-import { AlertTriangle } from 'lucide-react';
 
 const Vacation: React.FC = () => {
   const { user } = useAuth();
@@ -21,16 +18,17 @@ const Vacation: React.FC = () => {
   const { currency } = useCurrency();
 
   const {
+    vacations,
     options,
+    currentVacationId,
     isLoading,
-    currentOption,
-    currentOptionId,
     editingState,
-    setCurrentOptionId,
+    setCurrentVacationId,
     setEditingState,
-    updateVacationOption,
-    updateDestinationTitle,
-    resetVacationOption,
+    addOption,
+    removeOption,
+    updateOption,
+    updateVacationTitle,
   } = useVacationPlanner({ user, year: selectedYear });
 
   if (isLoading) {
@@ -46,7 +44,7 @@ const Vacation: React.FC = () => {
             <Plane className="h-8 w-8 text-primary" />
             <div>
               <h1 className="text-2xl font-bold text-gray-900">Vacation Planner</h1>
-              <p className="text-sm text-gray-600">Plan and budget your dream getaways</p>
+              <p className="text-sm text-gray-600">Compare options for each of your trips</p>
             </div>
           </div>
           <YearSelector />
@@ -56,36 +54,31 @@ const Vacation: React.FC = () => {
       <div className="max-w-7xl mx-auto px-4 py-6 space-y-6">
         <WarningBanner />
 
-         {!user && (
-          <Alert className="border-yellow-200 bg-yellow-50">
-            <AlertTriangle className="h-4 w-4 text-yellow-600" />
-            <AlertDescription className="text-yellow-800">
-              <strong>Demo Mode</strong> -
-              <Link to="/auth" className="underline font-medium ml-1 hover:text-yellow-900">
-                Sign in to save your vacation plans
-              </Link>
-            </AlertDescription>
-          </Alert>
-        )}
-
         <VacationSelector
-          options={options}
-          currentOptionId={currentOptionId}
-          onSelectOption={setCurrentOptionId}
+          vacations={vacations}
+          currentVacationId={currentVacationId}
+          onSelectVacation={setCurrentVacationId}
           editingState={editingState}
           onSetEditingState={setEditingState}
-          onUpdateTitle={updateDestinationTitle}
+          onUpdateTitle={updateVacationTitle}
         />
 
-        {currentOption && (
-          <VacationCard
-            key={currentOption.id}
-            option={currentOption}
-            onUpdate={updateVacationOption}
-            onReset={resetVacationOption}
-            currencySymbol={currency.symbol}
-          />
-        )}
+        <div className="flex justify-end">
+          <Button onClick={addOption} className="gap-2"><Plus className="h-4 w-4" /> Add Destination Option</Button>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {options.map((option) => (
+            <VacationOptionCard
+              key={option.id}
+              option={option}
+              onUpdate={updateOption}
+              onRemove={removeOption}
+              showRemove={options.length > 1}
+              currencySymbol={currency.symbol}
+            />
+          ))}
+        </div>
       </div>
     </div>
   );
