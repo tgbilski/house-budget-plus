@@ -12,8 +12,6 @@ export const YearProvider = ({ children }: { children: ReactNode }) => {
   const currentYear = new Date().getUTCFullYear();
   const [selectedYear, setSelectedYear] = useState<number>(currentYear);
   
-  console.log('YearProvider - selectedYear:', selectedYear);
-  
   // Generate available years (current year and next 3 years)
   const availableYears = Array.from(
     { length: 4 }, 

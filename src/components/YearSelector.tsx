@@ -15,10 +15,7 @@ export const YearSelector: React.FC<YearSelectorProps> = ({ className = '' }) =>
       <Calendar className="h-6 w-6 text-muted-foreground" />
       <Select 
         value={selectedYear.toString()} 
-        onValueChange={(value) => {
-          console.log('Year changed from', selectedYear, 'to', parseInt(value));
-          setSelectedYear(parseInt(value));
-        }}
+        onValueChange={(value) => setSelectedYear(parseInt(value))}
       >
         <SelectTrigger className="w-32 h-12 text-lg font-bold border-2 hover:border-primary/50 transition-colors bg-background/80 backdrop-blur-sm">
           <SelectValue placeholder="Year" />
