@@ -7,6 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
+import { YearSelector } from '@/components/YearSelector';
 import type { VendorQuote } from '@/hooks/useVendorProjects';
 
 interface VendorCardProps {
