@@ -10,6 +10,7 @@ import { SEO } from '@/components/SEO';
 import { seoData } from '@/utils/seoData';
 import { AIChatbot } from '@/components/AIChatbot';
 import { WarningBanner } from '@/components/WarningBanner';
+import { YearSelector } from '@/components/YearSelector'; // The import is back
 
 // Import our new hook and components!
 import { useVendorProjects } from '@/hooks/useVendorProjects';
@@ -59,6 +60,9 @@ const CompareVendors: React.FC = () => {
               <p className="text-sm text-gray-600">Compare quotes and find the best value</p>
             </div>
           </div>
+
+          <YearSelector /> {/* The component is back in its place */}
+
           {savingsPotential > 0 && (
             <div className="text-right">
               <div className="text-sm text-gray-600">Savings Potential</div>
