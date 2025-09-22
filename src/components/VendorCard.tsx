@@ -1,13 +1,13 @@
 // src/components/VendorCard.tsx
 import React, { useState, useEffect } from 'react';
-import { Star, Building, Calendar, Phone, DollarSign, Edit3, Trash2, Check } from 'lucide-react';
+import { Building, Calendar, Phone, DollarSign, Edit3, Trash2, Check } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
-import type { VendorQuote } from '@/hooks/useVendorProjects'; // Import the type from our hook
+import type { VendorQuote } from '@/hooks/useVendorProjects';
 
 interface VendorCardProps {
   quote: VendorQuote;
@@ -18,29 +18,27 @@ interface VendorCardProps {
 }
 
 export const VendorCard: React.FC<VendorCardProps> = ({ quote, onUpdate, onRemove, showRemove, currencySymbol }) => {
-  // This component now only manages its own UI state (if it's in editing mode or not).
   const [isEditing, setIsEditing] = useState(!quote.vendor_name && quote.estimate_amount === 0);
-  
-  // We keep a local copy of the quote *while editing* to avoid updating the parent on every keystroke.
   const [localQuote, setLocalQuote] = useState<VendorQuote>(quote);
 
-  // If the parent's quote object changes, we update our local copy.
+  // NOTE: The problematic auto-saving useEffect with setTimeout has been removed.
+  // We now only save explicitly when the user clicks the "Save" button.
+
   useEffect(() => {
     setLocalQuote(quote);
   }, [quote]);
 
-  // Helper to update a field in our local copy.
   const updateLocalField = (field: keyof VendorQuote, value: any) => {
     setLocalQuote(prev => ({ ...prev, [field]: value }));
   };
 
   const handleSave = () => {
-    onUpdate(localQuote); // Send the updated local copy to the parent hook to be saved.
+    onUpdate(localQuote);
     setIsEditing(false);
   };
   
   const handleCancel = () => {
-    setLocalQuote(quote); // Revert any changes.
+    setLocalQuote(quote);
     setIsEditing(false);
   }
 
