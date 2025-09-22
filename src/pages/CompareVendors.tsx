@@ -1,11 +1,20 @@
 // src/pages/CompareVendors.tsx
 import React from 'react';
 import { Scale, Plus, Filter } from 'lucide-react';
-// ... other imports
+import { Button } from '@/components/ui/button';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { useAuth } from '@/hooks/useAuth';
+import { useCurrency } from '@/hooks/useCurrency';
+import { useYear } from '@/hooks/useYear';
+import { SEO } from '@/components/SEO';
+import { seoData } from '@/utils/seoData';
+import { AIChatbot } from '@/components/AIChatbot';
+import { WarningBanner } from '@/components/WarningBanner';
+import { YearSelector } from '@/components/YearSelector';
 import { useVendorProjects } from '@/hooks/useVendorProjects';
 import { VendorCard } from '@/components/VendorCard';
 import { ProjectSelector } from '@/components/ProjectSelector';
-import { ProjectSummaryCard } from '@/components/ProjectSummaryCard'; // Import the new summary card
+import { ProjectSummaryCard } from '@/components/ProjectSummaryCard';
 
 const CompareVendors: React.FC = () => {
   const { user } = useAuth();
@@ -18,7 +27,7 @@ const CompareVendors: React.FC = () => {
     currentProjectId,
     isLoading,
     sortBy,
-    summaryStats, // Get the new summary object
+    summaryStats,
     setCurrentProjectId,
     setSortBy,
     addQuote,
@@ -27,11 +36,18 @@ const CompareVendors: React.FC = () => {
     updateProjectTitle,
   } = useVendorProjects({ user, year: selectedYear });
 
-  if (isLoading) { /* ... */ }
+  if (isLoading) {
+    return <div className="p-8 text-center">Loading your projects...</div>;
+  }
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <SEO { /* ... */ } />
+      <SEO
+        title={seoData.compareVendors.title}
+        description={seoData.compareVendors.description}
+        keywords={seoData.compareVendors.keywords}
+        canonical="https://www.housebudgetcalculator.com/compare-prices"
+      />
 
       <div className="bg-white shadow-sm border-b">
         <div className="max-w-7xl mx-auto px-4 py-6 flex items-center justify-between">
@@ -56,14 +72,24 @@ const CompareVendors: React.FC = () => {
           onUpdateTitle={updateProjectTitle}
         />
 
-        {/* The new Summary Card goes here! */}
         <ProjectSummaryCard
           stats={summaryStats}
           currencySymbol={currency.symbol}
         />
 
         <div className="flex justify-between items-center">
-          { /* ... Sort by and Add Quote buttons ... */ }
+          <div className="flex items-center gap-2">
+            <Filter className="h-4 w-4 text-gray-500" />
+            <Select value={sortBy} onValueChange={(value: 'amount' | 'rating' | 'date') => setSortBy(value)}>
+              <SelectTrigger className="w-48"><SelectValue /></SelectTrigger>
+              <SelectContent>
+                <SelectItem value="amount">Sort by Price (Low to High)</SelectItem>
+                <SelectItem value="rating">Sort by Rating (High to Low)</SelectItem>
+                <SelectItem value="date">Sort by Date (Newest First)</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          <Button onClick={addQuote} className="gap-2"><Plus className="h-4 w-4" /> Add Quote</Button>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -79,7 +105,10 @@ const CompareVendors: React.FC = () => {
           ))}
         </div>
 
-        <AIChatbot { /* ... */ } />
+        <AIChatbot
+          pageContext="This is the Vendor Comparison page where users can create projects and compare vendor quotes."
+          pageName="Vendor Comparison"
+        />
       </div>
     </div>
   );
