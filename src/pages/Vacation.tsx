@@ -1,6 +1,7 @@
 // src/pages/Vacation.tsx
 import React from 'react';
 import { Plane, Plus } from 'lucide-react';
+import { Button } from '@/components/ui/button'; // The missing import
 import { useAuth } from '@/hooks/useAuth';
 import { useYear } from '@/hooks/useYear';
 import { useCurrency } from '@/hooks/useCurrency';
@@ -9,8 +10,11 @@ import { SEO } from '@/components/SEO';
 import { WarningBanner } from '@/components/WarningBanner';
 import { seoData } from '@/utils/seoData';
 import { useVacationPlanner } from '@/hooks/useVacationPlanner';
-import { VacationOptionCard } from '@/components/VacationOptionCard'; // Renaming for clarity
+import { VacationOptionCard } from '@/components/VacationOptionCard';
 import { VacationSelector } from '@/components/VacationSelector';
+import { Link } from 'react-router-dom';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { AlertTriangle } from 'lucide-react';
 
 const Vacation: React.FC = () => {
   const { user } = useAuth();
@@ -53,6 +57,18 @@ const Vacation: React.FC = () => {
 
       <div className="max-w-7xl mx-auto px-4 py-6 space-y-6">
         <WarningBanner />
+
+         {!user && (
+          <Alert className="border-yellow-200 bg-yellow-50">
+            <AlertTriangle className="h-4 w-4 text-yellow-600" />
+            <AlertDescription className="text-yellow-800">
+              <strong>Demo Mode</strong> -
+              <Link to="/auth" className="underline font-medium ml-1 hover:text-yellow-900">
+                Sign in to save your vacation plans
+              </Link>
+            </AlertDescription>
+          </Alert>
+        )}
 
         <VacationSelector
           vacations={vacations}
