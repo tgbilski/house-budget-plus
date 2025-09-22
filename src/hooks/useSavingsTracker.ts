@@ -1,198 +1,105 @@
-// src/hooks/useVendorProjects.ts
+// src/hooks/useSavingsTracker.ts
 import { useState, useEffect, useMemo, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 
-export interface VendorProject {
+export interface SavingsGoal {
   id: string;
   user_id: string;
+  household_id: string;
+  year: number;
   title: string;
-  project_number: number;
-  year: number;
+  target_amount: number;
+  current_amount: number;
+  goal_number: number;
 }
 
-export interface VendorQuote {
-  id: string;
-  project_id: string;
-  vendor_name: string;
-  estimate_amount: number;
-  contact_info: string;
-  notes: string;
-  liked_sales_rep: boolean;
-  offers_financing: boolean;
-  good_timing: boolean;
-  trustworthy: boolean;
-  responsive: boolean;
-  date_received: string;
-}
-
-interface UseVendorProjectsProps {
+interface UseSavingsTrackerProps {
   user: { id: string } | null;
+  currentHousehold: { id: string } | null;
   year: number;
 }
 
-export function useVendorProjects({ user, year }: UseVendorProjectsProps) {
-  const [projects, setProjects] = useState<VendorProject[]>([]);
-  const [quotes, setQuotes] = useState<VendorQuote[]>([]);
-  const [currentProjectId, setCurrentProjectId] = useState<string | null>(null);
+export function useSavingsTracker({ user, currentHousehold, year }: UseSavingsTrackerProps) {
+  const [goals, setGoals] = useState<SavingsGoal[]>([]);
+  const [currentGoalId, setCurrentGoalId] = useState<string | null>(null);
+  const [monthlyData, setMonthlyData] = useState<Record<string, number>>({});
   const [isLoading, setIsLoading] = useState(true);
-  const [sortBy, setSortBy] = useState<'amount' | 'rating' | 'date'>('amount');
 
-  const loadProjects = useCallback(async () => {
+  const fetchGoals = useCallback(async () => {
     setIsLoading(true);
 
-    let baseProjects: VendorProject[] = Array.from({ length: 3 }, (_, i) => ({
-      id: `temp-${i + 1}-${Date.now()}`, user_id: user?.id || 'guest', year, title: `Project ${i + 1}`, project_number: i + 1
+    let baseGoals: SavingsGoal[] = Array.from({ length: 3 }, (_, i) => ({
+      id: `temp-${i + 1}-${Date.now()}`,
+      user_id: user?.id || 'guest',
+      household_id: currentHousehold?.id || 'guest',
+      year,
+      title: `Goal ${i + 1}`,
+      goal_number: i + 1,
+      target_amount: 0,
+      current_amount: 0,
     }));
 
-    if (user) {
+    if (user && currentHousehold) {
       try {
-        const { data: dbProjects, error } = await supabase.from('vendor_projects').select('*').eq('user_id', user.id).eq('year', year);
+        const { data: dbGoals, error } = await supabase.from('savings_goals').select('*').eq('user_id', user.id).eq('household_id', currentHousehold.id).eq('year', year);
         if (error) throw error;
 
-        if (dbProjects && dbProjects.length > 0) {
-          dbProjects.forEach(dbProject => {
-            const index = baseProjects.findIndex(p => p.project_number === dbProject.project_number);
+        if (dbGoals && dbGoals.length > 0) {
+          dbGoals.forEach(dbGoal => {
+            const index = baseGoals.findIndex(g => g.goal_number === dbGoal.goal_number);
             if (index !== -1) {
-              baseProjects[index] = dbProject;
+              baseGoals[index] = dbGoal;
             }
           });
         }
       } catch (error) {
-        console.error("Error loading projects:", error);
-        toast.error("Failed to load projects.");
+        console.error("Error loading goals:", error);
+        toast.error("Failed to load savings goals.");
       }
     }
-    
-    setProjects(baseProjects);
-    if (baseProjects.length > 0) {
-      setCurrentProjectId(currentId => 
-        baseProjects.some(p => p.id === currentId) ? currentId : baseProjects[0].id
+
+    setGoals(baseGoals);
+    if (baseGoals.length > 0) {
+      setCurrentGoalId(currentId => 
+        baseGoals.some(g => g.id === currentId) ? currentId : baseGoals[0].id
       );
     }
     setIsLoading(false);
-  }, [user, year]);
-
-  const loadQuotes = useCallback(async () => {
-    if (!currentProjectId) return;
-    if (!user) {
-      setQuotes([{
-        id: `demo-quote-${Date.now()}`, project_id: currentProjectId, vendor_name: '', estimate_amount: 0,
-        contact_info: '', notes: '', liked_sales_rep: false, offers_financing: false, good_timing: false,
-        trustworthy: false, responsive: false, date_received: new Date().toISOString().split('T')[0]
-      }]);
+  }, [user, currentHousehold, year]);
+  
+  const fetchMonthlyData = useCallback(async () => {
+    if (!currentGoalId || !user || currentGoalId.startsWith('temp-')) {
+      setMonthlyData({});
       return;
     }
+    // ... logic to fetch monthly data ...
+  }, [currentGoalId, user]);
 
-    const { data, error } = await supabase.from('vendor_quotes').select('*').eq('project_id', currentProjectId);
-    if (error) {
-      toast.error("Failed to load quotes for this project.");
-      return;
-    }
-    
-    if (data && data.length > 0) {
-      setQuotes(data);
-    } else {
-      const newQuote: Omit<VendorQuote, 'id'> = {
-        project_id: currentProjectId, vendor_name: '', estimate_amount: 0, contact_info: '',
-        notes: '', liked_sales_rep: false, offers_financing: false, good_timing: false,
-        trustworthy: false, responsive: false, date_received: new Date().toISOString().split('T')[0]
-      };
-      const { data: insertedQuote, error: insertError } = await supabase.from('vendor_quotes').insert(newQuote).select().single();
-      if(insertError) toast.error("Failed to create initial quote.");
-      else setQuotes(insertedQuote ? [insertedQuote] : []);
-    }
-  }, [currentProjectId, user]);
 
-  useEffect(() => { loadProjects(); }, [loadProjects]);
-  useEffect(() => { loadQuotes(); }, [loadQuotes]);
+  useEffect(() => { fetchGoals(); }, [fetchGoals]);
+  useEffect(() => { fetchMonthlyData(); }, [fetchMonthlyData]);
+  
+  const updateGoalTarget = async (target: number) => {
+    // ... logic to update goal target ...
+  };
 
-  const addQuote = () => {
-    const newQuote: VendorQuote = {
-      id: `temp-${Date.now()}`, project_id: currentProjectId || '', vendor_name: '', estimate_amount: 0,
-      contact_info: '', notes: '', liked_sales_rep: false, offers_financing: false, good_timing: false,
-      trustworthy: false, responsive: false, date_received: new Date().toISOString().split('T')[0]
-    };
-    setQuotes(prev => [...prev, newQuote]);
+  const updateMonthlyAmount = async (monthIndex: number, amount: number) => {
+    // ... logic to update monthly amount ...
   };
   
-  const removeQuote = async (quoteId: string) => {
-    if (quotes.length <= 1) {
-      toast.info("You must have at least one quote.");
-      return;
-    }
-    const quoteToRemove = quotes.find(q => q.id === quoteId);
-    setQuotes(prev => prev.filter(q => q.id !== quoteId));
+  // Add other actions like updateGoalTitle if needed...
 
-    if (user && quoteToRemove && !quoteToRemove.id.startsWith('temp-')) {
-      const { error } = await supabase.from('vendor_quotes').delete().eq('id', quoteId);
-      if (error) {
-        toast.error("Failed to delete quote from database.");
-        setQuotes(prev => [...prev, quoteToRemove]);
-      }
-    }
-  };
+  const currentGoal = useMemo(() => goals.find(g => g.id === currentGoalId), [goals, currentGoalId]);
 
-  const updateQuote = async (updatedQuote: VendorQuote) => {
-    setQuotes(prev => prev.map(q => q.id === updatedQuote.id ? updatedQuote : q));
-    if (!user) return;
-    const { id, project_id, ...quoteData } = updatedQuote;
-    try {
-      if (id.startsWith('temp-') || id.startsWith('demo-')) {
-        const { data: newRecord, error } = await supabase.from('vendor_quotes').insert({ ...quoteData, project_id: currentProjectId }).select().single();
-        if (error) throw error;
-        setQuotes(prev => prev.map(q => q.id === id ? newRecord : q));
-      } else {
-        const { error } = await supabase.from('vendor_quotes').update(quoteData).eq('id', id);
-        if (error) throw error;
-      }
-    } catch(error) {
-      toast.error("Failed to save quote.");
-      loadQuotes();
-    }
-  };
-
-  const updateProjectTitle = async (projectId: string, title: string) => {
-    setProjects(prev => prev.map(p => p.id === projectId ? { ...p, title } : p));
-    if (!user) return;
-    const { error } = await supabase.from('vendor_projects').update({ title }).eq('id', projectId);
-    if (error) {
-      toast.error("Failed to update project title.");
-      loadProjects();
-    }
-  };
-
-  const getRating = (q: VendorQuote) => [q.liked_sales_rep, q.offers_financing, q.good_timing, q.trustworthy, q.responsive].filter(Boolean).length;
-  
-  const sortedQuotes = useMemo(() => [...quotes].sort((a, b) => {
-    switch (sortBy) {
-      case 'amount': return a.estimate_amount - b.estimate_amount;
-      case 'rating': return getRating(b) - getRating(a);
-      case 'date': return new Date(b.date_received).getTime() - new Date(a.date_received).getTime();
-      default: return 0;
-    }
-  }), [quotes, sortBy]);
-
-  const savingsPotential = useMemo(() => {
-    const validQuotes = quotes.filter(q => q.estimate_amount > 0);
-    if (validQuotes.length < 2) return 0;
-    const amounts = validQuotes.map(q => q.estimate_amount);
-    return Math.max(...amounts) - Math.min(...amounts);
-  }, [quotes]);
-
-  // THIS IS THE FIX: The return statement that was missing.
   return {
-    projects,
-    quotes: sortedQuotes,
-    currentProjectId,
+    goals,
+    currentGoal,
+    currentGoalId,
+    monthlyData,
     isLoading,
-    sortBy,
-    savingsPotential,
-    setCurrentProjectId,
-    setSortBy,
-    addQuote,
-    removeQuote,
-    updateQuote,
-    updateProjectTitle,
+    setCurrentGoalId,
+    updateGoalTarget,
+    updateMonthlyAmount,
   };
 }
