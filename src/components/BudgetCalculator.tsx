@@ -66,6 +66,7 @@ const BudgetCalculator: React.FC<BudgetCalculatorProps> = ({
 
   // When the component loads, check for saved data and set the owner name.
   useEffect(() => {
+    console.log('BudgetCalculator effect triggered:', { user: !!user, currentHousehold: !!currentHousehold, selectedYear, id, pageType });
     if (user && currentHousehold && selectedYear) {
       loadData();
     }
@@ -115,6 +116,7 @@ const BudgetCalculator: React.FC<BudgetCalculatorProps> = ({
 
   const loadData = async () => {
     if (!user) return;
+    console.log('Loading budget data for:', { user_id: user.id, household_id: currentHousehold?.id, year: selectedYear, calculator_id: id, pageType });
 
     const { data, error } = await supabase
       .from('budget_data')
@@ -190,8 +192,6 @@ const BudgetCalculator: React.FC<BudgetCalculatorProps> = ({
         year: selectedYear, // Include the selected year
         income: monthlyIncome,
         expenses: expensesData as any
-      }, {
-        onConflict: 'user_id,calculator_id,page_type,household_id,year' // Update conflict resolution to include year
       });
 
     if (error) {
