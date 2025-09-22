@@ -91,6 +91,7 @@ const SavingsGoals = () => {
         .select('*')
         .eq('user_id', user?.id)
         .eq('household_id', currentHousehold?.id)
+        .eq('year', selectedYear)
         .order('goal_number', { ascending: true });
 
       if (fetchError) throw fetchError;
@@ -104,6 +105,7 @@ const SavingsGoals = () => {
           missingGoals.push({
             user_id: user?.id,
             household_id: currentHousehold?.id,
+            year: selectedYear,
             title: `Goal ${i}`,
             target_amount: 0,
             current_amount: 0,
@@ -142,8 +144,7 @@ const SavingsGoals = () => {
         .from('savings_entries')
         .select('*')
         .eq('goal_id', currentGoalId)
-        .gte('entry_month', `${selectedYear}-01-01`)
-        .lt('entry_month', `${parseInt(selectedYear) + 1}-01-01`);
+        .eq('year', selectedYear);
 
       if (error) throw error;
       const dataMap: Record<string, number> = {};

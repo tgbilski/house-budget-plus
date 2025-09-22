@@ -12,11 +12,11 @@ export const YearProvider = ({ children }: { children: ReactNode }) => {
   const currentYear = new Date().getUTCFullYear();
   const [selectedYear, setSelectedYear] = useState<number>(currentYear);
   
-  // Generate available years (current year and previous 4 years, plus next 2 years)
+  // Generate available years (current year and next 3 years)
   const availableYears = Array.from(
-    { length: 7 }, 
-    (_, i) => currentYear - 4 + i
-  ).sort((a, b) => b - a); // Sort in descending order
+    { length: 4 }, 
+    (_, i) => currentYear + i
+  ).sort((a, b) => a - b); // Sort in ascending order
 
   useEffect(() => {
     // Store selected year in localStorage for persistence

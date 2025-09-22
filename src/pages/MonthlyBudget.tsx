@@ -9,6 +9,7 @@ import { useCurrency } from '@/hooks/useCurrency';
 import { useAuth } from '@/hooks/useAuth';
 import { useYear } from '@/hooks/useYear';
 import { useBadges } from '@/hooks/useBadges';
+import { useHousehold } from '@/hooks/useHousehold';
 import { supabase } from '@/integrations/supabase/client';
 
 import { SEO } from '@/components/SEO';
@@ -53,6 +54,7 @@ const MonthlyBudget: React.FC = () => {
   const { user } = useAuth();
   const { selectedYear } = useYear();
   const { earnBadge } = useBadges();
+  const { currentHousehold } = useHousehold(user?.id);
 
   const totalIncome = Object.values(budgetData).reduce((sum, data) => sum + (data.income || 0), 0);
   const totalExpenses = Object.values(budgetData).reduce((sum, data) => sum + (data.expenses || 0), 0);
@@ -82,10 +84,10 @@ const MonthlyBudget: React.FC = () => {
   }, [earnBadge]);
 
   useEffect(() => {
-    if (user) {
+    if (user && currentHousehold) {
       loadCalculators();
     }
-  }, [user, selectedYear]); // Add selectedYear dependency
+  }, [user, currentHousehold, selectedYear]); // Add selectedYear dependency
 
   const loadCalculators = async () => {
     if (!user) return;
@@ -118,13 +120,15 @@ const MonthlyBudget: React.FC = () => {
   };
 
   const removeCalculator = async (calculatorId: string) => {
-    if (!user) return;
+    if (!user || !currentHousehold) return;
 
     // Delete from database
     await supabase
       .from('budget_data')
       .delete()
       .eq('user_id', user.id)
+      .eq('household_id', currentHousehold.id)
+      .eq('year', selectedYear)
       .eq('calculator_id', calculatorId)
       .eq('page_type', 'monthly_budget');
 

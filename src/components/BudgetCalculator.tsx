@@ -121,6 +121,7 @@ const BudgetCalculator: React.FC<BudgetCalculatorProps> = ({
       .select('*')
       .eq('user_id', user.id)
       .eq('household_id', currentHousehold?.id)
+      .eq('year', selectedYear)
       .eq('calculator_id', id)
       .eq('page_type', pageType)
       .order('created_at', { ascending: false })

@@ -304,6 +304,7 @@ const CompareVendors: React.FC = () => {
   const { currency } = useCurrency();
   const { toast } = useToast();
   const { earnBadge } = useBadges();
+  const { selectedYear } = useYear();
 
   useEffect(() => {
     if (user) {
@@ -312,13 +313,13 @@ const CompareVendors: React.FC = () => {
       initializeDemoProjects();
       setLoading(false);
     }
-  }, [user]);
+  }, [user, selectedYear]);
 
   useEffect(() => {
     if (currentProjectId) {
       loadQuotes();
     }
-  }, [currentProjectId]);
+  }, [currentProjectId, selectedYear]);
 
   // Initialize 3 projects for demo users
   const initializeDemoProjects = () => {
@@ -358,6 +359,7 @@ const CompareVendors: React.FC = () => {
         .from('vendor_projects')
         .select('*')
         .eq('user_id', user?.id)
+        .eq('year', selectedYear)
         .order('project_number', { ascending: true });
 
       if (fetchError) throw fetchError;
@@ -370,6 +372,7 @@ const CompareVendors: React.FC = () => {
         if (!existingProjectNumbers.includes(i)) {
           missingProjects.push({
             user_id: user?.id,
+            year: selectedYear,
             title: `Project ${i}`,
             project_number: i
           });
@@ -414,6 +417,7 @@ const CompareVendors: React.FC = () => {
       .from('vendor_quotes')
       .select('*')
       .eq('project_id', currentProjectId)
+      .eq('year', selectedYear)
       .order('created_at', { ascending: true });
 
     if (data && data.length > 0) {
@@ -455,6 +459,7 @@ const CompareVendors: React.FC = () => {
           .from('vendor_quotes')
           .insert([{
             project_id: currentProjectId,
+            year: selectedYear,
             vendor_name: updatedQuote.vendor_name,
             estimate_amount: updatedQuote.estimate_amount,
             contact_info: updatedQuote.contact_info,
