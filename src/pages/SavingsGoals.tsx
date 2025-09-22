@@ -2,9 +2,10 @@
 import React from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import { useHouseholdContext } from '@/providers/HouseholdProvider';
-import { useSavingsTracker } from '@/hooks/useSavingsTracker'; // The Brains!
+import { useYear } from '@/hooks/useYear'; // Import the useYear hook
+import { useSavingsTracker } from '@/hooks/useSavingsTracker';
 
-// Import the new components (The Workers!)
+// Import the worker components
 import { GoalSelector } from '@/components/GoalSelector';
 import { GoalProgressCard } from '@/components/GoalProgressCard';
 import { MonthlySavingsGrid } from '@/components/MonthlySavingsGrid';
@@ -14,37 +15,35 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Link } from 'react-router-dom';
 import { AlertTriangle, Target } from 'lucide-react';
 import { AIChatbot } from '@/components/AIChatbot';
+import { YearSelector } from '@/components/YearSelector'; // We need this for the header
 
-const SavingsGoals = () => {
+const SavingsGoals: React.FC = () => {
   const { user } = useAuth();
   const { currentHousehold } = useHouseholdContext();
+  const { selectedYear, setSelectedYear } = useYear(); // Get the year and its setter function
 
-  // 1. Call the hook to get all data and logic
+  // Call the hook with all the props it needs, including the year
   const {
     goals,
     currentGoal,
     currentGoalId,
     monthlyData,
-    year,
     isLoading,
-    isEditing,
-    setYear,
+    editingState,      // Correct name
+    setEditingState,   // Correct name
     setCurrentGoalId,
     updateGoalTitle,
     updateGoalTarget,
     updateMonthlyAmount,
-    setIsEditing,
-  } = useSavingsTracker({ user, currentHousehold });
+  } = useSavingsTracker({ user, currentHousehold, year: selectedYear });
   
   const totalSaved = Object.values(monthlyData).reduce((sum, val) => sum + val, 0);
   const progressPercentage = currentGoal?.target_amount ? Math.min((totalSaved / currentGoal.target_amount) * 100, 100) : 0;
-
 
   if (isLoading) {
     return <div className="p-8 text-center">Loading your savings goals...</div>;
   }
 
-  // 2. Render the components and pass them the data and functions they need
   return (
     <div className="min-h-screen bg-gray-50">
       <SEO
@@ -52,7 +51,6 @@ const SavingsGoals = () => {
         description="Track your monthly savings with an interactive yearly table and editable goals."
       />
 
-      {/* Header */}
       <div className="bg-white shadow-sm border-b">
         <div className="max-w-7xl mx-auto px-4 py-6">
           <div className="flex items-center justify-between">
@@ -63,14 +61,7 @@ const SavingsGoals = () => {
                 <p className="text-sm text-gray-600">Track your progress toward financial goals</p>
               </div>
             </div>
-            {currentGoal && currentGoal.target_amount > 0 && (
-              <div className="text-right">
-                <div className="text-sm text-gray-600">Progress</div>
-                <div className="text-2xl font-bold text-primary">
-                  {progressPercentage.toFixed(1)}%
-                </div>
-              </div>
-            )}
+            <YearSelector />
           </div>
         </div>
       </div>
@@ -92,8 +83,8 @@ const SavingsGoals = () => {
           goals={goals}
           currentGoalId={currentGoalId}
           onSelectGoal={setCurrentGoalId}
-          editingState={isEditing}
-          onSetEditingState={setIsEditing}
+          editingState={editingState}
+          onSetEditingState={setEditingState}
           onUpdateTitle={updateGoalTitle}
         />
 
@@ -105,8 +96,8 @@ const SavingsGoals = () => {
         />
 
         <MonthlySavingsGrid
-          year={year}
-          onYearChange={setYear}
+          year={selectedYear.toString()}
+          onYearChange={year => setSelectedYear(parseInt(year))}
           monthlyData={monthlyData}
           onUpdateAmount={updateMonthlyAmount}
         />
