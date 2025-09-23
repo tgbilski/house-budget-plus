@@ -833,6 +833,7 @@ export type Database = {
           title: string
           updated_at: string
           user_id: string
+          vacation_number: number | null
           year: number
         }
         Insert: {
@@ -842,6 +843,7 @@ export type Database = {
           title: string
           updated_at?: string
           user_id: string
+          vacation_number?: number | null
           year?: number
         }
         Update: {
@@ -851,6 +853,7 @@ export type Database = {
           title?: string
           updated_at?: string
           user_id?: string
+          vacation_number?: number | null
           year?: number
         }
         Relationships: [

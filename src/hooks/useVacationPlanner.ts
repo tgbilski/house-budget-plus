@@ -37,20 +37,39 @@ export function useVacationPlanner({ user, year }: UseVacationPlannerProps) {
   const loadVacations = useCallback(async () => {
     setIsLoading(true);
     let baseVacations: VacationProject[] = Array.from({ length: 3 }, (_, i) => ({
-      id: `temp-${i + 1}-${Date.now()}`, user_id: user?.id || 'guest', year, title: `Vacation ${i + 1}`, vacation_number: i + 1
+      id: `temp-${i + 1}-${Date.now()}`, 
+      user_id: user?.id || 'guest', 
+      year, 
+      title: `Vacation ${i + 1}`, 
+      vacation_number: i + 1
     }));
 
     if (user) {
       try {
-        const { data: dbVacations, error } = await supabase.from('vacation_projects').select('*').eq('user_id', user.id).eq('year', year);
+        const { data: dbVacations, error } = await supabase
+          .from('vacation_projects')
+          .select('*')
+          .eq('user_id', user.id)
+          .eq('year', year);
+        
         if (error) throw error;
+        
         if (dbVacations?.length) {
           dbVacations.forEach(dbVacation => {
             const index = baseVacations.findIndex(p => p.vacation_number === dbVacation.vacation_number);
-            if (index !== -1) { baseVacations[index] = dbVacation; }
+            if (index !== -1) { 
+              baseVacations[index] = {
+                id: dbVacation.id,
+                user_id: dbVacation.user_id,
+                title: dbVacation.title,
+                vacation_number: dbVacation.vacation_number,
+                year: dbVacation.year
+              }; 
+            }
           });
         }
       } catch (error) { 
+        console.error('Error loading vacations:', error);
         toast.error("Failed to load vacations."); 
       }
     }
