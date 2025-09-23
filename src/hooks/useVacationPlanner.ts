@@ -50,7 +50,9 @@ export function useVacationPlanner({ user, year }: UseVacationPlannerProps) {
             if (index !== -1) { baseVacations[index] = dbVacation; }
           });
         }
-      } catch (error) { toast.error("Failed to load vacations."); }
+      } catch (error) { 
+        toast.error("Failed to load vacations."); 
+      }
     }
     
     setVacations(baseVacations);
@@ -227,11 +229,41 @@ export function useVacationPlanner({ user, year }: UseVacationPlannerProps) {
   const updateVacationTitle = async (vacationId: string, title: string) => {
     setVacations(prev => prev.map(v => v.id === vacationId ? { ...v, title } : v));
     setEditingState({ id: null, title: '' });
+    
     if (!user) return;
-    const { error } = await supabase.from('vacation_projects').update({ title }).eq('id', vacationId);
-    if (error) {
-      toast.error("Failed to update title.");
-      loadVacations();
+
+    // Find the vacation to get its vacation_number
+    const vacation = vacations.find(v => v.id === vacationId);
+    if (!vacation) return;
+
+    if (vacationId.startsWith('temp-')) {
+      // Create new vacation project
+      const newProject = {
+        user_id: user.id,
+        title,
+        vacation_number: vacation.vacation_number,
+        year
+      };
+
+      try {
+        const { data, error } = await supabase.from('vacation_projects').insert(newProject).select().single();
+        if (error) throw error;
+        
+        setVacations(prev => prev.map(v => v.id === vacationId ? data : v));
+        setCurrentVacationId(data.id);
+      } catch (error) {
+        toast.error("Failed to save vacation title.");
+        loadVacations();
+      }
+    } else {
+      // Update existing vacation project
+      try {
+        const { error } = await supabase.from('vacation_projects').update({ title }).eq('id', vacationId);
+        if (error) throw error;
+      } catch (error) {
+        toast.error("Failed to update vacation title.");
+        loadVacations();
+      }
     }
   };
 
