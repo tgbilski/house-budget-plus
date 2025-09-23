@@ -90,7 +90,7 @@ const MonthlyBudget: React.FC = () => {
 
   // CHANGE: Rewrote loadCalculators to include try/catch/finally and loading/error state management.
   const loadCalculators = async () => {
-    if (!user) return;
+    if (!user || !currentHousehold) return;
 
     setIsLoading(true);
     setError(null);
@@ -99,6 +99,7 @@ const MonthlyBudget: React.FC = () => {
         .from('budget_data')
         .select('calculator_id')
         .eq('user_id', user.id)
+        .eq('household_id', currentHousehold.id)
         .eq('year', selectedYear)
         .eq('page_type', 'monthly_budget');
 

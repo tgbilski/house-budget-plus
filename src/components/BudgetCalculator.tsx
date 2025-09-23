@@ -69,7 +69,7 @@ const BudgetCalculator: React.FC<BudgetCalculatorProps> = ({
     if (user && currentHousehold && selectedYear) {
       loadData();
     }
-  }, [user, currentHousehold, selectedYear, id, pageType]); // Add selectedYear dependency
+  }, [user, currentHousehold, selectedYear, id, pageType]);
 
   // Set up event listener for AI autofill
   useEffect(() => {
@@ -208,7 +208,7 @@ const BudgetCalculator: React.FC<BudgetCalculatorProps> = ({
       const saveTimeout = setTimeout(saveData, 500);
       return () => clearTimeout(saveTimeout);
     }
-  }, [monthlyIncome, expenses, additionalExpenses, additionalSubscriptions, subscriptionServices, ownerName, user, pageType, id]);
+  }, [monthlyIncome, expenses, additionalExpenses, additionalSubscriptions, subscriptionServices, ownerName, user, pageType, id, selectedYear, currentHousehold]);
 
   const addAdditionalExpense = () => {
     if (additionalExpenses.length < 10) {
