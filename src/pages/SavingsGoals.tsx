@@ -49,6 +49,7 @@ const SavingsGoals: React.FC = () => {
       <SEO
         title="Savings Goals - Track Your Monthly Savings"
         description="Track your monthly savings with an interactive yearly table and editable goals."
+        keywords="savings goals, financial planning, monthly savings tracker"
       />
 
       <div className="bg-white shadow-sm border-b">

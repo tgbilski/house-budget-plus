@@ -41,7 +41,7 @@ const Vacation: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <SEO title={seoData.vacation.title} description={seoData.vacation.description} />
+      <SEO title={seoData.vacation.title} description={seoData.vacation.description} keywords="vacation planning, travel budget, destination comparison" />
       <div className="bg-white shadow-sm border-b">
         <div className="max-w-7xl mx-auto px-4 py-6 flex items-center justify-between">
           <div className="flex items-center gap-3">
@@ -88,9 +88,11 @@ const Vacation: React.FC = () => {
             <VacationOptionCard
               key={option.id}
               option={option}
-              onUpdate={updateOption}
-              onRemove={removeOption}
-              showRemove={options.length > 1}
+              onUpdate={(optionId, updates) => {
+                const updatedOption = { ...option, ...updates };
+                updateOption(updatedOption);
+              }}
+              onReset={removeOption}
               currencySymbol={currency.symbol}
             />
           ))}

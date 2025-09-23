@@ -58,7 +58,29 @@ export function useSavingsTracker({ user, currentHousehold, year }: UseSavingsTr
   }, [user, currentHousehold, year]);
   
   const fetchMonthlyData = useCallback(async () => {
-    // ... This function remains the same ...
+    if (!currentGoalId || !user) {
+      setMonthlyData({});
+      return;
+    }
+
+    try {
+      const { data, error } = await supabase
+        .from('savings_entries')
+        .select('*')
+        .eq('goal_id', currentGoalId);
+
+      if (error) throw error;
+
+      const monthlyMap: Record<string, number> = {};
+      data?.forEach(entry => {
+        const monthKey = new Date(entry.entry_month).getMonth().toString();
+        monthlyMap[monthKey] = entry.amount;
+      });
+      
+      setMonthlyData(monthlyMap);
+    } catch (error) {
+      toast.error("Failed to load monthly savings data.");
+    }
   }, [currentGoalId, user]);
 
 
@@ -82,11 +104,84 @@ export function useSavingsTracker({ user, currentHousehold, year }: UseSavingsTr
   };
 
   const updateGoalTarget = async (target: number) => {
-    // ... logic to update goal target ...
+    if (!currentGoal || !user) return;
+
+    setGoals(prev => prev.map(g => g.id === currentGoal.id ? { ...g, target_amount: target } : g));
+
+    if (currentGoal.id.startsWith('temp-')) {
+      const newGoal = {
+        user_id: user.id,
+        household_id: currentHousehold?.id || '',
+        year,
+        title: currentGoal.title,
+        goal_number: currentGoal.goal_number,
+        target_amount: target,
+        current_amount: 0
+      };
+
+      try {
+        const { data, error } = await supabase.from('savings_goals').insert(newGoal).select().single();
+        if (error) throw error;
+        setGoals(prev => prev.map(g => g.id === currentGoal.id ? data : g));
+        setCurrentGoalId(data.id);
+      } catch (error) {
+        toast.error("Failed to save goal target.");
+        fetchGoals();
+      }
+    } else {
+      try {
+        const { error } = await supabase.from('savings_goals').update({ target_amount: target }).eq('id', currentGoal.id);
+        if (error) throw error;
+      } catch (error) {
+        toast.error("Failed to update goal target.");
+        fetchGoals();
+      }
+    }
   };
 
   const updateMonthlyAmount = async (monthIndex: number, amount: number) => {
-    // ... logic to update monthly amount ...
+    if (!currentGoal || !user) return;
+
+    const monthKey = monthIndex.toString();
+    setMonthlyData(prev => ({ ...prev, [monthKey]: amount }));
+
+    // Create first day of the month for the entry
+    const entryDate = new Date(year, monthIndex, 1);
+
+    try {
+      // Check if entry exists
+      const { data: existingEntry, error: fetchError } = await supabase
+        .from('savings_entries')
+        .select('id')
+        .eq('goal_id', currentGoal.id)
+        .eq('entry_month', entryDate.toISOString().split('T')[0])
+        .maybeSingle();
+
+      if (fetchError) throw fetchError;
+
+      if (existingEntry) {
+        // Update existing entry
+        const { error } = await supabase
+          .from('savings_entries')
+          .update({ amount })
+          .eq('id', existingEntry.id);
+        if (error) throw error;
+      } else {
+        // Create new entry
+        const { error } = await supabase
+          .from('savings_entries')
+          .insert({
+            goal_id: currentGoal.id,
+            amount,
+            entry_month: entryDate.toISOString().split('T')[0],
+            year
+          });
+        if (error) throw error;
+      }
+    } catch (error) {
+      toast.error("Failed to save monthly amount.");
+      fetchMonthlyData();
+    }
   };
 
   const currentGoal = useMemo(() => goals.find(g => g.id === currentGoalId), [goals, currentGoalId]);
