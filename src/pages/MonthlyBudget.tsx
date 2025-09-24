@@ -189,8 +189,8 @@ const MonthlyBudget: React.FC = () => {
       
       <div className="max-w-6xl mx-auto p-6 space-y-8">
         <div className="text-center space-y-4">
-          <div className="flex items-center justify-between">
-            <div className="flex-1" />
+          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+            <div className="lg:flex-1" />
             <div className="flex flex-col items-center space-y-4">
               <div className="inline-flex items-center justify-center w-16 h-16 bg-primary/10 rounded-full">
                 <img
@@ -204,7 +204,7 @@ const MonthlyBudget: React.FC = () => {
                 Take control of your finances by tracking every dollar of your household income and expenses.
               </p>
             </div>
-            <div className="flex-1 flex justify-end">
+            <div className="flex justify-center lg:flex-1 lg:justify-end">
               <YearSelector />
             </div>
           </div>
