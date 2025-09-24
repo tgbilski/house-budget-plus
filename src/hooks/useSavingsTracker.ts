@@ -145,6 +145,41 @@ export function useSavingsTracker({ user, currentHousehold, year }: UseSavingsTr
     const monthKey = monthIndex.toString();
     setMonthlyData(prev => ({ ...prev, [monthKey]: amount }));
 
+    // If this is a temp goal, we need to create it first
+    if (currentGoal.id.startsWith('temp-')) {
+      const newGoal = {
+        user_id: user.id,
+        household_id: currentHousehold?.id || '',
+        year,
+        title: currentGoal.title,
+        goal_number: currentGoal.goal_number,
+        target_amount: currentGoal.target_amount,
+        current_amount: 0
+      };
+
+      try {
+        const { data, error } = await supabase.from('savings_goals').insert(newGoal).select().single();
+        if (error) throw error;
+        
+        // Update the goal in state and current goal ID
+        setGoals(prev => prev.map(g => g.id === currentGoal.id ? data : g));
+        setCurrentGoalId(data.id);
+        
+        // Now save the monthly amount with the real goal ID
+        await saveMonthlyEntry(data.id, monthIndex, amount);
+        
+      } catch (error) {
+        toast.error("Failed to create goal.");
+        fetchGoals();
+        return;
+      }
+    } else {
+      // Save to existing goal
+      await saveMonthlyEntry(currentGoal.id, monthIndex, amount);
+    }
+  };
+
+  const saveMonthlyEntry = async (goalId: string, monthIndex: number, amount: number) => {
     // Create first day of the month for the entry
     const entryDate = new Date(year, monthIndex, 1);
 
@@ -153,7 +188,7 @@ export function useSavingsTracker({ user, currentHousehold, year }: UseSavingsTr
       const { data: existingEntry, error: fetchError } = await supabase
         .from('savings_entries')
         .select('id')
-        .eq('goal_id', currentGoal.id)
+        .eq('goal_id', goalId)
         .eq('entry_month', entryDate.toISOString().split('T')[0])
         .maybeSingle();
 
@@ -171,7 +206,7 @@ export function useSavingsTracker({ user, currentHousehold, year }: UseSavingsTr
         const { error } = await supabase
           .from('savings_entries')
           .insert({
-            goal_id: currentGoal.id,
+            goal_id: goalId,
             amount,
             entry_month: entryDate.toISOString().split('T')[0],
             year
