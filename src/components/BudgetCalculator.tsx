@@ -187,11 +187,9 @@ const BudgetCalculator: React.FC<BudgetCalculatorProps> = ({
         household_id: currentHousehold?.id,
         calculator_id: id,
         page_type: pageType,
-        year: selectedYear, // Include the selected year
+        year: selectedYear,
         income: monthlyIncome,
         expenses: expensesData as any
-      }, {
-        onConflict: 'user_id,calculator_id,page_type,household_id,year' // Update conflict resolution to include year
       });
 
     if (error) {
