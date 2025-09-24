@@ -27,12 +27,12 @@ export const MonthlySavingsGrid: React.FC<Props> = ({ year, onYearChange, monthl
   }, [monthlyData]);
 
   const handleInputChange = (monthIndex: number, value: string) => {
-    const monthKey = `${year}-${(monthIndex + 1).toString().padStart(2, '0')}`;
+    const monthKey = monthIndex.toString();
     setLocalInputs(prev => ({ ...prev, [monthKey]: value }));
   };
 
   const handleBlur = (monthIndex: number) => {
-    const monthKey = `${year}-${(monthIndex + 1).toString().padStart(2, '0')}`;
+    const monthKey = monthIndex.toString();
     const value = parseFloat(localInputs[monthKey]) || 0;
     // Only call the update function if the value has actually changed
     if (value !== (monthlyData[monthKey] || 0)) {
@@ -56,7 +56,7 @@ export const MonthlySavingsGrid: React.FC<Props> = ({ year, onYearChange, monthl
       <CardContent>
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
           {months.map((month, index) => {
-            const monthKey = `${year}-${(index + 1).toString().padStart(2, '0')}`;
+            const monthKey = index.toString();
             return (
               <div key={month} className="space-y-2">
                 <label className="text-sm font-medium">{month}</label>
