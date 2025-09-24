@@ -190,6 +190,8 @@ const BudgetCalculator: React.FC<BudgetCalculatorProps> = ({
         year: selectedYear,
         income: monthlyIncome,
         expenses: expensesData as any
+      }, {
+        onConflict: 'user_id,calculator_id,page_type,household_id,year'
       });
 
     if (error) {
