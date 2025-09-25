@@ -204,7 +204,7 @@ const MonthlyBudget: React.FC = () => {
                 Take control of your finances by tracking every dollar of your household income and expenses.
               </p>
             </div>
-            <div className="flex justify-center lg:flex-1 lg:justify-end">
+            <div className="flex justify-center md:justify-end">
               <YearSelector />
             </div>
           </div>

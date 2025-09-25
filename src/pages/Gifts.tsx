@@ -43,7 +43,7 @@ export function Gifts() {
       {/* Header Section */}
       <div className="bg-white shadow-sm border-b">
         <div className="max-w-7xl mx-auto px-4 py-6">
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
             <div className="flex items-center gap-3">
               <Gift className="h-8 w-8 text-primary" />
               <div>
@@ -51,7 +51,9 @@ export function Gifts() {
                 <p className="text-sm text-gray-600">Organize ideas for every occasion</p>
               </div>
             </div>
-            <YearSelector />
+            <div className="flex justify-center md:justify-end">
+              <YearSelector />
+            </div>
           </div>
         </div>
       </div>

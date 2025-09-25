@@ -54,7 +54,7 @@ const SavingsGoals: React.FC = () => {
 
       <div className="bg-white shadow-sm border-b">
         <div className="max-w-7xl mx-auto px-4 py-6">
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
             <div className="flex items-center gap-3">
               <Target className="h-8 w-8 text-primary" />
               <div>
@@ -62,7 +62,9 @@ const SavingsGoals: React.FC = () => {
                 <p className="text-sm text-gray-600">Track your progress toward financial goals</p>
               </div>
             </div>
-            <YearSelector />
+            <div className="flex justify-center md:justify-end">
+              <YearSelector />
+            </div>
           </div>
         </div>
       </div>
