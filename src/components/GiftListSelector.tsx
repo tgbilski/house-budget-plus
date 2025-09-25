@@ -1,4 +1,4 @@
-// src/components/GiftListSelector.tsx
+// src/components/GiftListSelector.tsx (Updated with CSS Fixes)
 import React from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -7,14 +7,13 @@ import { Badge } from '@/components/ui/badge';
 import { Gift, Edit3, Check, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
-// Define the shape of a single gift list item for the props
+// ... (Interfaces and Props definitions remain the same)
 interface GiftListData {
   id: string;
   list_title: string;
   year: number;
 }
 
-// Define the props this component will accept from the main page
 interface GiftListSelectorProps {
   giftLists: GiftListData[];
   selectedList: GiftListData | null;
@@ -26,6 +25,7 @@ interface GiftListSelectorProps {
   onCancelEditing: () => void;
   onSetEditingTitle: (title: string) => void;
 }
+
 
 export function GiftListSelector({
   giftLists,
@@ -61,7 +61,8 @@ export function GiftListSelector({
                       <Input
                         value={editingTitle}
                         onChange={(e) => onSetEditingTitle(e.target.value)}
-                        className="h-8 text-sm text-gray-900 bg-white"
+                        // FIX #2: Force input text to be your primary (dark blue) color
+                        className="h-8 text-sm text-primary bg-white"
                         onKeyDown={(e) => {
                           if (e.key === 'Enter') onSaveTitle(list);
                           if (e.key === 'Escape') onCancelEditing();
@@ -75,7 +76,8 @@ export function GiftListSelector({
                         size="sm"
                         variant="outline"
                         onClick={onCancelEditing}
-                        className="bg-white text-gray-700 hover:bg-gray-100"
+                        // FIX #3: Force button background to white and icon to primary (dark blue) color
+                        className="bg-white text-primary hover:bg-gray-100"
                       >
                         <X className="h-3 w-3" />
                       </Button>
@@ -94,7 +96,8 @@ export function GiftListSelector({
                     onClick={(e) => { e.stopPropagation(); onStartEditing(list); }}
                     className={cn(
                       "h-8 w-8 p-0 opacity-0 group-hover:opacity-100 transition-opacity",
-                      selectedList?.id === list.id && "text-primary-foreground hover:text-primary-foreground"
+                      // FIX #1: When selected, make icon dark blue on hover over white background
+                      selectedList?.id === list.id && "text-primary-foreground hover:bg-white hover:text-primary"
                     )}
                   >
                     <Edit3 className="h-4 w-4" />
