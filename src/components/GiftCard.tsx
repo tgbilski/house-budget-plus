@@ -1,73 +1,92 @@
-// GiftCard.tsx (Refactored Version)
-import React, { useState, useEffect } from 'react';
-// ... other imports
-import { useGiftItems } from '@/hooks/useGiftItems'; // Import the new hook
+// src/components/GiftCard.tsx (Updated)
+import React, from 'react';
+// ... (Keep all your existing imports: Card, Input, Button, etc.)
+import { useGiftItems } from '@/hooks/useGiftItems';
 import { GiftItem } from './GiftItem';
 
 // ... (Interfaces remain the same)
 
-export function GiftCard({ initialData, onDelete, onSave }: GiftCardProps) {
-  // --- All the logic for the LIST itself remains for now ---
+interface GiftCardProps {
+  initialData?: GiftListData;
+  onSave?: () => void;
+}
+
+// REMOVED the 'onDelete' prop as it's no longer needed
+export function GiftCard({ initialData, onSave }: GiftCardProps) {
   const { user } = useAuth();
-  const { currentHousehold } = useHouseholdContext();
   const { toast } = useToast();
-  const [isEditingTitle, setIsEditingTitle] = useState(!initialData?.id);
-  const [listData, setListData] = useState<GiftListData>({ /* ... */ });
+  // REMOVED isEditingTitle state
+  const [listData, setListData] = useState<GiftListData>({ ...initialData });
   const [showNewItem, setShowNewItem] = useState(false);
 
-  // --- HERE'S THE CHANGE: Use our new hook for the items ---
+  // Use our custom hook to manage the gift items
   const { items, refetchItems, deleteItem } = useGiftItems(listData.id);
 
-  // This useEffect hook simplifies greatly
   useEffect(() => {
     if (initialData) {
-      setListData({
-        list_title: initialData.list_title || 'Holiday Gifts',
-        ...initialData
-      });
-      setIsEditingTitle(!initialData.id);
+      setListData({ ...initialData });
       setShowNewItem(false);
     }
   }, [initialData]);
 
-  // The 'loadGiftItems' function and its useEffect are now GONE from this component.
+  // REMOVED saveListTitle and handleDeleteList functions. They are no longer this component's responsibility.
 
-  // ... (All other functions like saveBudgetTarget, saveListTitle, handleDeleteList remain unchanged for now)
+  // The saveBudgetTarget function remains the same
+  const saveBudgetTarget = async (budgetTarget: number) => {
+    // ... (This function's code does not need to change)
+  };
 
-  // This local delete handler is no longer needed. The hook handles it.
-  // const handleDeleteItem = (itemId: string) => { ... };
-
-  // The total calculation now uses 'items' from our hook
   const totalSpent = items.reduce((sum, item) => sum + (item.price || 0), 0);
-  
+  const budgetTarget = listData.budget_target || 0;
+  // ... (Budget calculation logic is the same)
+
   return (
-    <Card>
-      {/* ... CardHeader and Budget sections are mostly the same ... */}
-      <CardContent>
-        {/* ... */}
-        {/* Existing gift items - now using 'items' from the hook */}
+    <Card className="w-full bg-white border-gray-200 text-gray-900 shadow-lg">
+      <CardHeader className="pb-4">
+        {/* The title is now just a simple, non-editable header */}
+        <h2 className="text-xl sm:text-2xl font-bold text-gray-900">
+          {listData.list_title} - Gift Ideas
+        </h2>
+      </CardHeader>
+
+      <CardContent className="space-y-4">
+        {/* The budget tracking section remains exactly the same */}
+        <div className="border border-gray-200 rounded-lg p-4 bg-gray-50 space-y-3">
+          {/* ... (All your budget JSX here) ... */}
+        </div>
+
+        {/* The gift item mapping and "Add Gift Idea" button remain exactly the same */}
         {items.map((item) => (
           <GiftItem
             key={item.id}
             item={item}
             listId={listData.id!}
-            onSave={refetchItems} // Tell the hook to refetch after a save
-            onDelete={() => deleteItem(item.id)} // Tell the hook to delete
+            onSave={refetchItems}
+            onDelete={() => deleteItem(item.id)}
           />
         ))}
 
-        {/* New gift item form */}
         {showNewItem && listData.id && (
           <GiftItem
             listId={listData.id}
             onSave={() => {
               setShowNewItem(false);
-              refetchItems(); // Tell the hook to refetch after adding
+              refetchItems();
             }}
             isNew
           />
         )}
-        {/* ... Rest of the JSX ... */}
+
+        {listData.id && !showNewItem && (
+          <Button
+            onClick={() => setShowNewItem(true)}
+            variant="outline"
+            className="w-full border-gray-300 text-gray-700 hover:bg-gray-50"
+          >
+            <Plus className="h-4 w-4 mr-2" />
+            Add Gift Idea
+          </Button>
+        )}
       </CardContent>
     </Card>
   );
