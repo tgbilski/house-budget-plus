@@ -39,19 +39,60 @@ export function useGiftLists() {
     
     setLoading(true);
     try {
-      const { data, error } = await supabase
+      // Check if gift lists exist for this user/household/year
+      const { data: existingLists, error: fetchError } = await supabase
         .from('gift_lists')
         .select('*')
         .eq('user_id', user.id)
         .eq('household_id', currentHousehold.id)
         .eq('year', selectedYear)
-        .order('created_at', { ascending: true });
+        .order('list_title', { ascending: true });
       
-      if (error) throw error;
+      if (fetchError) throw fetchError;
       
-      setGiftLists(data || []);
-      if (data && data.length > 0 && !selectedList) {
-        setSelectedList(data[0]);
+      // If no lists exist or less than 4, create the default 4 gift lists
+      if (!existingLists || existingLists.length < 4) {
+        const defaultTitles = ['Gift List 1', 'Gift List 2', 'Gift List 3', 'Gift List 4'];
+        const existingTitles = existingLists?.map(list => list.list_title) || [];
+        
+        // Create missing lists
+        const listsToCreate = defaultTitles.filter(title => !existingTitles.includes(title));
+        
+        if (listsToCreate.length > 0) {
+          const { error: insertError } = await supabase
+            .from('gift_lists')
+            .insert(
+              listsToCreate.map(title => ({
+                user_id: user.id,
+                household_id: currentHousehold.id,
+                year: selectedYear,
+                list_title: title,
+                budget_target: 0
+              }))
+            );
+          
+          if (insertError) throw insertError;
+        }
+        
+        // Refetch all lists after creation
+        const { data: allLists, error: refetchError } = await supabase
+          .from('gift_lists')
+          .select('*')
+          .eq('user_id', user.id)
+          .eq('household_id', currentHousehold.id)
+          .eq('year', selectedYear)
+          .order('list_title', { ascending: true });
+        
+        if (refetchError) throw refetchError;
+        setGiftLists(allLists || []);
+        if (allLists && allLists.length > 0 && !selectedList) {
+          setSelectedList(allLists[0]);
+        }
+      } else {
+        setGiftLists(existingLists);
+        if (existingLists.length > 0 && !selectedList) {
+          setSelectedList(existingLists[0]);
+        }
       }
     } catch (error) {
       console.error('Error loading gift lists:', error);
