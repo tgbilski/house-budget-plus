@@ -81,11 +81,13 @@ const CompareVendors: React.FC = () => {
           currencySymbol={currency.symbol}
         />
 
-        <div className="flex justify-between items-center">
+        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
           <div className="flex items-center gap-2">
             <Filter className="h-4 w-4 text-gray-500" />
             <Select value={sortBy} onValueChange={(value: 'amount' | 'rating' | 'date') => setSortBy(value)}>
-              <SelectTrigger className="w-48"><SelectValue /></SelectTrigger>
+              <SelectTrigger className="w-full sm:w-48">
+                <SelectValue />
+              </SelectTrigger>
               <SelectContent>
                 <SelectItem value="amount">Sort by Price (Low to High)</SelectItem>
                 <SelectItem value="rating">Sort by Rating (High to Low)</SelectItem>
@@ -93,7 +95,9 @@ const CompareVendors: React.FC = () => {
               </SelectContent>
             </Select>
           </div>
-          <Button onClick={addQuote} className="gap-2"><Plus className="h-4 w-4" /> Add Quote</Button>
+          <Button onClick={addQuote} className="gap-2 w-full sm:w-auto">
+            <Plus className="h-4 w-4" /> Add Quote
+          </Button>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

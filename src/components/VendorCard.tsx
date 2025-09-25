@@ -72,7 +72,7 @@ export const VendorCard: React.FC<VendorCardProps> = ({ quote, onUpdate, onRemov
           </div>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <Label>Estimate</Label>
               <div className="relative mt-1">
@@ -100,7 +100,7 @@ export const VendorCard: React.FC<VendorCardProps> = ({ quote, onUpdate, onRemov
           </div>
           <div>
             <Label className="mb-2 block">Quick Evaluation</Label>
-            <div className="grid grid-cols-3 gap-2">
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
               {[
                 { key: 'liked_sales_rep' as keyof VendorQuote, label: 'Good Rep' },
                 { key: 'offers_financing' as keyof VendorQuote, label: 'Financing' },
@@ -108,7 +108,13 @@ export const VendorCard: React.FC<VendorCardProps> = ({ quote, onUpdate, onRemov
                 { key: 'trustworthy' as keyof VendorQuote, label: 'Trustworthy' },
                 { key: 'responsive' as keyof VendorQuote, label: 'Responsive' }
               ].map(({ key, label }) => (
-                <Button key={key} variant={localQuote[key] ? "default" : "outline"} size="sm" onClick={() => updateLocalField(key, !localQuote[key])} className="h-8 text-xs">
+                <Button 
+                  key={key} 
+                  variant={localQuote[key] ? "default" : "outline"} 
+                  size="sm" 
+                  onClick={() => updateLocalField(key, !localQuote[key])} 
+                  className="h-8 text-xs px-2"
+                >
                   {label}
                 </Button>
               ))}
@@ -118,10 +124,19 @@ export const VendorCard: React.FC<VendorCardProps> = ({ quote, onUpdate, onRemov
             <Label>Notes</Label>
             <Textarea className="mt-1 resize-none" value={localQuote.notes} onChange={(e) => updateLocalField('notes', e.target.value)} placeholder="Additional notes..." rows={2} />
           </div>
-          <div className="flex gap-2 pt-2">
-            <Button onClick={handleSave} size="sm" className="flex-1"><Check className="h-4 w-4 mr-1" /> Save</Button>
-            <Button onClick={handleCancel} size="sm" variant="outline">Cancel</Button>
-            {showRemove && <Button variant="destructive" size="icon" onClick={() => onRemove(quote.id)}><Trash2 className="h-4 w-4" /></Button>}
+          <div className="flex flex-col sm:flex-row gap-2 pt-2">
+            <Button onClick={handleSave} size="sm" className="flex-1">
+              <Check className="h-4 w-4 mr-1" /> Save
+            </Button>
+            <Button onClick={handleCancel} size="sm" variant="outline" className="flex-1 sm:flex-initial">
+              Cancel
+            </Button>
+            {showRemove && (
+              <Button variant="destructive" size="sm" onClick={() => onRemove(quote.id)} className="sm:w-auto">
+                <Trash2 className="h-4 w-4 mr-1 sm:mr-0" />
+                <span className="sm:hidden">Delete</span>
+              </Button>
+            )}
           </div>
         </CardContent>
       </Card>
@@ -133,7 +148,7 @@ export const VendorCard: React.FC<VendorCardProps> = ({ quote, onUpdate, onRemov
   return (
     <Card className="hover:shadow-lg transition-all duration-200 group border-l-4 border-l-primary/20 hover:border-l-primary">
       <CardContent className="p-4" onClick={() => setIsEditing(true)}>
-        <div className="flex justify-between items-start mb-3">
+        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-3 mb-3">
           <div className="flex-1 min-w-0">
             <h3 className="font-semibold text-base truncate mb-2">{localQuote.vendor_name || 'Untitled Vendor'}</h3>
             <div className="flex items-center gap-1">
@@ -141,12 +156,19 @@ export const VendorCard: React.FC<VendorCardProps> = ({ quote, onUpdate, onRemov
               <span className="text-xl font-bold text-primary">{currencySymbol}{localQuote.estimate_amount?.toLocaleString() || '0'}</span>
             </div>
           </div>
-          <div className="flex flex-col items-end gap-2">
+          <div className="flex flex-row sm:flex-col items-center sm:items-end justify-between sm:justify-start gap-2">
             <Badge className={getBadgeColor(starCount)}>{starCount}/5 Stars</Badge>
             <div className="flex gap-1">
-              <Button variant="ghost" size="icon" className="h-8 w-8 p-0 opacity-0 group-hover:opacity-100 transition-opacity"><Edit3 className="h-4 w-4" /></Button>
+              <Button variant="ghost" size="icon" className="h-8 w-8 p-0 opacity-70 sm:opacity-0 group-hover:opacity-100 transition-opacity">
+                <Edit3 className="h-4 w-4" />
+              </Button>
               {showRemove && (
-                <Button variant="ghost" size="icon" onClick={(e) => { e.stopPropagation(); onRemove(quote.id); }} className="h-8 w-8 p-0 opacity-0 group-hover:opacity-100 transition-opacity text-destructive hover:text-destructive">
+                <Button 
+                  variant="ghost" 
+                  size="icon" 
+                  onClick={(e) => { e.stopPropagation(); onRemove(quote.id); }} 
+                  className="h-8 w-8 p-0 opacity-70 sm:opacity-0 group-hover:opacity-100 transition-opacity text-destructive hover:text-destructive"
+                >
                   <Trash2 className="h-4 w-4" />
                 </Button>
               )}
@@ -154,8 +176,18 @@ export const VendorCard: React.FC<VendorCardProps> = ({ quote, onUpdate, onRemov
           </div>
         </div>
         <div className="space-y-1 text-sm text-muted-foreground">
-          {localQuote.contact_info && <div className="flex items-center gap-2 truncate"><Phone className="h-3 w-3 flex-shrink-0" /> {localQuote.contact_info}</div>}
-          {localQuote.date_received && <div className="flex items-center gap-2"><Calendar className="h-3 w-3 flex-shrink-0" /> {new Date(localQuote.date_received).toLocaleDateString()}</div>}
+          {localQuote.contact_info && (
+            <div className="flex items-center gap-2 truncate">
+              <Phone className="h-3 w-3 flex-shrink-0" /> 
+              <span className="truncate">{localQuote.contact_info}</span>
+            </div>
+          )}
+          {localQuote.date_received && (
+            <div className="flex items-center gap-2">
+              <Calendar className="h-3 w-3 flex-shrink-0" /> 
+              {new Date(localQuote.date_received).toLocaleDateString()}
+            </div>
+          )}
         </div>
       </CardContent>
     </Card>
