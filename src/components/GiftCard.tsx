@@ -42,9 +42,23 @@ export function GiftCard({ initialData, onDelete, onSave }: GiftCardProps) {
   const [giftItems, setGiftItems] = useState<GiftItemData[]>([]);
   const [showNewItem, setShowNewItem] = useState(false);
 
+  // Update local state when initialData changes (when user selects different list)
+  useEffect(() => {
+    if (initialData) {
+      setListData({
+        list_title: initialData.list_title || 'Holiday Gifts',
+        ...initialData
+      });
+      setIsEditingTitle(!initialData.id);
+      setShowNewItem(false);
+    }
+  }, [initialData]);
+
   useEffect(() => {
     if (listData.id) {
       loadGiftItems();
+    } else {
+      setGiftItems([]);
     }
   }, [listData.id]);
 
