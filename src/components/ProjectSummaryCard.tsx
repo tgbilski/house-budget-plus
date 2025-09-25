@@ -14,13 +14,13 @@ interface Props {
 }
 
 const StatBox: React.FC<{ icon: React.ElementType; title: string; value: string; color: string }> = ({ icon: Icon, title, value, color }) => (
-  <div className="flex items-start gap-4">
-    <div className={`p-2 rounded-lg bg-opacity-10 ${color.replace('text-', 'bg-')}`}>
-      <Icon className={`h-6 w-6 ${color}`} />
+  <div className="flex items-start gap-3 min-w-0">
+    <div className={`p-2 rounded-lg bg-opacity-10 flex-shrink-0 ${color.replace('text-', 'bg-')}`}>
+      <Icon className={`h-5 w-5 sm:h-6 sm:w-6 ${color}`} />
     </div>
-    <div>
-      <p className="text-sm text-muted-foreground">{title}</p>
-      <p className="text-2xl font-bold">{value}</p>
+    <div className="min-w-0 flex-1">
+      <p className="text-xs sm:text-sm text-muted-foreground truncate">{title}</p>
+      <p className="text-lg sm:text-2xl font-bold truncate">{value}</p>
     </div>
   </div>
 );
@@ -32,7 +32,7 @@ export const ProjectSummaryCard: React.FC<Props> = ({ stats, currencySymbol }) =
       <CardHeader>
         <CardTitle>Project Summary</CardTitle>
       </CardHeader>
-      <CardContent className="grid grid-cols-2 lg:grid-cols-4 gap-6">
+      <CardContent className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
         <StatBox icon={FileText} title="Quotes Received" value={`${stats.quoteCount}`} color="text-blue-500" />
         <StatBox icon={TrendingDown} title="Lowest Quote" value={`${currencySymbol}${stats.lowestQuote.toLocaleString()}`} color="text-green-500" />
         <StatBox icon={TrendingUp} title="Highest Quote" value={`${currencySymbol}${stats.highestQuote.toLocaleString()}`} color="text-red-500" />
