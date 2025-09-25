@@ -104,13 +104,26 @@ export function useVacationPlanner({ user, year }: UseVacationPlannerProps) {
       return;
     }
 
+    // Don't try to load options for temporary vacation projects
+    if (currentVacationId.startsWith('temp-')) {
+      setOptions([{
+        id: `temp-option-${Date.now()}`,
+        vacation_id: currentVacationId,
+        destination: '',
+        travel_mode_cost: 0,
+        lodging_cost: 0,
+        car_rental_cost: 0,
+        notes: '',
+        vacation_number: currentVacation.vacation_number
+      }]);
+      return;
+    }
+
     try {
       const { data, error } = await supabase
         .from('vacation_options')
         .select('*')
-        .eq('user_id', user.id)
-        .eq('vacation_number', currentVacation.vacation_number)
-        .eq('year', year);
+        .eq('project_id', currentVacationId);
 
       if (error) throw error;
 
@@ -126,37 +139,17 @@ export function useVacationPlanner({ user, year }: UseVacationPlannerProps) {
           vacation_number: option.vacation_number
         })));
       } else {
-        const newOption = {
-          user_id: user.id,
-          vacation_number: currentVacation.vacation_number,
-          year,
+        // Create a temporary option for empty vacation projects
+        setOptions([{
+          id: `temp-option-${Date.now()}`,
+          vacation_id: currentVacationId,
           destination: '',
           travel_mode_cost: 0,
           lodging_cost: 0,
           car_rental_cost: 0,
-          notes: ''
-        };
-        
-        const { data: insertedOption, error: insertError } = await supabase
-          .from('vacation_options')
-          .insert(newOption)
-          .select()
-          .single();
-
-        if (insertError) {
-          toast.error("Failed to create initial option.");
-        } else if (insertedOption) {
-          setOptions([{
-            id: insertedOption.id,
-            vacation_id: currentVacationId,
-            destination: insertedOption.destination || '',
-            travel_mode_cost: insertedOption.travel_mode_cost || 0,
-            lodging_cost: insertedOption.lodging_cost || 0,
-            car_rental_cost: insertedOption.car_rental_cost || 0,
-            notes: insertedOption.notes || '',
-            vacation_number: insertedOption.vacation_number
-          }]);
-        }
+          notes: '',
+          vacation_number: currentVacation.vacation_number
+        }]);
       }
     } catch (error) {
       toast.error("Failed to load vacation options.");
