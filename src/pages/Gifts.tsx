@@ -37,6 +37,7 @@ export function Gifts() {
       <SEO 
         title="Gift Lists" 
         description="Organize your gift ideas for every occasion."
+        keywords="gift lists, gift ideas, holiday planning, birthday gifts, gift organization"
       />
       
       {/* Header Section */}

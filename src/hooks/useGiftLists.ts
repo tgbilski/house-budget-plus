@@ -1,6 +1,20 @@
-// src/hooks/useGiftItems.ts
+// src/hooks/useGiftLists.ts
 import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/hooks/useAuth';
+import { useHouseholdContext } from '@/providers/HouseholdProvider';
+import { useYear } from '@/hooks/useYear';
+
+export interface GiftListData {
+  id: string;
+  list_title: string;
+  user_id: string;
+  household_id: string;
+  year: number;
+  budget_target?: number;
+  created_at: string;
+  updated_at: string;
+}
 
 export interface GiftItemData {
   id: string;
@@ -8,6 +22,94 @@ export interface GiftItemData {
   gift_idea: string;
   price: number;
   url: string;
+}
+
+export function useGiftLists() {
+  const { user } = useAuth();
+  const { currentHousehold } = useHouseholdContext();
+  const { selectedYear } = useYear();
+  const [loading, setLoading] = useState(true);
+  const [giftLists, setGiftLists] = useState<GiftListData[]>([]);
+  const [selectedList, setSelectedList] = useState<GiftListData | null>(null);
+  const [editingListId, setEditingListId] = useState<string | null>(null);
+  const [editingTitle, setEditingTitle] = useState('');
+
+  const loadGiftLists = useCallback(async () => {
+    if (!user || !currentHousehold) return;
+    
+    setLoading(true);
+    try {
+      const { data, error } = await supabase
+        .from('gift_lists')
+        .select('*')
+        .eq('user_id', user.id)
+        .eq('household_id', currentHousehold.id)
+        .eq('year', selectedYear)
+        .order('created_at', { ascending: true });
+      
+      if (error) throw error;
+      
+      setGiftLists(data || []);
+      if (data && data.length > 0 && !selectedList) {
+        setSelectedList(data[0]);
+      }
+    } catch (error) {
+      console.error('Error loading gift lists:', error);
+    } finally {
+      setLoading(false);
+    }
+  }, [user, currentHousehold, selectedYear, selectedList]);
+
+  useEffect(() => {
+    loadGiftLists();
+  }, [loadGiftLists]);
+
+  const selectList = (list: GiftListData) => {
+    setSelectedList(list);
+  };
+
+  const startEditing = (listId: string, currentTitle: string) => {
+    setEditingListId(listId);
+    setEditingTitle(currentTitle);
+  };
+
+  const saveTitle = async () => {
+    if (!editingListId || !editingTitle.trim()) return;
+    
+    try {
+      const { error } = await supabase
+        .from('gift_lists')
+        .update({ list_title: editingTitle.trim() })
+        .eq('id', editingListId);
+      
+      if (error) throw error;
+      
+      await loadGiftLists();
+      setEditingListId(null);
+      setEditingTitle('');
+    } catch (error) {
+      console.error('Error saving title:', error);
+    }
+  };
+
+  const cancelEditing = () => {
+    setEditingListId(null);
+    setEditingTitle('');
+  };
+
+  return {
+    loading,
+    giftLists,
+    selectedList,
+    editingListId,
+    editingTitle,
+    setEditingTitle,
+    selectList,
+    startEditing,
+    saveTitle,
+    cancelEditing,
+    loadGiftLists
+  };
 }
 
 export function useGiftItems(listId: string | undefined) {

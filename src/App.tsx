@@ -31,6 +31,7 @@ import ContactUs from "@/pages/ContactUs";
 import PrivacyPolicy from "@/pages/PrivacyPolicy";
 import TermsAndConditions from "@/pages/TermsAndConditions";
 import Disclaimer from "@/pages/Disclaimer";
+import ErrorBoundary from "@/components/ErrorBoundary";
 import { useState, createContext } from "react";
 
 interface Currency {
@@ -91,7 +92,8 @@ const App = () => {
         <TooltipProvider>
           <Toaster />
           <Sonner />
-          <AuthProvider>
+          <ErrorBoundary>
+            <AuthProvider>
             <SubscriptionProvider>
               <YearProvider>
                 <HouseholdProvider>
@@ -118,16 +120,17 @@ const App = () => {
                            </div>
                          </div>
                        </div>
-                    </SidebarProvider>
-                  </BrowserRouter>
-                  </CurrencyContext.Provider>
-                </HouseholdProvider>
-              </YearProvider>
-            </SubscriptionProvider>
-          </AuthProvider>
-        </TooltipProvider>
-      </QueryClientProvider>
-    </HelmetProvider>
+                     </SidebarProvider>
+                   </BrowserRouter>
+                   </CurrencyContext.Provider>
+                 </HouseholdProvider>
+               </YearProvider>
+             </SubscriptionProvider>
+           </AuthProvider>
+          </ErrorBoundary>
+         </TooltipProvider>
+       </QueryClientProvider>
+     </HelmetProvider>
   );
 };
 

@@ -4,7 +4,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Trash2, ExternalLink, Edit2, Save } from 'lucide-react';
-import { GiftItemData } from '@/hooks/useGiftItems'; // Import the type
+import { GiftItemData } from '@/hooks/useGiftLists'; // Import the type
 
 interface GiftItemProps {
   item: Partial<GiftItemData>;

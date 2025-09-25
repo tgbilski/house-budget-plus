@@ -24,9 +24,8 @@ export function GiftCardDisplay({ selectedList, onSave }: GiftCardDisplayProps) 
   // When a list IS selected, it renders your main GiftCard component
   // and passes the necessary data down to it.
   return (
-    <GiftCard
-      initialData={selectedList}
-      onSave={onSave}
-    />
+      <GiftCard
+        initialData={selectedList}
+      />
   );
 }

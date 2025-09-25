@@ -20,8 +20,8 @@ interface GiftListSelectorProps {
   editingListId: string | null;
   editingTitle: string;
   onSelectList: (list: GiftListData) => void;
-  onStartEditing: (list: GiftListData) => void;
-  onSaveTitle: (list: GiftListData) => void;
+  onStartEditing: (listId: string, currentTitle: string) => void;
+  onSaveTitle: () => void;
   onCancelEditing: () => void;
   onSetEditingTitle: (title: string) => void;
 }
@@ -64,12 +64,12 @@ export function GiftListSelector({
                         // FIX #2: Force input text to be your primary (dark blue) color
                         className="h-8 text-sm text-primary bg-white"
                         onKeyDown={(e) => {
-                          if (e.key === 'Enter') onSaveTitle(list);
+                          if (e.key === 'Enter') onSaveTitle();
                           if (e.key === 'Escape') onCancelEditing();
                         }}
                         autoFocus
                       />
-                      <Button size="sm" onClick={() => onSaveTitle(list)}>
+                      <Button size="sm" onClick={() => onSaveTitle()}>
                         <Check className="h-3 w-3" />
                       </Button>
                       <Button
@@ -93,7 +93,7 @@ export function GiftListSelector({
                   <Button
                     variant="ghost"
                     size="sm"
-                    onClick={(e) => { e.stopPropagation(); onStartEditing(list); }}
+                    onClick={(e) => { e.stopPropagation(); onStartEditing(list.id, list.list_title); }}
                     className={cn(
                       "h-8 w-8 p-0 opacity-0 group-hover:opacity-100 transition-opacity",
                       // FIX #1: When selected, make icon dark blue on hover over white background

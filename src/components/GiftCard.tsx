@@ -7,7 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Plus, DollarSign } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
-import { useGiftItems, GiftItemData } from '@/hooks/useGiftItems';
+import { useGiftItems, GiftItemData } from '@/hooks/useGiftLists';
 import { GiftItem } from './GiftItem';
 
 interface GiftListData {
