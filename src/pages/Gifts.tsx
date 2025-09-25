@@ -7,10 +7,10 @@ import { GiftListSelector } from '@/components/GiftListSelector';
 import { GiftCardDisplay } from '@/components/GiftCardDisplay';
 import { YearSelector } from '@/components/YearSelector';
 import { Gift } from 'lucide-react';
-// Add any other imports needed for the page layout, but remove component-specific ones
+// Note: Imports for components like EtsyProducts, AIChatbot, etc., would also go here
 
 export function Gifts() {
-  // 1. Call the main hook to get all the data and functions
+  // 1. The page's only job is to call our main hook to get the data.
   const {
     loading,
     giftLists,
@@ -26,11 +26,10 @@ export function Gifts() {
   } = useGiftLists();
 
   if (loading) {
-    // Return your loading skeleton component
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        {/* Your loading animation JSX */}
-        <div>Loading...</div>
+        {/* You can put your detailed loading skeleton here */}
+        <p className="text-lg text-gray-600">Loading your gift lists...</p>
       </div>
     );
   }
@@ -42,7 +41,7 @@ export function Gifts() {
         description="Organize your gift ideas for every occasion."
       />
       
-      {/* Your Header Section */}
+      {/* Header Section */}
       <div className="bg-white shadow-sm border-b">
         <div className="max-w-7xl mx-auto px-4 py-6">
           <div className="flex items-center justify-between">
@@ -58,11 +57,11 @@ export function Gifts() {
         </div>
       </div>
 
+      {/* Main Content Area */}
       <div className="max-w-7xl mx-auto px-4 py-6">
         <WarningBanner />
 
-        {/* 2. Use the GiftListSelector component */}
-        {/* Pass all the necessary props it needs to function */}
+        {/* 2. It renders the selector and passes down the data and functions it needs. */}
         <GiftListSelector
           giftLists={giftLists}
           selectedList={selectedList}
@@ -75,14 +74,15 @@ export function Gifts() {
           onSetEditingTitle={setEditingTitle}
         />
 
-        {/* 3. Use the GiftCardDisplay component */}
-        {/* Pass only the props it needs */}
+        {/* 3. It renders the gift card display area for the selected list. */}
         <GiftCardDisplay
           selectedList={selectedList}
           onSave={loadGiftLists}
         />
 
-        {/* Your other page sections like "Pro Tips" or "EtsyProducts" can go here */}
+        {/* You can add your other page sections below */}
+        {/* <EtsyProducts shopName="The90sKidShop" /> */}
+        {/* <AIChatbot pageContext="..." pageName="Gifts" /> */}
       </div>
     </div>
   );
