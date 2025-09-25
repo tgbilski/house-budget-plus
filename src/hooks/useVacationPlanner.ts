@@ -235,11 +235,13 @@ export function useVacationPlanner({ user, year }: UseVacationPlannerProps) {
 
   const saveOptionToDatabase = async (updatedOption: VacationOption, vacationProjectId: string) => {
     const { id, vacation_id, ...optionData } = updatedOption;
+    
+    // Get vacation_number from the updatedOption itself, as it should be correct
     const saveData = {
       ...optionData,
       project_id: vacationProjectId,
       user_id: user!.id,
-      vacation_number: vacations.find(v => v.id === vacationProjectId)?.vacation_number || 1,
+      vacation_number: updatedOption.vacation_number,
       year
     };
 
