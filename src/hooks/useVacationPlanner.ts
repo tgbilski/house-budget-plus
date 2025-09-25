@@ -209,11 +209,44 @@ export function useVacationPlanner({ user, year }: UseVacationPlannerProps) {
     const currentVacation = vacations.find(v => v.id === currentVacationId);
     if (!currentVacation) return;
 
+    // If this is a temp vacation, we need to create it first
+    if (currentVacation.id.startsWith('temp-')) {
+      const newVacation = {
+        user_id: user.id,
+        year,
+        title: currentVacation.title,
+        vacation_number: currentVacation.vacation_number
+      };
+
+      try {
+        const { data: createdVacation, error } = await supabase.from('vacation_projects').insert(newVacation).select().single();
+        if (error) throw error;
+        
+        // Update the vacation in state
+        setVacations(prev => prev.map(v => v.id === currentVacation.id ? createdVacation : v));
+        setCurrentVacationId(createdVacation.id);
+        
+        // Now save the option with the real vacation ID
+        await saveOptionToDatabase(updatedOption, createdVacation.id);
+        
+      } catch (error) {
+        toast.error("Failed to create vacation project.");
+        loadVacations();
+        return;
+      }
+    } else {
+      // Save to existing vacation
+      await saveOptionToDatabase(updatedOption, currentVacation.id);
+    }
+  };
+
+  const saveOptionToDatabase = async (updatedOption: VacationOption, vacationProjectId: string) => {
     const { id, vacation_id, ...optionData } = updatedOption;
     const saveData = {
       ...optionData,
-      user_id: user.id,
-      vacation_number: currentVacation.vacation_number,
+      project_id: vacationProjectId,
+      user_id: user!.id,
+      vacation_number: vacations.find(v => v.id === vacationProjectId)?.vacation_number || 1,
       year
     };
 

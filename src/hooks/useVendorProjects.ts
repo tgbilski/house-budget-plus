@@ -133,10 +133,48 @@ export function useVendorProjects({ user, year }: UseVendorProjectsProps) {
   const updateQuote = async (updatedQuote: VendorQuote) => {
     setQuotes(prev => prev.map(q => q.id === updatedQuote.id ? updatedQuote : q));
     if (!user) return;
+    
+    // If this is a temp project, we need to create it first
+    const currentProject = projects.find(p => p.id === currentProjectId);
+    if (currentProject && currentProject.id.startsWith('temp-')) {
+      const newProject = {
+        user_id: user.id,
+        year,
+        title: currentProject.title,
+        project_number: currentProject.project_number
+      };
+
+      try {
+        const { data: createdProject, error } = await supabase.from('vendor_projects').insert(newProject).select().single();
+        if (error) throw error;
+        
+        // Update the project in state
+        setProjects(prev => prev.map(p => p.id === currentProject.id ? createdProject : p));
+        setCurrentProjectId(createdProject.id);
+        
+        // Now save the quote with the real project ID
+        await saveQuoteToDatabase(updatedQuote, createdProject.id);
+        
+      } catch (error) {
+        toast.error("Failed to create project.");
+        loadProjects();
+        return;
+      }
+    } else {
+      // Save to existing project
+      await saveQuoteToDatabase(updatedQuote, currentProjectId!);
+    }
+  };
+
+  const saveQuoteToDatabase = async (updatedQuote: VendorQuote, projectId: string) => {
     const { id, project_id, ...quoteData } = updatedQuote;
     try {
       if (id.startsWith('temp-') || id.startsWith('demo-')) {
-        const { data: newRecord, error } = await supabase.from('vendor_quotes').insert({ ...quoteData, project_id: currentProjectId }).select().single();
+        const { data: newRecord, error } = await supabase.from('vendor_quotes').insert({ 
+          ...quoteData, 
+          project_id: projectId,
+          year 
+        }).select().single();
         if (error) throw error;
         setQuotes(prev => prev.map(q => q.id === id ? newRecord : q));
       } else {
