@@ -7,7 +7,6 @@ import { GiftListSelector } from '@/components/GiftListSelector';
 import { GiftCardDisplay } from '@/components/GiftCardDisplay';
 import { YearSelector } from '@/components/YearSelector';
 import { Gift } from 'lucide-react';
-// Note: Imports for components like EtsyProducts, AIChatbot, etc., would also go here
 
 export function Gifts() {
   // 1. The page's only job is to call our main hook to get the data.
@@ -28,8 +27,7 @@ export function Gifts() {
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        {/* You can put your detailed loading skeleton here */}
-        <p className="text-lg text-gray-600">Loading your gift lists...</p>
+        <p className="text-lg text-gray-600 animate-pulse">Loading your gift lists...</p>
       </div>
     );
   }
@@ -79,10 +77,6 @@ export function Gifts() {
           selectedList={selectedList}
           onSave={loadGiftLists}
         />
-
-        {/* You can add your other page sections below */}
-        {/* <EtsyProducts shopName="The90sKidShop" /> */}
-        {/* <AIChatbot pageContext="..." pageName="Gifts" /> */}
       </div>
     </div>
   );
