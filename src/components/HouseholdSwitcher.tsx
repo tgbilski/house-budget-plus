@@ -251,6 +251,65 @@ export function HouseholdSwitcher({ className, open, onOpenChange }: HouseholdSw
               </div>
             )}
 
+            {/* Invite Members */}
+            {isOriginator && currentHousehold && subscribed && (
+              <div>
+                <h3 className="font-medium mb-2">Invite Member</h3>
+                <div className="flex gap-2">
+                  <Input
+                    placeholder="Email address"
+                    value={inviteEmail}
+                    onChange={e => setInviteEmail(e.target.value)}
+                    disabled={isInviting}
+                    type="email"
+                  />
+                  <Button
+                    onClick={handleInvite}
+                    disabled={!inviteEmail.trim() || isInviting}
+                  >
+                    {isInviting ? <Loader2 className="h-4 w-4 animate-spin" /> : "Invite"}
+                  </Button>
+                </div>
+              </div>
+            )}
+
+            {/* Pending Invites */}
+            {pendingInvites.length > 0 && (
+              <div>
+                <h3 className="font-medium mb-2">Pending Invites</h3>
+                <div className="space-y-2">
+                  {pendingInvites.map(invite => (
+                    <Card key={invite.id} className="border-blue-200 bg-blue-50">
+                      <CardContent className="p-3">
+                        <p className="text-sm font-medium">
+                          Invitation to join "{invite.household_name}"
+                        </p>
+                        <div className="flex gap-2 mt-2">
+                          <Button
+                            size="sm"
+                            onClick={() => acceptInvite(invite.id)}
+                            disabled={invitesLoading}
+                          >
+                            {invitesLoading ? <Loader2 className="h-3 w-3 animate-spin" /> : <Check className="h-3 w-3" />}
+                            Accept
+                          </Button>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => declineInvite(invite.id)}
+                            disabled={invitesLoading}
+                          >
+                            <X className="h-3 w-3" />
+                            Decline
+                          </Button>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              </div>
+            )}
+
             {/* Create New Household */}
             <div>
               <h3 className="font-medium mb-2">Create New Household</h3>
