@@ -28,18 +28,22 @@ serve(async (req) => {
     let plan = 'monthly';
     let priceId = 'price_1RriH0ChqC8M6G2balUOl9O8'; // Default monthly price
     
-    try {
-      const body = await req.json();
-      plan = body.plan || 'monthly';
-      
-      // Set price ID based on plan
-      if (plan === 'annual') {
-        priceId = 'price_1SBQoqChqC8M6G2bI8kDPhK6'; // Annual price ID
-      } else {
-        priceId = 'price_1RriH0ChqC8M6G2balUOl9O8'; // Monthly price ID
+    // Parse request body to get plan
+    if (req.method === 'POST') {
+      try {
+        const body = await req.json() as { plan?: 'monthly' | 'annual' };
+        logStep("Request body received", body);
+        plan = body.plan || 'monthly';
+        
+        // Set price ID based on plan
+        if (plan === 'annual') {
+          priceId = 'price_1SBQoqChqC8M6G2bI8kDPhK6'; // Annual price ID
+        } else {
+          priceId = 'price_1RriH0ChqC8M6G2balUOl9O8'; // Monthly price ID
+        }
+      } catch (jsonError) {
+        logStep("Error parsing JSON body, using default plan", { error: jsonError.message, defaultPlan: plan, priceId });
       }
-    } catch (jsonError) {
-      logStep("No JSON body provided, using default plan and priceId", { defaultPlan: plan, priceId });
     }
     logStep("Plan and priceId selected", { plan, priceId });
 
