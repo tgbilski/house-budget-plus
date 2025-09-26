@@ -1,5 +1,5 @@
 // src/pages/Vacation.tsx
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Plane, Plus } from 'lucide-react';
 import { Button } from '@/components/ui/button'; // The missing import
 import { useAuth } from '@/hooks/useAuth';
@@ -38,7 +38,7 @@ const Vacation: React.FC = () => {
   } = useVacationPlanner({ user, year: selectedYear });
 
   // Award badge when user has vacation options
-  React.useEffect(() => {
+  useEffect(() => {
     if (user && options.length > 0) {
       earnBadge('vacation');
     }

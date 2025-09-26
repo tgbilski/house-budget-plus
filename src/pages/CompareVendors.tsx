@@ -1,5 +1,5 @@
 // src/pages/CompareVendors.tsx
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Scale, Plus, Filter } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -39,7 +39,7 @@ const CompareVendors: React.FC = () => {
   } = useVendorProjects({ user, year: selectedYear });
 
   // Award badge when user has vendor quotes
-  React.useEffect(() => {
+  useEffect(() => {
     if (user && quotes.length > 0) {
       earnBadge('compare_vendors');
     }

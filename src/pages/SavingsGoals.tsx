@@ -1,5 +1,5 @@
 // src/pages/SavingsGoals.tsx
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import { useHouseholdContext } from '@/providers/HouseholdProvider';
 import { useYear } from '@/hooks/useYear'; // Import the useYear hook
@@ -43,7 +43,7 @@ const SavingsGoals: React.FC = () => {
   const progressPercentage = currentGoal?.target_amount ? Math.min((totalSaved / currentGoal.target_amount) * 100, 100) : 0;
 
   // Award badge when user has savings data
-  React.useEffect(() => {
+  useEffect(() => {
     if (user && (goals.length > 0 || totalSaved > 0)) {
       earnBadge('savings_tracker');
     }

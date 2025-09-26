@@ -1,5 +1,5 @@
 // src/pages/Gifts.tsx (Final Version)
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useGiftLists } from '@/hooks/useGiftLists';
 import { useAuth } from '@/hooks/useAuth';
 import { useBadges } from '@/hooks/useBadges';
@@ -31,7 +31,7 @@ export function Gifts() {
   } = useGiftLists();
 
   // Award badge when user has gift lists
-  React.useEffect(() => {
+  useEffect(() => {
     if (user && giftLists.length > 0) {
       earnBadge('gifts');
     }
