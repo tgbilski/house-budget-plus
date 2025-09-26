@@ -35,11 +35,55 @@ export function useGiftLists() {
   const [editingTitle, setEditingTitle] = useState('');
 
   const loadGiftLists = useCallback(async () => {
-    // For non-authenticated users, set loading to false and return empty data
+    // For non-authenticated users, provide demo data
     if (!user || !currentHousehold) {
       setLoading(false);
-      setGiftLists([]);
-      setSelectedList(null);
+      const demoLists: GiftListData[] = [
+        {
+          id: 'demo-1',
+          list_title: 'Holiday Gifts',
+          user_id: 'demo',
+          household_id: 'demo',
+          year: selectedYear,
+          budget_target: 500,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString()
+        },
+        {
+          id: 'demo-2',
+          list_title: 'Birthday Gifts',
+          user_id: 'demo',
+          household_id: 'demo',
+          year: selectedYear,
+          budget_target: 300,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString()
+        },
+        {
+          id: 'demo-3',
+          list_title: 'Anniversary Gifts',
+          user_id: 'demo',
+          household_id: 'demo',
+          year: selectedYear,
+          budget_target: 200,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString()
+        },
+        {
+          id: 'demo-4',
+          list_title: 'Wedding Gifts',
+          user_id: 'demo',
+          household_id: 'demo',
+          year: selectedYear,
+          budget_target: 400,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString()
+        }
+      ];
+      setGiftLists(demoLists);
+      if (!selectedList) {
+        setSelectedList(demoLists[0]);
+      }
       return;
     }
     
@@ -105,7 +149,7 @@ export function useGiftLists() {
     } finally {
       setLoading(false);
     }
-  }, [user, currentHousehold, selectedYear, selectedList]);
+  }, [user, currentHousehold, selectedYear]);
 
   useEffect(() => {
     loadGiftLists();
@@ -168,6 +212,33 @@ export function useGiftItems(listId: string | undefined) {
       setItems([]);
       return;
     }
+    
+    // Provide demo data for demo lists
+    if (listId.startsWith('demo-')) {
+      setLoading(true);
+      const demoItems: GiftItemData[] = [
+        {
+          id: 'demo-item-1',
+          list_id: listId,
+          gift_idea: 'Nice sweater',
+          price: 45,
+          url: 'https://example.com/sweater'
+        },
+        {
+          id: 'demo-item-2',
+          list_id: listId,
+          gift_idea: 'Coffee mug set',
+          price: 25,
+          url: 'https://example.com/mugs'
+        }
+      ];
+      setTimeout(() => {
+        setItems(demoItems);
+        setLoading(false);
+      }, 300); // Simulate loading time
+      return;
+    }
+    
     setLoading(true);
     try {
       const { data, error } = await supabase
@@ -190,6 +261,12 @@ export function useGiftItems(listId: string | undefined) {
   }, [fetchItems]);
 
   const deleteItem = async (itemId: string) => {
+    // For demo mode, just update the UI
+    if (itemId.startsWith('demo-')) {
+      setItems(prev => prev.filter(item => item.id !== itemId));
+      return;
+    }
+    
     setItems(prev => prev.filter(item => item.id !== itemId));
     const { error } = await supabase.from('gift_items').delete().eq('id', itemId);
     if (error) {
@@ -200,6 +277,27 @@ export function useGiftItems(listId: string | undefined) {
 
   const saveItem = async (itemData: Partial<GiftItemData>) => {
     if (!listId) return;
+
+    // For demo mode, just update the UI
+    if (listId.startsWith('demo-')) {
+      if (itemData.id) { // Update existing item
+        setItems(prev => prev.map(item => 
+          item.id === itemData.id 
+            ? { ...item, ...itemData } as GiftItemData
+            : item
+        ));
+      } else { // Create new item
+        const newItem: GiftItemData = {
+          id: `demo-item-${Date.now()}`,
+          list_id: listId,
+          gift_idea: itemData.gift_idea || '',
+          price: itemData.price || 0,
+          url: itemData.url || ''
+        };
+        setItems(prev => [...prev, newItem]);
+      }
+      return;
+    }
 
     if (itemData.id) { // Update existing item
       const { error } = await supabase.from('gift_items').update({
