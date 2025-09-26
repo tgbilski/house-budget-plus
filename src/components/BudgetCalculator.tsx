@@ -463,7 +463,7 @@ const BudgetCalculator: React.FC<BudgetCalculatorProps> = ({
                       onChange={(amount) => updateExpense(expense.id, amount)}
                       label={expense.label}
                       expenseId={expense.id}
-                      selectedService={subscriptionServices[expense.id] || 'custom'}
+                      selectedService={subscriptionServices[expense.id] || ''}
                       onServiceChange={(serviceId) => updateSubscriptionService(expense.id, serviceId)}
                       placeholder="subscription option"
                     />
@@ -482,7 +482,7 @@ const BudgetCalculator: React.FC<BudgetCalculatorProps> = ({
                     onChange={(amount) => updateAdditionalSubscription(subscription.id, amount)}
                     label={subscription.label}
                     expenseId={subscription.id}
-                    selectedService={subscriptionServices[subscription.id] || 'custom'}
+                    selectedService={subscriptionServices[subscription.id] || ''}
                     onServiceChange={(serviceId) => updateSubscriptionService(subscription.id, serviceId)}
                     placeholder="subscription option"
                   />

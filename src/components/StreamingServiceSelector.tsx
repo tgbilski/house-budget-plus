@@ -29,7 +29,7 @@ const streamingServices: StreamingService[] = [
   { id: 'apple-music', name: 'Apple Music ($15.00)' },
   { id: 'paramount-plus', name: 'Paramount+ ($15.00)' },
   { id: 'peacock', name: 'Peacock ($15.00)' },
-  { id: 'custom', name: 'Custom Service ($15.00)' }
+  { id: 'custom', name: 'Select Subscription' }
 ];
 
 export function StreamingServiceSelector({ 
@@ -46,8 +46,9 @@ export function StreamingServiceSelector({
   const handleServiceSelect = (serviceId: string) => {
     console.log(`[${expenseId}] Service selected:`, serviceId);
     onServiceChange?.(serviceId);
-    // Automatically set $15 for any subscription selection
-    onChange(15);
+    // Set $15 for subscription services, $0 for custom/select subscription
+    const amount = serviceId === 'custom' ? 0 : 15;
+    onChange(amount);
   };
 
   return (
