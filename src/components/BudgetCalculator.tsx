@@ -454,10 +454,10 @@ const BudgetCalculator: React.FC<BudgetCalculatorProps> = ({
               </div>
             )}
             {/* Default Subscription Expenses */}
-            {expenses.map((expense) => {
+            {expenses.map((expense, index) => {
               if (expense.id.startsWith('subscription')) {
                 return (
-                  <div key={expense.id} className="col-span-2 space-y-1">
+                  <div key={expense.id} className="col-span-2">
                     <StreamingServiceSelector
                       value={expense.amount}
                       onChange={(amount) => updateExpense(expense.id, amount)}
@@ -465,6 +465,7 @@ const BudgetCalculator: React.FC<BudgetCalculatorProps> = ({
                       expenseId={expense.id}
                       selectedService={subscriptionServices[expense.id] || 'custom'}
                       onServiceChange={(serviceId) => updateSubscriptionService(expense.id, serviceId)}
+                      placeholder={`Subscription #${index - 8} ($15.00)`}
                     />
                   </div>
                 );
@@ -473,9 +474,9 @@ const BudgetCalculator: React.FC<BudgetCalculatorProps> = ({
             })}
 
             {/* Additional Subscriptions */}
-            {additionalSubscriptions.map((subscription) => (
-              <div key={subscription.id} className="col-span-2 space-y-1">
-                <div className="flex items-center space-x-2">
+            {additionalSubscriptions.map((subscription, index) => (
+              <div key={subscription.id} className="col-span-2 flex items-center space-x-2">
+                <div className="flex-1">
                   <StreamingServiceSelector
                     value={subscription.amount}
                     onChange={(amount) => updateAdditionalSubscription(subscription.id, amount)}
@@ -483,16 +484,17 @@ const BudgetCalculator: React.FC<BudgetCalculatorProps> = ({
                     expenseId={subscription.id}
                     selectedService={subscriptionServices[subscription.id] || 'custom'}
                     onServiceChange={(serviceId) => updateSubscriptionService(subscription.id, serviceId)}
+                    placeholder={`Subscription #${4 + index} ($15.00)`}
                   />
-                  <Button
-                    variant="destructive"
-                    size="sm"
-                    onClick={() => removeAdditionalSubscription(subscription.id)}
-                    className="h-6 w-6 p-0"
-                  >
-                    <Trash2 className="h-2 w-2" />
-                  </Button>
                 </div>
+                <Button
+                  variant="destructive"
+                  size="sm"
+                  onClick={() => removeAdditionalSubscription(subscription.id)}
+                  className="h-6 w-6 p-0"
+                >
+                  <Trash2 className="h-2 w-2" />
+                </Button>
               </div>
             ))}
 

@@ -16,20 +16,21 @@ interface StreamingServiceSelectorProps {
   expenseId: string;
   selectedService?: string;
   onServiceChange?: (serviceId: string) => void;
+  placeholder?: string;
 }
 
 const streamingServices: StreamingService[] = [
-  { id: 'netflix', name: 'Netflix' },
-  { id: 'disney-plus', name: 'Disney+' },
-  { id: 'hulu', name: 'Hulu' },
-  { id: 'amazon-prime', name: 'Amazon Prime Video' },
-  { id: 'max', name: 'Max (HBO Max)' },
-  { id: 'spotify', name: 'Spotify' },
-  { id: 'apple-music', name: 'Apple Music' },
-  { id: 'youtube-premium', name: 'YouTube Premium' },
-  { id: 'paramount-plus', name: 'Paramount+' },
-  { id: 'peacock', name: 'Peacock' },
-  { id: 'custom', name: 'Custom Service' }
+  { id: 'netflix', name: 'Netflix ($15.00)' },
+  { id: 'disney-plus', name: 'Disney+ ($15.00)' },
+  { id: 'hulu', name: 'Hulu ($15.00)' },
+  { id: 'amazon-prime', name: 'Amazon Prime Video ($15.00)' },
+  { id: 'max', name: 'Max (HBO Max) ($15.00)' },
+  { id: 'spotify', name: 'Spotify ($15.00)' },
+  { id: 'apple-music', name: 'Apple Music ($15.00)' },
+  { id: 'youtube-premium', name: 'YouTube Premium ($15.00)' },
+  { id: 'paramount-plus', name: 'Paramount+ ($15.00)' },
+  { id: 'peacock', name: 'Peacock ($15.00)' },
+  { id: 'custom', name: 'Custom Service ($15.00)' }
 ];
 
 export function StreamingServiceSelector({ 
@@ -38,24 +39,23 @@ export function StreamingServiceSelector({
   label, 
   expenseId, 
   selectedService = 'custom', 
-  onServiceChange 
+  onServiceChange,
+  placeholder = "Choose service..."
 }: StreamingServiceSelectorProps) {
   const { currency } = useCurrency();
   
   const handleServiceSelect = (serviceId: string) => {
     console.log(`[${expenseId}] Service selected:`, serviceId);
     onServiceChange?.(serviceId);
+    // Automatically set $15 for any subscription selection
+    onChange(15);
   };
 
   return (
-    <div className="space-y-2">
-      <Label className="text-xs text-muted-foreground">
-        {label}
-      </Label>
-      
+    <div className="space-y-1">
       <Select value={selectedService} onValueChange={handleServiceSelect}>
-        <SelectTrigger className="h-7 text-xs">
-          <SelectValue placeholder="Choose service..." />
+        <SelectTrigger className="h-6 text-xs">
+          <SelectValue placeholder={placeholder} />
         </SelectTrigger>
         <SelectContent className="max-h-60 bg-popover border shadow-lg z-50">
           {streamingServices.map((service) => (
@@ -69,22 +69,6 @@ export function StreamingServiceSelector({
           ))}
         </SelectContent>
       </Select>
-
-      {/* Always show custom input for amount */}
-      <div className="relative">
-        <span className="absolute left-2 top-1/2 transform -translate-y-1/2 text-muted-foreground text-xs">
-          {currency.symbol}
-        </span>
-        <Input
-          type="number"
-          min="0"
-          step="0.01"
-          value={value || ''}
-          onChange={(e) => onChange(parseFloat(e.target.value) || 0)}
-          className="pl-6 h-7 text-xs [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-          placeholder="0.00"
-        />
-      </div>
     </div>
   );
 }
