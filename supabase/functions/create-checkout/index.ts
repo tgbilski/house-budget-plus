@@ -26,13 +26,24 @@ serve(async (req) => {
     let plan = 'monthly';
     let priceId = 'price_1RriH0ChqC8M6G2balUOl9O8'; // Default monthly price
     
-    // Parse request body to get plan
+    // Parse request body to get plan - try multiple approaches
+    console.log('Request method:', req.method);
+    console.log('Request headers:', Object.fromEntries(req.headers.entries()));
+    
     if (req.method === 'POST') {
       try {
-        const body = await req.json() as { plan?: 'monthly' | 'annual' };
-        console.log('Parsed request body:', body);
-        plan = body.plan || 'monthly';
-        console.log('Plan extracted from body:', plan);
+        // Try to get the body as text first
+        const requestText = await req.text();
+        console.log('Raw request body as text:', requestText);
+        
+        if (requestText) {
+          const body = JSON.parse(requestText) as { plan?: 'monthly' | 'annual' };
+          console.log('Parsed request body:', body);
+          plan = body.plan || 'monthly';
+          console.log('Plan extracted from body:', plan);
+        } else {
+          console.log('Request body is empty, using default monthly plan');
+        }
         
         // Set price ID based on plan
         if (plan === 'annual') {
