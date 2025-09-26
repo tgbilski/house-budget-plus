@@ -29,23 +29,28 @@ serve(async (req) => {
     // Parse request body to get plan
     if (req.method === 'POST') {
       try {
-        const body = await req.json() as { plan?: 'monthly' | 'annual' };
-        console.log('Request body received:', body);
-        plan = body.plan || 'monthly';
+        const requestText = await req.text();
+        console.log('Raw request body:', requestText);
+        
+        if (requestText) {
+          const body = JSON.parse(requestText) as { plan?: 'monthly' | 'annual' };
+          console.log('Parsed request body:', body);
+          plan = body.plan || 'monthly';
+        }
         
         // Set price ID based on plan
         if (plan === 'annual') {
           priceId = 'price_1SBQoqChqC8M6G2bI8kDPhK6'; // Annual price ID
-          console.log('Setting annual price ID:', priceId);
+          console.log('Using ANNUAL price ID:', priceId);
         } else {
           priceId = 'price_1RriH0ChqC8M6G2balUOl9O8'; // Monthly price ID
-          console.log('Setting monthly price ID:', priceId);
+          console.log('Using MONTHLY price ID:', priceId);
         }
       } catch (jsonError) {
-        console.log('Error parsing JSON body, using default plan:', jsonError);
+        console.log('Error parsing request body, using default plan:', jsonError);
       }
     }
-    console.log('Plan and priceId selected:', { plan, priceId });
+    console.log('Final plan and priceId:', { plan, priceId });
 
     const authHeader = req.headers.get("Authorization");
     if (!authHeader) throw new Error("Authorization header missing");
