@@ -76,7 +76,7 @@ export function SubscriptionProvider({ children }: { children: ReactNode }) {
       if (error) throw error;
 
       if (data.url) {
-        window.open(data.url, '_blank');
+        window.location.href = data.url;
       }
     } catch (error) {
       console.error('Error creating checkout:', error);
@@ -108,7 +108,7 @@ export function SubscriptionProvider({ children }: { children: ReactNode }) {
       if (error) throw error;
 
       if (data.url) {
-        window.open(data.url, '_blank');
+        window.location.href = data.url;
       }
     } catch (error) {
       console.error('Error opening customer portal:', error);
