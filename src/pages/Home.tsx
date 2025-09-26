@@ -127,40 +127,43 @@ const HeroSectionContent = () => (
 
 const FeaturePreviewsGrid = () => (
   <section className="py-12 md:py-16 px-4 bg-white rounded-2xl mx-4 my-8 shadow-xl relative overflow-hidden">
-    <div className="w-full max-w-5xl mx-auto">
+    <div className="w-full max-w-6xl mx-auto">
       <div className="text-center mb-10">
         <h2 className="text-2xl md:text-3xl font-bold mb-4 text-gray-900">Explore Our Features</h2>
         <p className="text-base md:text-lg text-gray-600 max-w-3xl mx-auto">
           Take a preview of our powerful financial planning tools
         </p>
       </div>
-      <div className="grid grid-cols-1 gap-6 relative z-10">
-        {featurePreviewsData.map((feature, index) => (
-          <Link to={feature.href} key={index} className="block">
-            <Card className="group relative hover:shadow-xl transition-all duration-300 border-2 hover:border-primary/20 cursor-pointer hover:scale-[1.02] h-full animate-fade-in bg-gradient-to-br from-white to-gray-50" style={{ animationDelay: `${index * 0.1}s` }}>
-              <div className="flex items-center h-32">
-                <div className="w-48 h-full overflow-hidden rounded-l-lg flex-shrink-0">
-                  <img 
-                    src={feature.image} 
-                    alt={feature.alt}
-                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                  />
-                </div>
-                <div className="flex-1 p-6">
-                  <div className="flex items-center justify-between h-full">
-                    <div className="flex-1">
-                      <CardTitle className="text-lg md:text-xl group-hover:text-primary transition-colors text-gray-900 mb-2">{feature.title}</CardTitle>
-                      <CardDescription className="text-sm md:text-base text-gray-600 leading-relaxed">{feature.description}</CardDescription>
-                    </div>
-                    <div className="flex items-center text-primary group-hover:translate-x-1 transition-transform duration-300 ml-4">
-                      <ArrowRight className="h-5 w-5" />
+      <div className="grid grid-cols-1 gap-8 relative z-10">
+        {featurePreviewsData.map((feature, index) => {
+          const isEven = index % 2 === 0;
+          return (
+            <Link to={feature.href} key={index} className="block">
+              <Card className="group relative hover:shadow-xl transition-all duration-300 border-2 hover:border-primary/20 cursor-pointer hover:scale-[1.02] h-64 animate-fade-in bg-gradient-to-br from-white to-gray-50" style={{ animationDelay: `${index * 0.1}s` }}>
+                <div className={`flex items-center h-full ${isEven ? '' : 'flex-row-reverse'}`}>
+                  <div className="w-1/2 h-full overflow-hidden rounded-l-lg flex-shrink-0">
+                    <img 
+                      src={feature.image} 
+                      alt={feature.alt}
+                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                    />
+                  </div>
+                  <div className="w-1/2 p-8">
+                    <div className="flex items-center justify-between h-full">
+                      <div className="flex-1">
+                        <CardTitle className="text-xl md:text-2xl group-hover:text-primary transition-colors text-gray-900 mb-4">{feature.title}</CardTitle>
+                        <CardDescription className="text-base md:text-lg text-gray-600 leading-relaxed">{feature.description}</CardDescription>
+                      </div>
+                      <div className={`flex items-center text-primary group-hover:translate-x-1 transition-transform duration-300 ${isEven ? 'ml-6' : 'mr-6'}`}>
+                        <ArrowRight className="h-6 w-6" />
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            </Card>
-          </Link>
-        ))}
+              </Card>
+            </Link>
+          );
+        })}
       </div>
     </div>
   </section>
