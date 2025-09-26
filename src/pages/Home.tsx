@@ -168,7 +168,32 @@ const FeaturePreviewsGrid = () => (
           Take a preview of our powerful financial planning tools
         </p>
       </div>
-      <div className="grid grid-cols-1 gap-8 relative z-10">
+      
+      {/* Mobile Layout */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 md:hidden">
+        {featurePreviewsData.map((feature, index) => (
+          <Link to={feature.href} key={index} className="block">
+            <Card className="group relative hover:shadow-xl transition-all duration-300 border-2 hover:border-primary/20 cursor-pointer hover:scale-[1.02] animate-fade-in bg-gradient-to-br from-white to-gray-50" style={{ animationDelay: `${index * 0.1}s` }}>
+              <div className="flex flex-col">
+                <div className="w-full h-32 overflow-hidden rounded-t-lg">
+                  <img 
+                    src={feature.image} 
+                    alt={feature.alt}
+                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                  />
+                </div>
+                <div className="p-4">
+                  <CardTitle className="text-sm font-semibold group-hover:text-primary transition-colors text-gray-900 mb-2 text-center">{feature.title}</CardTitle>
+                  <CardDescription className="text-xs text-gray-600 leading-relaxed text-center">{feature.description}</CardDescription>
+                </div>
+              </div>
+            </Card>
+          </Link>
+        ))}
+      </div>
+      
+      {/* Desktop Layout */}
+      <div className="hidden md:grid grid-cols-1 gap-8 relative z-10">
         {featurePreviewsData.map((feature, index) => {
           const isEven = index % 2 === 0;
           return (
