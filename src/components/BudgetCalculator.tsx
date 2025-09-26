@@ -8,7 +8,7 @@ import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { useCurrency } from '@/hooks/useCurrency';
 import { useAuth } from '@/hooks/useAuth';
 import { useYear } from '@/hooks/useYear';
-import { useHouseholdContext } from '@/providers/HouseholdProvider';
+import { useHousehold } from '@/hooks/useHousehold';
 import { generateBudgetPDF } from '@/utils/pdfGenerator';
 import { supabase } from '@/integrations/supabase/client';
 import { StreamingServiceSelector } from './StreamingServiceSelector';
@@ -54,7 +54,7 @@ const BudgetCalculator: React.FC<BudgetCalculatorProps> = ({
   onNameChange
 }) => {
   const { user } = useAuth();
-  const { currentHousehold } = useHouseholdContext();
+  const { currentHousehold } = useHousehold(user?.id);
   const { selectedYear } = useYear();
   const { currency } = useCurrency();
   const [ownerName, setOwnerName] = useState('');
