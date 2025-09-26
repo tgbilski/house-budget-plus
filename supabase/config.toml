@@ -53,6 +53,7 @@ port = 54328
 [edge_functions]
 enabled = true
 port = 54329
+import_map = ""
 
 [[edge_functions.functions]]
 name = "check-subscription"
