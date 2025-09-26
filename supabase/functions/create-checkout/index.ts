@@ -21,7 +21,7 @@ serve(async (req) => {
   );
 
   try {
-    console.log('Function started');
+    console.log('Function started - v2');
 
     let plan = 'monthly';
     let priceId = 'price_1RriH0ChqC8M6G2balUOl9O8'; // Default monthly price
