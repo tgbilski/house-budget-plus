@@ -17,30 +17,6 @@ import vendorPreview from '@/assets/vendor-compare-preview.png';
 
 // --- Data for Child Components ---
 
-const otherToolsData = [
-  {
-    title: "Vendor Quote Comparison",
-    description: "Compare contractor quotes & save your favorites.",
-    icon: Scale,
-    href: "/compare-prices",
-    color: "bg-blue-500/10 text-blue-600",
-  },
-  {
-    title: "Vacation Planner",
-    description: "Plan trips with budget analysis and compare destinations.",
-    icon: Plane,
-    href: "/vacation",
-    color: "bg-purple-500/10 text-purple-600",
-  },
-  {
-    title: "Gifts & Celebrations",
-    description: "Organize gift ideas and track spending for all your celebrations.",
-    icon: Gift,
-    href: "/gifts",
-    color: "bg-pink-500/10 text-pink-600",
-  }
-];
-
 const featurePreviewsData = [
   {
     title: "Monthly Budget Calculator",
@@ -151,35 +127,37 @@ const HeroSectionContent = () => (
 
 const FeaturePreviewsGrid = () => (
   <section className="py-12 md:py-16 px-4 bg-white rounded-2xl mx-4 my-8 shadow-xl relative overflow-hidden">
-    <div className="w-full max-w-6xl mx-auto">
+    <div className="w-full max-w-5xl mx-auto">
       <div className="text-center mb-10">
         <h2 className="text-2xl md:text-3xl font-bold mb-4 text-gray-900">Explore Our Features</h2>
         <p className="text-base md:text-lg text-gray-600 max-w-3xl mx-auto">
           Take a preview of our powerful financial planning tools
         </p>
       </div>
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 relative z-10">
+      <div className="grid grid-cols-1 gap-6 relative z-10">
         {featurePreviewsData.map((feature, index) => (
           <Link to={feature.href} key={index} className="block">
-            <Card className="group relative hover:shadow-2xl transition-all duration-500 border-2 hover:border-primary/30 cursor-pointer hover:scale-105 h-full animate-fade-in bg-gradient-to-br from-white to-gray-50" style={{ animationDelay: `${index * 0.15}s` }}>
-              <div className="aspect-video overflow-hidden rounded-t-lg">
-                <img 
-                  src={feature.image} 
-                  alt={feature.alt}
-                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                />
-              </div>
-              <CardHeader className="p-6">
-                <div className="flex items-start justify-between">
-                  <div className="flex-1">
-                    <CardTitle className="text-lg md:text-xl group-hover:text-primary transition-colors text-gray-900 mb-2">{feature.title}</CardTitle>
-                    <CardDescription className="text-sm md:text-base text-gray-600 leading-relaxed">{feature.description}</CardDescription>
-                  </div>
-                  <div className="flex items-center text-primary group-hover:translate-x-1 transition-transform duration-300 ml-4">
-                    <ArrowRight className="h-5 w-5" />
+            <Card className="group relative hover:shadow-xl transition-all duration-300 border-2 hover:border-primary/20 cursor-pointer hover:scale-[1.02] h-full animate-fade-in bg-gradient-to-br from-white to-gray-50" style={{ animationDelay: `${index * 0.1}s` }}>
+              <div className="flex items-center h-32">
+                <div className="w-48 h-full overflow-hidden rounded-l-lg flex-shrink-0">
+                  <img 
+                    src={feature.image} 
+                    alt={feature.alt}
+                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                  />
+                </div>
+                <div className="flex-1 p-6">
+                  <div className="flex items-center justify-between h-full">
+                    <div className="flex-1">
+                      <CardTitle className="text-lg md:text-xl group-hover:text-primary transition-colors text-gray-900 mb-2">{feature.title}</CardTitle>
+                      <CardDescription className="text-sm md:text-base text-gray-600 leading-relaxed">{feature.description}</CardDescription>
+                    </div>
+                    <div className="flex items-center text-primary group-hover:translate-x-1 transition-transform duration-300 ml-4">
+                      <ArrowRight className="h-5 w-5" />
+                    </div>
                   </div>
                 </div>
-              </CardHeader>
+              </div>
             </Card>
           </Link>
         ))}
@@ -188,42 +166,6 @@ const FeaturePreviewsGrid = () => (
   </section>
 );
 
-const OtherToolsGrid = () => (
-  <section className="py-12 md:py-16 px-4 bg-white rounded-2xl mx-4 my-8 shadow-xl relative overflow-hidden">
-    <div className="w-full max-w-4xl mx-auto">
-      <div className="text-center mb-10">
-        <h2 className="text-2xl md:text-3xl font-bold mb-4 text-gray-900">Other Great Tools</h2>
-        <p className="text-base md:text-lg text-gray-600 max-w-3xl mx-auto">
-          Additional tools to help with specific financial planning needs
-        </p>
-      </div>
-      <div className="grid grid-cols-1 gap-6 relative z-10 max-w-2xl mx-auto">
-        {otherToolsData.map((tool, index) => (
-          <Link to={tool.href} key={index} className="block">
-            <Card className="group relative hover:shadow-xl transition-all duration-300 border-2 hover:border-primary/20 cursor-pointer hover:scale-105 h-full animate-fade-in bg-[#eaeff0]" style={{ animationDelay: `${index * 0.1}s` }}>
-              <CardHeader className="p-6">
-                <div className="flex items-start gap-4">
-                  <div className="flex flex-col items-center flex-shrink-0">
-                    <div className={`w-12 h-12 md:w-14 md:h-14 rounded-xl ${tool.color} flex items-center justify-center group-hover:scale-110 transition-transform duration-300 mb-2`}>
-                      <tool.icon className="h-6 w-6 md:h-7 md:w-7" />
-                    </div>
-                    <div className="flex items-center text-sm text-primary group-hover:translate-x-1 transition-transform duration-300">
-                      <ArrowRight className="h-4 w-4" />
-                    </div>
-                  </div>
-                  <div className="flex-1">
-                    <CardTitle className="text-lg md:text-xl group-hover:text-primary transition-colors text-gray-900 mb-2">{tool.title}</CardTitle>
-                    <CardDescription className="text-sm md:text-base text-gray-600 leading-relaxed">{tool.description}</CardDescription>
-                  </div>
-                </div>
-              </CardHeader>
-            </Card>
-          </Link>
-        ))}
-      </div>
-    </div>
-  </section>
-);
 
 
 // --- Main Page Component ---
@@ -243,8 +185,6 @@ const Home = () => {
           <HeroSectionContent />
           <ScrollIndicator />
           <FeaturePreviewsGrid />
-          <ScrollIndicator />
-          <OtherToolsGrid />
           <ScrollIndicator />
 
           <div className="bg-gray-100 rounded-2xl mx-4 my-8 shadow-xl p-6 md:p-8 overflow-hidden">
