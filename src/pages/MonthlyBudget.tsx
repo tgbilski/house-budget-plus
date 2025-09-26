@@ -188,26 +188,30 @@ const MonthlyBudget: React.FC = () => {
       />
       
       <div className="max-w-7xl mx-auto p-4 space-y-6">
+        {/* Year selector at top right on laptop */}
+        <div className="hidden lg:flex justify-end mb-4">
+          <YearSelector />
+        </div>
+        
         {/* Compact header */}
         <div className="text-center">
-          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-4">
-            <div className="lg:flex-1" />
-            <div className="flex flex-col items-center space-y-2">
-              <div className="inline-flex items-center justify-center w-12 h-12 bg-primary/10 rounded-full">
-                <img
-                  src="/lovable-uploads/ed809955-ef71-4d81-b072-945082f4380a.png"
-                  alt="Calculator mascot"
-                  className="w-8 h-8 object-contain"
-                />
-              </div>
-              <h1 className="text-3xl font-bold text-foreground">Monthly Budget Calculator</h1>
-              <p className="text-muted-foreground max-w-2xl mx-auto">
-                Take control of your finances by tracking your household income and expenses.
-              </p>
+          <div className="flex flex-col items-center space-y-2">
+            <div className="inline-flex items-center justify-center w-12 h-12 bg-primary/10 rounded-full">
+              <img
+                src="/lovable-uploads/ed809955-ef71-4d81-b072-945082f4380a.png"
+                alt="Calculator mascot"
+                className="w-8 h-8 object-contain"
+              />
             </div>
-            <div className="flex justify-center md:justify-end">
-              <YearSelector />
-            </div>
+            <h1 className="text-3xl font-bold text-foreground">Monthly Budget Calculator</h1>
+            <p className="text-muted-foreground max-w-2xl mx-auto">
+              Take control of your finances by tracking your household income and expenses.
+            </p>
+          </div>
+          
+          {/* Year selector for mobile/tablet */}
+          <div className="lg:hidden flex justify-center mt-4">
+            <YearSelector />
           </div>
         </div>
 

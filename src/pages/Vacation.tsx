@@ -44,7 +44,12 @@ const Vacation: React.FC = () => {
       <SEO title={seoData.vacation.title} description={seoData.vacation.description} keywords="vacation planning, travel budget, destination comparison" />
       <div className="bg-white shadow-sm border-b">
         <div className="max-w-7xl mx-auto px-4 py-6">
-          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+          {/* Year selector at top right on laptop */}
+          <div className="hidden lg:flex justify-end mb-4">
+            <YearSelector />
+          </div>
+          
+          <div className="flex flex-col items-center md:items-start gap-4">
             <div className="flex items-center gap-3">
               <Plane className="h-8 w-8 text-primary" />
               <div>
@@ -52,7 +57,9 @@ const Vacation: React.FC = () => {
                 <p className="text-sm text-gray-600">Compare options for each of your trips</p>
               </div>
             </div>
-            <div className="flex justify-center md:justify-end">
+            
+            {/* Year selector for mobile/tablet */}
+            <div className="lg:hidden flex justify-center w-full">
               <YearSelector />
             </div>
           </div>
