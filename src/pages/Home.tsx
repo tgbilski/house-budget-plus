@@ -126,6 +126,9 @@ const HeroSectionContent = () => (
               src={calculatorHeroPreview} 
               alt="Budget Calculator Preview"
               className="w-full h-auto rounded-[10px] shadow-lg hover:shadow-xl transition-shadow duration-300"
+              loading="lazy"
+              width="320"
+              height="240"
             />
           </div>
         </div>
@@ -180,6 +183,9 @@ const FeaturePreviewsGrid = () => (
                     src={feature.image} 
                     alt={feature.alt}
                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                    loading="lazy"
+                    width="300"
+                    height="128"
                   />
                 </div>
                 <div className="p-4 bg-sage/20">
@@ -205,6 +211,9 @@ const FeaturePreviewsGrid = () => (
                       src={feature.image} 
                       alt={feature.alt}
                       className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                      loading="lazy"
+                      width="400"
+                      height="256"
                     />
                   </div>
                   <div className="w-1/2 p-8 bg-sage/20 h-full">

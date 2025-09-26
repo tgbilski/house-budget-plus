@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import Stripe from "https://esm.sh/stripe@14.21.0";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
@@ -20,7 +21,7 @@ serve(async (req) => {
   );
 
   try {
-    // Function started
+    console.log('Function started');
 
     let plan = 'monthly';
     let priceId = 'price_1RriH0ChqC8M6G2balUOl9O8'; // Default monthly price
@@ -29,20 +30,22 @@ serve(async (req) => {
     if (req.method === 'POST') {
       try {
         const body = await req.json() as { plan?: 'monthly' | 'annual' };
-        // Request body received
+        console.log('Request body received:', body);
         plan = body.plan || 'monthly';
         
         // Set price ID based on plan
         if (plan === 'annual') {
           priceId = 'price_1SBQoqChqC8M6G2bI8kDPhK6'; // Annual price ID
+          console.log('Setting annual price ID:', priceId);
         } else {
           priceId = 'price_1RriH0ChqC8M6G2balUOl9O8'; // Monthly price ID
+          console.log('Setting monthly price ID:', priceId);
         }
       } catch (jsonError) {
-        // Error parsing JSON body, using default plan
+        console.log('Error parsing JSON body, using default plan:', jsonError);
       }
     }
-    // Plan and priceId selected
+    console.log('Plan and priceId selected:', { plan, priceId });
 
     const authHeader = req.headers.get("Authorization");
     if (!authHeader) throw new Error("Authorization header missing");
