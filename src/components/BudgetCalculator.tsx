@@ -316,7 +316,7 @@ const BudgetCalculator: React.FC<BudgetCalculatorProps> = ({
   };
 
   return (
-    <Card className="w-full shadow-md border border-border" data-calculator-id={id}>
+    <Card className="w-full max-w-sm mx-auto shadow-md border border-border" data-calculator-id={id}>
       <CardHeader className="pb-2 pt-3">
         <div className="space-y-2">
           {/* Compact title section */}
