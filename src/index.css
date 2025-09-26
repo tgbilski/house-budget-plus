@@ -39,6 +39,14 @@
     --success: 142 76% 36%;
     --success-foreground: 0 0% 98%;
 
+    /* Teal accent color #7cb5a2 */
+    --teal: 161 32% 60%;
+    --teal-foreground: 0 0% 98%;
+
+    /* Sage accent color #d3e8c1 */
+    --sage: 95 40% 82%;
+    --sage-foreground: 0 0% 20%;
+
     /* Yellow warning */
     --warning: 38 92% 50%;
     --warning-foreground: 0 0% 9%;
