@@ -55,8 +55,6 @@ export function SubscriptionProvider({ children }: { children: ReactNode }) {
   };
 
   const createCheckout = async (plan: 'monthly' | 'annual' = 'monthly') => {
-    alert(`About to create checkout with plan: ${plan}`);
-    
     if (!user || !session) {
       toast({
         title: "Authentication Required",
@@ -68,7 +66,7 @@ export function SubscriptionProvider({ children }: { children: ReactNode }) {
 
     try {
       const { data, error } = await supabase.functions.invoke('create-checkout', {
-        body: { plan },
+        body: JSON.stringify({ plan }),
         headers: {
           Authorization: `Bearer ${session.access_token}`,
           'Content-Type': 'application/json',
