@@ -21,41 +21,24 @@ serve(async (req) => {
   );
 
   try {
-    console.log('Function started - v2');
+    console.log('Function started - v3 TEST');
 
     let plan = 'monthly';
     let priceId = 'price_1RriH0ChqC8M6G2balUOl9O8'; // Default monthly price
     
-    // Parse request body to get plan - Supabase sends body as JSON object
-    console.log('Request method:', req.method);
-    console.log('Request headers:', Object.fromEntries(req.headers.entries()));
+    // SIMPLE TEST: Always use annual for debugging
+    const body = await req.json() as { plan?: 'monthly' | 'annual' };
+    console.log('📦 Request body received:', JSON.stringify(body));
     
-    if (req.method === 'POST') {
-      try {
-        // Supabase functions.invoke sends body as JSON, so use req.json()
-        const body = await req.json() as { plan?: 'monthly' | 'annual' };
-        console.log('Parsed request body from Supabase:', body);
-        
-        if (body && body.plan) {
-          plan = body.plan;
-          console.log('Plan extracted from body:', plan);
-        } else {
-          console.log('No plan in body, using default monthly plan');
-        }
-        
-        // Set price ID based on plan
-        if (plan === 'annual') {
-          priceId = 'price_1SBQoqChqC8M6G2bI8kDPhK6'; // Annual price ID
-          console.log('✅ USING ANNUAL PRICE ID:', priceId);
-        } else {
-          priceId = 'price_1RriH0ChqC8M6G2balUOl9O8'; // Monthly price ID
-          console.log('Using MONTHLY price ID:', priceId);
-        }
-      } catch (jsonError) {
-        console.log('Error parsing request body, using default plan:', jsonError);
-      }
+    if (body && body.plan === 'annual') {
+      plan = 'annual';
+      priceId = 'price_1SBQoqChqC8M6G2bI8kDPhK6'; // Annual price ID
+      console.log('🚀 ANNUAL PLAN DETECTED - Using annual price');
+    } else {
+      console.log('📅 Monthly plan or no plan - Using monthly price');
     }
-    console.log('🔥 FINAL RESULT - plan:', plan, 'priceId:', priceId);
+    
+    console.log('🎯 FINAL VALUES:', { plan, priceId });
 
     const authHeader = req.headers.get("Authorization");
     if (!authHeader) throw new Error("Authorization header missing");
