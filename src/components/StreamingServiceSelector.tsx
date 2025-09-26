@@ -27,7 +27,6 @@ const streamingServices: StreamingService[] = [
   { id: 'max', name: 'Max (HBO Max) ($15.00)' },
   { id: 'spotify', name: 'Spotify ($15.00)' },
   { id: 'apple-music', name: 'Apple Music ($15.00)' },
-  { id: 'youtube-premium', name: 'YouTube Premium ($15.00)' },
   { id: 'paramount-plus', name: 'Paramount+ ($15.00)' },
   { id: 'peacock', name: 'Peacock ($15.00)' },
   { id: 'custom', name: 'Custom Service ($15.00)' }
@@ -40,7 +39,7 @@ export function StreamingServiceSelector({
   expenseId, 
   selectedService = 'custom', 
   onServiceChange,
-  placeholder = "Choose service..."
+  placeholder = "subscription option"
 }: StreamingServiceSelectorProps) {
   const { currency } = useCurrency();
   
