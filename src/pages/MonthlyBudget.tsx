@@ -82,8 +82,8 @@ const MonthlyBudget: React.FC = () => {
     if (user && currentHousehold) {
       loadCalculators();
     } else {
-      // For non-logged-in users, set default with 2 calculators.
-      setCalculators([{ id: '1' }, { id: '2' }]);
+      // Always show 4 static calculators.
+      setCalculators([{ id: '1' }, { id: '2' }, { id: '3' }, { id: '4' }]);
       setIsLoading(false);
     }
   }, [user, currentHousehold, selectedYear]);
@@ -108,10 +108,11 @@ const MonthlyBudget: React.FC = () => {
       if (data && data.length > 0) {
         const uniqueCalculators = [...new Set(data.map(item => item.calculator_id))];
         const sortedCalculators = uniqueCalculators.sort((a, b) => parseInt(a) - parseInt(b));
-        setCalculators(sortedCalculators.map(id => ({ id })));
+        const allCalculators = ['1', '2', '3', '4'];
+        setCalculators(allCalculators.map(id => ({ id })));
       } else {
-        // If user is logged in but has no data, give them two default calculators.
-        setCalculators([{ id: '1' }, { id: '2' }]);
+        // Always show 4 static calculators.
+        setCalculators([{ id: '1' }, { id: '2' }, { id: '3' }, { id: '4' }]);
       }
     } catch (err) {
       console.error("Error loading calculators:", err);
@@ -121,52 +122,11 @@ const MonthlyBudget: React.FC = () => {
     }
   };
 
-  const addCalculator = () => {
-    if (calculators.length >= 4) return;
-    const existingIds = calculators.map(c => parseInt(c.id));
-    let newId = 1;
-    while (existingIds.includes(newId) && newId <= 4) {
-      newId++;
-    }
-    setCalculators([...calculators, { id: newId.toString() }]);
-  };
+  // Remove the addCalculator function as calculators are now static
 
-  // CHANGE: Added try/catch block for robust error handling.
-  const removeCalculator = async (calculatorId: string) => {
-    if (!user || !currentHousehold) return;
+  // Remove the removeCalculator function as calculators are now static
 
-    try {
-      const { error: dbError } = await supabase
-        .from('budget_data')
-        .delete()
-        .eq('user_id', user.id)
-        .eq('household_id', currentHousehold.id)
-        .eq('year', selectedYear)
-        .eq('calculator_id', calculatorId)
-        .eq('page_type', 'monthly_budget');
-
-      if (dbError) throw dbError;
-
-      // Remove from state only after successful deletion
-      setCalculators(calculators.filter(c => c.id !== calculatorId));
-
-      setBudgetData(prev => {
-        const newData = { ...prev };
-        delete newData[calculatorId];
-        return newData;
-      });
-
-      setCalculatorNames(prev => {
-        const newNames = { ...prev };
-        delete newNames[calculatorId];
-        return newNames;
-      });
-    } catch (err) {
-      console.error("Error deleting calculator:", err);
-      alert("Failed to remove the budget. Please try again.");
-    }
-  };
-
+  // Calculator names handler
   const handleNameChange = (id: string, name: string) => {
     setCalculatorNames(prev => ({ ...prev, [id]: name }));
   };
@@ -212,7 +172,7 @@ const MonthlyBudget: React.FC = () => {
           </div>
         </div>
 
-        {/* Budget calculators section - moved up, no heading */}
+        {/* Budget calculators section - 4 static calculators */}
         {/* CHANGE: Added conditional rendering for loading and error states */}
         {isLoading ? (
           <div className="text-center p-8">
@@ -223,34 +183,20 @@ const MonthlyBudget: React.FC = () => {
             <p>{error}</p>
           </div>
         ) : (
-          <>
-            <div className="flex items-center justify-end mb-4">
-              <Button
-                onClick={addCalculator}
-                disabled={calculators.length >= 4}
-                size="sm"
-                className="gap-2 bg-teal hover:bg-teal/90 text-teal-foreground"
-              >
-                <Plus className="h-4 w-4" />
-                Add Budget ({calculators.length}/4)
-              </Button>
-            </div>
-            
-            {/* Grid for calculators - ensure side by side on laptop */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              {calculators.map((calculator) => (
-                <BudgetCalculator
-                  key={calculator.id}
-                  id={calculator.id}
-                  calculatorNumber={parseInt(calculator.id)}
-                  showRemove={calculators.length > 1}
-                  onRemove={() => removeCalculator(calculator.id)}
-                  onNameChange={handleNameChange}
-                  pageType="monthly_budget"
-                />
-              ))}
-            </div>
-          </>
+          // Grid for 4 static calculators
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {calculators.map((calculator) => (
+              <BudgetCalculator
+                key={calculator.id}
+                id={calculator.id}
+                calculatorNumber={parseInt(calculator.id)}
+                showRemove={false}
+                onRemove={() => {}} // No-op since we don't allow removal
+                onNameChange={handleNameChange}
+                pageType="monthly_budget"
+              />
+            ))}
+          </div>
         )}
 
 

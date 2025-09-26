@@ -319,27 +319,46 @@ const BudgetCalculator: React.FC<BudgetCalculatorProps> = ({
     <Card className="w-full max-w-md shadow-md border border-sage/40 bg-sage/5" data-calculator-id={id}>
       <CardHeader className="pb-2 pt-3 bg-teal/10 rounded-t-lg">
         <div className="space-y-2">
-          {/* Compact title section */}
-          <div className="group">
-            <Label className="text-xs text-muted-foreground mb-1 block">
-              Calculator {calculatorNumber} Owner
-            </Label>
-            <div className="flex items-center gap-2">
+          {/* Owner name and Monthly Income side by side */}
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <Label className="text-xs text-muted-foreground mb-1 block">
+                Calculator {calculatorNumber} Owner
+              </Label>
               <Input
                 id={`owner-${id}`}
-                placeholder="Enter owner name..."
+                placeholder="Owner name..."
                 value={ownerName}
                 onChange={(e) => {
                   const newName = e.target.value;
                   setOwnerName(newName);
                   onNameChange(id, newName);
                 }}
-                className="text-sm font-semibold h-8 border-2 focus:border-primary transition-colors flex-1 min-w-0"
+                className="text-sm font-semibold h-8 border-2 focus:border-primary transition-colors"
               />
+            </div>
+            
+            <div>
+              <Label htmlFor={`income-${id}`} className="text-xs font-semibold text-foreground mb-1 block">
+                Monthly Income
+              </Label>
+              <div className="relative">
+                <span className="absolute left-2 top-1/2 transform -translate-y-1/2 text-muted-foreground text-xs">{currency.symbol}</span>
+                <Input
+                  id={`income-${id}`}
+                  type="number"
+                  min="0"
+                  step="0.01"
+                  value={monthlyIncome || ''}
+                  onChange={(e) => setMonthlyIncome(parseFloat(e.target.value) || 0)}
+                  className="pl-6 h-8 text-xs [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                  placeholder="0.00"
+                />
+              </div>
             </div>
           </div>
           
-          {/* Compact remove button */}
+          {/* Compact remove button - only show if showRemove is true */}
           {showRemove && (
             <div className="flex justify-end">
               <Button
@@ -357,48 +376,28 @@ const BudgetCalculator: React.FC<BudgetCalculatorProps> = ({
       </CardHeader>
 
       <CardContent className="space-y-2 px-4 pb-3">
-        {/* Compact Monthly Income */}
-        <div>
-          <Label htmlFor={`income-${id}`} className="text-xs font-semibold text-foreground">
-            Monthly Income
-          </Label>
-          <div className="relative mt-1">
-            <span className="absolute left-2 top-1/2 transform -translate-y-1/2 text-muted-foreground text-xs">{currency.symbol}</span>
-            <Input
-              id={`income-${id}`}
-              type="number"
-              min="0"
-              step="0.01"
-              value={monthlyIncome || ''}
-              onChange={(e) => setMonthlyIncome(parseFloat(e.target.value) || 0)}
-              className="pl-6 h-8 text-xs [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-              placeholder="0.00"
-            />
-          </div>
-        </div>
-
-        {/* Compact Monthly Expenses Header */}
+        {/* Monthly Expenses in two columns */}
         <div className="pt-2">
           <h3 className="text-xs font-semibold text-foreground mb-2">Monthly Expenses</h3>
           
-          {/* Compact Default Expenses */}
-          <div className="space-y-1">
+          {/* Two column layout for expenses */}
+          <div className="grid grid-cols-2 gap-x-3 gap-y-1">
             {expenses.map((expense) => {
               if (!expense.id.startsWith('subscription')) {
                 return (
-                  <div key={expense.id} className="flex items-center space-x-1.5">
-                    <Label className="text-xs text-muted-foreground w-24 text-left truncate">
+                  <div key={expense.id} className="flex items-center space-x-1">
+                    <Label className="text-xs text-muted-foreground w-16 text-left truncate">
                       {expense.label}
                     </Label>
                     <div className="relative flex-1">
-                      <span className="absolute left-2 top-1/2 transform -translate-y-1/2 text-muted-foreground text-xs">{currency.symbol}</span>
+                      <span className="absolute left-1 top-1/2 transform -translate-y-1/2 text-muted-foreground text-xs">{currency.symbol}</span>
                       <Input
                         type="number"
                         min="0"
                         step="0.01"
                         value={expense.amount || ''}
                         onChange={(e) => updateExpense(expense.id, parseFloat(e.target.value) || 0)}
-                        className="pl-6 h-7 text-xs [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                        className="pl-4 h-6 text-xs [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                         placeholder="0.00"
                       />
                     </div>
@@ -408,24 +407,24 @@ const BudgetCalculator: React.FC<BudgetCalculatorProps> = ({
               return null;
             })}
 
-            {/* Compact Additional Expenses */}
+            {/* Additional Expenses in two columns */}
             {additionalExpenses.map((expense) => (
-              <div key={expense.id} className="flex items-center space-x-1.5">
+              <div key={expense.id} className="col-span-2 flex items-center space-x-1">
                 <Input
                   value={expense.label}
                   onChange={(e) => updateAdditionalExpenseLabel(expense.id, e.target.value)}
-                  className="w-24 h-7 text-xs"
-                  placeholder="Expense name"
+                  className="w-16 h-6 text-xs"
+                  placeholder="Expense"
                 />
                 <div className="relative flex-1">
-                  <span className="absolute left-2 top-1/2 transform -translate-y-1/2 text-muted-foreground text-xs">{currency.symbol}</span>
+                  <span className="absolute left-1 top-1/2 transform -translate-y-1/2 text-muted-foreground text-xs">{currency.symbol}</span>
                   <Input
                     type="number"
                     min="0"
                     step="0.01"
                     value={expense.amount || ''}
                     onChange={(e) => updateExpense(expense.id, parseFloat(e.target.value) || 0, true)}
-                    className="pl-6 h-7 text-xs [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                    className="pl-4 h-6 text-xs [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                     placeholder="0.00"
                   />
                 </div>
@@ -433,31 +432,32 @@ const BudgetCalculator: React.FC<BudgetCalculatorProps> = ({
                   variant="destructive"
                   size="sm"
                   onClick={() => removeAdditionalExpense(expense.id)}
-                  className="h-7 w-7 p-0"
+                  className="h-6 w-6 p-0"
                 >
-                  <Trash2 className="h-3 w-3" />
+                  <Trash2 className="h-2 w-2" />
                 </Button>
               </div>
             ))}
 
-            {/* Compact Add Expense Button */}
+            {/* Add Expense Button - spans both columns */}
             {additionalExpenses.length < 10 && (
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={addAdditionalExpense}
-                className="w-full h-7 text-xs"
-              >
-                <Plus className="h-3 w-3 mr-1" />
-                Add Expense
-              </Button>
+              <div className="col-span-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={addAdditionalExpense}
+                  className="w-full h-6 text-xs"
+                >
+                  <Plus className="h-2 w-2 mr-1" />
+                  Add Expense
+                </Button>
+              </div>
             )}
-
             {/* Default Subscription Expenses */}
             {expenses.map((expense) => {
               if (expense.id.startsWith('subscription')) {
                 return (
-                  <div key={expense.id} className="space-y-1">
+                  <div key={expense.id} className="col-span-2 space-y-1">
                     <StreamingServiceSelector
                       value={expense.amount}
                       onChange={(amount) => updateExpense(expense.id, amount)}
@@ -474,7 +474,7 @@ const BudgetCalculator: React.FC<BudgetCalculatorProps> = ({
 
             {/* Additional Subscriptions */}
             {additionalSubscriptions.map((subscription) => (
-              <div key={subscription.id} className="space-y-1">
+              <div key={subscription.id} className="col-span-2 space-y-1">
                 <div className="flex items-center space-x-2">
                   <StreamingServiceSelector
                     value={subscription.amount}
@@ -488,9 +488,9 @@ const BudgetCalculator: React.FC<BudgetCalculatorProps> = ({
                     variant="destructive"
                     size="sm"
                     onClick={() => removeAdditionalSubscription(subscription.id)}
-                    className="h-7 w-7 p-0"
+                    className="h-6 w-6 p-0"
                   >
-                    <Trash2 className="h-3 w-3" />
+                    <Trash2 className="h-2 w-2" />
                   </Button>
                 </div>
               </div>
@@ -498,15 +498,17 @@ const BudgetCalculator: React.FC<BudgetCalculatorProps> = ({
 
             {/* Add Subscription Button */}
             {additionalSubscriptions.length < 10 && (
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={addAdditionalSubscription}
-                className="w-full h-7 text-xs"
-              >
-                <Plus className="h-3 w-3 mr-1" />
-                Subscription
-              </Button>
+              <div className="col-span-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={addAdditionalSubscription}
+                  className="w-full h-6 text-xs"
+                >
+                  <Plus className="h-2 w-2 mr-1" />
+                  Subscription
+                </Button>
+              </div>
             )}
           </div>
         </div>
