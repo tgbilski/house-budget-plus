@@ -82,24 +82,7 @@ const ScrollIndicator = () => (
 );
 
 const HeroSectionContent = () => (
-  <section className="relative py-8 md:py-12 px-4 rounded-2xl mx-4 shadow-xl overflow-hidden bg-white mt-16 md:mt-20">
-    {/* Corner Ribbon Banner */}
-    <div className="absolute top-0 right-0 z-30">
-      <Link to="/ai-insights" className="block">
-        <div className="relative">
-          {/* Main ribbon */}
-          <div className="bg-gradient-to-br from-secondary to-secondary/80 text-secondary-foreground px-12 py-3 text-sm font-bold transform rotate-45 translate-x-6 -translate-y-2 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 min-w-max">
-            <div className="flex items-center gap-2">
-              <Brain className="h-4 w-4" />
-              <span>Upgrade for AI!</span>
-            </div>
-          </div>
-          {/* Corner fold effect */}
-          <div className="absolute top-0 right-0 w-0 h-0 border-l-[20px] border-l-transparent border-b-[20px] border-b-secondary/60 transform translate-x-1 -translate-y-1"></div>
-        </div>
-      </Link>
-    </div>
-    
+  <section className="relative py-8 md:py-12 px-4 rounded-2xl mx-4 shadow-xl overflow-visible bg-white mt-16 md:mt-20">
     <div className="absolute top-[-60px] left-1/2 -translate-x-1/2 z-20">
       <img
         src="/lovable-uploads/ed809955-ef71-4d81-b072-945082f4380a.png"
