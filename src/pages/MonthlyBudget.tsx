@@ -187,21 +187,22 @@ const MonthlyBudget: React.FC = () => {
         canonical="https://www.housebudgetcalculator.com/budget"
       />
       
-      <div className="max-w-6xl mx-auto p-6 space-y-8">
-        <div className="text-center space-y-4">
-          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+      <div className="max-w-7xl mx-auto p-4 space-y-6">
+        {/* Compact header */}
+        <div className="text-center">
+          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-4">
             <div className="lg:flex-1" />
-            <div className="flex flex-col items-center space-y-4">
-              <div className="inline-flex items-center justify-center w-16 h-16 bg-primary/10 rounded-full">
+            <div className="flex flex-col items-center space-y-2">
+              <div className="inline-flex items-center justify-center w-12 h-12 bg-primary/10 rounded-full">
                 <img
                   src="/lovable-uploads/ed809955-ef71-4d81-b072-945082f4380a.png"
                   alt="Calculator mascot"
-                  className="w-10 h-10 object-contain"
+                  className="w-8 h-8 object-contain"
                 />
               </div>
-              <h1 className="text-4xl font-bold text-foreground">Monthly Budget Calculator</h1>
-              <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-                Take control of your finances by tracking every dollar of your household income and expenses.
+              <h1 className="text-3xl font-bold text-foreground">Monthly Budget Calculator</h1>
+              <p className="text-muted-foreground max-w-2xl mx-auto">
+                Take control of your finances by tracking your household income and expenses.
               </p>
             </div>
             <div className="flex justify-center md:justify-end">
@@ -210,101 +211,69 @@ const MonthlyBudget: React.FC = () => {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        {/* Compact summary cards */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {summaryData.map((item) => (
-            <div key={item.title} className="bg-card rounded-xl border p-6 hover:shadow-lg transition-all duration-200">
+            <div key={item.title} className="bg-card rounded-lg border p-4 hover:shadow-md transition-all duration-200">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-muted-foreground">{item.title}</p>
-                  <p className={`text-2xl font-bold ${item.color}`}>
+                  <p className="text-xs font-medium text-muted-foreground">{item.title}</p>
+                  <p className={`text-lg font-bold ${item.color}`}>
                     {currency.symbol}{item.value.toLocaleString()}
                   </p>
                 </div>
-                <div className="p-3 bg-muted rounded-full">
-                  <item.icon className={`w-6 h-6 ${item.color}`} />
+                <div className="p-2 bg-muted rounded-full">
+                  <item.icon className={`w-4 h-4 ${item.color}`} />
                 </div>
               </div>
             </div>
           ))}
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-          <div className="lg:col-span-8 space-y-6">
-            {/* CHANGE: Added conditional rendering for loading and error states */}
-            {isLoading ? (
-              <div className="text-center p-8">
-                <p>Loading your budget...</p>
-              </div>
-            ) : error ? (
-              <div className="bg-destructive/10 border border-destructive text-destructive rounded-lg p-4 text-center">
-                <p>{error}</p>
-              </div>
-            ) : (
-              <>
-                <div className="flex items-center justify-between">
-                  <h2 className="text-xl font-semibold">Budget Calculators</h2>
-                  <Button
-                    onClick={addCalculator}
-                    disabled={calculators.length >= 4}
-                    size="sm"
-                    className="gap-2"
-                  >
-                    <Plus className="h-4 w-4" />
-                    Add Budget ({calculators.length}/4)
-                  </Button>
-                </div>
-                <div className="space-y-6">
-                  {calculators.map((calculator) => (
-                    <BudgetCalculator
-                      key={calculator.id}
-                      id={calculator.id}
-                      calculatorNumber={parseInt(calculator.id)}
-                      showRemove={calculators.length > 1}
-                      onRemove={() => removeCalculator(calculator.id)}
-                      onNameChange={handleNameChange}
-                      pageType="monthly_budget"
-                    />
-                  ))}
-                </div>
-              </>
-            )}
-          </div>
-
-          <div className="lg:col-span-4 space-y-6">
-            <div className="bg-card rounded-xl border p-6">
-              <h3 className="text-lg font-semibold mb-4">Quick Tips</h3>
-              <div className="space-y-3 text-sm text-muted-foreground">
-                <p>Track every expense to see where your money really goes</p>
-                <p>Aim to save at least 20% of your income</p>
-                <p>Review and adjust your budget monthly</p>
-              </div>
+        {/* Budget calculators section */}
+        <div className="space-y-4">
+          {/* CHANGE: Added conditional rendering for loading and error states */}
+          {isLoading ? (
+            <div className="text-center p-8">
+              <p>Loading your budget...</p>
             </div>
-          </div>
+          ) : error ? (
+            <div className="bg-destructive/10 border border-destructive text-destructive rounded-lg p-4 text-center">
+              <p>{error}</p>
+            </div>
+          ) : (
+            <>
+              <div className="flex items-center justify-between">
+                <h2 className="text-xl font-semibold">Budget Calculators</h2>
+                <Button
+                  onClick={addCalculator}
+                  disabled={calculators.length >= 4}
+                  size="sm"
+                  className="gap-2"
+                >
+                  <Plus className="h-4 w-4" />
+                  Add Budget ({calculators.length}/4)
+                </Button>
+              </div>
+              
+              {/* Responsive grid for calculators - side by side on laptop */}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                {calculators.map((calculator) => (
+                  <BudgetCalculator
+                    key={calculator.id}
+                    id={calculator.id}
+                    calculatorNumber={parseInt(calculator.id)}
+                    showRemove={calculators.length > 1}
+                    onRemove={() => removeCalculator(calculator.id)}
+                    onNameChange={handleNameChange}
+                    pageType="monthly_budget"
+                  />
+                ))}
+              </div>
+            </>
+          )}
         </div>
 
-        {/* The rest of the page remains the same */}
-        <div className="bg-card rounded-xl border p-8">
-            <h2 className="text-2xl font-bold text-center mb-8">Why Use Our Budget Calculator?</h2>
-            {/* ... Features Section ... */}
-        </div>
-
-        <div className="space-y-8">
-          <FAQ faqs={budgetCalculatorFAQs} />
-          <InternalLinks currentPage="/" category="budgeting" />
-        </div>
-
-        <div className="bg-card rounded-xl border p-8 text-center">
-          <h3 className="text-xl font-semibold mb-4">Need Help?</h3>
-          <p className="text-muted-foreground mb-6">
-            Get in touch with questions, suggestions, or feedback about our budget calculator.
-          </p>
-          <Button
-            variant="outline"
-            onClick={() => window.location.href = 'mailto:homebudgetcalculator@gmail.com?subject=Budget Calculator Feedback'}
-          >
-            Contact Us
-          </Button>
-        </div>
 
         <AIChatbot
           pageContext="This is the Monthly Budget Calculator page..."
