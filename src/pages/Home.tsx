@@ -16,6 +16,7 @@ import vacationPreview from '@/assets/vacation-page-preview.png';
 import vendorPreview from '@/assets/vendor-compare-preview.png';
 import giftPreview from '@/assets/gift-page-preview.png';
 import aiPreview from '@/assets/ai-page-preview.png';
+import calculatorHeroPreview from '@/assets/calculator-preview-hero.png';
 
 // --- Data for Child Components ---
 
@@ -113,29 +114,58 @@ const HeroSectionContent = () => (
         className="w-full h-full object-cover rounded-2xl opacity-20"
       />
     </div>
+    
+    {/* Upgrade Banner */}
+    <div className="absolute top-0 right-0 z-30 overflow-hidden">
+      <Link to="/ai-insights" className="group block">
+        <div className="bg-secondary text-secondary-foreground px-8 py-2 transform rotate-45 translate-x-6 translate-y-2 shadow-lg hover:shadow-xl transition-all duration-300 group-hover:scale-105 relative">
+          <Brain className="h-4 w-4 inline mr-2" />
+          <span className="text-sm font-semibold">Upgrade for AI!</span>
+          {/* Triangular shadow for 3D effect */}
+          <div className="absolute -bottom-1 -left-1 w-0 h-0 border-l-4 border-l-transparent border-b-4 border-b-secondary/60 border-r-4 border-r-secondary/60"></div>
+        </div>
+      </Link>
+    </div>
+
     <div className="w-full max-w-6xl mx-auto relative z-10 pt-16 md:pt-20">
-      <div className="text-center mb-8">
-        <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 text-gray-900 leading-tight">
-          Own Your <span className="text-primary">House Budget</span>
-        </h1>
-        <p className="text-base md:text-lg text-gray-600 max-w-4xl mx-auto mb-8 leading-relaxed">
-          <strong>Your data stays yours.</strong> No bank connections required. Our AI helps you develop a personalized financial plan using only the data you choose to share.
-        </p>
+      {/* Main Content with Calculator Preview */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
         
-        {/* Centered Sign Up Button */}
-        <div className="flex justify-center mb-6">
-          <Link 
-            to="/auth" 
-            className="inline-flex items-center justify-center px-8 py-4 text-lg font-semibold text-white bg-primary hover:bg-primary/90 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
-          >
-            <UserCheck className="h-5 w-5 mr-2" />
-            Sign Up for Free
-          </Link>
+        {/* Left Side - Calculator Preview */}
+        <div className="flex justify-center lg:justify-start order-2 lg:order-1">
+          <div className="w-full max-w-md">
+            <img 
+              src={calculatorHeroPreview} 
+              alt="Budget Calculator Preview"
+              className="w-full h-auto rounded-[10px] shadow-lg hover:shadow-xl transition-shadow duration-300"
+            />
+          </div>
         </div>
         
-        <p className="text-sm text-gray-500">
-          Free to use • No credit card required • Anonymous signup available
-        </p>
+        {/* Right Side - Text Content */}
+        <div className="text-center lg:text-left order-1 lg:order-2">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 text-gray-900 leading-tight">
+            Own Your <span className="text-primary">House Budget</span>
+          </h1>
+          <p className="text-base md:text-lg text-gray-600 mb-8 leading-relaxed">
+            <strong>Your data stays yours.</strong> No bank connections required. Our AI helps you develop a personalized financial plan using only the data you choose to share.
+          </p>
+          
+          {/* Centered Sign Up Button */}
+          <div className="flex justify-center lg:justify-start mb-6">
+            <Link 
+              to="/auth" 
+              className="inline-flex items-center justify-center px-8 py-4 text-lg font-semibold text-white bg-primary hover:bg-primary/90 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
+            >
+              <UserCheck className="h-5 w-5 mr-2" />
+              Sign Up for Free
+            </Link>
+          </div>
+          
+          <p className="text-sm text-gray-500">
+            Free to use • No credit card required • Anonymous signup available
+          </p>
+        </div>
       </div>
     </div>
   </section>
