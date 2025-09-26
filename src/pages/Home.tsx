@@ -99,12 +99,12 @@ const ScrollIndicator = () => (
 );
 
 const HeroSectionContent = () => (
-  <section className="relative py-8 md:py-12 px-4 rounded-2xl mx-4 shadow-xl overflow-visible bg-white mt-16 md:mt-20">
+  <section className="relative py-6 md:py-8 px-4 rounded-2xl mx-4 shadow-xl overflow-visible bg-white mt-16 md:mt-20">
     <div className="absolute top-[-60px] left-1/2 -translate-x-1/2 z-20">
       <img
         src="/lovable-uploads/ed809955-ef71-4d81-b072-945082f4380a.png"
         alt="Budget Calculator mascot"
-        className="w-32 h-32 md:w-40 md:h-40 object-contain hover:scale-110 transition-transform duration-300"
+        className="w-28 h-28 md:w-32 md:h-32 object-contain hover:scale-110 transition-transform duration-300"
       />
     </div>
     <div className="absolute inset-0">
@@ -115,13 +115,13 @@ const HeroSectionContent = () => (
       />
     </div>
 
-    <div className="w-full max-w-6xl mx-auto relative z-10 pt-16 md:pt-20">
+    <div className="w-full max-w-6xl mx-auto relative z-10 pt-12 md:pt-16">
       {/* Main Content with Calculator Preview */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+      <div className="grid grid-cols-1 lg:grid-cols-5 gap-6 items-center">
         
         {/* Left Side - Calculator Preview */}
-        <div className="flex justify-center lg:justify-start order-2 lg:order-1">
-          <div className="w-full max-w-md">
+        <div className="lg:col-span-2 flex justify-center lg:justify-start order-2 lg:order-1">
+          <div className="w-full max-w-xs">
             <img 
               src={calculatorHeroPreview} 
               alt="Budget Calculator Preview"
@@ -131,26 +131,26 @@ const HeroSectionContent = () => (
         </div>
         
         {/* Right Side - Text Content */}
-        <div className="text-center lg:text-left order-1 lg:order-2">
-          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 text-gray-900 leading-tight">
+        <div className="lg:col-span-3 text-center lg:text-left order-1 lg:order-2">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-3 text-gray-900 leading-tight">
             Own Your <span className="text-primary">House Budget</span>
           </h1>
-          <p className="text-base md:text-lg text-gray-600 mb-8 leading-relaxed">
+          <p className="text-sm md:text-base text-gray-600 mb-6 leading-relaxed">
             <strong>Your data stays yours.</strong> No bank connections required. Our AI helps you develop a personalized financial plan using only the data you choose to share.
           </p>
           
           {/* Centered Sign Up Button */}
-          <div className="flex justify-center lg:justify-start mb-6">
+          <div className="flex justify-center lg:justify-start mb-4">
             <Link 
               to="/auth" 
-              className="inline-flex items-center justify-center px-8 py-4 text-lg font-semibold text-white bg-primary hover:bg-primary/90 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
+              className="inline-flex items-center justify-center px-6 py-3 text-base font-semibold text-white bg-primary hover:bg-primary/90 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
             >
-              <UserCheck className="h-5 w-5 mr-2" />
+              <UserCheck className="h-4 w-4 mr-2" />
               Sign Up for Free
             </Link>
           </div>
           
-          <p className="text-sm text-gray-500">
+          <p className="text-xs text-gray-500">
             Free to use • No credit card required • Anonymous signup available
           </p>
         </div>
