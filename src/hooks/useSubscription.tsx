@@ -55,7 +55,7 @@ export function SubscriptionProvider({ children }: { children: ReactNode }) {
   };
 
   const createCheckout = async (plan: 'monthly' | 'annual' = 'monthly') => {
-    console.log('createCheckout called with plan:', plan);
+    alert(`About to create checkout with plan: ${plan}`);
     
     if (!user || !session) {
       toast({
@@ -67,7 +67,6 @@ export function SubscriptionProvider({ children }: { children: ReactNode }) {
     }
 
     try {
-      console.log('Sending plan to create-checkout:', plan);
       const { data, error } = await supabase.functions.invoke('create-checkout', {
         body: { plan },
         headers: {
