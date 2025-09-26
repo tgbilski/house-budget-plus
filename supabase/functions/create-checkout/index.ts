@@ -34,7 +34,7 @@ serve(async (req) => {
       
       // Set price ID based on plan
       if (plan === 'annual') {
-        priceId = 'price_ANNUAL_PRICE_ID_HERE'; // You'll need to replace this with your actual annual price ID
+        priceId = 'price_1SBQoqChqC8M6G2bI8kDPhK6'; // Annual price ID
       } else {
         priceId = 'price_1RriH0ChqC8M6G2balUOl9O8'; // Monthly price ID
       }
