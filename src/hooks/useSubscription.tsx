@@ -81,6 +81,14 @@ export function SubscriptionProvider({ children }: { children: ReactNode }) {
       console.log('Response data:', data);
       console.log('Response error:', error);
 
+      // Show debug info in alert before redirect
+      alert(`DEBUG INFO:
+Plan requested: ${plan}
+Request body: ${JSON.stringify({ plan })}
+Response data: ${JSON.stringify(data, null, 2)}
+Response error: ${JSON.stringify(error, null, 2)}
+URL contains: ${data?.url ? (data.url.includes('annual') ? 'ANNUAL' : 'MONTHLY') : 'NO URL'}`);
+
       if (error) throw error;
 
       if (data.url) {
