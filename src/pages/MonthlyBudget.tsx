@@ -82,8 +82,8 @@ const MonthlyBudget: React.FC = () => {
     if (user && currentHousehold) {
       loadCalculators();
     } else {
-      // For non-logged-in users, set a default state.
-      setCalculators([{ id: '1' }]);
+      // For non-logged-in users, set default with 2 calculators.
+      setCalculators([{ id: '1' }, { id: '2' }]);
       setIsLoading(false);
     }
   }, [user, currentHousehold, selectedYear]);
@@ -110,8 +110,8 @@ const MonthlyBudget: React.FC = () => {
         const sortedCalculators = uniqueCalculators.sort((a, b) => parseInt(a) - parseInt(b));
         setCalculators(sortedCalculators.map(id => ({ id })));
       } else {
-        // If user is logged in but has no data, give them one default calculator.
-        setCalculators([{ id: '1' }]);
+        // If user is logged in but has no data, give them two default calculators.
+        setCalculators([{ id: '1' }, { id: '2' }]);
       }
     } catch (err) {
       console.error("Error loading calculators:", err);
@@ -187,77 +187,71 @@ const MonthlyBudget: React.FC = () => {
         canonical="https://www.housebudgetcalculator.com/budget"
       />
       
-      <div className="max-w-7xl mx-auto p-4 space-y-6">
-        {/* Year selector at top right on laptop */}
-        <div className="hidden lg:flex justify-end mb-4">
-          <YearSelector />
-        </div>
-        
-        {/* Compact header */}
-        <div className="text-center">
-          <div className="flex flex-col items-center space-y-2">
-            <div className="inline-flex items-center justify-center w-12 h-12 bg-primary/10 rounded-full">
-              <img
-                src="/lovable-uploads/ed809955-ef71-4d81-b072-945082f4380a.png"
-                alt="Calculator mascot"
-                className="w-8 h-8 object-contain"
-              />
+      <div className="max-w-7xl mx-auto p-4">
+        {/* Compact header at very top */}
+        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-6">
+          <div className="flex flex-col items-center lg:items-start space-y-2">
+            <div className="flex items-center gap-2">
+              <div className="inline-flex items-center justify-center w-10 h-10 bg-primary/10 rounded-full">
+                <img
+                  src="/lovable-uploads/ed809955-ef71-4d81-b072-945082f4380a.png"
+                  alt="Calculator mascot"
+                  className="w-6 h-6 object-contain"
+                />
+              </div>
+              <h1 className="text-2xl font-bold text-foreground">Monthly Budget Calculator</h1>
             </div>
-            <h1 className="text-3xl font-bold text-foreground">Monthly Budget Calculator</h1>
-            <p className="text-muted-foreground max-w-2xl mx-auto">
+            <p className="text-muted-foreground text-sm text-center lg:text-left">
               Take control of your finances by tracking your household income and expenses.
             </p>
           </div>
           
-          {/* Year selector for mobile/tablet */}
-          <div className="lg:hidden flex justify-center mt-4">
+          {/* Year selector at top right on laptop, centered on mobile */}
+          <div className="flex justify-center lg:justify-end">
             <YearSelector />
           </div>
         </div>
 
-        {/* Budget calculators section - optimized for side by side layout */}
-        <div className="space-y-4">
-          {/* CHANGE: Added conditional rendering for loading and error states */}
-          {isLoading ? (
-            <div className="text-center p-8">
-              <p>Loading your budget...</p>
+        {/* Budget calculators section - moved up, no heading */}
+        {/* CHANGE: Added conditional rendering for loading and error states */}
+        {isLoading ? (
+          <div className="text-center p-8">
+            <p>Loading your budget...</p>
+          </div>
+        ) : error ? (
+          <div className="bg-destructive/10 border border-destructive text-destructive rounded-lg p-4 text-center">
+            <p>{error}</p>
+          </div>
+        ) : (
+          <>
+            <div className="flex items-center justify-end mb-4">
+              <Button
+                onClick={addCalculator}
+                disabled={calculators.length >= 4}
+                size="sm"
+                className="gap-2"
+              >
+                <Plus className="h-4 w-4" />
+                Add Budget ({calculators.length}/4)
+              </Button>
             </div>
-          ) : error ? (
-            <div className="bg-destructive/10 border border-destructive text-destructive rounded-lg p-4 text-center">
-              <p>{error}</p>
+            
+            {/* Responsive grid for calculators - side by side on laptop, optimized spacing */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6">
+              {calculators.map((calculator) => (
+                <BudgetCalculator
+                  key={calculator.id}
+                  id={calculator.id}
+                  calculatorNumber={parseInt(calculator.id)}
+                  showRemove={calculators.length > 1}
+                  onRemove={() => removeCalculator(calculator.id)}
+                  onNameChange={handleNameChange}
+                  pageType="monthly_budget"
+                />
+              ))}
             </div>
-          ) : (
-            <>
-              <div className="flex items-center justify-between">
-                <h2 className="text-xl font-semibold">Budget Calculators</h2>
-                <Button
-                  onClick={addCalculator}
-                  disabled={calculators.length >= 4}
-                  size="sm"
-                  className="gap-2"
-                >
-                  <Plus className="h-4 w-4" />
-                  Add Budget ({calculators.length}/4)
-                </Button>
-              </div>
-              
-              {/* Responsive grid for calculators - side by side on laptop, optimized spacing */}
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6">
-                {calculators.map((calculator) => (
-                  <BudgetCalculator
-                    key={calculator.id}
-                    id={calculator.id}
-                    calculatorNumber={parseInt(calculator.id)}
-                    showRemove={calculators.length > 1}
-                    onRemove={() => removeCalculator(calculator.id)}
-                    onNameChange={handleNameChange}
-                    pageType="monthly_budget"
-                  />
-                ))}
-              </div>
-            </>
-          )}
-        </div>
+          </>
+        )}
 
 
         <AIChatbot
