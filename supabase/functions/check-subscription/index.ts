@@ -1,5 +1,5 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-import Stripe from "npm:stripe";
+import Stripe from "https://esm.sh/stripe@14.21.0";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.42.7";
 
 const corsHeaders = {
@@ -42,7 +42,7 @@ serve(async (req: Request) => {
     logStep("User authenticated", { userId: user.id, email: user.email });
 
     // Find Stripe customer by email
-    const stripe = new Stripe(stripeKey, { apiVersion: "2023-10-16" });
+    const stripe = new Stripe(stripeKey!, { apiVersion: "2023-10-16" });
     const customers = await stripe.customers.list({ email: user.email, limit: 1 });
 
     let hasActiveSub = false;

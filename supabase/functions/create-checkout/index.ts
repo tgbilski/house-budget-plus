@@ -7,7 +7,7 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
-const logStep = (step, details) => {
+const logStep = (step: string, details?: any) => {
   const detailsStr = details ? ` - ${JSON.stringify(details)}` : '';
   console.log(`[CREATE-CHECKOUT] ${step}${detailsStr}`);
 };
@@ -56,7 +56,9 @@ serve(async (req) => {
     logStep("Using specific price ID", { priceId, plan });
 
     // Get origin for redirect URLs
-    const origin = req.headers.get("origin") || "https://your-domain.com";
+    const origin = req.headers.get("origin") || "https://jakfagdthwehkvynykwu.supabase.co";
+    
+    logStep("Origin detected", { origin });
 
     const session = await stripe.checkout.sessions.create({
       customer: customerId,
