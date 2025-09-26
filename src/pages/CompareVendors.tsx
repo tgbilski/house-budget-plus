@@ -50,7 +50,7 @@ const CompareVendors: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-background">
       <SEO
         title={seoData.compareVendors.title}
         description={seoData.compareVendors.description}
@@ -58,83 +58,79 @@ const CompareVendors: React.FC = () => {
         canonical="https://www.housebudgetcalculator.com/compare-prices"
       />
 
-      <div className="bg-white shadow-sm border-b">
-        <div className="max-w-7xl mx-auto px-4 py-6">
-          {/* Year selector at top right on laptop */}
-          <div className="hidden lg:flex justify-end mb-4">
-            <YearSelector />
-          </div>
-          
-          <div className="flex flex-col items-center md:items-start gap-4">
-            <div className="flex items-center gap-3">
+      <div className="max-w-7xl mx-auto p-4">
+        {/* Compact header at very top */}
+        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-6">
+          <div className="flex flex-col lg:items-start space-y-2">
+            <div className="flex items-center gap-2">
               <div className="inline-flex items-center justify-center w-10 h-10 bg-teal/20 rounded-full">
                 <Scale className="h-6 w-6 text-teal" />
               </div>
-              <div>
-                <h1 className="text-2xl font-bold text-gray-900">Vendor Comparison</h1>
-                <p className="text-sm text-gray-600 bg-sage/30 px-2 py-1 rounded-md">Compare quotes and find the best value</p>
-              </div>
+              <h1 className="text-2xl font-bold text-foreground">Vendor Comparison</h1>
             </div>
-            
-            {/* Year selector for mobile/tablet */}
-            <div className="lg:hidden flex justify-center w-full">
-              <YearSelector />
-            </div>
+            <p className="text-muted-foreground text-sm text-center lg:text-left bg-sage/30 px-3 py-1 rounded-md">
+              Compare quotes and find the best value
+            </p>
+          </div>
+          
+          {/* Year selector at top right on laptop, centered on mobile */}
+          <div className="flex justify-center lg:justify-end">
+            <YearSelector />
           </div>
         </div>
-      </div>
 
-      <div className="max-w-7xl mx-auto px-4 py-6 space-y-6">
         <WarningBanner />
 
-        <ProjectSelector
-          projects={projects}
-          currentProjectId={currentProjectId}
-          onSelectProject={setCurrentProjectId}
-          onUpdateTitle={updateProjectTitle}
-        />
+        <div className="space-y-6">
+          <ProjectSelector
+            projects={projects}
+            currentProjectId={currentProjectId}
+            onSelectProject={setCurrentProjectId}
+            onUpdateTitle={updateProjectTitle}
+          />
 
-        <ProjectSummaryCard
-          stats={summaryStats}
-          currencySymbol={currency.symbol}
-        />
+          <ProjectSummaryCard
+            stats={summaryStats}
+            currencySymbol={currency.symbol}
+          />
 
-        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
-          <div className="flex items-center gap-2">
-            <Filter className="h-4 w-4 text-gray-500" />
-            <Select value={sortBy} onValueChange={(value: 'amount' | 'rating' | 'date') => setSortBy(value)}>
-              <SelectTrigger className="w-full sm:w-48">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="amount">Sort by Price (Low to High)</SelectItem>
-                <SelectItem value="rating">Sort by Rating (High to Low)</SelectItem>
-                <SelectItem value="date">Sort by Date (Newest First)</SelectItem>
-              </SelectContent>
-            </Select>
+          <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
+            <div className="flex items-center gap-2">
+              <Filter className="h-4 w-4 text-gray-500" />
+              <Select value={sortBy} onValueChange={(value: 'amount' | 'rating' | 'date') => setSortBy(value)}>
+                <SelectTrigger className="w-full sm:w-48">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="amount">Sort by Price (Low to High)</SelectItem>
+                  <SelectItem value="rating">Sort by Rating (High to Low)</SelectItem>
+                  <SelectItem value="date">Sort by Date (Newest First)</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <Button onClick={addQuote} className="gap-2 w-full sm:w-auto bg-teal hover:bg-teal/90 text-teal-foreground">
+              <Plus className="h-4 w-4" /> Add Quote
+            </Button>
           </div>
-          <Button onClick={addQuote} className="gap-2 w-full sm:w-auto bg-teal hover:bg-teal/90 text-teal-foreground">
-            <Plus className="h-4 w-4" /> Add Quote
-          </Button>
-        </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {quotes.map((quote) => (
-            <VendorCard
-              key={quote.id}
-              quote={quote}
-              onUpdate={updateQuote}
-              onRemove={removeQuote}
-              showRemove={quotes.length > 1}
-              currencySymbol={currency.symbol}
-            />
-          ))}
-        </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {quotes.map((quote) => (
+              <VendorCard
+                key={quote.id}
+                quote={quote}
+                onUpdate={updateQuote}
+                onRemove={removeQuote}
+                showRemove={quotes.length > 1}
+                currencySymbol={currency.symbol}
+              />
+            ))}
+          </div>
 
-        <AIChatbot
-          pageContext="This is the Vendor Comparison page where users can create projects and compare vendor quotes."
-          pageName="Vendor Comparison"
-        />
+          <AIChatbot
+            pageContext="This is the Vendor Comparison page where users can create projects and compare vendor quotes."
+            pageName="Vendor Comparison"
+          />
+        </div>
       </div>
     </div>
   );

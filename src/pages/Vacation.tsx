@@ -49,39 +49,34 @@ const Vacation: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-background">
       <SEO title={seoData.vacation.title} description={seoData.vacation.description} keywords="vacation planning, travel budget, destination comparison" />
-      <div className="bg-white shadow-sm border-b">
-        <div className="max-w-7xl mx-auto px-4 py-6">
-          {/* Year selector at top right on laptop */}
-          <div className="hidden lg:flex justify-end mb-4">
-            <YearSelector />
-          </div>
-          
-          <div className="flex flex-col items-center md:items-start gap-4">
-            <div className="flex items-center gap-3">
+      
+      <div className="max-w-7xl mx-auto p-4">
+        {/* Compact header at very top */}
+        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-6">
+          <div className="flex flex-col lg:items-start space-y-2">
+            <div className="flex items-center gap-2">
               <div className="inline-flex items-center justify-center w-10 h-10 bg-teal/20 rounded-full">
                 <Plane className="h-6 w-6 text-teal" />
               </div>
-              <div>
-                <h1 className="text-2xl font-bold text-gray-900">Vacation Planner</h1>
-                <p className="text-sm text-gray-600 bg-sage/30 px-2 py-1 rounded-md">Compare options for each of your trips</p>
-              </div>
+              <h1 className="text-2xl font-bold text-foreground">Vacation Planner</h1>
             </div>
-            
-            {/* Year selector for mobile/tablet */}
-            <div className="lg:hidden flex justify-center w-full">
-              <YearSelector />
-            </div>
+            <p className="text-muted-foreground text-sm text-center lg:text-left bg-sage/30 px-3 py-1 rounded-md">
+              Compare options for each of your trips
+            </p>
+          </div>
+          
+          {/* Year selector at top right on laptop, centered on mobile */}
+          <div className="flex justify-center lg:justify-end">
+            <YearSelector />
           </div>
         </div>
-      </div>
 
-      <div className="max-w-7xl mx-auto px-4 py-6 space-y-6">
         <WarningBanner />
 
-         {!user && (
-          <Alert className="border-yellow-200 bg-yellow-50">
+        {!user && (
+          <Alert className="border-yellow-200 bg-yellow-50 mb-6">
             <AlertTriangle className="h-4 w-4 text-yellow-600" />
             <AlertDescription className="text-yellow-800">
               <strong>Demo Mode</strong> -
@@ -92,32 +87,34 @@ const Vacation: React.FC = () => {
           </Alert>
         )}
 
-        <VacationSelector
-          vacations={vacations}
-          currentVacationId={currentVacationId}
-          onSelectVacation={setCurrentVacationId}
-          editingState={editingState}
-          onSetEditingState={setEditingState}
-          onUpdateTitle={updateVacationTitle}
-        />
+        <div className="space-y-6">
+          <VacationSelector
+            vacations={vacations}
+            currentVacationId={currentVacationId}
+            onSelectVacation={setCurrentVacationId}
+            editingState={editingState}
+            onSetEditingState={setEditingState}
+            onUpdateTitle={updateVacationTitle}
+          />
 
-        <div className="flex justify-end">
-          <Button onClick={addOption} className="gap-2 bg-teal hover:bg-teal/90 text-teal-foreground"><Plus className="h-4 w-4" /> Add Destination Option</Button>
-        </div>
+          <div className="flex justify-end">
+            <Button onClick={addOption} className="gap-2 bg-teal hover:bg-teal/90 text-teal-foreground"><Plus className="h-4 w-4" /> Add Destination Option</Button>
+          </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {options.map((option) => (
-            <VacationOptionCard
-              key={option.id}
-              option={option}
-              onUpdate={(optionId, updates) => {
-                const updatedOption = { ...option, ...updates };
-                updateOption(updatedOption);
-              }}
-              onReset={removeOption}
-              currencySymbol={currency.symbol}
-            />
-          ))}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {options.map((option) => (
+              <VacationOptionCard
+                key={option.id}
+                option={option}
+                onUpdate={(optionId, updates) => {
+                  const updatedOption = { ...option, ...updates };
+                  updateOption(updatedOption);
+                }}
+                onReset={removeOption}
+                currencySymbol={currency.symbol}
+              />
+            ))}
+          </div>
         </div>
       </div>
     </div>

@@ -46,42 +46,34 @@ export function Gifts() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-background">
       <SEO 
         title="Gift Lists" 
         description="Organize your gift ideas for every occasion."
         keywords="gift lists, gift ideas, holiday planning, birthday gifts, gift organization"
       />
       
-      {/* Header Section */}
-      <div className="bg-white shadow-sm border-b">
-        <div className="max-w-7xl mx-auto px-4 py-6">
-          {/* Year selector at top right on laptop */}
-          <div className="hidden lg:flex justify-end mb-4">
-            <YearSelector />
-          </div>
-          
-          <div className="flex flex-col items-center md:items-start gap-4">
-            <div className="flex items-center gap-3">
+      <div className="max-w-7xl mx-auto p-4">
+        {/* Compact header at very top */}
+        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-6">
+          <div className="flex flex-col lg:items-start space-y-2">
+            <div className="flex items-center gap-2">
               <div className="inline-flex items-center justify-center w-10 h-10 bg-teal/20 rounded-full">
                 <Gift className="h-6 w-6 text-teal" />
               </div>
-              <div>
-                <h1 className="text-2xl font-bold text-gray-900">Gift Lists</h1>
-                <p className="text-sm text-gray-600 bg-sage/30 px-2 py-1 rounded-md">Organize ideas for every occasion</p>
-              </div>
+              <h1 className="text-2xl font-bold text-foreground">Gift Lists</h1>
             </div>
-            
-            {/* Year selector for mobile/tablet */}
-            <div className="lg:hidden flex justify-center w-full">
-              <YearSelector />
-            </div>
+            <p className="text-muted-foreground text-sm text-center lg:text-left bg-sage/30 px-3 py-1 rounded-md">
+              Organize ideas for every occasion
+            </p>
+          </div>
+          
+          {/* Year selector at top right on laptop, centered on mobile */}
+          <div className="flex justify-center lg:justify-end">
+            <YearSelector />
           </div>
         </div>
-      </div>
 
-      {/* Main Content Area */}
-      <div className="max-w-7xl mx-auto px-4 py-6">
         <WarningBanner />
 
         {!user && (
@@ -96,24 +88,26 @@ export function Gifts() {
           </Alert>
         )}
 
-        {/* 2. It renders the selector and passes down the data and functions it needs. */}
-        <GiftListSelector
-          giftLists={giftLists}
-          selectedList={selectedList}
-          editingListId={editingListId}
-          editingTitle={editingTitle}
-          onSelectList={selectList}
-          onStartEditing={startEditing}
-          onSaveTitle={saveTitle}
-          onCancelEditing={cancelEditing}
-          onSetEditingTitle={setEditingTitle}
-        />
+        <div className="space-y-6">
+          {/* 2. It renders the selector and passes down the data and functions it needs. */}
+          <GiftListSelector
+            giftLists={giftLists}
+            selectedList={selectedList}
+            editingListId={editingListId}
+            editingTitle={editingTitle}
+            onSelectList={selectList}
+            onStartEditing={startEditing}
+            onSaveTitle={saveTitle}
+            onCancelEditing={cancelEditing}
+            onSetEditingTitle={setEditingTitle}
+          />
 
-        {/* 3. It renders the gift card display area for the selected list. */}
-        <GiftCardDisplay
-          selectedList={selectedList}
-          onSave={loadGiftLists}
-        />
+          {/* 3. It renders the gift card display area for the selected list. */}
+          <GiftCardDisplay
+            selectedList={selectedList}
+            onSave={loadGiftLists}
+          />
+        </div>
       </div>
     </div>
   );

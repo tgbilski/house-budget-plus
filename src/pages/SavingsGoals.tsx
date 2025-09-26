@@ -54,42 +54,36 @@ const SavingsGoals: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-background">
       <SEO
         title="Savings Goals - Track Your Monthly Savings"
         description="Track your monthly savings with an interactive yearly table and editable goals."
         keywords="savings goals, financial planning, monthly savings tracker"
       />
 
-      <div className="bg-white shadow-sm border-b">
-        <div className="max-w-7xl mx-auto px-4 py-6">
-          {/* Year selector at top right on laptop */}
-          <div className="hidden lg:flex justify-end mb-4">
-            <YearSelector />
-          </div>
-          
-          <div className="flex flex-col items-center md:items-start gap-4">
-            <div className="flex items-center gap-3">
+      <div className="max-w-7xl mx-auto p-4">
+        {/* Compact header at very top */}
+        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-6">
+          <div className="flex flex-col lg:items-start space-y-2">
+            <div className="flex items-center gap-2">
               <div className="inline-flex items-center justify-center w-10 h-10 bg-teal/20 rounded-full">
                 <Target className="h-6 w-6 text-teal" />
               </div>
-              <div>
-                <h1 className="text-2xl font-bold text-gray-900">Savings Tracker</h1>
-                <p className="text-sm text-gray-600 bg-sage/30 px-2 py-1 rounded-md">Track your progress toward financial goals</p>
-              </div>
+              <h1 className="text-2xl font-bold text-foreground">Savings Tracker</h1>
             </div>
-            
-            {/* Year selector for mobile/tablet */}
-            <div className="lg:hidden flex justify-center w-full">
-              <YearSelector />
-            </div>
+            <p className="text-muted-foreground text-sm text-center lg:text-left bg-sage/30 px-3 py-1 rounded-md">
+              Track your progress toward financial goals
+            </p>
+          </div>
+          
+          {/* Year selector at top right on laptop, centered on mobile */}
+          <div className="flex justify-center lg:justify-end">
+            <YearSelector />
           </div>
         </div>
-      </div>
 
-      <div className="max-w-7xl mx-auto px-4 py-6 space-y-6">
         {!user && (
-          <Alert className="border-yellow-200 bg-yellow-50">
+          <Alert className="border-yellow-200 bg-yellow-50 mb-6">
             <AlertTriangle className="h-4 w-4 text-yellow-600" />
             <AlertDescription className="text-yellow-800">
               <strong>Demo Mode</strong> -
@@ -100,33 +94,35 @@ const SavingsGoals: React.FC = () => {
           </Alert>
         )}
 
-        <GoalSelector
-          goals={goals}
-          currentGoalId={currentGoalId}
-          onSelectGoal={setCurrentGoalId}
-          editingState={editingState}
-          onSetEditingState={setEditingState}
-          onUpdateTitle={updateGoalTitle}
-        />
+        <div className="space-y-6">
+          <GoalSelector
+            goals={goals}
+            currentGoalId={currentGoalId}
+            onSelectGoal={setCurrentGoalId}
+            editingState={editingState}
+            onSetEditingState={setEditingState}
+            onUpdateTitle={updateGoalTitle}
+          />
 
-        <GoalProgressCard
-          currentGoal={currentGoal}
-          totalSaved={totalSaved}
-          progressPercentage={progressPercentage}
-          onUpdateTarget={updateGoalTarget}
-        />
+          <GoalProgressCard
+            currentGoal={currentGoal}
+            totalSaved={totalSaved}
+            progressPercentage={progressPercentage}
+            onUpdateTarget={updateGoalTarget}
+          />
 
-        <MonthlySavingsGrid
-          year={selectedYear.toString()}
-          onYearChange={year => setSelectedYear(parseInt(year))}
-          monthlyData={monthlyData}
-          onUpdateAmount={updateMonthlyAmount}
-        />
+          <MonthlySavingsGrid
+            year={selectedYear.toString()}
+            onYearChange={year => setSelectedYear(parseInt(year))}
+            monthlyData={monthlyData}
+            onUpdateAmount={updateMonthlyAmount}
+          />
 
-        <AIChatbot
-          pageContext="I'm on the savings goals page where I can track my monthly savings progress toward financial goals."
-          pageName="Savings Goals"
-        />
+          <AIChatbot
+            pageContext="I'm on the savings goals page where I can track my monthly savings progress toward financial goals."
+            pageName="Savings Goals"
+          />
+        </div>
       </div>
     </div>
   );
