@@ -14,6 +14,8 @@ import calculatorPreview from '@/assets/calculator-page-preview.png';
 import savingsPreview from '@/assets/savings-goal-preview.png';
 import vacationPreview from '@/assets/vacation-page-preview.png';
 import vendorPreview from '@/assets/vendor-compare-preview.png';
+import giftPreview from '@/assets/gift-page-preview.png';
+import aiPreview from '@/assets/ai-page-preview.png';
 
 // --- Data for Child Components ---
 
@@ -45,6 +47,20 @@ const featurePreviewsData = [
     image: vendorPreview,
     href: "/compare-prices",
     alt: "Vendor Comparison page showing project summary and contractor quote comparisons"
+  },
+  {
+    title: "Gift Lists",
+    description: "Organize your gift ideas for every occasion with budget tracking",
+    image: giftPreview,
+    href: "/gifts",
+    alt: "Gift Lists page showing holiday gifts with budget tracking and gift ideas"
+  },
+  {
+    title: "AI Financial Advisor",
+    description: "Get personalized financial insights and advice powered by AI",
+    image: aiPreview,
+    href: "/ai-insights",
+    alt: "AI Financial Advisor page showing personalized financial guidance and analysis"
   }
 ];
 
