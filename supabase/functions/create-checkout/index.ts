@@ -26,12 +26,18 @@ serve(async (req) => {
     logStep("Function started");
 
     let plan = 'monthly';
-    // Always use your desired price ID
-    const priceId = 'price_1RriH0ChqC8M6G2balUOl9O8';
+    let priceId = 'price_1RriH0ChqC8M6G2balUOl9O8'; // Default monthly price
+    
     try {
       const body = await req.json();
       plan = body.plan || 'monthly';
-      // Ignore incoming body.priceId, always use our desired priceId
+      
+      // Set price ID based on plan
+      if (plan === 'annual') {
+        priceId = 'price_ANNUAL_PRICE_ID_HERE'; // You'll need to replace this with your actual annual price ID
+      } else {
+        priceId = 'price_1RriH0ChqC8M6G2balUOl9O8'; // Monthly price ID
+      }
     } catch (jsonError) {
       logStep("No JSON body provided, using default plan and priceId", { defaultPlan: plan, priceId });
     }

@@ -6,51 +6,88 @@ import { useSubscription } from '@/hooks/useSubscription';
 export function PricingCards() {
   const { createCheckout, subscribed } = useSubscription();
 
-  const handleUpgrade = async () => {
-    await createCheckout('monthly');
-  };
-
   if (subscribed) {
-    return null; // Don't show pricing if already subscribed
+    return null;
   }
 
+  const handleSubscribe = (plan: 'monthly' | 'annual') => {
+    createCheckout(plan);
+  };
+
+  const features = [
+    "Unlimited PDF processing",
+    "AI expense categorization", 
+    "Cancel anytime"
+  ];
+
   return (
-    <div className="flex justify-center max-w-md mx-auto">
-      <Card className="relative ring-2 ring-primary">
-        <CardHeader>
-          <div className="flex items-center justify-between">
-            <CardTitle className="flex items-center gap-2">
-              <Zap className="h-5 w-5 text-blue-600" />
-              Premium Plan
-            </CardTitle>
-          </div>
-          <div className="space-y-2">
-            <div className="flex items-baseline gap-1">
-              <span className="text-3xl font-bold">$2.99</span>
-              <span className="text-muted-foreground">/month</span>
-            </div>
+    <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+      {/* Monthly Plan */}
+      <Card className="border-2 border-primary/20 bg-gradient-to-br from-background to-primary/5">
+        <CardHeader className="text-center pb-8">
+          <CardTitle className="text-2xl font-bold text-primary flex items-center justify-center gap-2">
+            <Zap className="h-5 w-5 text-blue-600" />
+            Monthly Plan
+          </CardTitle>
+          <div className="text-4xl font-bold mt-4">
+            $2.99
+            <span className="text-base font-normal text-muted-foreground">/month</span>
           </div>
         </CardHeader>
-        <CardContent className="space-y-4">
-          <ul className="space-y-2">
-            <li className="flex items-center gap-2">
-              <Check className="h-4 w-4 text-green-600" />
-              <span>Unlimited PDF processing</span>
-            </li>
-            <li className="flex items-center gap-2">
-              <Check className="h-4 w-4 text-green-600" />
-              <span>AI expense categorization</span>
-            </li>
-            <li className="flex items-center gap-2">
-              <Check className="h-4 w-4 text-green-600" />
-              <span>Cancel anytime</span>
-            </li>
+        <CardContent className="space-y-6">
+          <ul className="space-y-3">
+            {features.map((feature, index) => (
+              <li key={index} className="flex items-center gap-2">
+                <Check className="h-5 w-5 text-green-600 flex-shrink-0" />
+                <span className="text-sm">{feature}</span>
+              </li>
+            ))}
           </ul>
           <Button 
-            onClick={handleUpgrade}
-            className="w-full"
+            onClick={() => handleSubscribe('monthly')}
+            className="w-full bg-primary hover:bg-primary/90"
+            size="lg"
           >
-            Get Premium Plan
+            Get Monthly Plan
+          </Button>
+        </CardContent>
+      </Card>
+
+      {/* Annual Plan */}
+      <Card className="border-2 border-primary bg-gradient-to-br from-primary/10 to-primary/20 relative">
+        <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
+          <span className="bg-primary text-primary-foreground px-3 py-1 rounded-full text-sm font-medium">
+            Best Value
+          </span>
+        </div>
+        <CardHeader className="text-center pb-8">
+          <CardTitle className="text-2xl font-bold text-primary flex items-center justify-center gap-2">
+            <Zap className="h-5 w-5 text-blue-600" />
+            Annual Plan
+          </CardTitle>
+          <div className="text-4xl font-bold mt-4">
+            $19.99
+            <span className="text-base font-normal text-muted-foreground">/year</span>
+          </div>
+          <div className="text-sm text-green-600 font-medium">
+            Save $15.89 (44% off)
+          </div>
+        </CardHeader>
+        <CardContent className="space-y-6">
+          <ul className="space-y-3">
+            {features.map((feature, index) => (
+              <li key={index} className="flex items-center gap-2">
+                <Check className="h-5 w-5 text-green-600 flex-shrink-0" />
+                <span className="text-sm">{feature}</span>
+              </li>
+            ))}
+          </ul>
+          <Button 
+            onClick={() => handleSubscribe('annual')}
+            className="w-full bg-primary hover:bg-primary/90"
+            size="lg"
+          >
+            Get Annual Plan
           </Button>
         </CardContent>
       </Card>
