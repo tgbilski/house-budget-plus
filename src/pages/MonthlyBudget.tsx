@@ -215,26 +215,7 @@ const MonthlyBudget: React.FC = () => {
           </div>
         </div>
 
-        {/* Compact summary cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {summaryData.map((item) => (
-            <div key={item.title} className="bg-card rounded-lg border p-4 hover:shadow-md transition-all duration-200">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-xs font-medium text-muted-foreground">{item.title}</p>
-                  <p className={`text-lg font-bold ${item.color}`}>
-                    {currency.symbol}{item.value.toLocaleString()}
-                  </p>
-                </div>
-                <div className="p-2 bg-muted rounded-full">
-                  <item.icon className={`w-4 h-4 ${item.color}`} />
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-
-        {/* Budget calculators section */}
+        {/* Budget calculators section - optimized for side by side layout */}
         <div className="space-y-4">
           {/* CHANGE: Added conditional rendering for loading and error states */}
           {isLoading ? (
@@ -260,8 +241,8 @@ const MonthlyBudget: React.FC = () => {
                 </Button>
               </div>
               
-              {/* Responsive grid for calculators - side by side on laptop */}
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+              {/* Responsive grid for calculators - side by side on laptop, optimized spacing */}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6">
                 {calculators.map((calculator) => (
                   <BudgetCalculator
                     key={calculator.id}
