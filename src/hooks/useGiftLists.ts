@@ -35,7 +35,13 @@ export function useGiftLists() {
   const [editingTitle, setEditingTitle] = useState('');
 
   const loadGiftLists = useCallback(async () => {
-    if (!user || !currentHousehold) return;
+    // For non-authenticated users, set loading to false and return empty data
+    if (!user || !currentHousehold) {
+      setLoading(false);
+      setGiftLists([]);
+      setSelectedList(null);
+      return;
+    }
     
     setLoading(true);
     try {

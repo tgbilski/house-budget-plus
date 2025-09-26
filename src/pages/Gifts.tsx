@@ -1,12 +1,15 @@
 // src/pages/Gifts.tsx (Final Version)
 import React from 'react';
 import { useGiftLists } from '@/hooks/useGiftLists';
+import { useAuth } from '@/hooks/useAuth';
 import { SEO } from '@/components/SEO';
 import { WarningBanner } from '@/components/WarningBanner';
 import { GiftListSelector } from '@/components/GiftListSelector';
 import { GiftCardDisplay } from '@/components/GiftCardDisplay';
 import { YearSelector } from '@/components/YearSelector';
-import { Gift } from 'lucide-react';
+import { Gift, AlertTriangle } from 'lucide-react';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Link } from 'react-router-dom';
 
 export function Gifts() {
   // 1. The page's only job is to call our main hook to get the data.
@@ -23,6 +26,8 @@ export function Gifts() {
     cancelEditing,
     loadGiftLists
   } = useGiftLists();
+
+  const { user } = useAuth();
 
   if (loading) {
     return (
@@ -70,6 +75,18 @@ export function Gifts() {
       {/* Main Content Area */}
       <div className="max-w-7xl mx-auto px-4 py-6">
         <WarningBanner />
+
+        {!user && (
+          <Alert className="border-yellow-200 bg-yellow-50 mb-6">
+            <AlertTriangle className="h-4 w-4 text-yellow-600" />
+            <AlertDescription className="text-yellow-800">
+              <strong>Demo Mode</strong> -
+              <Link to="/auth" className="underline font-medium ml-1 hover:text-yellow-900">
+                Sign in to save your gift lists
+              </Link>
+            </AlertDescription>
+          </Alert>
+        )}
 
         {/* 2. It renders the selector and passes down the data and functions it needs. */}
         <GiftListSelector
