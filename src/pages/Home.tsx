@@ -173,16 +173,16 @@ const FeaturePreviewsGrid = () => (
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 md:hidden">
         {featurePreviewsData.map((feature, index) => (
           <Link to={feature.href} key={index} className="block">
-            <Card className="group relative hover:shadow-xl transition-all duration-300 border-2 hover:border-primary/20 cursor-pointer hover:scale-[1.02] animate-fade-in bg-gradient-to-br from-white to-gray-50" style={{ animationDelay: `${index * 0.1}s` }}>
+            <Card className="group relative hover:shadow-xl transition-all duration-300 border-2 hover:border-primary/20 cursor-pointer hover:scale-[1.02] animate-fade-in bg-gradient-to-br from-white to-gray-50 overflow-hidden" style={{ animationDelay: `${index * 0.1}s` }}>
               <div className="flex flex-col">
-                <div className="w-full h-32 overflow-hidden rounded-t-lg">
+                <div className="w-full h-32 overflow-hidden">
                   <img 
                     src={feature.image} 
                     alt={feature.alt}
                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                   />
                 </div>
-                <div className="p-4">
+                <div className="p-4 bg-sage/20">
                   <CardTitle className="text-sm font-semibold group-hover:text-primary transition-colors text-gray-900 mb-2 text-center">{feature.title}</CardTitle>
                   <CardDescription className="text-xs text-gray-600 leading-relaxed text-center">{feature.description}</CardDescription>
                 </div>
@@ -198,16 +198,16 @@ const FeaturePreviewsGrid = () => (
           const isEven = index % 2 === 0;
           return (
             <Link to={feature.href} key={index} className="block">
-              <Card className="group relative hover:shadow-xl transition-all duration-300 border-2 hover:border-primary/20 cursor-pointer hover:scale-[1.02] h-64 animate-fade-in bg-gradient-to-br from-white to-gray-50" style={{ animationDelay: `${index * 0.1}s` }}>
+              <Card className="group relative hover:shadow-xl transition-all duration-300 border-2 hover:border-primary/20 cursor-pointer hover:scale-[1.02] h-64 animate-fade-in bg-gradient-to-br from-white to-gray-50 overflow-hidden" style={{ animationDelay: `${index * 0.1}s` }}>
                 <div className={`flex items-center h-full ${isEven ? '' : 'flex-row-reverse'}`}>
-                  <div className="w-1/2 h-full overflow-hidden rounded-l-lg flex-shrink-0">
+                  <div className="w-1/2 h-full overflow-hidden flex-shrink-0">
                     <img 
                       src={feature.image} 
                       alt={feature.alt}
                       className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                     />
                   </div>
-                  <div className="w-1/2 p-8">
+                  <div className="w-1/2 p-8 bg-sage/20 h-full">
                     <div className="flex items-center justify-between h-full">
                       <div className="flex-1">
                         <CardTitle className="text-xl md:text-2xl group-hover:text-primary transition-colors text-gray-900 mb-4">{feature.title}</CardTitle>
