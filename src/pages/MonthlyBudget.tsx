@@ -236,8 +236,8 @@ const MonthlyBudget: React.FC = () => {
               </Button>
             </div>
             
-            {/* Responsive grid for calculators - side by side on laptop, optimized spacing */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6">
+            {/* Grid for calculators - ensure side by side on laptop */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               {calculators.map((calculator) => (
                 <BudgetCalculator
                   key={calculator.id}
