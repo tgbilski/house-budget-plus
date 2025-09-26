@@ -390,7 +390,7 @@ const BudgetCalculator: React.FC<BudgetCalculatorProps> = ({
                     <Label className="text-xs text-muted-foreground flex-1 text-left truncate">
                       {expense.label}
                     </Label>
-                    <div className="relative w-16">
+                    <div className="relative w-20">
                       <span className="absolute left-1 top-1/2 transform -translate-y-1/2 text-muted-foreground text-xs">{currency.symbol}</span>
                       <Input
                         type="number"
@@ -399,7 +399,7 @@ const BudgetCalculator: React.FC<BudgetCalculatorProps> = ({
                         step="1"
                         value={expense.amount || ''}
                         onChange={(e) => updateExpense(expense.id, parseInt(e.target.value) || 0)}
-                        className="pl-4 h-6 text-xs w-16 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                        className="pl-4 h-6 text-xs w-20 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                         placeholder="0"
                       />
                     </div>
@@ -418,7 +418,7 @@ const BudgetCalculator: React.FC<BudgetCalculatorProps> = ({
                   className="flex-1 h-6 text-xs"
                   placeholder="Expense"
                 />
-                <div className="relative w-16">
+                <div className="relative w-20">
                   <span className="absolute left-1 top-1/2 transform -translate-y-1/2 text-muted-foreground text-xs">{currency.symbol}</span>
                   <Input
                     type="number"
@@ -427,7 +427,7 @@ const BudgetCalculator: React.FC<BudgetCalculatorProps> = ({
                     step="1"
                     value={expense.amount || ''}
                     onChange={(e) => updateExpense(expense.id, parseInt(e.target.value) || 0, true)}
-                    className="pl-4 h-6 text-xs w-16 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                    className="pl-4 h-6 text-xs w-20 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                     placeholder="0"
                   />
                 </div>
