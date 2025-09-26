@@ -83,6 +83,18 @@ const ScrollIndicator = () => (
 
 const HeroSectionContent = () => (
   <section className="relative py-8 md:py-12 px-4 rounded-2xl mx-4 shadow-xl overflow-visible bg-white mt-16 md:mt-20">
+    {/* Cute Diagonal Banner */}
+    <div className="absolute top-4 right-4 z-30">
+      <Link to="/ai-insights" className="block">
+        <div className="bg-gradient-to-r from-purple-500 to-pink-500 text-white px-8 py-2 text-sm font-bold transform rotate-12 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 rounded-lg">
+          <div className="flex items-center gap-1">
+            <Brain className="h-4 w-4" />
+            <span>Upgrade for AI Insights!</span>
+          </div>
+        </div>
+      </Link>
+    </div>
+    
     <div className="absolute top-[-60px] left-1/2 -translate-x-1/2 z-20">
       <img
         src="/lovable-uploads/ed809955-ef71-4d81-b072-945082f4380a.png"
