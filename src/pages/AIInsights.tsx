@@ -146,8 +146,8 @@ export default function AIInsights() {
                 <p className="text-gray-600 mb-8 leading-relaxed">
                   Unlock the full power of AI with a premium subscription. Get cutting-edge financial advice tailored just for you.
                 </p>
-                <Button className="bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-600 hover:to-pink-700 text-white px-8 py-3 rounded-full text-lg font-semibold transition-all duration-300 transform hover:scale-105 shadow-lg" onClick={handleManageSubscription}>
-                  Upgrade to Premium
+                <Button asChild className="bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-600 hover:to-pink-700 text-white px-8 py-3 rounded-full text-lg font-semibold transition-all duration-300 transform hover:scale-105 shadow-lg">
+                  <Link to="/settings">Upgrade to Premium</Link>
                 </Button>
               </CardContent>
             </Card>

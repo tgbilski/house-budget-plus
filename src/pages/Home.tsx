@@ -1,6 +1,6 @@
 import React from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Calculator, Scale, Target, Plane, Brain, ArrowRight, Gift, ChevronDown, UserCheck } from "lucide-react";
+import { Calculator, Scale, Target, Plane, Brain, ArrowRight, Gift, ChevronDown, UserCheck, Crown } from "lucide-react";
 import { Link } from "react-router-dom";
 import { SEO } from "@/components/SEO";
 import { seoData } from "@/utils/seoData";
@@ -8,6 +8,9 @@ import { AdSense } from "@/components/AdSense";
 import { BadgeDisplay } from "@/components/BadgeDisplay";
 import { RSSFeed } from "@/components/RSSFeed";
 import { LucideIcon } from 'lucide-react';
+import { useAuth } from "@/hooks/useAuth";
+import { useSubscription } from "@/hooks/useSubscription";
+import { Button } from "@/components/ui/button";
 
 // Import page preview images
 import calculatorPreview from '@/assets/calculator-page-preview.png';
@@ -98,6 +101,40 @@ const ScrollIndicator = () => (
   </div>
 );
 
+const PremiumButton = () => {
+  const { user } = useAuth();
+  const { subscribed } = useSubscription();
+
+  if (!user) {
+    return (
+      <div className="flex justify-center lg:justify-start mb-4">
+        <Link 
+          to="/auth" 
+          className="inline-flex items-center justify-center px-6 py-3 text-base font-semibold text-white bg-primary hover:bg-primary/90 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
+        >
+          <UserCheck className="h-4 w-4 mr-2" />
+          Sign Up for Free
+        </Link>
+      </div>
+    );
+  }
+
+  if (subscribed) {
+    return null;
+  }
+
+  return (
+    <div className="flex justify-center lg:justify-start mb-4">
+      <Button asChild className="bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-600 hover:to-pink-700 text-white px-6 py-3 text-base font-semibold rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
+        <Link to="/settings">
+          <Crown className="h-4 w-4 mr-2" />
+          Upgrade to Premium
+        </Link>
+      </Button>
+    </div>
+  );
+};
+
 const HeroSectionContent = () => (
   <section className="relative py-6 md:py-8 px-4 rounded-2xl mx-4 shadow-xl overflow-visible bg-white mt-16 md:mt-20">
     <div className="absolute top-[-60px] left-1/2 -translate-x-1/2 z-20">
@@ -142,16 +179,8 @@ const HeroSectionContent = () => (
             <strong>Your data stays yours.</strong> No bank connections required. Our AI helps you develop a personalized financial plan using only the data you choose to share.
           </p>
           
-          {/* Centered Sign Up Button */}
-          <div className="flex justify-center lg:justify-start mb-4">
-            <Link 
-              to="/auth" 
-              className="inline-flex items-center justify-center px-6 py-3 text-base font-semibold text-white bg-primary hover:bg-primary/90 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
-            >
-              <UserCheck className="h-4 w-4 mr-2" />
-              Sign Up for Free
-            </Link>
-          </div>
+          {/* Conditional Button Display */}
+          <PremiumButton />
           
           <p className="text-xs text-gray-500">
             Free to use • No credit card required • Anonymous signup available
