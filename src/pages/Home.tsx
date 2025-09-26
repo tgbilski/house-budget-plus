@@ -9,6 +9,12 @@ import { BadgeDisplay } from "@/components/BadgeDisplay";
 import { RSSFeed } from "@/components/RSSFeed";
 import { LucideIcon } from 'lucide-react';
 
+// Import page preview images
+import calculatorPreview from '@/assets/calculator-page-preview.png';
+import savingsPreview from '@/assets/savings-goal-preview.png';
+import vacationPreview from '@/assets/vacation-page-preview.png';
+import vendorPreview from '@/assets/vendor-compare-preview.png';
+
 // --- Data for Child Components ---
 
 const otherToolsData = [
@@ -32,6 +38,37 @@ const otherToolsData = [
     icon: Gift,
     href: "/gifts",
     color: "bg-pink-500/10 text-pink-600",
+  }
+];
+
+const featurePreviewsData = [
+  {
+    title: "Monthly Budget Calculator",
+    description: "Track your household income and expenses with our intuitive calculator",
+    image: calculatorPreview,
+    href: "/budget",
+    alt: "Monthly Budget Calculator page showing dual calculators with income and expense tracking"
+  },
+  {
+    title: "Savings Goals Tracker",
+    description: "Set and monitor your financial goals with visual progress tracking",
+    image: savingsPreview,
+    href: "/savings",
+    alt: "Savings Goals page showing progress tracker for a new car with monthly entries"
+  },
+  {
+    title: "Vacation Planner",
+    description: "Compare vacation destinations and plan your trips within budget",
+    image: vacationPreview,
+    href: "/vacation",
+    alt: "Vacation Planner page showing comparison of vacation destinations with cost breakdowns"
+  },
+  {
+    title: "Vendor Comparison Tool",
+    description: "Compare contractor quotes and find the best value for your projects",
+    image: vendorPreview,
+    href: "/compare-prices",
+    alt: "Vendor Comparison page showing project summary and contractor quote comparisons"
   }
 ];
 
@@ -137,6 +174,45 @@ const HeroSectionContent = () => (
   </section>
 );
 
+const FeaturePreviewsGrid = () => (
+  <section className="py-12 md:py-16 px-4 bg-white rounded-2xl mx-4 my-8 shadow-xl relative overflow-hidden">
+    <div className="w-full max-w-6xl mx-auto">
+      <div className="text-center mb-10">
+        <h2 className="text-2xl md:text-3xl font-bold mb-4 text-gray-900">Explore Our Features</h2>
+        <p className="text-base md:text-lg text-gray-600 max-w-3xl mx-auto">
+          Take a preview of our powerful financial planning tools
+        </p>
+      </div>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 relative z-10">
+        {featurePreviewsData.map((feature, index) => (
+          <Link to={feature.href} key={index} className="block">
+            <Card className="group relative hover:shadow-2xl transition-all duration-500 border-2 hover:border-primary/30 cursor-pointer hover:scale-105 h-full animate-fade-in bg-gradient-to-br from-white to-gray-50" style={{ animationDelay: `${index * 0.15}s` }}>
+              <div className="aspect-video overflow-hidden rounded-t-lg">
+                <img 
+                  src={feature.image} 
+                  alt={feature.alt}
+                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                />
+              </div>
+              <CardHeader className="p-6">
+                <div className="flex items-start justify-between">
+                  <div className="flex-1">
+                    <CardTitle className="text-lg md:text-xl group-hover:text-primary transition-colors text-gray-900 mb-2">{feature.title}</CardTitle>
+                    <CardDescription className="text-sm md:text-base text-gray-600 leading-relaxed">{feature.description}</CardDescription>
+                  </div>
+                  <div className="flex items-center text-primary group-hover:translate-x-1 transition-transform duration-300 ml-4">
+                    <ArrowRight className="h-5 w-5" />
+                  </div>
+                </div>
+              </CardHeader>
+            </Card>
+          </Link>
+        ))}
+      </div>
+    </div>
+  </section>
+);
+
 const OtherToolsGrid = () => (
   <section className="py-12 md:py-16 px-4 bg-white rounded-2xl mx-4 my-8 shadow-xl relative overflow-hidden">
     <div className="w-full max-w-4xl mx-auto">
@@ -190,6 +266,8 @@ const Home = () => {
       <div className="min-h-screen overflow-x-hidden relative">
         <div className="space-y-4">
           <HeroSectionContent />
+          <ScrollIndicator />
+          <FeaturePreviewsGrid />
           <ScrollIndicator />
           <OtherToolsGrid />
           <ScrollIndicator />
