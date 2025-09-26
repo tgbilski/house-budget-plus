@@ -51,10 +51,12 @@ const Vacation: React.FC = () => {
           
           <div className="flex flex-col items-center md:items-start gap-4">
             <div className="flex items-center gap-3">
-              <Plane className="h-8 w-8 text-primary" />
+              <div className="inline-flex items-center justify-center w-10 h-10 bg-teal/20 rounded-full">
+                <Plane className="h-6 w-6 text-teal" />
+              </div>
               <div>
                 <h1 className="text-2xl font-bold text-gray-900">Vacation Planner</h1>
-                <p className="text-sm text-gray-600">Compare options for each of your trips</p>
+                <p className="text-sm text-gray-600 bg-sage/30 px-2 py-1 rounded-md">Compare options for each of your trips</p>
               </div>
             </div>
             
@@ -91,7 +93,7 @@ const Vacation: React.FC = () => {
         />
 
         <div className="flex justify-end">
-          <Button onClick={addOption} className="gap-2"><Plus className="h-4 w-4" /> Add Destination Option</Button>
+          <Button onClick={addOption} className="gap-2 bg-teal hover:bg-teal/90 text-teal-foreground"><Plus className="h-4 w-4" /> Add Destination Option</Button>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

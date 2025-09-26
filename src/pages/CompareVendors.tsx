@@ -58,10 +58,12 @@ const CompareVendors: React.FC = () => {
           
           <div className="flex flex-col items-center md:items-start gap-4">
             <div className="flex items-center gap-3">
-              <Scale className="h-8 w-8 text-primary" />
+              <div className="inline-flex items-center justify-center w-10 h-10 bg-teal/20 rounded-full">
+                <Scale className="h-6 w-6 text-teal" />
+              </div>
               <div>
                 <h1 className="text-2xl font-bold text-gray-900">Vendor Comparison</h1>
-                <p className="text-sm text-gray-600">Compare quotes and find the best value</p>
+                <p className="text-sm text-gray-600 bg-sage/30 px-2 py-1 rounded-md">Compare quotes and find the best value</p>
               </div>
             </div>
             
@@ -102,7 +104,7 @@ const CompareVendors: React.FC = () => {
               </SelectContent>
             </Select>
           </div>
-          <Button onClick={addQuote} className="gap-2 w-full sm:w-auto">
+          <Button onClick={addQuote} className="gap-2 w-full sm:w-auto bg-teal hover:bg-teal/90 text-teal-foreground">
             <Plus className="h-4 w-4" /> Add Quote
           </Button>
         </div>

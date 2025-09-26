@@ -50,10 +50,12 @@ export function Gifts() {
           
           <div className="flex flex-col items-center md:items-start gap-4">
             <div className="flex items-center gap-3">
-              <Gift className="h-8 w-8 text-primary" />
+              <div className="inline-flex items-center justify-center w-10 h-10 bg-teal/20 rounded-full">
+                <Gift className="h-6 w-6 text-teal" />
+              </div>
               <div>
                 <h1 className="text-2xl font-bold text-gray-900">Gift Lists</h1>
-                <p className="text-sm text-gray-600">Organize ideas for every occasion</p>
+                <p className="text-sm text-gray-600 bg-sage/30 px-2 py-1 rounded-md">Organize ideas for every occasion</p>
               </div>
             </div>
             

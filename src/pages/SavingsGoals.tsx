@@ -61,10 +61,12 @@ const SavingsGoals: React.FC = () => {
           
           <div className="flex flex-col items-center md:items-start gap-4">
             <div className="flex items-center gap-3">
-              <Target className="h-8 w-8 text-primary" />
+              <div className="inline-flex items-center justify-center w-10 h-10 bg-teal/20 rounded-full">
+                <Target className="h-6 w-6 text-teal" />
+              </div>
               <div>
                 <h1 className="text-2xl font-bold text-gray-900">Savings Tracker</h1>
-                <p className="text-sm text-gray-600">Track your progress toward financial goals</p>
+                <p className="text-sm text-gray-600 bg-sage/30 px-2 py-1 rounded-md">Track your progress toward financial goals</p>
               </div>
             </div>
             
