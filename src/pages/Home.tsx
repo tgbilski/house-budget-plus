@@ -114,18 +114,6 @@ const HeroSectionContent = () => (
         className="w-full h-full object-cover rounded-2xl opacity-20"
       />
     </div>
-    
-    {/* Upgrade Banner */}
-    <div className="absolute top-0 right-0 z-30 overflow-hidden">
-      <Link to="/ai-insights" className="group block">
-        <div className="bg-secondary text-secondary-foreground px-8 py-2 transform rotate-45 translate-x-6 translate-y-2 shadow-lg hover:shadow-xl transition-all duration-300 group-hover:scale-105 relative">
-          <Brain className="h-4 w-4 inline mr-2" />
-          <span className="text-sm font-semibold">Upgrade for AI!</span>
-          {/* Triangular shadow for 3D effect */}
-          <div className="absolute -bottom-1 -left-1 w-0 h-0 border-l-4 border-l-transparent border-b-4 border-b-secondary/60 border-r-4 border-r-secondary/60"></div>
-        </div>
-      </Link>
-    </div>
 
     <div className="w-full max-w-6xl mx-auto relative z-10 pt-16 md:pt-20">
       {/* Main Content with Calculator Preview */}
