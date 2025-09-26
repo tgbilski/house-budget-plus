@@ -348,11 +348,12 @@ const BudgetCalculator: React.FC<BudgetCalculatorProps> = ({
                   id={`income-${id}`}
                   type="number"
                   min="0"
-                  step="0.01"
+                  max="99999"
+                  step="1"
                   value={monthlyIncome || ''}
-                  onChange={(e) => setMonthlyIncome(parseFloat(e.target.value) || 0)}
+                  onChange={(e) => setMonthlyIncome(parseInt(e.target.value) || 0)}
                   className="pl-6 h-8 text-xs [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                  placeholder="0.00"
+                  placeholder="0"
                 />
               </div>
             </div>
@@ -386,19 +387,20 @@ const BudgetCalculator: React.FC<BudgetCalculatorProps> = ({
               if (!expense.id.startsWith('subscription')) {
                 return (
                   <div key={expense.id} className="flex items-center space-x-1">
-                    <Label className="text-xs text-muted-foreground w-16 text-left truncate">
+                    <Label className="text-xs text-muted-foreground flex-1 text-left truncate">
                       {expense.label}
                     </Label>
-                    <div className="relative flex-1">
+                    <div className="relative w-16">
                       <span className="absolute left-1 top-1/2 transform -translate-y-1/2 text-muted-foreground text-xs">{currency.symbol}</span>
                       <Input
                         type="number"
                         min="0"
-                        step="0.01"
+                        max="9999"
+                        step="1"
                         value={expense.amount || ''}
-                        onChange={(e) => updateExpense(expense.id, parseFloat(e.target.value) || 0)}
-                        className="pl-4 h-6 text-xs [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                        placeholder="0.00"
+                        onChange={(e) => updateExpense(expense.id, parseInt(e.target.value) || 0)}
+                        className="pl-4 h-6 text-xs w-16 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                        placeholder="0"
                       />
                     </div>
                   </div>
@@ -413,19 +415,20 @@ const BudgetCalculator: React.FC<BudgetCalculatorProps> = ({
                 <Input
                   value={expense.label}
                   onChange={(e) => updateAdditionalExpenseLabel(expense.id, e.target.value)}
-                  className="w-16 h-6 text-xs"
+                  className="flex-1 h-6 text-xs"
                   placeholder="Expense"
                 />
-                <div className="relative flex-1">
+                <div className="relative w-16">
                   <span className="absolute left-1 top-1/2 transform -translate-y-1/2 text-muted-foreground text-xs">{currency.symbol}</span>
                   <Input
                     type="number"
                     min="0"
-                    step="0.01"
+                    max="9999"
+                    step="1"
                     value={expense.amount || ''}
-                    onChange={(e) => updateExpense(expense.id, parseFloat(e.target.value) || 0, true)}
-                    className="pl-4 h-6 text-xs [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                    placeholder="0.00"
+                    onChange={(e) => updateExpense(expense.id, parseInt(e.target.value) || 0, true)}
+                    className="pl-4 h-6 text-xs w-16 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                    placeholder="0"
                   />
                 </div>
                 <Button
