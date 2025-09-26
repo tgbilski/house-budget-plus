@@ -71,10 +71,9 @@ export function SubscriptionProvider({ children }: { children: ReactNode }) {
       console.log('Request body will be:', JSON.stringify({ plan }));
       
       const { data, error } = await supabase.functions.invoke('create-checkout', {
-        body: JSON.stringify({ plan }),
+        body: { plan },
         headers: {
           Authorization: `Bearer ${session.access_token}`,
-          'Content-Type': 'application/json',
         },
       });
 

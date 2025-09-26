@@ -26,29 +26,27 @@ serve(async (req) => {
     let plan = 'monthly';
     let priceId = 'price_1RriH0ChqC8M6G2balUOl9O8'; // Default monthly price
     
-    // Parse request body to get plan - try multiple approaches
+    // Parse request body to get plan - Supabase sends body as JSON object
     console.log('Request method:', req.method);
     console.log('Request headers:', Object.fromEntries(req.headers.entries()));
     
     if (req.method === 'POST') {
       try {
-        // Try to get the body as text first
-        const requestText = await req.text();
-        console.log('Raw request body as text:', requestText);
+        // Supabase functions.invoke sends body as JSON, so use req.json()
+        const body = await req.json() as { plan?: 'monthly' | 'annual' };
+        console.log('Parsed request body from Supabase:', body);
         
-        if (requestText) {
-          const body = JSON.parse(requestText) as { plan?: 'monthly' | 'annual' };
-          console.log('Parsed request body:', body);
-          plan = body.plan || 'monthly';
+        if (body && body.plan) {
+          plan = body.plan;
           console.log('Plan extracted from body:', plan);
         } else {
-          console.log('Request body is empty, using default monthly plan');
+          console.log('No plan in body, using default monthly plan');
         }
         
         // Set price ID based on plan
         if (plan === 'annual') {
           priceId = 'price_1SBQoqChqC8M6G2bI8kDPhK6'; // Annual price ID
-          console.log('Using ANNUAL price ID:', priceId);
+          console.log('✅ USING ANNUAL PRICE ID:', priceId);
         } else {
           priceId = 'price_1RriH0ChqC8M6G2balUOl9O8'; // Monthly price ID
           console.log('Using MONTHLY price ID:', priceId);
@@ -57,7 +55,7 @@ serve(async (req) => {
         console.log('Error parsing request body, using default plan:', jsonError);
       }
     }
-    console.log('Final plan and priceId:', { plan, priceId });
+    console.log('🔥 FINAL RESULT - plan:', plan, 'priceId:', priceId);
 
     const authHeader = req.headers.get("Authorization");
     if (!authHeader) throw new Error("Authorization header missing");
