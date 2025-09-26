@@ -9,6 +9,7 @@ import { useYear } from '@/hooks/useYear';
 import { SEO } from '@/components/SEO';
 import { seoData } from '@/utils/seoData';
 import { AIChatbot } from '@/components/AIChatbot';
+import { useBadges } from '@/hooks/useBadges';
 import { WarningBanner } from '@/components/WarningBanner';
 import { YearSelector } from '@/components/YearSelector';
 import { useVendorProjects } from '@/hooks/useVendorProjects';
@@ -20,6 +21,7 @@ const CompareVendors: React.FC = () => {
   const { user } = useAuth();
   const { currency } = useCurrency();
   const { selectedYear } = useYear();
+  const { earnBadge } = useBadges();
 
   const {
     projects,
@@ -35,6 +37,13 @@ const CompareVendors: React.FC = () => {
     updateQuote,
     updateProjectTitle,
   } = useVendorProjects({ user, year: selectedYear });
+
+  // Award badge when user has vendor quotes
+  React.useEffect(() => {
+    if (user && quotes.length > 0) {
+      earnBadge('compare_vendors');
+    }
+  }, [user, quotes.length, earnBadge]);
 
   if (isLoading) {
     return <div className="p-8 text-center">Loading your projects...</div>;

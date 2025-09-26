@@ -3,6 +3,7 @@ import React from 'react';
 import { Plane, Plus } from 'lucide-react';
 import { Button } from '@/components/ui/button'; // The missing import
 import { useAuth } from '@/hooks/useAuth';
+import { useBadges } from '@/hooks/useBadges';
 import { useYear } from '@/hooks/useYear';
 import { useCurrency } from '@/hooks/useCurrency';
 import { YearSelector } from '@/components/YearSelector';
@@ -20,6 +21,7 @@ const Vacation: React.FC = () => {
   const { user } = useAuth();
   const { selectedYear } = useYear();
   const { currency } = useCurrency();
+  const { earnBadge } = useBadges();
 
   const {
     vacations,
@@ -34,6 +36,13 @@ const Vacation: React.FC = () => {
     updateOption,
     updateVacationTitle,
   } = useVacationPlanner({ user, year: selectedYear });
+
+  // Award badge when user has vacation options
+  React.useEffect(() => {
+    if (user && options.length > 0) {
+      earnBadge('vacation');
+    }
+  }, [user, options.length, earnBadge]);
 
   if (isLoading) {
     return <div className="p-8 text-center">Planning your getaways...</div>;

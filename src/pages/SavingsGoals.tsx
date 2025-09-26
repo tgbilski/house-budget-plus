@@ -4,6 +4,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { useHouseholdContext } from '@/providers/HouseholdProvider';
 import { useYear } from '@/hooks/useYear'; // Import the useYear hook
 import { useSavingsTracker } from '@/hooks/useSavingsTracker';
+import { useBadges } from '@/hooks/useBadges';
 
 // Import the worker components
 import { GoalSelector } from '@/components/GoalSelector';
@@ -21,6 +22,7 @@ const SavingsGoals: React.FC = () => {
   const { user } = useAuth();
   const { currentHousehold } = useHouseholdContext();
   const { selectedYear, setSelectedYear } = useYear(); // Get the year and its setter function
+  const { earnBadge } = useBadges();
 
   // Call the hook with all the props it needs, including the year
   const {
@@ -39,6 +41,13 @@ const SavingsGoals: React.FC = () => {
   
   const totalSaved = Object.values(monthlyData).reduce((sum, val) => sum + val, 0);
   const progressPercentage = currentGoal?.target_amount ? Math.min((totalSaved / currentGoal.target_amount) * 100, 100) : 0;
+
+  // Award badge when user has savings data
+  React.useEffect(() => {
+    if (user && (goals.length > 0 || totalSaved > 0)) {
+      earnBadge('savings_tracker');
+    }
+  }, [user, goals.length, totalSaved, earnBadge]);
 
   if (isLoading) {
     return <div className="p-8 text-center">Loading your savings goals...</div>;

@@ -2,6 +2,7 @@
 import React from 'react';
 import { useGiftLists } from '@/hooks/useGiftLists';
 import { useAuth } from '@/hooks/useAuth';
+import { useBadges } from '@/hooks/useBadges';
 import { SEO } from '@/components/SEO';
 import { WarningBanner } from '@/components/WarningBanner';
 import { GiftListSelector } from '@/components/GiftListSelector';
@@ -12,6 +13,8 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Link } from 'react-router-dom';
 
 export function Gifts() {
+  const { user } = useAuth();
+  const { earnBadge } = useBadges();
   // 1. The page's only job is to call our main hook to get the data.
   const {
     loading,
@@ -27,7 +30,12 @@ export function Gifts() {
     loadGiftLists
   } = useGiftLists();
 
-  const { user } = useAuth();
+  // Award badge when user has gift lists
+  React.useEffect(() => {
+    if (user && giftLists.length > 0) {
+      earnBadge('gifts');
+    }
+  }, [user, giftLists.length, earnBadge]);
 
   if (loading) {
     return (
