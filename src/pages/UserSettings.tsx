@@ -58,8 +58,8 @@ export default function UserSettings() {
     <div className="min-h-screen p-4">
       <div className="max-w-4xl mx-auto space-y-6">
         <div className="flex items-center gap-3 mb-6">
-          <Settings className="h-6 w-6" />
-          <h1 className="text-2xl font-bold">Account Settings</h1>
+          <Settings className="h-6 w-6 text-white" />
+          <h1 className="text-2xl font-bold text-white">Account Settings</h1>
         </div>
 
         {/* Profile Information */}
