@@ -29,14 +29,10 @@ serve(async (req) => {
     // Parse request body to get plan
     if (req.method === 'POST') {
       try {
-        const requestText = await req.text();
-        console.log('Raw request body:', requestText);
-        
-        if (requestText) {
-          const body = JSON.parse(requestText) as { plan?: 'monthly' | 'annual' };
-          console.log('Parsed request body:', body);
-          plan = body.plan || 'monthly';
-        }
+        const body = await req.json() as { plan?: 'monthly' | 'annual' };
+        console.log('Parsed request body:', body);
+        plan = body.plan || 'monthly';
+        console.log('Plan extracted from body:', plan);
         
         // Set price ID based on plan
         if (plan === 'annual') {
