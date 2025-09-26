@@ -46,23 +46,22 @@ export function GiftItem({ item, onSave, onDelete, isNew = false, onCancel }: Gi
 
   if (isEditing) {
     return (
-      <div className="border border-gray-200 rounded-lg p-3 sm:p-4 space-y-3 bg-gray-50">
-        <div className="space-y-3">
+      <div className="border border-gray-200 rounded-lg p-2 space-y-2 bg-gray-50">
+        <div className="space-y-2">
           <div>
-            <Label htmlFor={`gift-idea-${item.id}`} className="text-sm font-medium">Gift Idea</Label>
+            <Label htmlFor={`gift-idea-${item.id}`} className="text-xs font-medium">Gift Idea</Label>
             <Input 
               id={`gift-idea-${item.id}`} 
               value={itemData.gift_idea || ''} 
               onChange={(e) => handleInputChange('gift_idea', e.target.value)} 
-              placeholder="A great gift idea..." 
-              className="mt-1"
+              placeholder="Gift idea..." 
+              className="mt-1 text-xs h-8"
             />
           </div>
           
-          {/* Mobile-first layout: stack on mobile, side-by-side on larger screens */}
-          <div className="space-y-3 sm:space-y-0 sm:grid sm:grid-cols-2 sm:gap-3">
+          <div className="space-y-2">
             <div>
-              <Label htmlFor={`price-${item.id}`} className="text-sm font-medium">Price ($)</Label>
+              <Label htmlFor={`price-${item.id}`} className="text-xs font-medium">Price ($)</Label>
               <Input 
                 id={`price-${item.id}`} 
                 type="number" 
@@ -70,28 +69,28 @@ export function GiftItem({ item, onSave, onDelete, isNew = false, onCancel }: Gi
                 value={itemData.price || ''} 
                 onChange={(e) => handleInputChange('price', parseFloat(e.target.value) || 0)} 
                 placeholder="0.00" 
-                className="mt-1"
+                className="mt-1 text-xs h-8"
               />
             </div>
             <div>
-              <Label htmlFor={`url-${item.id}`} className="text-sm font-medium">Website Link</Label>
+              <Label htmlFor={`url-${item.id}`} className="text-xs font-medium">Link</Label>
               <Input 
                 id={`url-${item.id}`} 
                 value={itemData.url || ''} 
                 onChange={(e) => handleInputChange('url', e.target.value)} 
-                placeholder="https://example.com" 
-                className="mt-1"
+                placeholder="https://..." 
+                className="mt-1 text-xs h-8"
               />
             </div>
           </div>
         </div>
         
         {/* Action buttons */}
-        <div className="flex flex-col sm:flex-row gap-2 pt-2">
-          <Button onClick={handleSave} size="sm" className="w-full sm:w-auto">
-            <Save className="h-4 w-4 mr-2" /> Save
+        <div className="flex gap-1 pt-1">
+          <Button onClick={handleSave} size="sm" className="flex-1 h-7 text-xs">
+            <Save className="h-3 w-3 mr-1" /> Save
           </Button>
-          <Button onClick={handleCancel} variant="outline" size="sm" className="w-full sm:w-auto">
+          <Button onClick={handleCancel} variant="outline" size="sm" className="flex-1 h-7 text-xs">
             Cancel
           </Button>
         </div>
@@ -100,13 +99,13 @@ export function GiftItem({ item, onSave, onDelete, isNew = false, onCancel }: Gi
   }
 
   return (
-    <div className="border border-gray-200 rounded-lg p-3 bg-white group shadow-sm">
-      <div className="flex items-start justify-between gap-3">
+    <div className="border border-gray-200 rounded-lg p-2 bg-white group shadow-sm">
+      <div className="flex items-start justify-between gap-2">
         <div className="flex-1 min-w-0">
-          <h4 className="font-medium text-sm sm:text-base text-gray-900 leading-tight">
+          <h4 className="font-medium text-xs text-gray-900 leading-tight">
             {itemData.gift_idea || 'Untitled Gift'}
           </h4>
-          <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-4 mt-2 text-xs sm:text-sm text-gray-500">
+          <div className="flex flex-col gap-1 mt-1 text-xs text-gray-500">
             {itemData.price ? (
               <span className="font-semibold text-green-600">
                 ${Number(itemData.price).toFixed(2)}
@@ -115,7 +114,7 @@ export function GiftItem({ item, onSave, onDelete, isNew = false, onCancel }: Gi
             {itemData.url && (
               <div className="flex items-center gap-1 truncate">
                 <ExternalLink className="h-3 w-3 flex-shrink-0" /> 
-                <span className="truncate">Link available</span>
+                <span className="truncate">Link</span>
               </div>
             )}
           </div>
@@ -127,18 +126,18 @@ export function GiftItem({ item, onSave, onDelete, isNew = false, onCancel }: Gi
             size="sm" 
             variant="ghost" 
             onClick={() => setIsEditing(true)} 
-            className="h-8 w-8 p-0"
+            className="h-6 w-6 p-0"
           >
-            <Edit2 className="h-4 w-4" />
+            <Edit2 className="h-3 w-3" />
           </Button>
           {item.id && (
             <Button 
               size="sm" 
               variant="ghost" 
               onClick={handleDelete} 
-              className="h-8 w-8 p-0 text-destructive hover:text-destructive"
+              className="h-6 w-6 p-0 text-destructive hover:text-destructive"
             >
-              <Trash2 className="h-4 w-4" />
+              <Trash2 className="h-3 w-3" />
             </Button>
           )}
         </div>

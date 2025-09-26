@@ -56,11 +56,11 @@ export function GiftCard({ initialData }: GiftCardProps) {
   // ... (Budget calculation logic is the same)
   
   return (
-    <Card className="w-full bg-white border-gray-200 text-gray-900 shadow-lg">
-      <CardHeader className="pb-4">
-        <h2 className="text-xl sm:text-2xl font-bold text-gray-900">{listData.list_title}</h2>
+    <Card className="w-full bg-white border-gray-200 text-gray-900 shadow-lg h-fit">
+      <CardHeader className="pb-3">
+        <h2 className="text-lg font-bold text-gray-900 leading-tight">{listData.list_title}</h2>
       </CardHeader>
-      <CardContent className="space-y-4">
+      <CardContent className="space-y-3">
         {/* ... (Your Budget Tracking JSX is the same) ... */}
         
         {/* KEY FIX: We only map over items if the listData.id exists. */}

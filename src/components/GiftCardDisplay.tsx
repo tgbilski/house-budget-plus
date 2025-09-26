@@ -24,8 +24,10 @@ export function GiftCardDisplay({ selectedList, onSave }: GiftCardDisplayProps) 
   // When a list IS selected, it renders your main GiftCard component
   // and passes the necessary data down to it.
   return (
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6">
       <GiftCard
         initialData={selectedList}
       />
+    </div>
   );
 }
