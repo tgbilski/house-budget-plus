@@ -55,8 +55,6 @@ export function SubscriptionProvider({ children }: { children: ReactNode }) {
   };
 
   const createCheckout = async (plan: 'monthly' | 'annual' = 'monthly') => {
-    console.log('createCheckout called with plan:', plan);
-    
     if (!user || !session) {
       toast({
         title: "Authentication Required",
@@ -67,9 +65,6 @@ export function SubscriptionProvider({ children }: { children: ReactNode }) {
     }
 
     try {
-      console.log('About to send request with plan:', plan);
-      console.log('Request body will be:', JSON.stringify({ plan }));
-      
       const { data, error } = await supabase.functions.invoke('create-checkout', {
         body: { plan },
         headers: {
@@ -77,21 +72,9 @@ export function SubscriptionProvider({ children }: { children: ReactNode }) {
         },
       });
 
-      console.log('Response data:', data);
-      console.log('Response error:', error);
-
-      // Show debug info in alert before redirect
-      alert(`DEBUG INFO:
-Plan requested: ${plan}
-Request body: ${JSON.stringify({ plan })}
-Response data: ${JSON.stringify(data, null, 2)}
-Response error: ${JSON.stringify(error, null, 2)}
-URL contains: ${data?.url ? (data.url.includes('annual') ? 'ANNUAL' : 'MONTHLY') : 'NO URL'}`);
-
       if (error) throw error;
 
       if (data.url) {
-        console.log('Redirecting to:', data.url);
         window.location.href = data.url;
       }
     } catch (error) {
