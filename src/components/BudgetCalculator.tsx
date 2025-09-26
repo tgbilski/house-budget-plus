@@ -348,7 +348,7 @@ const BudgetCalculator: React.FC<BudgetCalculatorProps> = ({
                   id={`income-${id}`}
                   type="number"
                   min="0"
-                  max="99999"
+                  max="999999"
                   step="1"
                   value={monthlyIncome || ''}
                   onChange={(e) => setMonthlyIncome(parseInt(e.target.value) || 0)}
@@ -395,7 +395,7 @@ const BudgetCalculator: React.FC<BudgetCalculatorProps> = ({
                       <Input
                         type="number"
                         min="0"
-                        max="9999"
+                        max="999999"
                         step="1"
                         value={expense.amount || ''}
                         onChange={(e) => updateExpense(expense.id, parseInt(e.target.value) || 0)}
@@ -423,7 +423,7 @@ const BudgetCalculator: React.FC<BudgetCalculatorProps> = ({
                   <Input
                     type="number"
                     min="0"
-                    max="9999"
+                    max="999999"
                     step="1"
                     value={expense.amount || ''}
                     onChange={(e) => updateExpense(expense.id, parseInt(e.target.value) || 0, true)}
