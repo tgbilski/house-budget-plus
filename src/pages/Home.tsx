@@ -126,44 +126,19 @@ const HeroSectionContent = () => (
         <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 text-gray-900 leading-tight">
           Own Your <span className="text-primary">House Budget</span>
         </h1>
-        <p className="text-base md:text-lg text-gray-600 max-w-4xl mx-auto mb-6 leading-relaxed">
+        <p className="text-base md:text-lg text-gray-600 max-w-4xl mx-auto mb-8 leading-relaxed">
           <strong>Your data stays yours.</strong> No bank connections required. Our AI helps you develop a personalized financial plan using only the data you choose to share.
         </p>
         
-        {/* REFACTORED: Using the StepCard component */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6 max-w-5xl mx-auto">
-          <StepCard
-            to="/auth"
-            icon={UserCheck}
-            iconBgColor="bg-emerald-100"
-            iconTextColor="text-emerald-600"
-            title="Step 1: Sign up for free"
-            description={<>Create an account with your email.<br />No credit card required.</>}
-          />
-          <StepCard
-            to="/budget"
-            icon={Calculator}
-            iconBgColor="bg-blue-100"
-            iconTextColor="text-blue-600"
-            title="Step 2: Create a budget"
-            description={<>Create a Household & track monthly expenses.<br />Income minus expenses!</>}
-          />
-          <StepCard
-            to="/savings"
-            icon={Target}
-            iconBgColor="bg-green-100"
-            iconTextColor="text-green-600"
-            title="Step 3: Set savings goals"
-            description={<>Define your financial goals for the future.<br />Track your progress effortlessly.</>}
-          />
-          <StepCard
-            to="/ai-insights"
-            icon={Brain}
-            iconBgColor="bg-purple-100"
-            iconTextColor="text-purple-600"
-            title="Step 4: Get AI insights"
-            description={<>Receive personalized advice on your finances.<br />Our AI-powered insights help you save more.</>}
-          />
+        {/* Centered Sign Up Button */}
+        <div className="flex justify-center mb-6">
+          <Link 
+            to="/auth" 
+            className="inline-flex items-center justify-center px-8 py-4 text-lg font-semibold text-white bg-primary hover:bg-primary/90 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
+          >
+            <UserCheck className="h-5 w-5 mr-2" />
+            Sign Up for Free
+          </Link>
         </div>
         
         <p className="text-sm text-gray-500">
