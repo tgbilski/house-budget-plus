@@ -105,6 +105,12 @@ const PremiumButton = () => {
   const { user } = useAuth();
   const { subscribed } = useSubscription();
 
+  // Don't show any button for premium users
+  if (user && subscribed) {
+    return null;
+  }
+
+  // Show sign up button for non-authenticated users
   if (!user) {
     return (
       <div className="flex justify-center lg:justify-start mb-4">
@@ -119,10 +125,7 @@ const PremiumButton = () => {
     );
   }
 
-  if (subscribed) {
-    return null;
-  }
-
+  // Show premium upgrade button for authenticated non-subscribers
   return (
     <div className="flex justify-center lg:justify-start mb-4">
       <Button asChild className="bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-600 hover:to-pink-700 text-white px-6 py-3 text-base font-semibold rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
