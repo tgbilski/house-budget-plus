@@ -67,11 +67,33 @@ serve(async (req) => {
       });
     }
 
-    // Fetch all user's financial data from different sources
+    // Get current year and user's household context
+    const currentYear = new Date().getFullYear();
+    
+    // Fetch user's profile with household information
+    const { data: profileData, error: profileError } = await supabase
+      .from("profiles")
+      .select("*, current_household_id")
+      .eq("user_id", user.id)
+      .single();
+
+    const currentHouseholdId = profileData?.current_household_id;
+
+    // Fetch household information if user has one
+    const { data: householdData, error: householdError } = currentHouseholdId
+      ? await supabase
+          .from("households")
+          .select("*")
+          .eq("id", currentHouseholdId)
+          .single()
+      : { data: null, error: null };
+
+    // Fetch all user's financial data from different sources with year and household filtering
     const { data: budgetData, error: budgetError } = await supabase
       .from("budget_data")
       .select("*")
       .eq("user_id", user.id)
+      .eq("year", currentYear)
       .order("created_at", { ascending: false });
 
     const { data: takeoutData, error: takeoutError } = await supabase
@@ -81,35 +103,56 @@ serve(async (req) => {
       .limit(100)
       .order("date", { ascending: false });
 
-    const { data: profileData, error: profileError } = await supabase
-      .from("profiles")
-      .select("*")
-      .eq("user_id", user.id)
-      .single();
-
     const { data: pdfData, error: pdfError } = await supabase
       .from("pdf_processing_logs")
       .select("*")
       .eq("user_id", user.id)
+      .eq("year", currentYear)
       .eq("processing_status", "completed")
       .order("created_at", { ascending: false })
       .limit(10);
 
+    // Fetch savings goals for current year and household
+    const { data: savingsGoals, error: savingsError } = await supabase
+      .from("savings_goals")
+      .select("*")
+      .eq("user_id", user.id)
+      .eq("year", currentYear)
+      .order("created_at", { ascending: false });
+
+    // Fetch daily checkins for current year
+    const { data: checkinData, error: checkinError } = await supabase
+      .from("daily_checkins")
+      .select("*")
+      .eq("user_id", user.id)
+      .eq("year", currentYear)
+      .order("date", { ascending: false })
+      .limit(30);
+
     // Prepare comprehensive context for OpenAI
-    let dataContext = `User's Comprehensive Financial Profile:\n\n`;
+    let dataContext = `User's Comprehensive Financial Profile for ${currentYear}:\n\n`;
     
-    // Add profile information
+    // Add profile and household information
     if (profileData) {
       dataContext += `Profile Information:\n`;
       dataContext += `- Name: ${profileData.first_name || ''} ${profileData.last_name || ''}\n`;
-      dataContext += `- Email: ${profileData.email || ''}\n\n`;
+      dataContext += `- Email: ${profileData.email || ''}\n`;
+      dataContext += `- Current Year: ${currentYear}\n`;
+      
+      if (householdData) {
+        dataContext += `- Household: ${householdData.name}\n`;
+        dataContext += `- Household Role: ${profileData.user_id === householdData.originator_id ? 'Originator' : 'Member'}\n`;
+      } else {
+        dataContext += `- No household assigned\n`;
+      }
+      dataContext += `\n`;
     }
 
-    // Add budget information from all budget entries
+    // Add budget information from all budget entries for current year
     if (budgetData && budgetData.length > 0) {
-      dataContext += `Budget Information (Multiple Budget Scenarios):\n`;
+      dataContext += `Budget Information for ${currentYear} (Multiple Budget Scenarios):\n`;
       budgetData.forEach((budget, index) => {
-        dataContext += `Budget ${index + 1} (${budget.page_type}, Created: ${new Date(budget.created_at).toLocaleDateString()}):\n`;
+        dataContext += `Budget ${index + 1} (${budget.page_type}, Year: ${budget.year}, Created: ${new Date(budget.created_at).toLocaleDateString()}):\n`;
         dataContext += `- Monthly Income: $${budget.income || 0}\n`;
         
         if (budget.expenses && typeof budget.expenses === 'object') {
@@ -140,7 +183,44 @@ serve(async (req) => {
         dataContext += `\n`;
       });
     } else {
-      dataContext += "No budget data available.\n\n";
+      dataContext += `No budget data available for ${currentYear}.\n\n`;
+    }
+
+    // Add savings goals information
+    if (savingsGoals && savingsGoals.length > 0) {
+      dataContext += `Savings Goals for ${currentYear}:\n`;
+      savingsGoals.forEach((goal, index) => {
+        const progressPercentage = goal.target_amount > 0 ? (goal.current_amount / goal.target_amount * 100).toFixed(1) : 0;
+        dataContext += `Goal ${index + 1}: ${goal.title}\n`;
+        dataContext += `- Target: $${goal.target_amount}\n`;
+        dataContext += `- Current: $${goal.current_amount}\n`;
+        dataContext += `- Progress: ${progressPercentage}%\n`;
+        if (goal.target_date) {
+          dataContext += `- Target Date: ${goal.target_date}\n`;
+        }
+        if (goal.description) {
+          dataContext += `- Description: ${goal.description}\n`;
+        }
+        dataContext += `\n`;
+      });
+    } else {
+      dataContext += `No savings goals set for ${currentYear}.\n\n`;
+    }
+
+    // Add daily checkins information
+    if (checkinData && checkinData.length > 0) {
+      dataContext += `Recent Daily Check-ins for ${currentYear} (Last ${checkinData.length} entries):\n`;
+      checkinData.forEach((checkin) => {
+        dataContext += `- ${checkin.date}: `;
+        if (checkin.amount) dataContext += `$${checkin.amount} `;
+        if (checkin.category) dataContext += `(${checkin.category}) `;
+        if (checkin.description) dataContext += `- ${checkin.description}`;
+        if (checkin.mood_score) dataContext += ` [Mood: ${checkin.mood_score}/10]`;
+        dataContext += `\n`;
+      });
+      dataContext += `\n`;
+    } else {
+      dataContext += `No daily check-ins recorded for ${currentYear}.\n\n`;
     }
 
     // Add transaction data with spending patterns
@@ -189,9 +269,9 @@ serve(async (req) => {
 
     // Add PDF processing insights if available
     if (pdfData && pdfData.length > 0) {
-      dataContext += `\nDocument Analysis:\n`;
+      dataContext += `Document Analysis for ${currentYear}:\n`;
       pdfData.forEach((pdf, index) => {
-        dataContext += `Document ${index + 1}: ${pdf.file_name}\n`;
+        dataContext += `Document ${index + 1}: ${pdf.file_name} (Year: ${pdf.year})\n`;
         if (pdf.ai_categorization) {
           dataContext += `- AI Analysis: ${JSON.stringify(pdf.ai_categorization)}\n`;
         }
@@ -199,6 +279,8 @@ serve(async (req) => {
           dataContext += `- Content Preview: ${pdf.extracted_text.substring(0, 200)}...\n`;
         }
       });
+    } else {
+      dataContext += `No document analysis available for ${currentYear}.\n`;
     }
 
     // Enhanced system prompt for comprehensive financial analysis
@@ -213,18 +295,22 @@ serve(async (req) => {
       - Include specific dollar amounts and percentages when relevant
       
       **STRICT DATA GUARDRAILS:**
-      - ONLY analyze and reference the user's actual financial data provided below
-      - If specific data is missing, clearly state "Based on your available data..." 
+      - ONLY analyze and reference the user's actual financial data provided below for the current year (${currentYear})
+      - Always mention the specific year when referencing data
+      - If specific data is missing, clearly state "Based on your available ${currentYear} data..." 
+      - Consider household context when providing advice
       - Provide general financial guidance ONLY when user's data is insufficient
       - NEVER make assumptions about financial situations not evidenced in the data
-      - Always base recommendations on the user's unique financial profile
+      - Always base recommendations on the user's unique financial profile and household situation
       
       The user's complete financial profile includes:
-      - Multiple budget scenarios and planning documents
+      - Multiple budget scenarios and planning documents for ${currentYear}
       - Detailed transaction history with spending patterns
       - Monthly and category-based spending analysis
-      - Document analysis from financial PDFs
-      - Profile information for personalized advice
+      - Savings goals and progress tracking for ${currentYear}
+      - Daily check-ins and financial habits for ${currentYear}
+      - Document analysis from financial PDFs for ${currentYear}
+      - Profile and household information for personalized advice
       
       **YOUR ANALYSIS APPROACH:**
       1. **Review User's Data**: Analyze the provided financial information
