@@ -1,10 +1,11 @@
 // src/components/GiftItem.tsx
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Trash2, ExternalLink, Edit2, Save } from 'lucide-react';
 import { GiftItemData } from '@/hooks/useGiftLists'; // Import the type
+import { supabase } from '@/integrations/supabase/client';
 
 interface GiftItemProps {
   item: Partial<GiftItemData>;
@@ -17,6 +18,8 @@ interface GiftItemProps {
 export function GiftItem({ item, onSave, onDelete, isNew = false, onCancel }: GiftItemProps) {
   const [isEditing, setIsEditing] = useState(isNew);
   const [itemData, setItemData] = useState(item);
+  const [urlMetadata, setUrlMetadata] = useState<{title: string, image: string} | null>(null);
+  const [loadingMetadata, setLoadingMetadata] = useState(false);
 
   const handleSave = async () => {
     await onSave(itemData);
@@ -42,6 +45,35 @@ export function GiftItem({ item, onSave, onDelete, isNew = false, onCancel }: Gi
 
   const handleInputChange = (field: keyof GiftItemData, value: string | number) => {
     setItemData(prev => ({ ...prev, [field]: value }));
+  };
+
+  // Fetch URL metadata when URL changes
+  useEffect(() => {
+    if (itemData.url && itemData.url.startsWith('http') && !isEditing) {
+      fetchUrlMetadata(itemData.url);
+    }
+  }, [itemData.url, isEditing]);
+
+  const fetchUrlMetadata = async (url: string) => {
+    setLoadingMetadata(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('fetch-url-metadata', {
+        body: { url }
+      });
+
+      if (error) {
+        console.error('Error fetching URL metadata:', error);
+        return;
+      }
+
+      if (data && (data.image || data.title)) {
+        setUrlMetadata({ title: data.title, image: data.image });
+      }
+    } catch (error) {
+      console.error('Error fetching URL metadata:', error);
+    } finally {
+      setLoadingMetadata(false);
+    }
   };
 
   if (isEditing) {
@@ -100,6 +132,20 @@ export function GiftItem({ item, onSave, onDelete, isNew = false, onCancel }: Gi
 
   return (
     <div className="border border-gray-200 rounded-lg p-2 bg-white group shadow-sm">
+      {/* Thumbnail image if available */}
+      {urlMetadata?.image && (
+        <div className="mb-2">
+          <img 
+            src={urlMetadata.image} 
+            alt="Link preview" 
+            className="w-full h-20 object-cover rounded"
+            onError={(e) => {
+              e.currentTarget.style.display = 'none';
+            }}
+          />
+        </div>
+      )}
+      
       <div className="flex items-start justify-between gap-2">
         <div className="flex-1 min-w-0">
           <h4 className="font-medium text-xs text-gray-900 leading-tight">
@@ -119,7 +165,9 @@ export function GiftItem({ item, onSave, onDelete, isNew = false, onCancel }: Gi
                 className="flex items-center gap-1 truncate text-blue-600 hover:text-blue-800 hover:underline cursor-pointer"
               >
                 <ExternalLink className="h-3 w-3 flex-shrink-0" /> 
-                <span className="truncate">Link</span>
+                <span className="truncate">
+                  {urlMetadata?.title || 'Link'}
+                </span>
               </a>
             )}
           </div>
