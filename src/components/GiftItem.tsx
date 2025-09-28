@@ -112,10 +112,15 @@ export function GiftItem({ item, onSave, onDelete, isNew = false, onCancel }: Gi
               </span>
             ) : null}
             {itemData.url && (
-              <div className="flex items-center gap-1 truncate">
+              <a 
+                href={itemData.url} 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="flex items-center gap-1 truncate text-blue-600 hover:text-blue-800 hover:underline cursor-pointer"
+              >
                 <ExternalLink className="h-3 w-3 flex-shrink-0" /> 
                 <span className="truncate">Link</span>
-              </div>
+              </a>
             )}
           </div>
         </div>
