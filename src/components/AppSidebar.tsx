@@ -5,7 +5,8 @@ import {
   ShoppingCart, 
   Plane, 
   Gift, 
-  Brain
+  Brain,
+  BookOpen
 } from "lucide-react";
 import { NavLink, useLocation } from "react-router-dom";
 import {
@@ -29,6 +30,7 @@ const navigationItems = [
   { title: "Compare Vendors", url: "/compare-prices", icon: ShoppingCart },
   { title: "Vacation", url: "/vacation", icon: Plane },
   { title: "Gifts", url: "/gifts", icon: Gift },
+  { title: "Blog", url: "/blog", icon: BookOpen },
   { title: "AI Insights", url: "/ai-insights", icon: Brain },
 ];
 

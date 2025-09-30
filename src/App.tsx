@@ -25,6 +25,7 @@ import SubscriptionSuccess from "@/pages/SubscriptionSuccess";
 import UserSettings from "@/pages/UserSettings";
 import Engagement from "@/pages/Engagement";
 import AIInsights from "@/pages/AIInsights";
+import Blog from "@/pages/Blog";
 import { Gifts } from "@/pages/Gifts";
 import AboutUs from "@/pages/AboutUs";
 import ContactUs from "@/pages/ContactUs";
@@ -70,6 +71,7 @@ const AppRoutes = () => {
       <Route path="/auth" element={<Auth />} />
       <Route path="/settings" element={<UserSettings />} />
       <Route path="/gifts" element={<Gifts />} />
+      <Route path="/blog" element={<Blog />} />
       <Route path="/ai-insights" element={<AIInsights />} />
       <Route path="/subscription-success" element={<SubscriptionSuccess />} />
       <Route path="/about" element={<AboutUs />} />
