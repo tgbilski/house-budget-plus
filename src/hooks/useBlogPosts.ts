@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from './useAuth';
+import { useAdminStatus } from './useAdminStatus';
 
 export interface BlogPost {
   id: string;
@@ -23,6 +24,7 @@ export const useBlogPosts = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const { user } = useAuth();
+  const { isAdmin } = useAdminStatus();
 
   const fetchPosts = async () => {
     try {
@@ -32,9 +34,8 @@ export const useBlogPosts = () => {
         .select('*')
         .order('published_at', { ascending: false, nullsFirst: false });
 
-      // If user is authenticated, show their drafts and published posts
-      // If not authenticated, only show published posts
-      if (!user) {
+      // Only show published posts to non-admin users
+      if (!isAdmin) {
         query = query.eq('published', true);
       }
 
@@ -50,7 +51,7 @@ export const useBlogPosts = () => {
   };
 
   const createPost = async (postData: Partial<BlogPost>) => {
-    if (!user) throw new Error('User must be authenticated to create posts');
+    if (!user || !isAdmin) throw new Error('Admin access required to create posts');
 
     try {
       const { data, error } = await supabase
@@ -73,7 +74,7 @@ export const useBlogPosts = () => {
   };
 
   const updatePost = async (id: string, postData: Partial<BlogPost>) => {
-    if (!user) throw new Error('User must be authenticated to update posts');
+    if (!user || !isAdmin) throw new Error('Admin access required to update posts');
 
     try {
       const { data, error } = await supabase
@@ -93,7 +94,7 @@ export const useBlogPosts = () => {
   };
 
   const deletePost = async (id: string) => {
-    if (!user) throw new Error('User must be authenticated to delete posts');
+    if (!user || !isAdmin) throw new Error('Admin access required to delete posts');
 
     try {
       const { error } = await supabase
@@ -116,8 +117,8 @@ export const useBlogPosts = () => {
         .select('*')
         .eq('slug', slug);
 
-      // Only show published posts to non-authenticated users
-      if (!user) {
+      // Only show published posts to non-admin users
+      if (!isAdmin) {
         query = query.eq('published', true);
       }
 
@@ -133,7 +134,7 @@ export const useBlogPosts = () => {
 
   useEffect(() => {
     fetchPosts();
-  }, [user]);
+  }, [user, isAdmin]);
 
   return {
     posts,

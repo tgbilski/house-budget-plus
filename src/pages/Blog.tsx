@@ -6,7 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { BookOpen, Search, Plus, Filter } from 'lucide-react';
 import { useBlogPosts } from '@/hooks/useBlogPosts';
-import { useAuth } from '@/hooks/useAuth';
+import { useAdminStatus } from '@/hooks/useAdminStatus';
 import { BlogPostCard } from '@/components/BlogPostCard';
 import { BlogPostForm } from '@/components/BlogPostForm';
 import { SEO } from '@/components/SEO';
@@ -14,7 +14,7 @@ import { toast } from 'sonner';
 
 const Blog: React.FC = () => {
   const { posts, loading, createPost, updatePost, deletePost } = useBlogPosts();
-  const { user } = useAuth();
+  const { isAdmin } = useAdminStatus();
   const [searchTerm, setSearchTerm] = useState('');
   const [sortBy, setSortBy] = useState('newest');
   const [showForm, setShowForm] = useState(false);
@@ -27,8 +27,8 @@ const Blog: React.FC = () => {
                            post.excerpt?.toLowerCase().includes(searchTerm.toLowerCase()) ||
                            post.tags?.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase()));
       
-      // Show all posts to authenticated users, only published to others
-      const isVisible = user ? true : post.published;
+      // Show all posts to admins, only published to others
+      const isVisible = isAdmin ? true : post.published;
       
       return matchesSearch && isVisible;
     })
@@ -144,7 +144,7 @@ const Blog: React.FC = () => {
                 </div>
               </div>
 
-              {user && (
+              {isAdmin && (
                 <Button 
                   onClick={() => setShowForm(true)}
                   className="flex items-center gap-2"
@@ -179,20 +179,10 @@ const Blog: React.FC = () => {
                   <CardDescription>
                     {searchTerm 
                       ? "Try adjusting your search terms to find what you're looking for."
-                      : user 
-                      ? "Get started by creating your first blog post!"
-                      : "Be the first to share your financial insights by signing in and creating a post!"
+                      : "Check back soon for new financial insights and tips!"
                     }
                   </CardDescription>
                 </CardHeader>
-                {user && !searchTerm && (
-                  <CardContent>
-                    <Button onClick={() => setShowForm(true)} className="w-full">
-                      <Plus className="h-4 w-4 mr-2" />
-                      Create Your First Post
-                    </Button>
-                  </CardContent>
-                )}
               </Card>
             </div>
           ) : (
@@ -201,9 +191,9 @@ const Blog: React.FC = () => {
                 <div key={post.id} className="relative group">
                   <BlogPostCard 
                     post={post} 
-                    isOwner={user?.id === post.user_id}
+                    isOwner={isAdmin}
                   />
-                  {user?.id === post.user_id && (
+                  {isAdmin && (
                     <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity">
                       <Button
                         size="sm"
