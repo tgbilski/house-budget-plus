@@ -8,17 +8,25 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 // This is a more robust solution than hard-coding a single domain.
 const getCorsHeaders = (origin: string | null) => {
   const allowedOrigins = [
-    "https://www.housebudgetcalculator.com", // Your website's domain
+    "https://www.housebudgetcalculator.com",
     "http://localhost:3000",
     "https://localhost:3000",
   ];
-  const allowedOrigin = origin && allowedOrigins.includes(origin) ? origin : null;
+  
+  // Check if origin is allowed or is a Lovable preview URL
+  const isAllowed = origin && (
+    allowedOrigins.includes(origin) ||
+    origin.includes('.lovableproject.com') ||
+    origin.includes('.supabase.co')
+  );
+  
+  const allowedOrigin = isAllowed ? origin : null;
 
   return {
     "Access-Control-Allow-Origin": allowedOrigin || "",
     "Access-Control-Allow-Methods": "POST, OPTIONS",
     "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-    "Vary": "Origin", // Tells the browser that the response varies based on the Origin header
+    "Vary": "Origin",
   };
 };
 
@@ -75,7 +83,13 @@ serve(async (req) => {
       "https://localhost:3000"
     ];
 
-    if (!origin || !allowedOrigins.includes(origin)) {
+    const isValidOrigin = origin && (
+      allowedOrigins.includes(origin) ||
+      origin.includes('.lovableproject.com') ||
+      origin.includes('.supabase.co')
+    );
+
+    if (!isValidOrigin) {
       logStep("ERROR: Invalid origin", { origin, allowedOrigins });
       throw new Error("Invalid origin");
     }
