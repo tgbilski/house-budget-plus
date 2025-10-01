@@ -68,9 +68,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     });
 
     if (error) {
+      // Provide more user-friendly message for duplicate email
+      const isDuplicateEmail = error.message.toLowerCase().includes('already') || 
+                              error.message.toLowerCase().includes('registered') ||
+                              error.message.toLowerCase().includes('exists');
+      
       toast({
         title: "Sign Up Error",
-        description: error.message,
+        description: isDuplicateEmail 
+          ? "This email is already registered. Please sign in or use a different email address."
+          : error.message,
         variant: "destructive",
       });
     } else {
