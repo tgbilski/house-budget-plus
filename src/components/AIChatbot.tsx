@@ -38,7 +38,7 @@ export function AIChatbot({ pageContext, pageName, calculatorsData = [] }: AICha
   const [isRecording, setIsRecording] = useState(false);
   const [isTranscribing, setIsTranscribing] = useState(false);
   const { user } = useAuth();
-  const { subscribed, aiQueriesRemaining } = useSubscription();
+  const { subscribed, aiQueriesRemaining, checkSubscription } = useSubscription();
   const { toast } = useToast();
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
@@ -115,6 +115,9 @@ export function AIChatbot({ pageContext, pageName, calculatorsData = [] }: AICha
       };
 
       setMessages(prev => [...prev, assistantMessage]);
+
+      // Refresh subscription data to update query count
+      await checkSubscription();
 
       // Handle autofill suggestions
       if (data.autofill) {

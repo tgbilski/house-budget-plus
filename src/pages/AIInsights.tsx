@@ -19,6 +19,8 @@ export default function AIInsights() {
   const {
     subscribed,
     subscriptionTier,
+    aiQueriesRemaining,
+    checkSubscription,
     openCustomerPortal,
     loading: subLoading,
   } = useSubscription();
@@ -42,6 +44,9 @@ export default function AIInsights() {
 
       setAnswer(data.insight || "No answer returned.");
       earnBadge('ai_insights');
+      
+      // Refresh subscription data to update query count
+      await checkSubscription();
     } catch (error) {
       console.error('AI Insights error:', error);
       
@@ -115,7 +120,14 @@ export default function AIInsights() {
               <div className="inline-flex items-center justify-center w-10 h-10 bg-teal/20 rounded-full">
                 <Brain className="h-6 w-6 text-teal" />
               </div>
-              <h1 className="text-2xl font-bold text-foreground">AI Financial Insights</h1>
+              <div>
+                <h1 className="text-2xl font-bold text-foreground">AI Financial Insights</h1>
+                {subscribed && (
+                  <p className="text-xs text-muted-foreground mt-1">
+                    {aiQueriesRemaining} queries remaining this month
+                  </p>
+                )}
+              </div>
             </div>
             <p className="text-muted-foreground text-sm text-center lg:text-left bg-sage/30 px-3 py-1 rounded-md">
               Unlock intelligent, personalized financial advice
