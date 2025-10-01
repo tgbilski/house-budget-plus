@@ -107,17 +107,27 @@ export function SubscriptionProvider({ children }: { children: ReactNode }) {
     }
 
     try {
+      console.log('Opening customer portal...');
+      
       const { data, error } = await supabase.functions.invoke('customer-portal', {
         headers: {
           Authorization: `Bearer ${session.access_token}`,
         },
       });
 
-      if (error) throw error;
+      console.log('Customer portal response:', { data, error });
+
+      if (error) {
+        console.error('Portal error:', error);
+        throw error;
+      }
 
       if (data?.url) {
+        console.log('Redirecting to:', data.url);
+        // Redirect immediately without toast
         window.location.href = data.url;
       } else {
+        console.error('No URL in response:', data);
         throw new Error('No portal URL returned from server');
       }
     } catch (error) {
