@@ -25,7 +25,7 @@ const BlogPost: React.FC = () => {
     };
 
     fetchPost();
-  }, [slug, getPostBySlug]);
+  }, [slug]); // eslint-disable-line react-hooks/exhaustive-deps
 
   if (loading) {
     return (
