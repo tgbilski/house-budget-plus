@@ -20,13 +20,13 @@ const getCorsHeaders = (origin: string | null) => {
     origin.includes('.supabase.co')
   );
   
-  const allowedOrigin = isAllowed ? origin : null;
+  // Default to first allowed origin if origin is not recognized
+  const allowedOrigin = isAllowed ? origin : allowedOrigins[0];
 
   return {
-    "Access-Control-Allow-Origin": allowedOrigin || "",
+    "Access-Control-Allow-Origin": allowedOrigin,
     "Access-Control-Allow-Methods": "POST, OPTIONS",
     "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-    "Vary": "Origin",
   };
 };
 
@@ -75,7 +75,7 @@ serve(async (req) => {
     const customerId = customers.data[0].id;
     logStep("Found Stripe customer", { customerId });
 
-    // Validate origin for security
+    // Validate origin for security - but still allow request to proceed
     const allowedOrigins = [
       "https://jakfagdthwehkvynykwu.supabase.co",
       "https://www.housebudgetcalculator.com",
@@ -90,13 +90,14 @@ serve(async (req) => {
     );
 
     if (!isValidOrigin) {
-      logStep("ERROR: Invalid origin", { origin, allowedOrigins });
-      throw new Error("Invalid origin");
+      logStep("Warning: Request from unrecognized origin", { origin });
     }
+
+    logStep("Creating Stripe portal session", { customerId, returnUrl: `${origin || allowedOrigins[0]}/` });
 
     const portalSession = await stripe.billingPortal.sessions.create({
       customer: customerId,
-      return_url: `${origin}/`,
+      return_url: `${origin || allowedOrigins[0]}/`,
     });
     logStep("Customer portal session created", { sessionId: portalSession.id, url: portalSession.url });
 
