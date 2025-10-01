@@ -471,6 +471,7 @@ export type Database = {
           first_name: string | null
           id: string
           last_name: string | null
+          role: Database["public"]["Enums"]["user_role_type"]
           updated_at: string
           user_id: string
         }
@@ -481,6 +482,7 @@ export type Database = {
           first_name?: string | null
           id?: string
           last_name?: string | null
+          role?: Database["public"]["Enums"]["user_role_type"]
           updated_at?: string
           user_id: string
         }
@@ -491,6 +493,7 @@ export type Database = {
           first_name?: string | null
           id?: string
           last_name?: string | null
+          role?: Database["public"]["Enums"]["user_role_type"]
           updated_at?: string
           user_id?: string
         }
@@ -1051,6 +1054,10 @@ export type Database = {
         }
         Returns: boolean
       }
+      is_admin: {
+        Args: { _user_id: string }
+        Returns: boolean
+      }
       is_household_originator: {
         Args: { _household_id: string; _user_id: string }
         Returns: boolean
@@ -1070,6 +1077,7 @@ export type Database = {
     }
     Enums: {
       app_role: "admin" | "moderator" | "user"
+      user_role_type: "general" | "admin"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -1198,6 +1206,7 @@ export const Constants = {
   public: {
     Enums: {
       app_role: ["admin", "moderator", "user"],
+      user_role_type: ["general", "admin"],
     },
   },
 } as const
