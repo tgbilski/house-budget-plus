@@ -129,7 +129,21 @@ const BlogPost: React.FC = () => {
             </CardHeader>
 
             <CardContent className="prose prose-lg max-w-none">
-              <ReactMarkdown>{post.content}</ReactMarkdown>
+              <ReactMarkdown
+                components={{
+                  h2: ({ children }) => (
+                    <h2 className="font-bold text-2xl mt-8 mb-4 text-gray-900">{children}</h2>
+                  ),
+                  p: ({ children }) => (
+                    <p className="mb-6 text-gray-700 leading-relaxed">{children}</p>
+                  ),
+                  strong: ({ children }) => (
+                    <strong className="font-bold text-gray-900">{children}</strong>
+                  ),
+                }}
+              >
+                {post.content}
+              </ReactMarkdown>
             </CardContent>
           </Card>
 
