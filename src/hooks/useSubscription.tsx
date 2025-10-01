@@ -115,14 +115,16 @@ export function SubscriptionProvider({ children }: { children: ReactNode }) {
 
       if (error) throw error;
 
-      if (data.url) {
+      if (data?.url) {
         window.location.href = data.url;
+      } else {
+        throw new Error('No portal URL returned from server');
       }
     } catch (error) {
       console.error('Error opening customer portal:', error);
       toast({
         title: "Error",
-        description: "Failed to open customer portal",
+        description: error instanceof Error ? error.message : "Failed to open customer portal",
         variant: "destructive",
       });
     }
