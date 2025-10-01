@@ -6,9 +6,13 @@ import {
   Plane, 
   Gift, 
   Brain,
-  BookOpen
+  BookOpen,
+  Shield
 } from "lucide-react";
 import { NavLink, useLocation } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useAuth } from "@/hooks/useAuth";
+import { supabase } from "@/integrations/supabase/client";
 import {
   Sidebar,
   SidebarContent,
@@ -39,6 +43,40 @@ export function AppSidebar() {
   const currentPath = location.pathname;
   const { setOpen, setOpenMobile, isMobile: sidebarIsMobile, open } = useSidebar();
   const isMobile = useIsMobile();
+  const { user } = useAuth();
+  const [isAdmin, setIsAdmin] = useState(false);
+
+  useEffect(() => {
+    const checkAdminStatus = async () => {
+      if (!user) {
+        setIsAdmin(false);
+        return;
+      }
+
+      try {
+        const { data } = await supabase
+          .from('profiles')
+          .select('role')
+          .eq('user_id', user.id)
+          .single();
+
+        setIsAdmin(data?.role === 'admin');
+      } catch (error) {
+        console.error('Error checking admin status:', error);
+        setIsAdmin(false);
+      }
+    };
+
+    checkAdminStatus();
+  }, [user]);
+
+  const adminItems = [
+    { title: "Manage Blog", url: "/admin/blog", icon: Shield },
+  ];
+
+  const allItems = isAdmin 
+    ? [...navigationItems, ...adminItems]
+    : navigationItems;
 
   const isActive = (path: string) => currentPath === path;
 
@@ -72,7 +110,7 @@ export function AppSidebar() {
           {isMobile && <SidebarGroupLabel>Navigation</SidebarGroupLabel>}
           <SidebarGroupContent>
             <SidebarMenu className={cn(!isMobile && !open && "flex flex-col items-center space-y-1")}>
-              {navigationItems.map((item) => (
+              {allItems.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton asChild isActive={isActive(item.url)}>
                     <NavLink 

@@ -27,6 +27,7 @@ import Engagement from "@/pages/Engagement";
 import AIInsights from "@/pages/AIInsights";
 import Blog from "@/pages/Blog";
 import BlogPost from "@/pages/BlogPost";
+import AdminBlog from "@/pages/AdminBlog";
 import { Gifts } from "@/pages/Gifts";
 import AboutUs from "@/pages/AboutUs";
 import ContactUs from "@/pages/ContactUs";
@@ -72,8 +73,9 @@ const AppRoutes = () => {
       <Route path="/auth" element={<Auth />} />
       <Route path="/settings" element={<UserSettings />} />
       <Route path="/gifts" element={<Gifts />} />
-          <Route path="/blog" element={<Blog />} />
-          <Route path="/blog/:slug" element={<BlogPost />} />
+      <Route path="/blog" element={<Blog />} />
+      <Route path="/blog/:slug" element={<BlogPost />} />
+      <Route path="/admin/blog" element={<AdminBlog />} />
       <Route path="/ai-insights" element={<AIInsights />} />
       <Route path="/subscription-success" element={<SubscriptionSuccess />} />
       <Route path="/about" element={<AboutUs />} />
