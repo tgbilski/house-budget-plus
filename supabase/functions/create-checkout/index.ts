@@ -32,7 +32,7 @@ serve(async (req) => {
     
     if (body && body.plan === 'annual') {
       plan = 'annual';
-      priceId = 'price_1SBQoqChqC8M6G2bI8kDPhK6'; // Annual price ID
+      priceId = 'price_1SDYVbChqC8M6G2b1gKWAp9X'; // Annual price ID - $39.99/year
       console.log('🚀 ANNUAL PLAN DETECTED - Using annual price');
     } else {
       console.log('📅 Monthly plan or no plan - Using monthly price');
