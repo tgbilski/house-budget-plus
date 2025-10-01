@@ -31,7 +31,7 @@ export function PricingCards() {
             Monthly Plan
           </CardTitle>
           <div className="text-4xl font-bold mt-4">
-            $2.99
+            $4.99
             <span className="text-base font-normal text-muted-foreground">/month</span>
           </div>
           <div className="text-sm text-transparent font-medium">
@@ -71,11 +71,11 @@ export function PricingCards() {
             Annual Plan
           </CardTitle>
           <div className="text-4xl font-bold mt-4">
-            $29.99
+            $39.99
             <span className="text-base font-normal text-muted-foreground">/year</span>
           </div>
           <div className="text-sm text-green-600 font-medium">
-            Save $5.89 (16% off)
+            Save $19.89 (33% off)
           </div>
         </CardHeader>
         <CardContent className="space-y-6">
