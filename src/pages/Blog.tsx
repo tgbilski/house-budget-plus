@@ -75,7 +75,7 @@ const Blog: React.FC = () => {
 
   if (showForm) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50/30 to-emerald-50/30 p-4">
+      <div className="min-h-screen bg-gray-100 p-4">
         <SEO
           title="Create Blog Post - House Budget Calculator"
           description="Write and publish your financial insights and tips"
@@ -100,7 +100,7 @@ const Blog: React.FC = () => {
         description="Read our latest articles on budgeting, saving money, and financial planning tips"
         keywords="financial blog, budgeting tips, money management, savings advice, financial planning"
       />
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50/30 to-emerald-50/30">
+      <div className="min-h-screen bg-gray-100">
         <div className="max-w-7xl mx-auto p-4 space-y-8">
           {/* Header Section */}
           <div className="text-center py-12">
