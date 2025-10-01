@@ -9,7 +9,7 @@ const corsHeaders = {
 
 const supabaseUrl = Deno.env.get("SUPABASE_URL");
 const supabaseServiceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
-const openAIApiKey = Deno.env.get("OPENAI_API_KEY");
+const lovableApiKey = Deno.env.get("LOVABLE_API_KEY");
 
 serve(async (req) => {
   if (req.method === "OPTIONS") {
@@ -353,8 +353,8 @@ serve(async (req) => {
       **User's Actual Financial Data:**
       ${dataContext}
     `;
-    const openaiBody = {
-      model: "gpt-4o-mini",
+    const lovableBody = {
+      model: "google/gemini-2.5-flash",
       messages: [
         { role: "system", content: systemPrompt },
         { role: "user", content: question }
@@ -363,20 +363,20 @@ serve(async (req) => {
       temperature: 0.7,
     };
 
-    const response = await fetch("https://api.openai.com/v1/chat/completions", {
+    const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
       headers: {
-        "Authorization": `Bearer ${openAIApiKey}`,
+        "Authorization": `Bearer ${lovableApiKey}`,
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(openaiBody),
+      body: JSON.stringify(lovableBody),
     });
 
     if (!response.ok) {
       const errorDetails = await response.json();
-      console.error("OpenAI error:", errorDetails);
+      console.error("Lovable AI error:", errorDetails);
       return new Response(JSON.stringify({
-        error: "OpenAI API error",
+        error: "AI API error",
         details: errorDetails,
       }), {
         status: 500,

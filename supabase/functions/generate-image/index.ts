@@ -94,13 +94,13 @@ serve(async (req) => {
       );
     }
 
-    const openAIApiKey = Deno.env.get('OPENAI_API_KEY');
-    if (!openAIApiKey) {
-      logStep("ERROR: OpenAI API key not configured");
+    const lovableApiKey = Deno.env.get('LOVABLE_API_KEY');
+    if (!lovableApiKey) {
+      logStep("ERROR: Lovable AI key not configured");
       return new Response(
         JSON.stringify({ 
           success: false, 
-          error: 'OpenAI API key not configured' 
+          error: 'LOVABLE_API_KEY not configured' 
         } as ImageGenerationResponse),
         {
           status: 500,
@@ -114,41 +114,41 @@ serve(async (req) => {
     // Create a financial news specific prompt
     const enhancedPrompt = `Financial news illustration: ${prompt}. Professional, clean, modern business style, suitable for financial news article. High quality, detailed.`;
 
-    const response = await fetch('https://api.openai.com/v1/images/generations', {
+    const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${openAIApiKey}`,
+        'Authorization': `Bearer ${lovableApiKey}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'gpt-image-1',
-        prompt: enhancedPrompt,
-        n: 1,
-        size: size,
-        quality: 'high',
-        output_format: 'webp',
-        output_compression: 80
+        model: 'google/gemini-2.5-flash-image-preview',
+        messages: [
+          {
+            role: 'user',
+            content: enhancedPrompt
+          }
+        ],
+        modalities: ['image', 'text']
       }),
     });
 
     if (!response.ok) {
       const errorData = await response.text();
-      logStep('OpenAI API error', { status: response.status, error: errorData });
-      throw new Error(`OpenAI API error: ${response.status}`);
+      logStep('Lovable AI error', { status: response.status, error: errorData });
+      throw new Error(`AI API error: ${response.status}`);
     }
 
     const data = await response.json();
     logStep('Image generated successfully');
 
-    // gpt-image-1 returns base64 directly
-    const imageData = data.data[0];
-    let imageUrl = '';
-
-    if (imageData.b64_json) {
-      imageUrl = `data:image/webp;base64,${imageData.b64_json}`;
-    } else if (imageData.url) {
-      imageUrl = imageData.url;
+    // Gemini Nano banana returns images in the message
+    const imageData = data.choices?.[0]?.message?.images?.[0]?.image_url?.url;
+    
+    if (!imageData) {
+      throw new Error('No image data in response');
     }
+
+    const imageUrl = imageData;
 
     return new Response(
       JSON.stringify({ 

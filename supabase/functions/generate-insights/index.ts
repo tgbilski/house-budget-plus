@@ -93,10 +93,10 @@ serve(async (req) => {
       current_date: new Date().toISOString().split('T')[0]
     };
 
-    // Call OpenAI for insights
-    const openAIApiKey = Deno.env.get('OPENAI_API_KEY');
-    if (!openAIApiKey) {
-      throw new Error('OpenAI API key not configured');
+    // Call Lovable AI for insights
+    const lovableApiKey = Deno.env.get('LOVABLE_API_KEY');
+    if (!lovableApiKey) {
+      throw new Error('LOVABLE_API_KEY not configured');
     }
 
     const prompt = `Analyze this user's financial data and generate 3-5 personalized insights. Focus on spending patterns, budgeting opportunities, and actionable recommendations.
@@ -119,14 +119,14 @@ Generate insights in this JSON format:
 
 Make insights specific, actionable, and encouraging. Use actual numbers from their data.`;
 
-    const response = await fetch('https://api.openai.com/v1/chat/completions', {
+    const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${openAIApiKey}`,
+        'Authorization': `Bearer ${lovableApiKey}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'gpt-4o-mini',
+        model: 'google/gemini-2.5-flash',
         messages: [
           { role: 'system', content: 'You are a helpful financial advisor that provides personalized insights based on spending data.' },
           { role: 'user', content: prompt }
@@ -137,7 +137,7 @@ Make insights specific, actionable, and encouraging. Use actual numbers from the
     });
 
     if (!response.ok) {
-      throw new Error(`OpenAI API error: ${response.status}`);
+      throw new Error(`AI API error: ${response.status}`);
     }
 
     const aiResponse = await response.json();

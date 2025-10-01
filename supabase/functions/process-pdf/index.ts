@@ -311,21 +311,21 @@ async function extractTextFromPDF(arrayBuffer: ArrayBuffer): Promise<string> {
 
 async function categorizeExpenses(text: string): Promise<any> {
   try {
-    const openAIKey = Deno.env.get("OPENAI_API_KEY");
-    if (!openAIKey) {
-      logStep("OpenAI API key not configured - categorization disabled");
+    const lovableApiKey = Deno.env.get("LOVABLE_API_KEY");
+    if (!lovableApiKey) {
+      logStep("Lovable AI key not configured - categorization disabled");
       return null;
     }
-    logStep("OpenAI API key found, proceeding with categorization");
+    logStep("Lovable AI key found, proceeding with categorization");
 
-    const response = await fetch('https://api.openai.com/v1/chat/completions', {
+    const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${openAIKey}`,
+        'Authorization': `Bearer ${lovableApiKey}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'gpt-4o-mini',
+        model: 'google/gemini-2.5-flash',
         messages: [
           {
             role: 'system',
@@ -346,7 +346,7 @@ async function categorizeExpenses(text: string): Promise<any> {
     });
 
     if (!response.ok) {
-      throw new Error(`OpenAI API error: ${response.status}`);
+      throw new Error(`AI API error: ${response.status}`);
     }
 
     const data = await response.json();
@@ -372,22 +372,22 @@ async function categorizeExpenses(text: string): Promise<any> {
 
 async function extractAndSaveAllExpenses(text: string, userId: string, supabaseClient: any, fileName: string): Promise<any[]> {
   try {
-    const openAIKey = Deno.env.get("OPENAI_API_KEY");
-    if (!openAIKey) {
-      logStep("OpenAI API key not configured for expense extraction - skipping");
+    const lovableApiKey = Deno.env.get("LOVABLE_API_KEY");
+    if (!lovableApiKey) {
+      logStep("Lovable AI key not configured for expense extraction - skipping");
       return [];
     }
-    logStep("OpenAI API key found, proceeding with all expense extraction");
+    logStep("Lovable AI key found, proceeding with all expense extraction");
 
     // Enhanced prompt for extracting ALL expenses from difficult-to-read text
-    const response = await fetch('https://api.openai.com/v1/chat/completions', {
+    const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${openAIKey}`,
+        'Authorization': `Bearer ${lovableApiKey}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'gpt-4o-mini',
+        model: 'google/gemini-2.5-flash',
         messages: [
           {
             role: 'system',
