@@ -39,7 +39,7 @@ serve(async (req) => {
       });
     }
 
-    // Check subscription status
+    // Check subscription status and AI usage limit
     const { data: subscription, error: subError } = await supabase
       .from("subscribers")
       .select("*")
@@ -54,6 +54,33 @@ serve(async (req) => {
         message: "Please subscribe to access AI insights feature."
       }), {
         status: 403,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    // Check and increment AI usage
+    const { data: usageCheck, error: usageError } = await supabase
+      .rpc('check_and_increment_ai_usage', { _user_id: user.id });
+    
+    if (usageError) {
+      console.error("Usage check error:", usageError);
+      return new Response(JSON.stringify({
+        error: "Failed to check usage limit"
+      }), {
+        status: 500,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    if (!usageCheck.allowed) {
+      const resetDate = new Date(usageCheck.reset_date);
+      return new Response(JSON.stringify({
+        error: "Usage limit reached",
+        message: "You've reached your AI insight limit this month. Your balance will reset the 1st day of the next month at midnight!",
+        reset_date: resetDate.toLocaleDateString(),
+        queries_count: usageCheck.queries_count
+      }), {
+        status: 429,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }

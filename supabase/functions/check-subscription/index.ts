@@ -84,7 +84,7 @@ serve(async (req: Request) => {
     }
 
     // Upsert subscriber record by user_id (not email!)
-    await supabaseClient
+    const { data: subscriberData } = await supabaseClient
       .from("subscribers")
       .upsert(
         {
@@ -97,7 +97,9 @@ serve(async (req: Request) => {
           updated_at: new Date().toISOString(),
         },
         { onConflict: "user_id" }
-      );
+      )
+      .select('ai_queries_count, ai_queries_reset_date')
+      .single();
 
     logStep("Updated database with subscription info", { subscribed: hasActiveSub, subscriptionTier });
 
@@ -106,6 +108,8 @@ serve(async (req: Request) => {
         subscribed: hasActiveSub,
         subscription_tier: subscriptionTier,
         subscription_end: subscriptionEnd,
+        ai_queries_count: subscriberData?.ai_queries_count || 0,
+        ai_queries_reset_date: subscriberData?.ai_queries_reset_date || null,
       }),
       {
         headers: { ...corsHeaders, "Content-Type": "application/json" },

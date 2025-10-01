@@ -603,6 +603,8 @@ export type Database = {
       }
       subscribers: {
         Row: {
+          ai_queries_count: number | null
+          ai_queries_reset_date: string | null
           created_at: string
           email: string
           id: string
@@ -614,6 +616,8 @@ export type Database = {
           user_id: string | null
         }
         Insert: {
+          ai_queries_count?: number | null
+          ai_queries_reset_date?: string | null
           created_at?: string
           email: string
           id?: string
@@ -625,6 +629,8 @@ export type Database = {
           user_id?: string | null
         }
         Update: {
+          ai_queries_count?: number | null
+          ai_queries_reset_date?: string | null
           created_at?: string
           email?: string
           id?: string
@@ -1025,6 +1031,10 @@ export type Database = {
       accept_household_invite: {
         Args: { _invite_id: string }
         Returns: boolean
+      }
+      check_and_increment_ai_usage: {
+        Args: { _user_id: string }
+        Returns: Json
       }
       delete_user_account: {
         Args: { _user_id: string }

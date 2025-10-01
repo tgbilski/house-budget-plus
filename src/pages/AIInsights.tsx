@@ -44,6 +44,27 @@ export default function AIInsights() {
       earnBadge('ai_insights');
     } catch (error) {
       console.error('AI Insights error:', error);
+      
+      // Check if error is from rate limiting
+      const errorMessage = (error as any)?.message || '';
+      const errorDetails = (error as any)?.context?.body;
+      
+      if (errorMessage.includes('FunctionsHttpError') && errorDetails) {
+        const errorBody = typeof errorDetails === 'string' ? JSON.parse(errorDetails) : errorDetails;
+        
+        if (errorBody.error === 'Usage limit reached') {
+          toast({
+            title: "AI Query Limit Reached",
+            description: errorBody.message || "You've reached your AI insight limit this month. Your balance will reset the 1st day of the next month at midnight!",
+            variant: "destructive",
+            duration: 6000,
+          });
+          setErrorMsg(errorBody.message);
+          setLoading(false);
+          return;
+        }
+      }
+      
       toast({
         title: "AI Insights Error",
         description: (error as Error).message || "Failed to get AI insights.",

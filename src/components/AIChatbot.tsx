@@ -92,7 +92,20 @@ export function AIChatbot({ pageContext, pageName, calculatorsData = [] }: AICha
         }
       });
 
-      if (error) throw error;
+      if (error) {
+        // Check if it's a rate limit error
+        if (error.message?.includes('Usage limit reached') || data?.error === 'Usage limit reached') {
+          toast({
+            title: "AI Query Limit Reached",
+            description: data?.message || "You've reached your AI insight limit this month. Your balance will reset the 1st day of the next month at midnight!",
+            variant: "destructive",
+            duration: 6000,
+          });
+          setIsLoading(false);
+          return;
+        }
+        throw error;
+      }
 
       const assistantMessage: Message = {
         id: (Date.now() + 1).toString(),

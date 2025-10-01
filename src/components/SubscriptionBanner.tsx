@@ -5,7 +5,7 @@ import { useSubscription } from '@/hooks/useSubscription';
 import { PricingCards } from './PricingCards';
 
 export function SubscriptionBanner() {
-  const { subscribed, subscriptionTier, createCheckout, openCustomerPortal } = useSubscription();
+  const { subscribed, subscriptionTier, createCheckout, openCustomerPortal, aiQueriesRemaining } = useSubscription();
 
   if (subscribed) {
     return (
@@ -16,7 +16,7 @@ export function SubscriptionBanner() {
             <div>
               <h3 className="font-semibold text-foreground">Premium Active</h3>
               <p className="text-sm text-muted-foreground">
-                {subscriptionTier} • Unlimited PDF processing with AI categorization
+                {subscriptionTier} • {aiQueriesRemaining} AI queries remaining this month
               </p>
             </div>
           </div>

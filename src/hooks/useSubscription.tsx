@@ -7,6 +7,9 @@ interface SubscriptionContextType {
   subscribed: boolean;
   subscriptionTier: string | null;
   subscriptionEnd: string | null;
+  aiQueriesCount: number;
+  aiQueriesRemaining: number;
+  aiQueriesResetDate: string | null;
   loading: boolean;
   checkSubscription: () => Promise<void>;
   createCheckout: (plan?: 'monthly' | 'annual') => Promise<void>;
@@ -19,6 +22,9 @@ export function SubscriptionProvider({ children }: { children: ReactNode }) {
   const [subscribed, setSubscribed] = useState(false);
   const [subscriptionTier, setSubscriptionTier] = useState<string | null>(null);
   const [subscriptionEnd, setSubscriptionEnd] = useState<string | null>(null);
+  const [aiQueriesCount, setAiQueriesCount] = useState(0);
+  const [aiQueriesRemaining, setAiQueriesRemaining] = useState(10);
+  const [aiQueriesResetDate, setAiQueriesResetDate] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const { user, session } = useAuth();
   const { toast } = useToast();
@@ -42,6 +48,9 @@ export function SubscriptionProvider({ children }: { children: ReactNode }) {
       setSubscribed(data.subscribed || false);
       setSubscriptionTier(data.subscription_tier || null);
       setSubscriptionEnd(data.subscription_end || null);
+      setAiQueriesCount(data.ai_queries_count || 0);
+      setAiQueriesRemaining(Math.max(0, 10 - (data.ai_queries_count || 0)));
+      setAiQueriesResetDate(data.ai_queries_reset_date || null);
     } catch (error) {
       console.error('Error checking subscription:', error);
       toast({
@@ -129,6 +138,9 @@ export function SubscriptionProvider({ children }: { children: ReactNode }) {
         subscribed,
         subscriptionTier,
         subscriptionEnd,
+        aiQueriesCount,
+        aiQueriesRemaining,
+        aiQueriesResetDate,
         loading,
         checkSubscription,
         createCheckout,

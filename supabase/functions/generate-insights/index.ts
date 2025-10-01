@@ -36,6 +36,33 @@ serve(async (req) => {
 
     console.log('Generating insights for user:', user.id);
 
+    // Check and increment AI usage
+    const { data: usageCheck, error: usageError } = await supabaseClient
+      .rpc('check_and_increment_ai_usage', { _user_id: user.id });
+    
+    if (usageError) {
+      console.error("Usage check error:", usageError);
+      return new Response(JSON.stringify({
+        error: "Failed to check usage limit"
+      }), {
+        status: 500,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    if (!usageCheck.allowed) {
+      const resetDate = new Date(usageCheck.reset_date);
+      return new Response(JSON.stringify({
+        error: "Usage limit reached",
+        message: "You've reached your AI insight limit this month. Your balance will reset the 1st day of the next month at midnight!",
+        reset_date: resetDate.toLocaleDateString(),
+        queries_count: usageCheck.queries_count
+      }), {
+        status: 429,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
     // Fetch user's financial data
     const { data: takeoutData } = await supabaseClient
       .from('takeout_transactions')

@@ -1,11 +1,15 @@
 // @ts-nocheck
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
+
+const supabaseUrl = Deno.env.get("SUPABASE_URL");
+const supabaseServiceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
 
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
@@ -13,6 +17,55 @@ serve(async (req) => {
   }
 
   try {
+    // Auth header check
+    const authHeader = req.headers.get("Authorization");
+    if (!authHeader) {
+      return new Response(JSON.stringify({ error: "No authorization header" }), {
+        status: 401,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+    const jwt = authHeader.replace("Bearer ", "");
+
+    // Supabase client
+    const supabase = createClient(supabaseUrl!, supabaseServiceKey!);
+
+    // Get user from JWT
+    const { data: { user }, error: authError } = await supabase.auth.getUser(jwt);
+    if (authError || !user) {
+      return new Response(JSON.stringify({ error: "Invalid token" }), {
+        status: 401,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    // Check and increment AI usage
+    const { data: usageCheck, error: usageError } = await supabase
+      .rpc('check_and_increment_ai_usage', { _user_id: user.id });
+    
+    if (usageError) {
+      console.error("Usage check error:", usageError);
+      return new Response(JSON.stringify({
+        error: "Failed to check usage limit"
+      }), {
+        status: 500,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    if (!usageCheck.allowed) {
+      const resetDate = new Date(usageCheck.reset_date);
+      return new Response(JSON.stringify({
+        error: "Usage limit reached",
+        message: "You've reached your AI insight limit this month. Your balance will reset the 1st day of the next month at midnight!",
+        reset_date: resetDate.toLocaleDateString(),
+        queries_count: usageCheck.queries_count
+      }), {
+        status: 429,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
     const { message, pageContext, pageName, conversationHistory, calculatorsData } = await req.json();
 
     const openAIApiKey = Deno.env.get('OPENAI_API_KEY');
