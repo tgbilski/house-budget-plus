@@ -16,7 +16,8 @@ export function PricingCards() {
 
   const features = [
     "Unlimited PDF processing",
-    "AI expense categorization", 
+    "AI expense categorization",
+    "10 AI Insights / Month",
     "Cancel anytime"
   ];
 
