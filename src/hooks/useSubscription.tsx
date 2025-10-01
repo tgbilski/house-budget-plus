@@ -135,7 +135,13 @@ export function SubscriptionProvider({ children }: { children: ReactNode }) {
 
       if (response.data?.url) {
         console.log('Redirecting to Stripe portal:', response.data.url);
-        window.location.href = response.data.url;
+        // Use window.open with _self to ensure redirect isn't blocked
+        const redirected = window.open(response.data.url, '_self');
+        if (!redirected) {
+          // Fallback to location.href if window.open is blocked
+          window.location.href = response.data.url;
+        }
+        return; // Exit function immediately after redirect
       } else {
         console.error('No URL in response data:', response.data);
         throw new Error('No portal URL returned from server');
