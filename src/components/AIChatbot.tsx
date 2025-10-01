@@ -38,7 +38,7 @@ export function AIChatbot({ pageContext, pageName, calculatorsData = [] }: AICha
   const [isRecording, setIsRecording] = useState(false);
   const [isTranscribing, setIsTranscribing] = useState(false);
   const { user } = useAuth();
-  const { subscribed } = useSubscription();
+  const { subscribed, aiQueriesRemaining } = useSubscription();
   const { toast } = useToast();
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
@@ -340,7 +340,12 @@ export function AIChatbot({ pageContext, pageName, calculatorsData = [] }: AICha
                 width={32}
                 style={{ borderRadius: '50%' }}
               />
-              <CardTitle className="text-lg">AI Assistant</CardTitle>
+              <div>
+                <CardTitle className="text-lg">AI Assistant</CardTitle>
+                <p className="text-xs text-muted-foreground mt-0.5">
+                  {aiQueriesRemaining} queries remaining
+                </p>
+              </div>
             </div>
             <div className="flex items-center gap-2">
               <Button
