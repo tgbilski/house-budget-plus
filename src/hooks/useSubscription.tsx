@@ -107,34 +107,50 @@ export function SubscriptionProvider({ children }: { children: ReactNode }) {
     }
 
     try {
-      console.log('Opening customer portal...');
+      console.log('Opening customer portal...', { 
+        userId: user.id, 
+        hasSession: !!session,
+        hasToken: !!session.access_token 
+      });
       
-      const { data, error } = await supabase.functions.invoke('customer-portal', {
+      const response = await supabase.functions.invoke('customer-portal', {
         headers: {
           Authorization: `Bearer ${session.access_token}`,
         },
       });
 
-      console.log('Customer portal response:', { data, error });
+      console.log('Full response object:', response);
+      console.log('Response data:', response.data);
+      console.log('Response error:', response.error);
 
-      if (error) {
-        console.error('Portal error:', error);
-        throw error;
+      if (response.error) {
+        console.error('Portal invocation error:', {
+          message: response.error.message,
+          status: response.error.status,
+          name: response.error.name,
+          context: response.error.context
+        });
+        throw new Error(response.error.message || 'Failed to connect to subscription portal');
       }
 
-      if (data?.url) {
-        console.log('Redirecting to:', data.url);
-        // Redirect immediately without toast
-        window.location.href = data.url;
+      if (response.data?.url) {
+        console.log('Redirecting to Stripe portal:', response.data.url);
+        window.location.href = response.data.url;
       } else {
-        console.error('No URL in response:', data);
+        console.error('No URL in response data:', response.data);
         throw new Error('No portal URL returned from server');
       }
     } catch (error) {
-      console.error('Error opening customer portal:', error);
+      console.error('Caught error in openCustomerPortal:', {
+        error,
+        errorType: typeof error,
+        errorMessage: error instanceof Error ? error.message : String(error),
+        errorStack: error instanceof Error ? error.stack : undefined
+      });
+      
       toast({
         title: "Error",
-        description: error instanceof Error ? error.message : "Failed to open customer portal",
+        description: error instanceof Error ? error.message : "Failed to open customer portal. Please try again.",
         variant: "destructive",
       });
     }
