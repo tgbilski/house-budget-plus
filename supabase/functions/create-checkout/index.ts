@@ -24,7 +24,7 @@ serve(async (req) => {
     console.log('Function started - v3 TEST');
 
     let plan = 'monthly';
-    let priceId = 'price_1RriH0ChqC8M6G2balUOl9O8'; // Default monthly price
+    let priceId = 'price_1SDYVPChqC8M6G2byOdkawq1'; // Monthly price - $4.99/month
     
     // SIMPLE TEST: Always use annual for debugging
     const body = await req.json() as { plan?: 'monthly' | 'annual' };
