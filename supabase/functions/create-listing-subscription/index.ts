@@ -13,7 +13,7 @@ serve(async (req) => {
   }
 
   try {
-    const { listingId } = await req.json();
+    const { listingId, subscriptionType = "monthly" } = await req.json();
     
     const authHeader = req.headers.get("Authorization")!;
     const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
@@ -57,14 +57,19 @@ serve(async (req) => {
         });
     }
 
-    // Create checkout session for $0.99/month subscription
+    // Determine price ID based on subscription type
+    const priceId = subscriptionType === "annual" 
+      ? "price_1SDcybChqC8M6G2bOOF17Kvg" // Annual $9.99/year
+      : "price_1SDcxzChqC8M6G2b4twJs4s5"; // Monthly $0.99/month
+
+    // Create checkout session
     const session = await stripe.checkout.sessions.create({
       customer: customerId,
       payment_method_types: ["card"],
       mode: "subscription",
       line_items: [
         {
-          price: "price_1SDcxzChqC8M6G2b4twJs4s5", // Marketplace listing monthly fee
+          price: priceId,
           quantity: 1,
         },
       ],
@@ -73,6 +78,7 @@ serve(async (req) => {
       metadata: {
         listing_id: listingId,
         user_id: user.id,
+        subscription_type: subscriptionType,
       },
     });
 

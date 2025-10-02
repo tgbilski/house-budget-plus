@@ -40,10 +40,17 @@ export default function Marketplace() {
               Discover vendors, vacation rentals, and unique gifts shared by our community
             </p>
           </div>
-          <Button onClick={handleCreateListing} size="lg">
-            <Plus className="mr-2 h-4 w-4" />
-            List Your Business
-          </Button>
+          <div className="flex gap-2">
+            {user && (
+              <Button onClick={() => navigate("/my-listings")} variant="outline" size="lg">
+                My Listings
+              </Button>
+            )}
+            <Button onClick={handleCreateListing} size="lg">
+              <Plus className="mr-2 h-4 w-4" />
+              List Your Business
+            </Button>
+          </div>
         </div>
 
         {showForm ? (

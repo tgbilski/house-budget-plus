@@ -30,6 +30,7 @@ export function MarketplaceListingForm({ onClose }: MarketplaceListingFormProps)
     state: string;
     country: string;
   } | null>(null);
+  const [subscriptionType, setSubscriptionType] = useState<"monthly" | "annual">("monthly");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isFetchingMetadata, setIsFetchingMetadata] = useState(false);
   const [isGeocodingAddress, setIsGeocodingAddress] = useState(false);
@@ -200,7 +201,10 @@ export function MarketplaceListingForm({ onClose }: MarketplaceListingFormProps)
       const { data: checkoutData, error: checkoutError } = await supabase.functions.invoke(
         'create-listing-subscription',
         {
-          body: { listingId: listing.id },
+          body: { 
+            listingId: listing.id,
+            subscriptionType 
+          },
         }
       );
 
@@ -393,15 +397,54 @@ export function MarketplaceListingForm({ onClose }: MarketplaceListingFormProps)
             </ul>
           </div>
 
+          <div className="space-y-4">
+            <h4 className="font-semibold">Choose Subscription Plan</h4>
+            <div className="grid grid-cols-2 gap-4">
+              <button
+                type="button"
+                onClick={() => setSubscriptionType("monthly")}
+                className={`p-4 rounded-lg border-2 transition-all ${
+                  subscriptionType === "monthly"
+                    ? "border-primary bg-primary/10"
+                    : "border-muted hover:border-primary/50"
+                }`}
+              >
+                <div className="text-lg font-semibold">Monthly</div>
+                <div className="text-2xl font-bold">$0.99</div>
+                <div className="text-sm text-muted-foreground">per month</div>
+              </button>
+              
+              <button
+                type="button"
+                onClick={() => setSubscriptionType("annual")}
+                className={`p-4 rounded-lg border-2 transition-all ${
+                  subscriptionType === "annual"
+                    ? "border-green-500 bg-green-500/10"
+                    : "border-muted hover:border-green-500/50"
+                }`}
+              >
+                <div className="text-lg font-semibold text-green-600 dark:text-green-400">
+                  Annual - Save 17%
+                </div>
+                <div className="text-2xl font-bold">$9.99</div>
+                <div className="text-sm text-muted-foreground">per year</div>
+              </button>
+            </div>
+          </div>
+
           <div className="flex gap-4">
-            <Button type="submit" disabled={isSubmitting} className="flex-1">
+            <Button 
+              type="submit" 
+              disabled={isSubmitting} 
+              className={subscriptionType === "annual" ? "flex-1 bg-green-600 hover:bg-green-700" : "flex-1"}
+            >
               {isSubmitting ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                   Processing...
                 </>
               ) : (
-                "Continue to Payment ($0.99/month)"
+                `Continue to Payment (${subscriptionType === "monthly" ? "$0.99/month" : "$9.99/year"})`
               )}
             </Button>
             <Button type="button" variant="outline" onClick={onClose}>

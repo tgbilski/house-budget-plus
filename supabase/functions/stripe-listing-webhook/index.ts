@@ -27,9 +27,14 @@ serve(async (req) => {
       case "checkout.session.completed": {
         const session = event.data.object as Stripe.Checkout.Session;
         const listingId = session.metadata?.listing_id;
+        const subscriptionType = session.metadata?.subscription_type || "monthly";
         const subscriptionId = session.subscription as string;
 
         if (listingId) {
+          // Calculate subscription end based on type
+          const daysToAdd = subscriptionType === "annual" ? 365 : 30;
+          const subscriptionEnd = new Date(Date.now() + daysToAdd * 24 * 60 * 60 * 1000).toISOString();
+
           // Activate the listing
           await supabase
             .from('marketplace_listings')
@@ -37,11 +42,11 @@ serve(async (req) => {
               stripe_subscription_id: subscriptionId,
               subscription_status: 'active',
               status: 'active',
-              subscription_end: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
+              subscription_end: subscriptionEnd,
             })
             .eq('id', listingId);
 
-          console.log("Activated listing:", listingId);
+          console.log("Activated listing:", listingId, "Type:", subscriptionType);
         }
         break;
       }
