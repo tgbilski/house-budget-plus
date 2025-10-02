@@ -1,7 +1,8 @@
 // src/pages/Vacation.tsx
 import React, { useEffect } from 'react';
-import { Plane, Plus } from 'lucide-react';
-import { Button } from '@/components/ui/button'; // The missing import
+import { Plane, Plus, MapPin } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import { useBadges } from '@/hooks/useBadges';
 import { useYear } from '@/hooks/useYear';
@@ -22,6 +23,7 @@ const Vacation: React.FC = () => {
   const { selectedYear } = useYear();
   const { currency } = useCurrency();
   const { earnBadge } = useBadges();
+  const navigate = useNavigate();
 
   const {
     vacations,
@@ -97,8 +99,17 @@ const Vacation: React.FC = () => {
             onUpdateTitle={updateVacationTitle}
           />
 
-          <div className="flex justify-end">
-            <Button onClick={addOption} className="gap-2 bg-teal hover:bg-teal/90 text-teal-foreground"><Plus className="h-4 w-4" /> Add Destination Option</Button>
+          <div className="flex flex-col sm:flex-row justify-end gap-2">
+            <Button 
+              onClick={() => navigate('/marketplace')} 
+              variant="outline" 
+              className="gap-2"
+            >
+              <MapPin className="h-4 w-4" /> Explore Destinations
+            </Button>
+            <Button onClick={addOption} className="gap-2 bg-teal hover:bg-teal/90 text-teal-foreground">
+              <Plus className="h-4 w-4" /> Add Destination Option
+            </Button>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
