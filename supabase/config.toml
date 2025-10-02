@@ -70,3 +70,15 @@ verify_jwt = true
 [[edge_functions.functions]]
 name = "process-pdf"
 verify_jwt = true
+
+[[edge_functions.functions]]
+name = "moderate-listing"
+verify_jwt = true
+
+[[edge_functions.functions]]
+name = "create-listing-subscription"
+verify_jwt = true
+
+[[edge_functions.functions]]
+name = "stripe-listing-webhook"
+verify_jwt = false

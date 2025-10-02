@@ -29,6 +29,8 @@ import Blog from "@/pages/Blog";
 import BlogPost from "@/pages/BlogPost";
 import AdminBlog from "@/pages/AdminBlog";
 import { Gifts } from "@/pages/Gifts";
+import Marketplace from "@/pages/Marketplace";
+import AdminMarketplace from "@/pages/AdminMarketplace";
 import AboutUs from "@/pages/AboutUs";
 import ContactUs from "@/pages/ContactUs";
 import PrivacyPolicy from "@/pages/PrivacyPolicy";
@@ -73,6 +75,8 @@ const AppRoutes = () => {
       <Route path="/auth" element={<Auth />} />
       <Route path="/settings" element={<UserSettings />} />
       <Route path="/gifts" element={<Gifts />} />
+      <Route path="/marketplace" element={<Marketplace />} />
+      <Route path="/admin/marketplace" element={<AdminMarketplace />} />
       <Route path="/blog" element={<Blog />} />
       <Route path="/blog/:slug" element={<BlogPost />} />
       <Route path="/admin/blog" element={<AdminBlog />} />

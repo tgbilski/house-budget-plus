@@ -410,6 +410,72 @@ export type Database = {
         }
         Relationships: []
       }
+      marketplace_listings: {
+        Row: {
+          category: string
+          contact_email: string | null
+          contact_phone: string | null
+          created_at: string
+          description: string
+          id: string
+          image_urls: string[] | null
+          moderation_result: Json | null
+          price: number | null
+          rejection_reason: string | null
+          report_count: number
+          status: string
+          stripe_subscription_id: string | null
+          subscription_end: string | null
+          subscription_status: string | null
+          title: string
+          updated_at: string
+          user_id: string
+          website_url: string | null
+        }
+        Insert: {
+          category: string
+          contact_email?: string | null
+          contact_phone?: string | null
+          created_at?: string
+          description: string
+          id?: string
+          image_urls?: string[] | null
+          moderation_result?: Json | null
+          price?: number | null
+          rejection_reason?: string | null
+          report_count?: number
+          status?: string
+          stripe_subscription_id?: string | null
+          subscription_end?: string | null
+          subscription_status?: string | null
+          title: string
+          updated_at?: string
+          user_id: string
+          website_url?: string | null
+        }
+        Update: {
+          category?: string
+          contact_email?: string | null
+          contact_phone?: string | null
+          created_at?: string
+          description?: string
+          id?: string
+          image_urls?: string[] | null
+          moderation_result?: Json | null
+          price?: number | null
+          rejection_reason?: string | null
+          report_count?: number
+          status?: string
+          stripe_subscription_id?: string | null
+          subscription_end?: string | null
+          subscription_status?: string | null
+          title?: string
+          updated_at?: string
+          user_id?: string
+          website_url?: string | null
+        }
+        Relationships: []
+      }
       pdf_processing_logs: {
         Row: {
           ai_categorization: Json | null
@@ -733,6 +799,38 @@ export type Database = {
             columns: ["household_id"]
             isOneToOne: false
             referencedRelation: "households"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_reports: {
+        Row: {
+          created_at: string
+          id: string
+          listing_id: string
+          reason: string
+          reporter_user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          listing_id: string
+          reason: string
+          reporter_user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          listing_id?: string
+          reason?: string
+          reporter_user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_reports_listing_id_fkey"
+            columns: ["listing_id"]
+            isOneToOne: false
+            referencedRelation: "marketplace_listings"
             referencedColumns: ["id"]
           },
         ]

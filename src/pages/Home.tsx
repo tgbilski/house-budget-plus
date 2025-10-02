@@ -19,6 +19,7 @@ import vacationPreview from '@/assets/vacation-page-preview.png';
 import vendorPreview from '@/assets/vendor-compare-preview.png';
 import giftPreview from '@/assets/gift-page-preview.png';
 import aiPreview from '@/assets/ai-page-preview.png';
+import marketplacePreview from '@/assets/marketplace-page-preview.png';
 import calculatorHeroPreview from '@/assets/calculator-preview-hero.png';
 
 // --- Data for Child Components ---
@@ -58,6 +59,13 @@ const featurePreviewsData = [
     image: giftPreview,
     href: "/gifts",
     alt: "Gift Lists page showing holiday gifts with budget tracking and gift ideas"
+  },
+  {
+    title: "Community Marketplace",
+    description: "Discover vendors, vacation rentals, and handmade gifts from our community",
+    image: marketplacePreview,
+    href: "/marketplace",
+    alt: "Community Marketplace page showing vendor, vacation, and gift listings"
   },
   {
     title: "AI Financial Advisor",
