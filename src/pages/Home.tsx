@@ -1,6 +1,6 @@
 import React from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Calculator, Scale, Target, Plane, Brain, ArrowRight, Gift, ChevronDown, UserCheck, Crown } from "lucide-react";
+import { Calculator, Scale, Target, Plane, Brain, ArrowRight, Gift, ChevronDown, UserCheck, Crown, Store, Home as HomeIcon, Heart } from "lucide-react";
 import { Link } from "react-router-dom";
 import { SEO } from "@/components/SEO";
 import { seoData } from "@/utils/seoData";
@@ -202,6 +202,74 @@ const HeroSectionContent = () => (
   </section>
 );
 
+const MarketplacePromo = () => (
+  <section className="py-8 md:py-12 px-4 mx-4 my-8 rounded-2xl bg-gradient-to-br from-primary/10 via-secondary/10 to-accent/10 shadow-xl border-2 border-primary/20 relative overflow-hidden">
+    {/* Decorative background elements */}
+    <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full blur-3xl"></div>
+    <div className="absolute bottom-0 left-0 w-64 h-64 bg-secondary/5 rounded-full blur-3xl"></div>
+    
+    <div className="max-w-6xl mx-auto relative z-10">
+      <div className="text-center mb-8">
+        <div className="flex items-center justify-center gap-3 mb-4">
+          <Store className="h-8 w-8 md:h-10 md:w-10 text-primary" />
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900">
+            Community Marketplace
+          </h2>
+          <Store className="h-8 w-8 md:h-10 md:w-10 text-primary" />
+        </div>
+        <p className="text-lg md:text-xl text-gray-700 font-semibold mb-2">
+          🎉 Connect with Local Vendors, Discover Unique Gifts & Find Perfect Vacation Rentals!
+        </p>
+        <p className="text-base md:text-lg text-gray-600 max-w-3xl mx-auto">
+          Browse our growing community marketplace to find trusted contractors, beautiful handmade gifts, and affordable vacation rentals—all in one place.
+        </p>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <div className="bg-white/80 backdrop-blur-sm rounded-xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 border border-primary/10">
+          <div className="flex justify-center mb-4">
+            <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center">
+              <HomeIcon className="h-8 w-8 text-primary" />
+            </div>
+          </div>
+          <h3 className="text-xl font-bold text-gray-900 text-center mb-2">Local Vendors</h3>
+          <p className="text-gray-600 text-center">Find trusted contractors and service providers for your home projects</p>
+        </div>
+
+        <div className="bg-white/80 backdrop-blur-sm rounded-xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 border border-primary/10">
+          <div className="flex justify-center mb-4">
+            <div className="w-16 h-16 bg-secondary/10 rounded-full flex items-center justify-center">
+              <Plane className="h-8 w-8 text-secondary" />
+            </div>
+          </div>
+          <h3 className="text-xl font-bold text-gray-900 text-center mb-2">Vacation Rentals</h3>
+          <p className="text-gray-600 text-center">Discover affordable and unique stays for your next getaway</p>
+        </div>
+
+        <div className="bg-white/80 backdrop-blur-sm rounded-xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 border border-primary/10">
+          <div className="flex justify-center mb-4">
+            <div className="w-16 h-16 bg-accent/10 rounded-full flex items-center justify-center">
+              <Heart className="h-8 w-8 text-accent" />
+            </div>
+          </div>
+          <h3 className="text-xl font-bold text-gray-900 text-center mb-2">Handmade Gifts</h3>
+          <p className="text-gray-600 text-center">Shop unique, handcrafted items perfect for any occasion</p>
+        </div>
+      </div>
+
+      <div className="flex justify-center">
+        <Button asChild size="lg" className="bg-primary hover:bg-primary/90 text-white px-8 py-6 text-lg font-bold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110">
+          <Link to="/marketplace" className="flex items-center gap-2">
+            <Store className="h-5 w-5" />
+            Explore Marketplace
+            <ArrowRight className="h-5 w-5" />
+          </Link>
+        </Button>
+      </div>
+    </div>
+  </section>
+);
+
 const FeaturePreviewsGrid = () => (
   <section className="py-12 md:py-16 px-4 bg-white rounded-2xl mx-4 my-8 shadow-xl relative overflow-hidden">
     <div className="w-full max-w-6xl mx-auto">
@@ -294,6 +362,8 @@ const Home = () => {
       <div className="min-h-screen overflow-x-hidden relative">
         <div className="space-y-4">
           <HeroSectionContent />
+          <ScrollIndicator />
+          <MarketplacePromo />
           <ScrollIndicator />
           <FeaturePreviewsGrid />
           <ScrollIndicator />
