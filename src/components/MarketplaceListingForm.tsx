@@ -115,6 +115,18 @@ export function MarketplaceListingForm({ onClose }: MarketplaceListingFormProps)
     setIsSubmitting(true);
 
     try {
+      // Get authenticated user
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      if (!user) {
+        toast({
+          title: "Authentication required",
+          description: "Please log in to create a listing",
+          variant: "destructive",
+        });
+        return;
+      }
+
       // Validation
       if (!category || !title || !description) {
         toast({
@@ -144,10 +156,11 @@ export function MarketplaceListingForm({ onClose }: MarketplaceListingFormProps)
       }
 
       // Create listing
-      console.log("[MarketplaceForm] Creating listing...");
+      console.log("[MarketplaceForm] Creating listing for user:", user.id);
       const { data: listing, error: insertError } = await supabase
         .from('marketplace_listings')
         .insert({
+          user_id: user.id,
           category,
           title,
           description,
