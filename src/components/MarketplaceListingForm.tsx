@@ -144,6 +144,7 @@ export function MarketplaceListingForm({ onClose }: MarketplaceListingFormProps)
       }
 
       // Create listing
+      console.log("[MarketplaceForm] Creating listing...");
       const { data: listing, error: insertError } = await supabase
         .from('marketplace_listings')
         .insert({
@@ -166,9 +167,15 @@ export function MarketplaceListingForm({ onClose }: MarketplaceListingFormProps)
         .select()
         .single();
 
-      if (insertError) throw insertError;
+      if (insertError) {
+        console.error("[MarketplaceForm] Insert error:", insertError);
+        throw new Error(`Failed to create listing: ${insertError.message}`);
+      }
+      
+      console.log("[MarketplaceForm] Listing created:", listing.id);
 
       // Moderate content with AI
+      console.log("[MarketplaceForm] Moderating listing...");
       const { data: moderationResult, error: moderationError } = await supabase.functions.invoke(
         'moderate-listing',
         {
@@ -183,11 +190,15 @@ export function MarketplaceListingForm({ onClose }: MarketplaceListingFormProps)
       );
 
       if (moderationError) {
-        console.error("Moderation error:", moderationError);
+        console.error("[MarketplaceForm] Moderation error:", moderationError);
+        // Don't throw - moderation is optional
       }
+
+      console.log("[MarketplaceForm] Moderation result:", moderationResult);
 
       // Check if approved
       if (moderationResult?.approved === false) {
+        console.log("[MarketplaceForm] Listing rejected by moderation");
         toast({
           title: "Listing rejected",
           description: moderationResult.reason || "Your listing didn't pass our content guidelines",
@@ -198,6 +209,7 @@ export function MarketplaceListingForm({ onClose }: MarketplaceListingFormProps)
       }
 
       // Create Stripe subscription
+      console.log("[MarketplaceForm] Creating Stripe checkout for:", subscriptionType);
       const { data: checkoutData, error: checkoutError } = await supabase.functions.invoke(
         'create-listing-subscription',
         {
@@ -208,19 +220,27 @@ export function MarketplaceListingForm({ onClose }: MarketplaceListingFormProps)
         }
       );
 
-      if (checkoutError) throw checkoutError;
+      if (checkoutError) {
+        console.error("[MarketplaceForm] Checkout error:", checkoutError);
+        throw new Error(`Failed to create checkout: ${checkoutError.message}`);
+      }
+
+      console.log("[MarketplaceForm] Checkout data:", checkoutData);
 
       // Redirect to Stripe checkout
       if (checkoutData?.url) {
+        console.log("[MarketplaceForm] Redirecting to:", checkoutData.url);
         window.location.href = checkoutData.url;
       } else {
-        throw new Error("No checkout URL returned");
+        console.error("[MarketplaceForm] No checkout URL in response");
+        throw new Error("No checkout URL returned from Stripe");
       }
     } catch (error) {
-      console.error("Error creating listing:", error);
+      console.error("[MarketplaceForm] Error creating listing:", error);
+      const errorMessage = error instanceof Error ? error.message : "Unknown error occurred";
       toast({
-        title: "Error",
-        description: "Failed to create listing. Please try again.",
+        title: "Failed to create listing",
+        description: errorMessage,
         variant: "destructive",
       });
     } finally {
