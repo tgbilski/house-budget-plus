@@ -78,12 +78,13 @@ serve(async (req) => {
     }
 
     // Determine price based on subscription type
-    // These price IDs need to be created in Stripe Dashboard
-    // Monthly: $0.99/month
-    // Annual: $9.99/year
     const priceId = subscriptionType === "annual" 
-      ? Deno.env.get("STRIPE_LISTING_ANNUAL_PRICE_ID") || "price_1RriH0ChqC8M6G2balUOl9O8"
-      : Deno.env.get("STRIPE_LISTING_MONTHLY_PRICE_ID") || "price_1RriGmChqC8M6G2btSKe0ppc";
+      ? Deno.env.get("STRIPE_LISTING_ANNUAL_PRICE_ID")
+      : Deno.env.get("STRIPE_LISTING_MONTHLY_PRICE_ID");
+    
+    if (!priceId) {
+      throw new Error(`Stripe price ID not configured for ${subscriptionType} subscription`);
+    }
 
     console.log("[create-listing-subscription] Using price ID:", priceId);
 
