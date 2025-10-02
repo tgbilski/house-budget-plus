@@ -21,8 +21,40 @@ export function MarketplaceListingForm({ onClose }: MarketplaceListingFormProps)
   const [contactEmail, setContactEmail] = useState("");
   const [contactPhone, setContactPhone] = useState("");
   const [websiteUrl, setWebsiteUrl] = useState("");
+  const [thumbnailUrl, setThumbnailUrl] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isFetchingMetadata, setIsFetchingMetadata] = useState(false);
   const { toast } = useToast();
+
+  // Fetch metadata when URL is entered
+  const fetchUrlMetadata = async (url: string) => {
+    if (!url || url.length < 10) return;
+    
+    setIsFetchingMetadata(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('fetch-url-metadata', {
+        body: { url }
+      });
+
+      if (error) throw error;
+
+      if (data?.image) {
+        setThumbnailUrl(data.image);
+      }
+      
+      // Optionally pre-fill title/description if empty
+      if (data?.title && !title) {
+        setTitle(data.title.substring(0, 100));
+      }
+      if (data?.description && !description) {
+        setDescription(data.description.substring(0, 1000));
+      }
+    } catch (error) {
+      console.error("Error fetching metadata:", error);
+    } finally {
+      setIsFetchingMetadata(false);
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -68,6 +100,7 @@ export function MarketplaceListingForm({ onClose }: MarketplaceListingFormProps)
           contact_email: contactEmail || null,
           contact_phone: contactPhone || null,
           website_url: websiteUrl || null,
+          image_urls: thumbnailUrl ? [thumbnailUrl] : [],
           status: 'pending',
         })
         .select()
@@ -204,13 +237,36 @@ export function MarketplaceListingForm({ onClose }: MarketplaceListingFormProps)
 
             <div className="space-y-2">
               <Label htmlFor="website">Website URL (optional)</Label>
-              <Input
-                id="website"
-                type="url"
-                value={websiteUrl}
-                onChange={(e) => setWebsiteUrl(e.target.value)}
-                placeholder="https://example.com"
-              />
+              <div className="flex gap-2">
+                <Input
+                  id="website"
+                  type="url"
+                  value={websiteUrl}
+                  onChange={(e) => setWebsiteUrl(e.target.value)}
+                  placeholder="https://example.com"
+                />
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => fetchUrlMetadata(websiteUrl)}
+                  disabled={isFetchingMetadata || !websiteUrl}
+                >
+                  {isFetchingMetadata ? (
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                  ) : (
+                    "Fetch Image"
+                  )}
+                </Button>
+              </div>
+              {thumbnailUrl && (
+                <div className="mt-2">
+                  <img 
+                    src={thumbnailUrl} 
+                    alt="Preview" 
+                    className="w-32 h-32 object-cover rounded border"
+                  />
+                </div>
+              )}
             </div>
           </div>
 

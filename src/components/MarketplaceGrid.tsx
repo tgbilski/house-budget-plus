@@ -12,6 +12,7 @@ interface MarketplaceListing {
   contact_email: string | null;
   contact_phone: string | null;
   website_url: string | null;
+  image_urls: string[] | null;
   created_at: string;
 }
 

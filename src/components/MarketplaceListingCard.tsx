@@ -28,6 +28,7 @@ interface MarketplaceListing {
   contact_email: string | null;
   contact_phone: string | null;
   website_url: string | null;
+  image_urls: string[] | null;
   created_at: string;
 }
 
@@ -102,8 +103,30 @@ export function MarketplaceListingCard({ listing }: MarketplaceListingCardProps)
     }
   };
 
+  const handleCardClick = () => {
+    if (listing.website_url) {
+      window.open(listing.website_url, '_blank', 'noopener,noreferrer');
+    }
+  };
+
+  const thumbnailImage = listing.image_urls && listing.image_urls.length > 0 
+    ? listing.image_urls[0] 
+    : null;
+
   return (
-    <Card className="hover:shadow-lg transition-shadow">
+    <Card 
+      className={`hover:shadow-lg transition-shadow ${listing.website_url ? 'cursor-pointer' : ''}`}
+      onClick={handleCardClick}
+    >
+      {thumbnailImage && (
+        <div className="w-full h-48 overflow-hidden rounded-t-lg">
+          <img 
+            src={thumbnailImage} 
+            alt={listing.title}
+            className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+          />
+        </div>
+      )}
       <CardHeader>
         <div className="flex justify-between items-start mb-2">
           <Badge className={categoryColors[listing.category as keyof typeof categoryColors]}>
@@ -111,11 +134,16 @@ export function MarketplaceListingCard({ listing }: MarketplaceListingCardProps)
           </Badge>
           <AlertDialog>
             <AlertDialogTrigger asChild>
-              <Button variant="ghost" size="icon" className="h-8 w-8">
+              <Button 
+                variant="ghost" 
+                size="icon" 
+                className="h-8 w-8"
+                onClick={(e) => e.stopPropagation()}
+              >
                 <Flag className="h-4 w-4" />
               </Button>
             </AlertDialogTrigger>
-            <AlertDialogContent>
+            <AlertDialogContent onClick={(e) => e.stopPropagation()}>
               <AlertDialogHeader>
                 <AlertDialogTitle>Report Listing</AlertDialogTitle>
                 <AlertDialogDescription>
@@ -136,7 +164,12 @@ export function MarketplaceListingCard({ listing }: MarketplaceListingCardProps)
             </AlertDialogContent>
           </AlertDialog>
         </div>
-        <CardTitle>{listing.title}</CardTitle>
+        <CardTitle className="flex items-center gap-2">
+          {listing.title}
+          {listing.website_url && (
+            <ExternalLink className="h-4 w-4 text-muted-foreground" />
+          )}
+        </CardTitle>
         {listing.price && (
           <CardDescription className="font-semibold text-lg">
             ${listing.price.toFixed(2)}
@@ -148,16 +181,7 @@ export function MarketplaceListingCard({ listing }: MarketplaceListingCardProps)
           {listing.description}
         </p>
 
-        <div className="space-y-2">
-          {listing.website_url && (
-            <Button variant="outline" size="sm" className="w-full" asChild>
-              <a href={listing.website_url} target="_blank" rel="noopener noreferrer">
-                <ExternalLink className="mr-2 h-4 w-4" />
-                Visit Website
-              </a>
-            </Button>
-          )}
-          
+        <div className="space-y-2" onClick={(e) => e.stopPropagation()}>
           {listing.contact_email && (
             <Button variant="outline" size="sm" className="w-full" asChild>
               <a href={`mailto:${listing.contact_email}`}>

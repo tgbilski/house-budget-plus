@@ -21,6 +21,7 @@ interface Listing {
   contact_email: string | null;
   contact_phone: string | null;
   website_url: string | null;
+  image_urls: string[] | null;
   status: string;
   report_count: number;
   moderation_result: any;
@@ -131,74 +132,99 @@ export default function AdminMarketplace() {
     }
   };
 
-  const ListingCard = ({ listing }: { listing: Listing }) => (
-    <Card className="mb-4">
-      <CardHeader>
-        <div className="flex justify-between items-start">
-          <div>
-            <CardTitle className="text-lg">{listing.title}</CardTitle>
-            <Badge variant="outline" className="mt-2">{listing.category}</Badge>
+  const ListingCard = ({ listing }: { listing: Listing }) => {
+    const thumbnailImage = listing.image_urls && listing.image_urls.length > 0 
+      ? listing.image_urls[0] 
+      : null;
+
+    return (
+      <Card className="mb-4">
+        {thumbnailImage && (
+          <div className="w-full h-48 overflow-hidden rounded-t-lg">
+            <img 
+              src={thumbnailImage} 
+              alt={listing.title}
+              className="w-full h-full object-cover"
+            />
           </div>
-          <Badge variant="destructive" className="flex items-center gap-1">
-            <AlertTriangle className="h-3 w-3" />
-            {listing.report_count} reports
-          </Badge>
-        </div>
-      </CardHeader>
-      <CardContent>
-        <div className="space-y-4">
-          <div>
-            <p className="text-sm text-muted-foreground mb-2"><strong>Description:</strong></p>
-            <p className="text-sm">{listing.description}</p>
-          </div>
-
-          {listing.price && (
-            <p className="text-sm"><strong>Price:</strong> ${listing.price.toFixed(2)}</p>
-          )}
-
-          {listing.contact_email && (
-            <p className="text-sm"><strong>Email:</strong> {listing.contact_email}</p>
-          )}
-
-          {listing.contact_phone && (
-            <p className="text-sm"><strong>Phone:</strong> {listing.contact_phone}</p>
-          )}
-
-          {listing.website_url && (
-            <p className="text-sm"><strong>Website:</strong> {listing.website_url}</p>
-          )}
-
-          {listing.moderation_result && (
-            <div className="bg-muted p-3 rounded">
-              <p className="text-sm font-semibold mb-1">AI Moderation Result:</p>
-              <p className="text-xs">
-                Approved: {listing.moderation_result.approved ? 'Yes' : 'No'}
-              </p>
-              {listing.moderation_result.reason && (
-                <p className="text-xs">Reason: {listing.moderation_result.reason}</p>
-              )}
+        )}
+        <CardHeader>
+          <div className="flex justify-between items-start">
+            <div>
+              <CardTitle className="text-lg">{listing.title}</CardTitle>
+              <Badge variant="outline" className="mt-2">{listing.category}</Badge>
             </div>
-          )}
-
-          <div className="flex gap-2">
-            <Button onClick={() => handleApprove(listing.id)} size="sm" className="flex-1">
-              <CheckCircle className="mr-2 h-4 w-4" />
-              Approve
-            </Button>
-            <Button 
-              onClick={() => handleReject(listing.id)} 
-              size="sm" 
-              variant="destructive" 
-              className="flex-1"
-            >
-              <XCircle className="mr-2 h-4 w-4" />
-              Reject
-            </Button>
+            <Badge variant="destructive" className="flex items-center gap-1">
+              <AlertTriangle className="h-3 w-3" />
+              {listing.report_count} reports
+            </Badge>
           </div>
-        </div>
-      </CardContent>
-    </Card>
-  );
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-4">
+            <div>
+              <p className="text-sm text-muted-foreground mb-2"><strong>Description:</strong></p>
+              <p className="text-sm">{listing.description}</p>
+            </div>
+
+            {listing.price && (
+              <p className="text-sm"><strong>Price:</strong> ${listing.price.toFixed(2)}</p>
+            )}
+
+            {listing.contact_email && (
+              <p className="text-sm"><strong>Email:</strong> {listing.contact_email}</p>
+            )}
+
+            {listing.contact_phone && (
+              <p className="text-sm"><strong>Phone:</strong> {listing.contact_phone}</p>
+            )}
+
+            {listing.website_url && (
+              <p className="text-sm">
+                <strong>Website:</strong>{" "}
+                <a 
+                  href={listing.website_url} 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="text-primary hover:underline"
+                >
+                  {listing.website_url}
+                </a>
+              </p>
+            )}
+
+            {listing.moderation_result && (
+              <div className="bg-muted p-3 rounded">
+                <p className="text-sm font-semibold mb-1">AI Moderation Result:</p>
+                <p className="text-xs">
+                  Approved: {listing.moderation_result.approved ? 'Yes' : 'No'}
+                </p>
+                {listing.moderation_result.reason && (
+                  <p className="text-xs">Reason: {listing.moderation_result.reason}</p>
+                )}
+              </div>
+            )}
+
+            <div className="flex gap-2">
+              <Button onClick={() => handleApprove(listing.id)} size="sm" className="flex-1">
+                <CheckCircle className="mr-2 h-4 w-4" />
+                Approve
+              </Button>
+              <Button 
+                onClick={() => handleReject(listing.id)} 
+                size="sm" 
+                variant="destructive" 
+                className="flex-1"
+              >
+                <XCircle className="mr-2 h-4 w-4" />
+                Reject
+              </Button>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  };
 
   if (adminLoading || isLoading) {
     return (
