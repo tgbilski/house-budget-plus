@@ -419,6 +419,12 @@ export type Database = {
           description: string
           id: string
           image_urls: string[] | null
+          location_address: string | null
+          location_city: string | null
+          location_country: string | null
+          location_latitude: number | null
+          location_longitude: number | null
+          location_state: string | null
           moderation_result: Json | null
           price: number | null
           rejection_reason: string | null
@@ -440,6 +446,12 @@ export type Database = {
           description: string
           id?: string
           image_urls?: string[] | null
+          location_address?: string | null
+          location_city?: string | null
+          location_country?: string | null
+          location_latitude?: number | null
+          location_longitude?: number | null
+          location_state?: string | null
           moderation_result?: Json | null
           price?: number | null
           rejection_reason?: string | null
@@ -461,6 +473,12 @@ export type Database = {
           description?: string
           id?: string
           image_urls?: string[] | null
+          location_address?: string | null
+          location_city?: string | null
+          location_country?: string | null
+          location_latitude?: number | null
+          location_longitude?: number | null
+          location_state?: string | null
           moderation_result?: Json | null
           price?: number | null
           rejection_reason?: string | null
