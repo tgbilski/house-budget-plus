@@ -63,6 +63,7 @@ export default function MyListings() {
         .from("marketplace_listings")
         .select("*")
         .eq("user_id", user.id)
+        .eq("status", "active")
         .order("created_at", { ascending: false });
 
       if (error) throw error;
