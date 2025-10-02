@@ -1,7 +1,8 @@
 // src/pages/CompareVendors.tsx
 import React, { useEffect } from 'react';
-import { Scale, Plus, Filter } from 'lucide-react';
+import { Scale, Plus, Filter, Store } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { useNavigate } from 'react-router-dom';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useAuth } from '@/hooks/useAuth';
 import { useCurrency } from '@/hooks/useCurrency';
@@ -22,6 +23,7 @@ const CompareVendors: React.FC = () => {
   const { currency } = useCurrency();
   const { selectedYear } = useYear();
   const { earnBadge } = useBadges();
+  const navigate = useNavigate();
 
   const {
     projects,
@@ -108,9 +110,18 @@ const CompareVendors: React.FC = () => {
                 </SelectContent>
               </Select>
             </div>
-            <Button onClick={addQuote} className="gap-2 w-full sm:w-auto bg-teal hover:bg-teal/90 text-teal-foreground">
-              <Plus className="h-4 w-4" /> Add Quote
-            </Button>
+            <div className="flex gap-2 w-full sm:w-auto">
+              <Button 
+                onClick={() => navigate('/marketplace')} 
+                variant="outline" 
+                className="gap-2 flex-1 sm:flex-initial"
+              >
+                <Store className="h-4 w-4" /> See Vendors in Your Area
+              </Button>
+              <Button onClick={addQuote} className="gap-2 flex-1 sm:flex-initial bg-teal hover:bg-teal/90 text-teal-foreground">
+                <Plus className="h-4 w-4" /> Add Quote
+              </Button>
+            </div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
