@@ -170,7 +170,8 @@ export default function MyListings() {
         description="Manage your marketplace listings"
         keywords="marketplace, listings, manage, edit, business"
       />
-      <div className="container mx-auto px-4 py-8">
+      <div className="max-w-7xl mx-auto p-4">
+        <div className="bg-white rounded-2xl shadow-xl p-6 md:p-8">
           <div className="max-w-6xl mx-auto">
             <div className="flex justify-between items-center mb-8">
               <h1 className="text-4xl font-bold">My Listings</h1>
@@ -256,6 +257,7 @@ export default function MyListings() {
             )}
           </div>
         </div>
+      </div>
 
       <Dialog open={!!editingListing} onOpenChange={() => setEditingListing(null)}>
         <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">

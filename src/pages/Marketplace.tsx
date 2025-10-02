@@ -29,7 +29,8 @@ export default function Marketplace() {
         keywords="marketplace, vendors, vacation rentals, handmade gifts, etsy, community"
       />
       
-      <div className="container mx-auto px-4 py-8">
+      <div className="max-w-7xl mx-auto p-4">
+        <div className="bg-white rounded-2xl shadow-xl p-6 md:p-8">
         <div className="flex justify-between items-center mb-8">
           <div>
             <h1 className="text-4xl font-bold mb-2">Community Marketplace</h1>
@@ -75,6 +76,7 @@ export default function Marketplace() {
             </TabsContent>
           </Tabs>
         )}
+        </div>
       </div>
     </>
   );
