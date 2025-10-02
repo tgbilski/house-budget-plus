@@ -19,6 +19,7 @@ interface MarketplaceListing {
   location_city: string | null;
   location_state: string | null;
   location_country: string | null;
+  user_id: string;
   created_at: string;
 }
 

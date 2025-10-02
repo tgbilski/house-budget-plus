@@ -32,6 +32,7 @@ interface MarketplaceListing {
   location_city: string | null;
   location_state: string | null;
   location_country: string | null;
+  user_id: string;
   created_at: string;
 }
 
@@ -116,9 +117,12 @@ export function MarketplaceListingCard({ listing }: MarketplaceListingCardProps)
     ? listing.image_urls[0] 
     : null;
 
+  // Check if this is an example listing
+  const isExampleListing = listing.user_id === '00000000-0000-0000-0000-000000000000';
+
   return (
     <Card 
-      className={`hover:shadow-lg transition-shadow ${listing.website_url ? 'cursor-pointer' : ''}`}
+      className={`hover:shadow-lg transition-shadow ${listing.website_url ? 'cursor-pointer' : ''} ${isExampleListing ? 'border-2 border-orange-200' : ''}`}
       onClick={handleCardClick}
     >
       {thumbnailImage && (
@@ -132,9 +136,16 @@ export function MarketplaceListingCard({ listing }: MarketplaceListingCardProps)
       )}
       <CardHeader>
         <div className="flex justify-between items-start mb-2">
-          <Badge className={categoryColors[listing.category as keyof typeof categoryColors]}>
-            {listing.category}
-          </Badge>
+          <div className="flex gap-2">
+            <Badge className={categoryColors[listing.category as keyof typeof categoryColors]}>
+              {listing.category}
+            </Badge>
+            {isExampleListing && (
+              <Badge variant="outline" className="bg-orange-50 text-orange-700 border-orange-300">
+                Example
+              </Badge>
+            )}
+          </div>
           <AlertDialog>
             <AlertDialogTrigger asChild>
               <Button 
