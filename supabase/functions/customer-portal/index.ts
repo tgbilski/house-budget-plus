@@ -5,7 +5,6 @@ import Stripe from "https://esm.sh/stripe@14.21.0";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 
 // Make the CORS headers dynamic based on the incoming request's origin.
-// This is a more robust solution than hard-coding a single domain.
 const getCorsHeaders = (origin: string | null) => {
   const allowedOrigins = [
     "https://www.housebudgetcalculator.com",
@@ -20,8 +19,8 @@ const getCorsHeaders = (origin: string | null) => {
     origin.includes('.supabase.co')
   );
   
-  // Default to first allowed origin if origin is not recognized
-  const allowedOrigin = isAllowed ? origin : allowedOrigins[0];
+  // Use wildcard or specific origin
+  const allowedOrigin = isAllowed && origin ? origin : "*";
 
   return {
     "Access-Control-Allow-Origin": allowedOrigin,
@@ -68,16 +67,18 @@ serve(async (req) => {
     logStep("User authenticated", { userId: user.id, email: user.email });
 
     const stripe = new Stripe(stripeKey, { apiVersion: "2023-10-16" });
+    logStep("Searching for Stripe customer", { email: user.email });
+    
     const customers = await stripe.customers.list({ email: user.email, limit: 1 });
     if (customers.data.length === 0) {
-      throw new Error("No Stripe customer found for this user");
+      logStep("ERROR: No Stripe customer found", { email: user.email });
+      throw new Error("No Stripe customer found for this user. Please ensure you have an active subscription.");
     }
     const customerId = customers.data[0].id;
     logStep("Found Stripe customer", { customerId });
 
-    // Validate origin for security - but still allow request to proceed
+    // Determine return URL
     const allowedOrigins = [
-      "https://jakfagdthwehkvynykwu.supabase.co",
       "https://www.housebudgetcalculator.com",
       "http://localhost:3000",
       "https://localhost:3000"
@@ -89,15 +90,12 @@ serve(async (req) => {
       origin.includes('.supabase.co')
     );
 
-    if (!isValidOrigin) {
-      logStep("Warning: Request from unrecognized origin", { origin });
-    }
-
-    logStep("Creating Stripe portal session", { customerId, returnUrl: `${origin || allowedOrigins[0]}/` });
+    const returnUrl = isValidOrigin && origin ? `${origin}/` : allowedOrigins[0];
+    logStep("Creating Stripe portal session", { customerId, returnUrl });
 
     const portalSession = await stripe.billingPortal.sessions.create({
       customer: customerId,
-      return_url: `${origin || allowedOrigins[0]}/`,
+      return_url: returnUrl,
     });
     logStep("Customer portal session created", { sessionId: portalSession.id, url: portalSession.url });
 
