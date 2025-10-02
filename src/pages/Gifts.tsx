@@ -8,13 +8,15 @@ import { WarningBanner } from '@/components/WarningBanner';
 import { GiftListSelector } from '@/components/GiftListSelector';
 import { GiftCardDisplay } from '@/components/GiftCardDisplay';
 import { YearSelector } from '@/components/YearSelector';
-import { Gift, AlertTriangle } from 'lucide-react';
+import { Gift, AlertTriangle, ShoppingBag } from 'lucide-react';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { Button } from '@/components/ui/button';
 
 export function Gifts() {
   const { user } = useAuth();
   const { earnBadge } = useBadges();
+  const navigate = useNavigate();
   // 1. The page's only job is to call our main hook to get the data.
   const {
     loading,
@@ -101,6 +103,16 @@ export function Gifts() {
             onCancelEditing={cancelEditing}
             onSetEditingTitle={setEditingTitle}
           />
+
+          <div className="flex justify-end">
+            <Button 
+              onClick={() => navigate('/marketplace')} 
+              variant="outline" 
+              className="gap-2"
+            >
+              <ShoppingBag className="h-4 w-4" /> Find Gift Ideas
+            </Button>
+          </div>
 
           {/* 3. It renders the gift card display area for the selected list. */}
           <GiftCardDisplay
