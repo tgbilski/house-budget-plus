@@ -64,17 +64,7 @@ serve(async (req) => {
       mode: "subscription",
       line_items: [
         {
-          price_data: {
-            currency: "usd",
-            product_data: {
-              name: "Marketplace Listing",
-              description: "Monthly subscription for one marketplace listing",
-            },
-            unit_amount: 99, // $0.99
-            recurring: {
-              interval: "month",
-            },
-          },
+          price: "price_1SDcxzChqC8M6G2b4twJs4s5", // Marketplace listing monthly fee
           quantity: 1,
         },
       ],
