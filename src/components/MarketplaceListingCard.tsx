@@ -1,7 +1,7 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { ExternalLink, Mail, Phone, Flag } from "lucide-react";
+import { ExternalLink, Mail, Phone, Flag, MapPin } from "lucide-react";
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -29,6 +29,9 @@ interface MarketplaceListing {
   contact_phone: string | null;
   website_url: string | null;
   image_urls: string[] | null;
+  location_city: string | null;
+  location_state: string | null;
+  location_country: string | null;
   created_at: string;
 }
 
@@ -180,6 +183,15 @@ export function MarketplaceListingCard({ listing }: MarketplaceListingCardProps)
         <p className="text-sm text-muted-foreground mb-4 line-clamp-3">
           {listing.description}
         </p>
+
+        {(listing.location_city || listing.location_state) && (
+          <div className="flex items-center gap-1 text-sm text-muted-foreground mb-4">
+            <MapPin className="h-4 w-4" />
+            <span>
+              {listing.location_city}{listing.location_city && listing.location_state ? ', ' : ''}{listing.location_state}
+            </span>
+          </div>
+        )}
 
         <div className="space-y-2" onClick={(e) => e.stopPropagation()}>
           {listing.contact_email && (

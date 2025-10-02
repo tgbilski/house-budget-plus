@@ -82,3 +82,11 @@ verify_jwt = true
 [[edge_functions.functions]]
 name = "stripe-listing-webhook"
 verify_jwt = false
+
+[[edge_functions.functions]]
+name = "geocode-address"
+verify_jwt = true
+
+[[edge_functions.functions]]
+name = "fetch-url-metadata"
+verify_jwt = true

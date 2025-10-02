@@ -22,9 +22,62 @@ export function MarketplaceListingForm({ onClose }: MarketplaceListingFormProps)
   const [contactPhone, setContactPhone] = useState("");
   const [websiteUrl, setWebsiteUrl] = useState("");
   const [thumbnailUrl, setThumbnailUrl] = useState("");
+  const [address, setAddress] = useState("");
+  const [locationData, setLocationData] = useState<{
+    latitude: number;
+    longitude: number;
+    city: string;
+    state: string;
+    country: string;
+  } | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isFetchingMetadata, setIsFetchingMetadata] = useState(false);
+  const [isGeocodingAddress, setIsGeocodingAddress] = useState(false);
   const { toast } = useToast();
+
+  // Geocode address
+  const geocodeAddress = async () => {
+    if (!address || address.length < 5) {
+      toast({
+        title: "Invalid address",
+        description: "Please enter a valid address",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsGeocodingAddress(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('geocode-address', {
+        body: { address }
+      });
+
+      if (error) throw error;
+
+      if (data?.latitude && data?.longitude) {
+        setLocationData({
+          latitude: data.latitude,
+          longitude: data.longitude,
+          city: data.city || '',
+          state: data.state || '',
+          country: data.country || '',
+        });
+        toast({
+          title: "Address verified",
+          description: `Location: ${data.city ? data.city + ', ' : ''}${data.state || data.country}`,
+        });
+      }
+    } catch (error) {
+      console.error("Error geocoding address:", error);
+      toast({
+        title: "Error",
+        description: "Could not verify address. Please check and try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsGeocodingAddress(false);
+    }
+  };
 
   // Fetch metadata when URL is entered
   const fetchUrlMetadata = async (url: string) => {
@@ -101,6 +154,12 @@ export function MarketplaceListingForm({ onClose }: MarketplaceListingFormProps)
           contact_phone: contactPhone || null,
           website_url: websiteUrl || null,
           image_urls: thumbnailUrl ? [thumbnailUrl] : [],
+          location_address: address || null,
+          location_latitude: locationData?.latitude || null,
+          location_longitude: locationData?.longitude || null,
+          location_city: locationData?.city || null,
+          location_state: locationData?.state || null,
+          location_country: locationData?.country || null,
           status: 'pending',
         })
         .select()
@@ -268,6 +327,35 @@ export function MarketplaceListingForm({ onClose }: MarketplaceListingFormProps)
                 </div>
               )}
             </div>
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="address">Business Address (optional)</Label>
+            <div className="flex gap-2">
+              <Input
+                id="address"
+                value={address}
+                onChange={(e) => setAddress(e.target.value)}
+                placeholder="123 Main St, City, State"
+              />
+              <Button
+                type="button"
+                variant="outline"
+                onClick={geocodeAddress}
+                disabled={isGeocodingAddress || !address}
+              >
+                {isGeocodingAddress ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : (
+                  "Verify"
+                )}
+              </Button>
+            </div>
+            {locationData && (
+              <p className="text-xs text-muted-foreground">
+                ✓ Verified: {locationData.city}{locationData.city && locationData.state ? ', ' : ''}{locationData.state}
+              </p>
+            )}
           </div>
 
           <div className="grid grid-cols-2 gap-4">
