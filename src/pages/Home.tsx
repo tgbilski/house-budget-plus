@@ -203,7 +203,7 @@ const HeroSectionContent = () => (
 );
 
 const MarketplacePromo = () => (
-  <section className="py-8 md:py-12 px-4 mx-4 my-8 rounded-2xl bg-gradient-to-br from-primary/10 via-secondary/10 to-accent/10 shadow-xl border-2 border-primary/20 relative overflow-hidden">
+  <section className="py-8 md:py-12 px-4 mx-4 my-8 rounded-2xl bg-white shadow-xl border-2 border-primary/20 relative overflow-hidden">
     {/* Decorative background elements */}
     <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full blur-3xl"></div>
     <div className="absolute bottom-0 left-0 w-64 h-64 bg-secondary/5 rounded-full blur-3xl"></div>
