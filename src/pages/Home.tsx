@@ -152,7 +152,7 @@ const HeroSectionContent = () => (
       <img
         src="/lovable-uploads/ed809955-ef71-4d81-b072-945082f4380a.png"
         alt="Budget Calculator mascot"
-        className="w-28 h-28 md:w-32 md:h-32 object-contain hover:scale-110 transition-transform duration-300"
+        className="w-28 h-28 md:w-32 md:h-32 object-contain"
       />
     </div>
     <div className="absolute inset-0">
@@ -226,7 +226,7 @@ const MarketplacePromo = () => (
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-        <div className="bg-white/80 backdrop-blur-sm rounded-xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 border border-primary/10">
+        <div className="bg-white/80 backdrop-blur-sm rounded-xl p-6 shadow-lg border border-primary/10">
           <div className="flex justify-center mb-4">
             <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center">
               <HomeIcon className="h-8 w-8 text-primary" />
@@ -236,20 +236,20 @@ const MarketplacePromo = () => (
           <p className="text-gray-600 text-center">Find trusted contractors and service providers for your home projects</p>
         </div>
 
-        <div className="bg-white/80 backdrop-blur-sm rounded-xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 border border-primary/10">
+        <div className="bg-white/80 backdrop-blur-sm rounded-xl p-6 shadow-lg border border-primary/10">
           <div className="flex justify-center mb-4">
-            <div className="w-16 h-16 bg-secondary/10 rounded-full flex items-center justify-center">
-              <Plane className="h-8 w-8 text-secondary" />
+            <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center">
+              <Plane className="h-8 w-8 text-primary" />
             </div>
           </div>
           <h3 className="text-xl font-bold text-gray-900 text-center mb-2">Vacation Rentals</h3>
           <p className="text-gray-600 text-center">Discover affordable and unique stays for your next getaway</p>
         </div>
 
-        <div className="bg-white/80 backdrop-blur-sm rounded-xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 border border-primary/10">
+        <div className="bg-white/80 backdrop-blur-sm rounded-xl p-6 shadow-lg border border-primary/10">
           <div className="flex justify-center mb-4">
-            <div className="w-16 h-16 bg-accent/10 rounded-full flex items-center justify-center">
-              <Heart className="h-8 w-8 text-accent" />
+            <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center">
+              <Heart className="h-8 w-8 text-primary" />
             </div>
           </div>
           <h3 className="text-xl font-bold text-gray-900 text-center mb-2">Handmade Gifts</h3>
