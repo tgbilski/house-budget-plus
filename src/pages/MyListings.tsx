@@ -1,6 +1,4 @@
 import { useEffect, useState } from "react";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
 import { SEO } from "@/components/SEO";
 import { useAuth } from "@/hooks/useAuth";
 import { useNavigate } from "react-router-dom";
@@ -172,9 +170,7 @@ export default function MyListings() {
         description="Manage your marketplace listings"
         keywords="marketplace, listings, manage, edit, business"
       />
-      <div className="min-h-screen flex flex-col">
-        <Header />
-        <main className="flex-1 container mx-auto px-4 py-8">
+      <div className="container mx-auto px-4 py-8">
           <div className="max-w-6xl mx-auto">
             <div className="flex justify-between items-center mb-8">
               <h1 className="text-4xl font-bold">My Listings</h1>
@@ -259,9 +255,7 @@ export default function MyListings() {
               </div>
             )}
           </div>
-        </main>
-        <Footer />
-      </div>
+        </div>
 
       <Dialog open={!!editingListing} onOpenChange={() => setEditingListing(null)}>
         <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">

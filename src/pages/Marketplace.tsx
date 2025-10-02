@@ -1,6 +1,4 @@
 import { useState } from "react";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Plus } from "lucide-react";
@@ -24,20 +22,19 @@ export default function Marketplace() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-background">
+    <>
       <SEO
         title="Community Marketplace - Find Vendors, Vacations & Gifts"
-        description="Browse community-submitted vendors, vacation rentals, and handmade gifts from fellow users."
+        description="Browse community-submitted vendors, vacation rentals, and handmade gifts from fellow users. Click any listing to visit the seller's website."
         keywords="marketplace, vendors, vacation rentals, handmade gifts, etsy, community"
       />
-      <Header />
       
-      <main className="flex-1 container mx-auto px-4 py-8">
+      <div className="container mx-auto px-4 py-8">
         <div className="flex justify-between items-center mb-8">
           <div>
             <h1 className="text-4xl font-bold mb-2">Community Marketplace</h1>
             <p className="text-muted-foreground">
-              Discover vendors, vacation rentals, and unique gifts shared by our community
+              Discover vendors, vacation rentals, and unique gifts. Click any listing to visit their website.
             </p>
           </div>
           <div className="flex gap-2">
@@ -78,9 +75,7 @@ export default function Marketplace() {
             </TabsContent>
           </Tabs>
         )}
-      </main>
-
-      <Footer />
-    </div>
+      </div>
+    </>
   );
 }
