@@ -1,6 +1,6 @@
 import React from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Calculator, Scale, Target, Plane, Brain, ArrowRight, Gift, ChevronDown, UserCheck, Crown, Store, Home as HomeIcon, Heart } from "lucide-react";
+import { Calculator, Scale, Target, Plane, Brain, ArrowRight, Gift, ChevronDown, UserCheck, Crown, Store, Home as HomeIcon, Heart, Check } from "lucide-react";
 import { Link } from "react-router-dom";
 import { SEO } from "@/components/SEO";
 import { seoData } from "@/utils/seoData";
@@ -191,14 +191,14 @@ const HeroSectionContent = () => (
           </p>
           
           {/* Feature List */}
-          <ul className="text-sm md:text-base text-gray-700 mb-6 space-y-2 list-disc list-inside">
-            <li>Budget expenses</li>
-            <li>Save money</li>
-            <li>Compare estimates</li>
-            <li>Plan vacations</li>
-            <li>Gift ideas</li>
-            <li>Advertise yourself</li>
-            <li>Leverage AI</li>
+          <ul className="text-sm md:text-base text-gray-700 mb-6 space-y-2">
+            <li className="flex items-center gap-2"><Check className="h-5 w-5 text-primary flex-shrink-0" /> Budget expenses</li>
+            <li className="flex items-center gap-2"><Check className="h-5 w-5 text-primary flex-shrink-0" /> Save money</li>
+            <li className="flex items-center gap-2"><Check className="h-5 w-5 text-primary flex-shrink-0" /> Compare estimates</li>
+            <li className="flex items-center gap-2"><Check className="h-5 w-5 text-primary flex-shrink-0" /> Plan vacations</li>
+            <li className="flex items-center gap-2"><Check className="h-5 w-5 text-primary flex-shrink-0" /> Gift tracking</li>
+            <li className="flex items-center gap-2"><Check className="h-5 w-5 text-primary flex-shrink-0" /> Advertise yourself</li>
+            <li className="flex items-center gap-2"><Check className="h-5 w-5 text-primary flex-shrink-0" /> Leverage AI</li>
           </ul>
           
           {/* Conditional Button Display */}
