@@ -192,13 +192,13 @@ const HeroSectionContent = () => (
           
           {/* Feature List */}
           <ul className="text-sm md:text-base text-gray-700 mb-6 space-y-2">
-            <li className="flex items-center gap-2"><Check className="h-5 w-5 text-primary flex-shrink-0" /> Budget expenses</li>
-            <li className="flex items-center gap-2"><Check className="h-5 w-5 text-primary flex-shrink-0" /> Save money</li>
-            <li className="flex items-center gap-2"><Check className="h-5 w-5 text-primary flex-shrink-0" /> Compare estimates</li>
-            <li className="flex items-center gap-2"><Check className="h-5 w-5 text-primary flex-shrink-0" /> Plan vacations</li>
-            <li className="flex items-center gap-2"><Check className="h-5 w-5 text-primary flex-shrink-0" /> Gift tracking</li>
-            <li className="flex items-center gap-2"><Check className="h-5 w-5 text-primary flex-shrink-0" /> Advertise yourself</li>
-            <li className="flex items-center gap-2"><Check className="h-5 w-5 text-primary flex-shrink-0" /> Leverage AI</li>
+            <li className="flex items-center gap-2"><span className="bg-green-500 rounded-full p-1 flex-shrink-0"><Check className="h-4 w-4 text-white stroke-[3]" /></span> Budget expenses</li>
+            <li className="flex items-center gap-2"><span className="bg-green-500 rounded-full p-1 flex-shrink-0"><Check className="h-4 w-4 text-white stroke-[3]" /></span> Save money</li>
+            <li className="flex items-center gap-2"><span className="bg-green-500 rounded-full p-1 flex-shrink-0"><Check className="h-4 w-4 text-white stroke-[3]" /></span> Compare estimates</li>
+            <li className="flex items-center gap-2"><span className="bg-green-500 rounded-full p-1 flex-shrink-0"><Check className="h-4 w-4 text-white stroke-[3]" /></span> Plan vacations</li>
+            <li className="flex items-center gap-2"><span className="bg-green-500 rounded-full p-1 flex-shrink-0"><Check className="h-4 w-4 text-white stroke-[3]" /></span> Gift tracking</li>
+            <li className="flex items-center gap-2"><span className="bg-green-500 rounded-full p-1 flex-shrink-0"><Check className="h-4 w-4 text-white stroke-[3]" /></span> Advertise yourself</li>
+            <li className="flex items-center gap-2"><span className="bg-green-500 rounded-full p-1 flex-shrink-0"><Check className="h-4 w-4 text-white stroke-[3]" /></span> Leverage AI</li>
           </ul>
           
           {/* Conditional Button Display */}
