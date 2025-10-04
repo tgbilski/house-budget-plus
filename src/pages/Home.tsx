@@ -186,9 +186,20 @@ const HeroSectionContent = () => (
           <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-3 text-gray-900 leading-tight">
             Own Your <span className="text-primary">House Budget</span>
           </h1>
-          <p className="text-sm md:text-base text-gray-600 mb-6 leading-relaxed">
+          <p className="text-sm md:text-base text-gray-600 mb-4 leading-relaxed">
             <strong>Your data stays yours.</strong> No bank connections required. Our AI helps you develop a personalized financial plan using only the data you choose to share.
           </p>
+          
+          {/* Feature List */}
+          <ul className="text-sm md:text-base text-gray-700 mb-6 space-y-2 list-disc list-inside">
+            <li>Budget expenses</li>
+            <li>Save money</li>
+            <li>Compare estimates</li>
+            <li>Plan vacations</li>
+            <li>Gift ideas</li>
+            <li>Advertise yourself</li>
+            <li>Leverage AI</li>
+          </ul>
           
           {/* Conditional Button Display */}
           <PremiumButton />
