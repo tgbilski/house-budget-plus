@@ -11,6 +11,7 @@ import { LucideIcon } from 'lucide-react';
 import { useAuth } from "@/hooks/useAuth";
 import { useSubscription } from "@/hooks/useSubscription";
 import { Button } from "@/components/ui/button";
+import { StatsTracker } from "@/components/StatsTracker";
 
 // Import page preview images
 import calculatorPreview from '@/assets/calculator-page-preview.png';
@@ -388,6 +389,7 @@ const Home = () => {
       <div className="min-h-screen overflow-x-hidden relative">
         <div className="space-y-4">
           <HeroSectionContent />
+          <StatsTracker />
           <ScrollIndicator />
           <MarketplacePromo />
           <ScrollIndicator />
