@@ -43,21 +43,18 @@ export const BudgetDonutChart = ({ totalIncome, totalExpenses, currency }: Budge
   };
 
   return (
-    <Card className="bg-white shadow-xl border-2 border-gray-100">
-      <CardHeader className="pb-4">
-        <CardTitle className="text-xl font-bold text-center">Budget Overview</CardTitle>
-      </CardHeader>
-      <CardContent>
-        {hasData ? (
-          <>
-            <ResponsiveContainer width="100%" height={300}>
-              <PieChart>
-                <Pie
-                  data={data}
-                  cx="50%"
-                  cy="50%"
-                  innerRadius={60}
-                  outerRadius={100}
+    <div className="bg-white rounded-xl p-4 shadow-md border border-gray-200">
+      <h3 className="text-lg font-bold text-center mb-3">Budget Overview</h3>
+      {hasData ? (
+        <>
+          <ResponsiveContainer width="100%" height={200}>
+            <PieChart>
+              <Pie
+                data={data}
+                cx="50%"
+                cy="50%"
+                innerRadius={40}
+                outerRadius={80}
                   paddingAngle={5}
                   dataKey="value"
                   label={renderCustomLabel}
@@ -69,83 +66,82 @@ export const BudgetDonutChart = ({ totalIncome, totalExpenses, currency }: Budge
                 </Pie>
                 <Tooltip content={<CustomTooltip />} />
               </PieChart>
-            </ResponsiveContainer>
+          </ResponsiveContainer>
 
-            {/* Legend */}
-            <div className="mt-6 space-y-3">
-              <div className="flex items-center justify-between p-3 bg-green-50 rounded-lg">
-                <div className="flex items-center gap-2">
-                  <div className="w-4 h-4 rounded-full bg-green-500"></div>
-                  <span className="font-semibold text-gray-700">Total Income</span>
-                </div>
-                <span className="text-lg font-bold text-green-600">
-                  {currency.symbol}{totalIncome.toLocaleString()}
-                </span>
+          {/* Compact Legend */}
+          <div className="mt-4 space-y-2">
+            <div className="flex items-center justify-between p-2 bg-green-50 rounded">
+              <div className="flex items-center gap-2">
+                <div className="w-3 h-3 rounded-full bg-green-500"></div>
+                <span className="text-sm font-medium text-gray-700">Income</span>
               </div>
-
-              <div className="flex items-center justify-between p-3 bg-red-50 rounded-lg">
-                <div className="flex items-center gap-2">
-                  <div className="w-4 h-4 rounded-full bg-red-500"></div>
-                  <span className="font-semibold text-gray-700">Total Expenses</span>
-                </div>
-                <span className="text-lg font-bold text-red-600">
-                  {currency.symbol}{totalExpenses.toLocaleString()}
-                </span>
-              </div>
-
-              {/* Net Balance */}
-              <div className={`flex items-center justify-between p-4 rounded-lg border-2 ${
-                netBalance > 0 
-                  ? 'bg-green-50 border-green-200' 
-                  : netBalance < 0 
-                  ? 'bg-red-50 border-red-200' 
-                  : 'bg-gray-50 border-gray-200'
-              }`}>
-                <div className="flex items-center gap-2">
-                  {netBalance > 0 ? (
-                    <TrendingUp className="w-5 h-5 text-green-600" />
-                  ) : netBalance < 0 ? (
-                    <TrendingDown className="w-5 h-5 text-red-600" />
-                  ) : (
-                    <Minus className="w-5 h-5 text-gray-600" />
-                  )}
-                  <span className="font-bold text-gray-900">Net Balance</span>
-                </div>
-                <span className={`text-xl font-bold ${
-                  netBalance > 0 
-                    ? 'text-green-600' 
-                    : netBalance < 0 
-                    ? 'text-red-600' 
-                    : 'text-gray-600'
-                }`}>
-                  {currency.symbol}{Math.abs(netBalance).toLocaleString()}
-                </span>
-              </div>
-
-              {netBalance < 0 && (
-                <div className="bg-amber-50 border border-amber-200 rounded-lg p-3 mt-2">
-                  <p className="text-sm text-amber-800 text-center">
-                    ⚠️ Your expenses exceed your income by {currency.symbol}{Math.abs(netBalance).toLocaleString()}
-                  </p>
-                </div>
-              )}
-              
-              {netBalance > 0 && (
-                <div className="bg-green-50 border border-green-200 rounded-lg p-3 mt-2">
-                  <p className="text-sm text-green-800 text-center">
-                    ✅ Great job! You have {currency.symbol}{netBalance.toLocaleString()} left to save or invest
-                  </p>
-                </div>
-              )}
+              <span className="text-sm font-bold text-green-600">
+                {currency.symbol}{totalIncome.toLocaleString()}
+              </span>
             </div>
-          </>
-        ) : (
-          <div className="text-center py-12 text-gray-500">
-            <p className="text-lg font-medium mb-2">No budget data yet</p>
-            <p className="text-sm">Add your income and expenses to see your budget visualization</p>
+
+            <div className="flex items-center justify-between p-2 bg-red-50 rounded">
+              <div className="flex items-center gap-2">
+                <div className="w-3 h-3 rounded-full bg-red-500"></div>
+                <span className="text-sm font-medium text-gray-700">Expenses</span>
+              </div>
+              <span className="text-sm font-bold text-red-600">
+                {currency.symbol}{totalExpenses.toLocaleString()}
+              </span>
+            </div>
+
+            {/* Net Balance */}
+            <div className={`flex items-center justify-between p-2 rounded border ${
+              netBalance > 0 
+                ? 'bg-green-50 border-green-200' 
+                : netBalance < 0 
+                ? 'bg-red-50 border-red-200' 
+                : 'bg-gray-50 border-gray-200'
+            }`}>
+              <div className="flex items-center gap-2">
+                {netBalance > 0 ? (
+                  <TrendingUp className="w-4 h-4 text-green-600" />
+                ) : netBalance < 0 ? (
+                  <TrendingDown className="w-4 h-4 text-red-600" />
+                ) : (
+                  <Minus className="w-4 h-4 text-gray-600" />
+                )}
+                <span className="text-sm font-bold text-gray-900">Net Balance</span>
+              </div>
+              <span className={`text-base font-bold ${
+                netBalance > 0 
+                  ? 'text-green-600' 
+                  : netBalance < 0 
+                  ? 'text-red-600' 
+                  : 'text-gray-600'
+              }`}>
+                {currency.symbol}{Math.abs(netBalance).toLocaleString()}
+              </span>
+            </div>
+
+            {netBalance < 0 && (
+              <div className="bg-amber-50 border border-amber-200 rounded p-2 mt-1">
+                <p className="text-xs text-amber-800 text-center">
+                  ⚠️ Expenses exceed income by {currency.symbol}{Math.abs(netBalance).toLocaleString()}
+                </p>
+              </div>
+            )}
+            
+            {netBalance > 0 && (
+              <div className="bg-green-50 border border-green-200 rounded p-2 mt-1">
+                <p className="text-xs text-green-800 text-center">
+                  ✅ {currency.symbol}{netBalance.toLocaleString()} left to save
+                </p>
+              </div>
+            )}
           </div>
-        )}
-      </CardContent>
-    </Card>
+        </>
+      ) : (
+        <div className="text-center py-8 text-gray-500">
+          <p className="text-sm font-medium mb-1">No data yet</p>
+          <p className="text-xs">Add income and expenses to see your budget</p>
+        </div>
+      )}
+    </div>
   );
 };

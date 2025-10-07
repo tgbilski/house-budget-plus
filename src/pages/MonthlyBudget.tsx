@@ -173,18 +173,7 @@ const MonthlyBudget: React.FC = () => {
           </div>
         </div>
 
-        {/* Budget Overview Chart */}
-        {!isLoading && !error && (
-          <div className="mb-8">
-            <BudgetDonutChart
-              totalIncome={totalIncome}
-              totalExpenses={totalExpenses}
-              currency={currency}
-            />
-          </div>
-        )}
-
-        {/* Budget calculators section - 4 static calculators */}
+        {/* Budget calculators section with overview chart */}
         {/* CHANGE: Added conditional rendering for loading and error states */}
         {isLoading ? (
           <div className="text-center p-8">
@@ -195,19 +184,30 @@ const MonthlyBudget: React.FC = () => {
             <p>{error}</p>
           </div>
         ) : (
-          // Grid for 4 static calculators
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {calculators.map((calculator) => (
-              <BudgetCalculator
-                key={calculator.id}
-                id={calculator.id}
-                calculatorNumber={parseInt(calculator.id)}
-                showRemove={false}
-                onRemove={() => {}} // No-op since we don't allow removal
-                onNameChange={handleNameChange}
-                pageType="monthly_budget"
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            {/* Budget Overview Chart - takes 1 column */}
+            <div className="lg:col-span-1">
+              <BudgetDonutChart
+                totalIncome={totalIncome}
+                totalExpenses={totalExpenses}
+                currency={currency}
               />
-            ))}
+            </div>
+
+            {/* Budget calculators - takes 2 columns */}
+            <div className="lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-6">
+              {calculators.map((calculator) => (
+                <BudgetCalculator
+                  key={calculator.id}
+                  id={calculator.id}
+                  calculatorNumber={parseInt(calculator.id)}
+                  showRemove={false}
+                  onRemove={() => {}} // No-op since we don't allow removal
+                  onNameChange={handleNameChange}
+                  pageType="monthly_budget"
+                />
+              ))}
+            </div>
           </div>
         )}
 
