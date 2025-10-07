@@ -210,17 +210,17 @@ export const RSSFeed: React.FC<RSSFeedProps> = ({
     <section className="py-8 md:py-12 overflow-hidden">
       <div className="w-full max-w-sm md:max-w-4xl mx-auto px-2">
         <div className="text-center mb-6 md:mb-8">
-          <h2 className="text-lg md:text-2xl font-bold mb-3 text-gray-900">
+          <h2 className="text-lg md:text-2xl font-bold mb-3 text-white">
             {title}
           </h2>
-          <p className="text-xs md:text-base text-gray-600">
+          <p className="text-xs md:text-base text-gray-300">
             Stay informed with the latest financial news
           </p>
         </div>
         
         {articles.length === 0 ? (
           <div className="text-center py-8">
-            <p className="text-gray-600">Loading financial news...</p>
+            <p className="text-gray-300">Loading financial news...</p>
           </div>
         ) : (
           <>

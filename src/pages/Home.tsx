@@ -395,7 +395,7 @@ const Home = () => {
           <FeaturePreviewsGrid />
           <ScrollIndicator />
 
-          <div className="bg-gray-100 rounded-2xl mx-4 my-8 shadow-xl p-6 md:p-8 overflow-hidden">
+          <div className="bg-gradient-to-br from-gray-900 to-gray-800 rounded-2xl mx-4 my-8 shadow-xl border-2 border-gray-700 p-6 md:p-8 overflow-hidden">
             <div className="w-full max-w-7xl mx-auto overflow-hidden">
               <RSSFeed
                 feedUrl="https://rss.cnn.com/rss/money_news_international.rss"
