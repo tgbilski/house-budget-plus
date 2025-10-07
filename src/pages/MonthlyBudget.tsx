@@ -21,6 +21,7 @@ import { budgetCalculatorFAQs } from '@/utils/faqData';
 import { FAQ } from '@/components/FAQ';
 import { InternalLinks } from '@/components/InternalLinks';
 import { AIChatbot } from '@/components/AIChatbot';
+import { BudgetDonutChart } from '@/components/BudgetDonutChart';
 
 interface Calculator {
   id: string;
@@ -171,6 +172,17 @@ const MonthlyBudget: React.FC = () => {
             <YearSelector />
           </div>
         </div>
+
+        {/* Budget Overview Chart */}
+        {!isLoading && !error && (
+          <div className="mb-8">
+            <BudgetDonutChart
+              totalIncome={totalIncome}
+              totalExpenses={totalExpenses}
+              currency={currency}
+            />
+          </div>
+        )}
 
         {/* Budget calculators section - 4 static calculators */}
         {/* CHANGE: Added conditional rendering for loading and error states */}
