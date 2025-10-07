@@ -5,8 +5,11 @@ import { Plus } from "lucide-react";
 import { MarketplaceListingForm } from "@/components/MarketplaceListingForm";
 import { MarketplaceGrid } from "@/components/MarketplaceGrid";
 import { SEO } from "@/components/SEO";
+import { seoData } from "@/utils/seoData";
 import { useAuth } from "@/hooks/useAuth";
 import { useNavigate } from "react-router-dom";
+import { InternalLinks } from "@/components/InternalLinks";
+import { FAQ } from "@/components/FAQ";
 
 export default function Marketplace() {
   const [showForm, setShowForm] = useState(false);
@@ -24,9 +27,12 @@ export default function Marketplace() {
   return (
     <>
       <SEO
-        title="Community Marketplace - Find Vendors, Vacations & Gifts"
-        description="Browse community-submitted vendors, vacation rentals, and handmade gifts from fellow users. Click any listing to visit the seller's website."
-        keywords="marketplace, vendors, vacation rentals, handmade gifts, etsy, community"
+        title={seoData.marketplace.title}
+        description={seoData.marketplace.description}
+        keywords={seoData.marketplace.keywords}
+        canonical={seoData.marketplace.canonical}
+        ogImage={seoData.marketplace.ogImage}
+        structuredData={seoData.marketplace.structuredData}
       />
       
       <div className="max-w-7xl mx-auto p-4">
@@ -75,6 +81,34 @@ export default function Marketplace() {
               <MarketplaceGrid category="gift" />
             </TabsContent>
           </Tabs>
+        )}
+
+        {!showForm && (
+          <>
+            <FAQ 
+              faqs={[
+                {
+                  question: "How do I list my business on the marketplace?",
+                  answer: "Click the 'List Your Business' button at the top of the page. You'll need to sign in first, then fill out the listing form with your business details, category (vendor, vacation rental, or gift), and contact information."
+                },
+                {
+                  question: "Is there a fee to list on the marketplace?",
+                  answer: "Basic listings are free! We also offer premium listing options with enhanced visibility and features for a small monthly fee."
+                },
+                {
+                  question: "How do buyers contact me through my listing?",
+                  answer: "Each listing includes your website URL and location. Interested buyers can click your listing to visit your website and contact you directly."
+                },
+                {
+                  question: "Can I edit or delete my listing?",
+                  answer: "Yes! Navigate to 'My Listings' from the marketplace page to manage all your listings. You can edit details or delete listings at any time."
+                }
+              ]}
+              title="Marketplace FAQs"
+            />
+            
+            <InternalLinks currentPage="/marketplace" />
+          </>
         )}
         </div>
       </div>

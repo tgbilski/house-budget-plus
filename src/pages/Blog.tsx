@@ -10,6 +10,7 @@ import { useAdminStatus } from '@/hooks/useAdminStatus';
 import { BlogPostCard } from '@/components/BlogPostCard';
 import { BlogPostForm } from '@/components/BlogPostForm';
 import { SEO } from '@/components/SEO';
+import { seoData } from '@/utils/seoData';
 import { toast } from 'sonner';
 
 const Blog: React.FC = () => {
@@ -96,9 +97,12 @@ const Blog: React.FC = () => {
   return (
     <>
       <SEO
-        title="Financial Blog - House Budget Calculator"
-        description="Read our latest articles on budgeting, saving money, and financial planning tips"
-        keywords="financial blog, budgeting tips, money management, savings advice, financial planning"
+        title={seoData.blog.title}
+        description={seoData.blog.description}
+        keywords={seoData.blog.keywords}
+        canonical={seoData.blog.canonical}
+        ogImage={seoData.blog.ogImage}
+        structuredData={seoData.blog.structuredData}
       />
       <div className="min-h-screen bg-gray-100">
         <div className="max-w-7xl mx-auto p-4 space-y-8">

@@ -12,11 +12,14 @@ import { GoalProgressCard } from '@/components/GoalProgressCard';
 import { MonthlySavingsGrid } from '@/components/MonthlySavingsGrid';
 
 import { SEO } from '@/components/SEO';
+import { seoData } from '@/utils/seoData';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Link } from 'react-router-dom';
 import { AlertTriangle, Target } from 'lucide-react';
 import { AIChatbot } from '@/components/AIChatbot';
-import { YearSelector } from '@/components/YearSelector'; // We need this for the header
+import { YearSelector } from '@/components/YearSelector';
+import { InternalLinks } from '@/components/InternalLinks';
+import { FAQ } from '@/components/FAQ';
 
 const SavingsGoals: React.FC = () => {
   const { user } = useAuth();
@@ -56,9 +59,12 @@ const SavingsGoals: React.FC = () => {
   return (
     <div className="min-h-screen bg-background">
       <SEO
-        title="Savings Goals - Track Your Monthly Savings"
-        description="Track your monthly savings with an interactive yearly table and editable goals."
-        keywords="savings goals, financial planning, monthly savings tracker"
+        title={seoData.savingsGoals.title}
+        description={seoData.savingsGoals.description}
+        keywords={seoData.savingsGoals.keywords}
+        canonical={seoData.savingsGoals.canonical}
+        ogImage={seoData.savingsGoals.ogImage}
+        structuredData={seoData.savingsGoals.structuredData}
       />
 
       <div className="max-w-7xl mx-auto p-4">
@@ -122,6 +128,30 @@ const SavingsGoals: React.FC = () => {
             pageContext="I'm on the savings goals page where I can track my monthly savings progress toward financial goals."
             pageName="Savings Goals"
           />
+
+          <FAQ 
+            faqs={[
+              {
+                question: "How do I set a savings goal?",
+                answer: "Click on the goal selector dropdown at the top of the page. You can create new goals or select existing ones. Enter your target amount and goal name to get started."
+              },
+              {
+                question: "Can I track multiple savings goals at once?",
+                answer: "Yes! You can create multiple savings goals (like 'Emergency Fund', 'Vacation', 'New Car') and switch between them to track progress for each one separately."
+              },
+              {
+                question: "How do I update my monthly savings?",
+                answer: "Click on any month in the yearly grid and enter the amount you saved that month. The progress bar will automatically update to show your overall achievement toward the goal."
+              },
+              {
+                question: "What happens if I save more than my target?",
+                answer: "Great job! The progress tracker will show 100% when you reach your target. You can continue adding monthly savings and either increase your target or create a new goal."
+              }
+            ]}
+            title="Savings Goals FAQs"
+          />
+
+          <InternalLinks currentPage="/savings" category="planning" />
         </div>
       </div>
     </div>

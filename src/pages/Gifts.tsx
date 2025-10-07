@@ -4,6 +4,7 @@ import { useGiftLists } from '@/hooks/useGiftLists';
 import { useAuth } from '@/hooks/useAuth';
 import { useBadges } from '@/hooks/useBadges';
 import { SEO } from '@/components/SEO';
+import { seoData } from '@/utils/seoData';
 import { WarningBanner } from '@/components/WarningBanner';
 import { GiftListSelector } from '@/components/GiftListSelector';
 import { GiftCardDisplay } from '@/components/GiftCardDisplay';
@@ -12,6 +13,8 @@ import { Gift, AlertTriangle, ShoppingBag } from 'lucide-react';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
+import { InternalLinks } from '@/components/InternalLinks';
+import { FAQ } from '@/components/FAQ';
 
 export function Gifts() {
   const { user } = useAuth();
@@ -50,9 +53,12 @@ export function Gifts() {
   return (
     <div className="min-h-screen bg-background">
       <SEO 
-        title="Gift Lists" 
-        description="Organize your gift ideas for every occasion."
-        keywords="gift lists, gift ideas, holiday planning, birthday gifts, gift organization"
+        title={seoData.gifts.title}
+        description={seoData.gifts.description}
+        keywords={seoData.gifts.keywords}
+        canonical={seoData.gifts.canonical}
+        ogImage={seoData.gifts.ogImage}
+        structuredData={seoData.gifts.structuredData}
       />
       
       <div className="max-w-7xl mx-auto p-4">
@@ -119,6 +125,30 @@ export function Gifts() {
             selectedList={selectedList}
             onSave={loadGiftLists}
           />
+
+          <FAQ 
+            faqs={[
+              {
+                question: "How do I create a new gift list?",
+                answer: "Click on the gift list dropdown at the top of the page. The system automatically creates lists for you - just select the occasion you want to plan for."
+              },
+              {
+                question: "Can I set a budget for my gift list?",
+                answer: "Yes! Each gift item can have a price estimate. Add your gifts and their estimated costs to track your total gift spending for the occasion."
+              },
+              {
+                question: "How do I track which gifts I've already purchased?",
+                answer: "You can mark gifts as purchased by checking them off your list. This helps you keep track of what's left to buy."
+              },
+              {
+                question: "Can I share my gift lists with others?",
+                answer: "Currently, gift lists are private to your account. This feature helps you plan surprise gifts without others seeing your ideas."
+              }
+            ]}
+            title="Gift List FAQs"
+          />
+
+          <InternalLinks currentPage="/gifts" category="planning" />
         </div>
       </div>
     </div>

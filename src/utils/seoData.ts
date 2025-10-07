@@ -165,5 +165,147 @@ export const seoData: Record<string, SEOData> = {
       ],
       "totalTime": "PT20M"
     }
+  },
+  
+  gifts: {
+    title: "Gift Lists & Budget Tracker - Organize Gifts for Every Occasion",
+    description: "Plan and organize gift lists for holidays, birthdays, and special occasions. Track your gift budget, manage ideas, and never miss an important celebration. Free gift planning tool.",
+    keywords: "gift list, gift planner, holiday gifts, birthday gifts, gift budget tracker, gift ideas organizer, occasion planning",
+    canonical: "https://www.housebudgetcalculator.com/gifts",
+    ogImage: "https://www.housebudgetcalculator.com/assets/gift-page-preview.png",
+    structuredData: {
+      "@context": "https://schema.org",
+      "@type": "HowTo",
+      "name": "How to Organize Gift Lists and Budget",
+      "description": "Organize gifts for every occasion and stay within your budget",
+      "step": [
+        {
+          "@type": "HowToStep",
+          "name": "Create Gift Lists",
+          "text": "Set up separate lists for different occasions like holidays, birthdays, anniversaries"
+        },
+        {
+          "@type": "HowToStep",
+          "name": "Add Gift Ideas",
+          "text": "Record gift ideas with estimated prices and recipient details"
+        },
+        {
+          "@type": "HowToStep",
+          "name": "Track Your Budget",
+          "text": "Monitor total spending and stay within your gift budget for each occasion"
+        }
+      ],
+      "totalTime": "PT15M"
+    }
+  },
+
+  aiInsights: {
+    title: "AI Financial Advisor - Get Personalized Budget Insights",
+    description: "Get AI-powered financial advice tailored to your budget. Analyze spending patterns, receive expert insights, and optimize your finances with our intelligent financial advisor.",
+    keywords: "AI financial advisor, budget insights, personal finance AI, money management AI, financial optimization, smart budgeting assistant",
+    canonical: "https://www.housebudgetcalculator.com/ai-insights",
+    ogImage: "https://www.housebudgetcalculator.com/assets/ai-page-preview.png",
+    structuredData: {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "AI Financial Advisor",
+      "applicationCategory": "FinanceApplication",
+      "description": "AI-powered financial insights and personalized budget advice",
+      "offers": {
+        "@type": "Offer",
+        "price": "9.99",
+        "priceCurrency": "USD",
+        "priceSpecification": {
+          "@type": "UnitPriceSpecification",
+          "price": "9.99",
+          "priceCurrency": "USD",
+          "billingDuration": "P1M"
+        }
+      },
+      "featureList": [
+        "Personalized financial advice",
+        "Budget analysis and optimization",
+        "Spending pattern insights",
+        "Savings recommendations",
+        "AI-powered chatbot assistant"
+      ]
+    }
+  },
+
+  marketplace: {
+    title: "Community Marketplace - Find Local Vendors, Vacation Rentals & Handmade Gifts",
+    description: "Discover trusted local vendors, unique vacation rentals, and handmade gifts from our community. Browse listings, compare options, and connect with sellers for your next project or purchase.",
+    keywords: "community marketplace, local vendors, vacation rentals, handmade gifts, contractor directory, artisan marketplace, local services",
+    canonical: "https://www.housebudgetcalculator.com/marketplace",
+    ogImage: "https://www.housebudgetcalculator.com/assets/marketplace-page-preview.png",
+    structuredData: {
+      "@context": "https://schema.org",
+      "@type": "WebPage",
+      "name": "Community Marketplace",
+      "description": "Browse community marketplace for vendors, vacation rentals, and handmade gifts",
+      "breadcrumb": {
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Home",
+            "item": "https://www.housebudgetcalculator.com"
+          },
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "Marketplace",
+            "item": "https://www.housebudgetcalculator.com/marketplace"
+          }
+        ]
+      }
+    }
+  },
+
+  savingsGoals: {
+    title: "Savings Goals Tracker - Track Monthly Savings Progress",
+    description: "Set financial goals and track your monthly savings progress. Visual progress tracking, goal milestones, and monthly contribution monitoring to help you reach your financial targets.",
+    keywords: "savings tracker, savings goals, financial goals, monthly savings, goal tracker, financial planning, savings progress",
+    canonical: "https://www.housebudgetcalculator.com/savings",
+    ogImage: "https://www.housebudgetcalculator.com/assets/savings-goal-preview.png",
+    structuredData: {
+      "@context": "https://schema.org",
+      "@type": "HowTo",
+      "name": "How to Track Savings Goals",
+      "description": "Set and track your financial savings goals monthly",
+      "step": [
+        {
+          "@type": "HowToStep",
+          "name": "Set Your Goal",
+          "text": "Create a savings goal with a target amount and deadline"
+        },
+        {
+          "@type": "HowToStep",
+          "name": "Track Monthly Progress",
+          "text": "Enter your monthly savings contributions throughout the year"
+        },
+        {
+          "@type": "HowToStep",
+          "name": "Monitor Achievement",
+          "text": "View your progress percentage and adjust contributions to meet your target"
+        }
+      ],
+      "totalTime": "PT10M"
+    }
+  },
+
+  blog: {
+    title: "Financial Blog - Money Management Tips & Budget Advice",
+    description: "Expert articles on budgeting, saving money, and financial planning. Learn practical tips, strategies, and insights to improve your financial health and achieve your money goals.",
+    keywords: "financial blog, budgeting tips, money management, savings advice, financial planning, personal finance articles",
+    canonical: "https://www.housebudgetcalculator.com/blog",
+    ogImage: "https://www.housebudgetcalculator.com/lovable-uploads/calculator-preview-hero.png",
+    structuredData: {
+      "@context": "https://schema.org",
+      "@type": "Blog",
+      "name": "House Budget Calculator Financial Blog",
+      "description": "Expert financial tips and budgeting advice"
+    }
   }
 };

@@ -18,6 +18,8 @@ import { Link } from 'react-router-dom';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { AlertTriangle } from 'lucide-react';
 import { InternalLinks } from '@/components/InternalLinks';
+import { FAQ } from '@/components/FAQ';
+import { vacationPlanningFAQs } from '@/utils/faqData';
 
 const Vacation: React.FC = () => {
   const { user } = useAuth();
@@ -134,6 +136,8 @@ const Vacation: React.FC = () => {
               />
             ))}
           </div>
+
+          <FAQ faqs={vacationPlanningFAQs} title="Vacation Planning FAQs" />
 
           <InternalLinks currentPage="/vacation" category="planning" />
         </div>

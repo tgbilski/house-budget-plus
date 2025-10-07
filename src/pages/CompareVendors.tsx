@@ -18,6 +18,8 @@ import { VendorCard } from '@/components/VendorCard';
 import { ProjectSelector } from '@/components/ProjectSelector';
 import { ProjectSummaryCard } from '@/components/ProjectSummaryCard';
 import { InternalLinks } from '@/components/InternalLinks';
+import { FAQ } from '@/components/FAQ';
+import { vendorComparisonFAQs } from '@/utils/faqData';
 
 const CompareVendors: React.FC = () => {
   const { user } = useAuth();
@@ -144,6 +146,8 @@ const CompareVendors: React.FC = () => {
             pageContext="This is the Vendor Comparison page where users can create projects and compare vendor quotes."
             pageName="Vendor Comparison"
           />
+
+          <FAQ faqs={vendorComparisonFAQs} title="Vendor Comparison FAQs" />
         </div>
 
         <InternalLinks currentPage="/compare-prices" category="comparison" />

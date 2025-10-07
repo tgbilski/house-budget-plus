@@ -10,6 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { toast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { SEO } from "@/components/SEO";
+import { seoData } from "@/utils/seoData";
 import { Link } from "react-router-dom";
 import { Brain, Crown } from "lucide-react";
 
@@ -107,9 +108,12 @@ export default function AIInsights() {
   return (
     <div className="min-h-screen bg-background">
       <SEO
-        title="AI Budget Insights - Personal Financial Advisor"
-        description="Get personalized financial advice using AI. Analyze your budget data and receive expert insights to optimize your spending and savings."
-        keywords="AI financial advisor, budget insights, personal finance, money management, financial optimization"
+        title={seoData.aiInsights.title}
+        description={seoData.aiInsights.description}
+        keywords={seoData.aiInsights.keywords}
+        canonical={seoData.aiInsights.canonical}
+        ogImage={seoData.aiInsights.ogImage}
+        structuredData={seoData.aiInsights.structuredData}
       />
 
       <div className="max-w-7xl mx-auto p-4">
