@@ -36,9 +36,25 @@ export const BudgetDonutChart = ({ totalIncome, totalExpenses, currency }: Budge
     return null;
   };
 
-  const renderCustomLabel = (entry: any) => {
-    const percentage = ((entry.value / (totalIncome + totalExpenses)) * 100).toFixed(1);
-    return `${percentage}%`;
+  const renderCustomLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent }: any) => {
+    const RADIAN = Math.PI / 180;
+    const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
+    const x = cx + radius * Math.cos(-midAngle * RADIAN);
+    const y = cy + radius * Math.sin(-midAngle * RADIAN);
+
+    return (
+      <text 
+        x={x} 
+        y={y} 
+        fill="white" 
+        textAnchor={x > cx ? 'start' : 'end'} 
+        dominantBaseline="central"
+        fontSize={14}
+        fontWeight="bold"
+      >
+        {`${(percent * 100).toFixed(0)}%`}
+      </text>
+    );
   };
 
   return (
@@ -58,6 +74,8 @@ export const BudgetDonutChart = ({ totalIncome, totalExpenses, currency }: Budge
                   outerRadius={70}
                   paddingAngle={5}
                   dataKey="value"
+                  label={renderCustomLabel}
+                  labelLine={false}
                 >
                   {data.map((entry, index) => (
                     <Cell key={`cell-${index}`} fill={entry.color} />
