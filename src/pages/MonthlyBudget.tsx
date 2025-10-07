@@ -145,7 +145,8 @@ const MonthlyBudget: React.FC = () => {
         description={seoData.monthlyBudget.description}
         keywords={seoData.monthlyBudget.keywords}
         structuredData={seoData.monthlyBudget.structuredData}
-        canonical="https://www.housebudgetcalculator.com/budget"
+        canonical={seoData.monthlyBudget.canonical}
+        ogImage={seoData.monthlyBudget.ogImage}
       />
       
       <div className="max-w-7xl mx-auto p-4">
@@ -156,8 +157,11 @@ const MonthlyBudget: React.FC = () => {
               <div className="inline-flex items-center justify-center w-10 h-10 bg-teal/20 rounded-full">
                 <img
                   src="/lovable-uploads/ed809955-ef71-4d81-b072-945082f4380a.png"
-                  alt="Calculator mascot"
+                  alt="Budget calculator mascot icon"
                   className="w-6 h-6 object-contain"
+                  loading="eager"
+                  width="24"
+                  height="24"
                 />
               </div>
               <h1 className="text-2xl font-bold text-foreground">Monthly Budget Calculator</h1>
@@ -217,6 +221,9 @@ const MonthlyBudget: React.FC = () => {
           pageName="Monthly Budget Calculator"
           calculatorsData={Object.entries(calculatorNames).map(([id, name]) => ({ calculatorId: id, ownerName: name }))}
         />
+
+        <FAQ faqs={budgetCalculatorFAQs} />
+        <InternalLinks currentPage="/budget" category="planning" />
       </div>
     </div>
   );

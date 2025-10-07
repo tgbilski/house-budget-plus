@@ -17,6 +17,7 @@ import { VacationSelector } from '@/components/VacationSelector';
 import { Link } from 'react-router-dom';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { AlertTriangle } from 'lucide-react';
+import { InternalLinks } from '@/components/InternalLinks';
 
 const Vacation: React.FC = () => {
   const { user } = useAuth();
@@ -52,7 +53,14 @@ const Vacation: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <SEO title={seoData.vacation.title} description={seoData.vacation.description} keywords="vacation planning, travel budget, destination comparison" />
+      <SEO 
+        title={seoData.vacation.title} 
+        description={seoData.vacation.description} 
+        keywords={seoData.vacation.keywords}
+        canonical={seoData.vacation.canonical}
+        ogImage={seoData.vacation.ogImage}
+        structuredData={seoData.vacation.structuredData}
+      />
       
       <div className="max-w-7xl mx-auto p-4">
         {/* Compact header at very top */}
@@ -126,6 +134,8 @@ const Vacation: React.FC = () => {
               />
             ))}
           </div>
+
+          <InternalLinks currentPage="/vacation" category="planning" />
         </div>
       </div>
     </div>

@@ -17,6 +17,7 @@ import { useVendorProjects } from '@/hooks/useVendorProjects';
 import { VendorCard } from '@/components/VendorCard';
 import { ProjectSelector } from '@/components/ProjectSelector';
 import { ProjectSummaryCard } from '@/components/ProjectSummaryCard';
+import { InternalLinks } from '@/components/InternalLinks';
 
 const CompareVendors: React.FC = () => {
   const { user } = useAuth();
@@ -57,7 +58,9 @@ const CompareVendors: React.FC = () => {
         title={seoData.compareVendors.title}
         description={seoData.compareVendors.description}
         keywords={seoData.compareVendors.keywords}
-        canonical="https://www.housebudgetcalculator.com/compare-prices"
+        canonical={seoData.compareVendors.canonical}
+        ogImage={seoData.compareVendors.ogImage}
+        structuredData={seoData.compareVendors.structuredData}
       />
 
       <div className="max-w-7xl mx-auto p-4">
@@ -142,6 +145,8 @@ const CompareVendors: React.FC = () => {
             pageName="Vendor Comparison"
           />
         </div>
+
+        <InternalLinks currentPage="/compare-prices" category="comparison" />
       </div>
     </div>
   );

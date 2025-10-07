@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Calculator, TrendingUp, Calendar, MapPin, FileText, BookOpen } from 'lucide-react';
+import { Calculator, TrendingUp, Calendar, MapPin, Gift, Brain } from 'lucide-react';
 
 interface RelatedTool {
   title: string;
@@ -16,9 +16,9 @@ const allTools: RelatedTool[] = [
   {
     title: "Monthly Budget Calculator",
     description: "Track your monthly income and expenses with our comprehensive budget planner",
-    href: "/",
+    href: "/budget",
     icon: Calculator,
-    category: "budgeting"
+    category: "planning"
   },
   {
     title: "Vendor Quote Comparison",
@@ -28,11 +28,11 @@ const allTools: RelatedTool[] = [
     category: "comparison"
   },
   {
-    title: "Takeout Expense Tracker",
-    description: "Monitor your dining and takeout expenses with our calendar tracker",
-    href: "/takeout",
+    title: "Savings Goals Tracker",
+    description: "Set financial goals and track your progress with visual insights",
+    href: "/savings",
     icon: Calendar,
-    category: "tracking"
+    category: "planning"
   },
   {
     title: "Vacation Budget Planner",
@@ -42,18 +42,18 @@ const allTools: RelatedTool[] = [
     category: "planning"
   },
   {
-    title: "Budget Templates",
-    description: "Pre-made budget templates for different life situations",
-    href: "/templates",
-    icon: FileText,
-    category: "templates"
+    title: "Gift Lists & Budget",
+    description: "Organize gifts for every occasion and stay within budget",
+    href: "/gifts",
+    icon: Gift,
+    category: "planning"
   },
   {
-    title: "Financial Resources",
-    description: "Guides, tips, and resources for better financial planning",
+    title: "AI Financial Insights",
+    description: "Get personalized financial advice powered by artificial intelligence",
     href: "/ai-insights",
-    icon: BookOpen,
-    category: "education"
+    icon: Brain,
+    category: "planning"
   }
 ];
 

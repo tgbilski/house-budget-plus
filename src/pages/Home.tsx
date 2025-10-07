@@ -152,15 +152,21 @@ const HeroSectionContent = () => (
     <div className="absolute top-[-60px] left-1/2 -translate-x-1/2 z-20">
       <img
         src="/lovable-uploads/ed809955-ef71-4d81-b072-945082f4380a.png"
-        alt="Budget Calculator mascot"
+        alt="House Budget Calculator mascot - friendly budget planning assistant"
         className="w-28 h-28 md:w-32 md:h-32 object-contain"
+        loading="eager"
+        width="128"
+        height="128"
       />
     </div>
     <div className="absolute inset-0">
       <img
         src="/lovable-uploads/new-house-background.png"
-        alt="House background"
+        alt="House background illustration for budget planning"
         className="w-full h-full object-cover rounded-2xl opacity-20"
+        loading="eager"
+        width="1200"
+        height="400"
       />
     </div>
 
@@ -173,9 +179,9 @@ const HeroSectionContent = () => (
           <div className="w-full max-w-xs">
             <img 
               src={calculatorHeroPreview} 
-              alt="Budget Calculator Preview"
+              alt="Monthly budget calculator interface showing income and expense tracking with visual charts"
               className="w-full h-auto rounded-[10px] shadow-lg hover:shadow-xl transition-shadow duration-300"
-              loading="lazy"
+              loading="eager"
               width="320"
               height="240"
             />
@@ -384,7 +390,8 @@ const Home = () => {
         description={seoData.home.description}
         keywords={seoData.home.keywords}
         structuredData={seoData.home.structuredData}
-        canonical="https://www.housebudgetcalculator.com/"
+        canonical={seoData.home.canonical}
+        ogImage={seoData.home.ogImage}
       />
       <div className="min-h-screen overflow-x-hidden relative">
         <div className="space-y-4">
