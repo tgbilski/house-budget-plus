@@ -215,10 +215,10 @@ const HeroSectionContent = () => (
 );
 
 const MarketplacePromo = () => (
-  <section className="py-8 md:py-12 px-4 mx-4 my-8 rounded-2xl bg-white shadow-xl border-2 border-primary/20 relative overflow-hidden">
+  <section className="py-8 md:py-12 px-4 mx-4 my-8 rounded-2xl bg-gradient-to-br from-gray-900 to-gray-800 shadow-xl border-2 border-gray-700 relative overflow-hidden">
     {/* Decorative background elements */}
-    <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full blur-3xl"></div>
-    <div className="absolute bottom-0 left-0 w-64 h-64 bg-secondary/5 rounded-full blur-3xl"></div>
+    <div className="absolute top-0 right-0 w-64 h-64 bg-primary/10 rounded-full blur-3xl"></div>
+    <div className="absolute bottom-0 left-0 w-64 h-64 bg-secondary/10 rounded-full blur-3xl"></div>
     
     <div className="max-w-6xl mx-auto relative z-10">
       {/* Promotional Banner */}
@@ -238,16 +238,16 @@ const MarketplacePromo = () => (
 
       <div className="text-center mb-8">
         <div className="flex items-center justify-center gap-3 mb-4">
-          <Store className="h-8 w-8 md:h-10 md:w-10 text-primary" />
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900">
+          <Store className="h-8 w-8 md:h-10 md:w-10 text-white" />
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white">
             Community Marketplace
           </h2>
-          <Store className="h-8 w-8 md:h-10 md:w-10 text-primary" />
+          <Store className="h-8 w-8 md:h-10 md:w-10 text-white" />
         </div>
-        <p className="text-lg md:text-xl text-gray-700 font-semibold mb-2">
+        <p className="text-lg md:text-xl text-white font-semibold mb-2">
           🎉 Connect with Local Vendors, Discover Unique Gifts & Find Perfect Vacation Rentals!
         </p>
-        <p className="text-base md:text-lg text-gray-600 max-w-3xl mx-auto">
+        <p className="text-base md:text-lg text-gray-300 max-w-3xl mx-auto">
           Browse our growing community marketplace to find trusted contractors, beautiful handmade gifts, and affordable vacation rentals—all in one place.
         </p>
       </div>
@@ -285,7 +285,7 @@ const MarketplacePromo = () => (
       </div>
 
       <div className="flex justify-center">
-        <Button asChild size="lg" className="bg-primary hover:bg-primary/90 text-white px-8 py-6 text-lg font-bold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110">
+        <Button asChild size="lg" className="bg-white hover:bg-gray-100 text-gray-900 px-8 py-6 text-lg font-bold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110">
           <Link to="/marketplace" className="flex items-center gap-2">
             <Store className="h-5 w-5" />
             Explore Marketplace
