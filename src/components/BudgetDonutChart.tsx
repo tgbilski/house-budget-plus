@@ -58,8 +58,6 @@ export const BudgetDonutChart = ({ totalIncome, totalExpenses, currency }: Budge
                   outerRadius={70}
                   paddingAngle={5}
                   dataKey="value"
-                  label={renderCustomLabel}
-                  labelLine={false}
                 >
                   {data.map((entry, index) => (
                     <Cell key={`cell-${index}`} fill={entry.color} />
@@ -125,14 +123,6 @@ export const BudgetDonutChart = ({ totalIncome, totalExpenses, currency }: Budge
               <div className="bg-amber-50 border border-amber-200 rounded p-2 mt-1">
                 <p className="text-xs text-amber-800 text-center">
                   ⚠️ Expenses exceed income by {currency.symbol}{Math.abs(netBalance).toLocaleString()}
-                </p>
-              </div>
-            )}
-            
-            {netBalance > 0 && (
-              <div className="bg-green-50 border border-green-200 rounded p-2 mt-1">
-                <p className="text-xs text-green-800 text-center">
-                  ✅ {currency.symbol}{netBalance.toLocaleString()} left to save
                 </p>
               </div>
             )}
