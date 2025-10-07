@@ -98,7 +98,7 @@ export const BudgetDonutChart = ({ totalIncome, totalExpenses, currency }: Budge
               </span>
             </div>
 
-            <div className="flex items-center justify-between p-2 bg-red-50 rounded">
+            <div className="flex items-center justify-between p-2 bg-red-50 rounded border-b border-gray-200">
               <div className="flex items-center gap-2">
                 <div className="w-3 h-3 rounded-full bg-red-500"></div>
                 <span className="text-sm font-medium text-gray-700">Expenses</span>
@@ -109,13 +109,7 @@ export const BudgetDonutChart = ({ totalIncome, totalExpenses, currency }: Budge
             </div>
 
             {/* Net Balance */}
-            <div className={`flex items-center justify-between p-2 rounded border ${
-              netBalance > 0 
-                ? 'border-green-200' 
-                : netBalance < 0 
-                ? 'border-red-200' 
-                : 'border-gray-200'
-            }`}>
+            <div className="flex items-center justify-between p-2">
               <div className="flex items-center gap-2">
                 {netBalance > 0 ? (
                   <TrendingUp className="w-4 h-4 text-green-600" />
