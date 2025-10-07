@@ -111,10 +111,10 @@ export const BudgetDonutChart = ({ totalIncome, totalExpenses, currency }: Budge
             {/* Net Balance */}
             <div className={`flex items-center justify-between p-2 rounded border ${
               netBalance > 0 
-                ? 'bg-green-50 border-green-200' 
+                ? 'border-green-200' 
                 : netBalance < 0 
-                ? 'bg-red-50 border-red-200' 
-                : 'bg-gray-50 border-gray-200'
+                ? 'border-red-200' 
+                : 'border-gray-200'
             }`}>
               <div className="flex items-center gap-2">
                 {netBalance > 0 ? (
