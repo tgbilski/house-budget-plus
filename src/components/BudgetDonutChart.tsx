@@ -1,5 +1,4 @@
-import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip } from 'recharts';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
 import { TrendingUp, TrendingDown, Minus } from 'lucide-react';
 
 interface Currency {
@@ -46,15 +45,17 @@ export const BudgetDonutChart = ({ totalIncome, totalExpenses, currency }: Budge
     <div className="bg-white rounded-xl p-4 shadow-md border border-gray-200">
       <h3 className="text-lg font-bold text-center mb-3">Budget Overview</h3>
       {hasData ? (
-        <>
-          <ResponsiveContainer width="100%" height={200}>
-            <PieChart>
-              <Pie
-                data={data}
-                cx="50%"
-                cy="50%"
-                innerRadius={40}
-                outerRadius={80}
+        <div className="flex flex-col md:flex-row gap-4 items-center">
+          {/* Left side - Donut Chart */}
+          <div className="flex-shrink-0">
+            <ResponsiveContainer width={180} height={180}>
+              <PieChart>
+                <Pie
+                  data={data}
+                  cx="50%"
+                  cy="50%"
+                  innerRadius={40}
+                  outerRadius={70}
                   paddingAngle={5}
                   dataKey="value"
                   label={renderCustomLabel}
@@ -66,10 +67,11 @@ export const BudgetDonutChart = ({ totalIncome, totalExpenses, currency }: Budge
                 </Pie>
                 <Tooltip content={<CustomTooltip />} />
               </PieChart>
-          </ResponsiveContainer>
+            </ResponsiveContainer>
+          </div>
 
-          {/* Compact Legend */}
-          <div className="mt-4 space-y-2">
+          {/* Right side - Stats */}
+          <div className="flex-1 space-y-2 w-full">
             <div className="flex items-center justify-between p-2 bg-green-50 rounded">
               <div className="flex items-center gap-2">
                 <div className="w-3 h-3 rounded-full bg-green-500"></div>
@@ -135,7 +137,7 @@ export const BudgetDonutChart = ({ totalIncome, totalExpenses, currency }: Budge
               </div>
             )}
           </div>
-        </>
+        </div>
       ) : (
         <div className="text-center py-8 text-gray-500">
           <p className="text-sm font-medium mb-1">No data yet</p>
