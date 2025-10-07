@@ -30,6 +30,31 @@ export default function Marketplace() {
       />
       
       <div className="max-w-7xl mx-auto p-4">
+        {/* Promotional Banner */}
+        <div className="bg-gradient-to-r from-purple-600 via-pink-600 to-orange-600 rounded-2xl shadow-2xl p-8 mb-6 text-white relative overflow-hidden">
+          <div className="absolute inset-0 bg-black/10"></div>
+          <div className="relative z-10 text-center">
+            <h2 className="text-4xl md:text-5xl font-black mb-4 animate-pulse">
+              🚀 ADVERTISE YOUR LISTING WITH US! 🚀
+            </h2>
+            <p className="text-xl md:text-2xl font-bold mb-6">
+              LIMITED TIME OFFER: Get Your First 3 MONTHS FREE! 🎉
+            </p>
+            <p className="text-lg mb-6 max-w-3xl mx-auto">
+              Join our growing community marketplace and reach thousands of budget-conscious customers. 
+              No payment required for your first 3 months!
+            </p>
+            <Button 
+              onClick={handleCreateListing} 
+              size="lg" 
+              className="bg-white text-purple-600 hover:bg-gray-100 font-bold text-lg px-8 py-6 rounded-full shadow-xl transform hover:scale-105 transition-all"
+            >
+              <Plus className="mr-2 h-6 w-6" />
+              Start Your FREE Listing Now!
+            </Button>
+          </div>
+        </div>
+
         <div className="bg-white rounded-2xl shadow-xl p-6 md:p-8">
         <div className="flex justify-between items-center mb-8">
           <div>
