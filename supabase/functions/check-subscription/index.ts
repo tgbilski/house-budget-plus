@@ -37,7 +37,27 @@ serve(async (req: Request) => {
 
     const supabaseClient = createClient(supabaseUrl!, supabaseServiceKey!);
     const { data: userData, error: userError } = await supabaseClient.auth.getUser(token);
-    if (userError) throw new Error(`Authentication error: ${userError.message}`);
+    
+    if (userError) {
+      // Handle session not found error gracefully - user may need to refresh
+      if (userError.message.includes("Session") || userError.message.includes("session")) {
+        logStep("Session error - user may need to refresh", { error: userError.message });
+        return new Response(
+          JSON.stringify({ 
+            subscribed: false, 
+            subscription_tier: null,
+            session_expired: true,
+            message: "Please refresh the page"
+          }),
+          {
+            headers: { ...corsHeaders, "Content-Type": "application/json" },
+            status: 200,
+          }
+        );
+      }
+      throw new Error(`Authentication error: ${userError.message}`);
+    }
+    
     const user = userData.user;
     if (!user?.email) throw new Error("User not authenticated or email not available");
     logStep("User authenticated", { userId: user.id, email: user.email });
