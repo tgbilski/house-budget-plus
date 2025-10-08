@@ -61,46 +61,52 @@ export const VendorCard: React.FC<VendorCardProps> = ({ quote, onUpdate, onRemov
     // --- EDITING VIEW ---
     return (
       <Card className="border-l-4 border-l-primary ring-2 ring-primary/20">
-        <CardHeader className="pb-4">
+        <CardHeader className="pb-3 md:pb-4">
           <div className="space-y-1">
-            <Label>Vendor Name</Label>
+            <Label className="text-sm">Vendor Name</Label>
             <Input
               placeholder="Company name..."
               value={localQuote.vendor_name}
               onChange={(e) => updateLocalField('vendor_name', e.target.value)}
+              className="text-sm"
             />
           </div>
         </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <CardContent className="space-y-3 md:space-y-4">
+          <div className="grid grid-cols-1 gap-3 md:gap-4">
             <div>
-              <Label>Estimate</Label>
+              <Label className="text-sm">Estimate</Label>
               <div className="relative mt-1">
                 <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 <Input
                   type="number"
                   value={localQuote.estimate_amount || ''}
                   onChange={(e) => updateLocalField('estimate_amount', parseFloat(e.target.value) || 0)}
-                  className="pl-8" placeholder="0.00"
+                  className="pl-8 text-sm" placeholder="0.00"
                 />
               </div>
             </div>
             <div>
-              <Label>Date</Label>
+              <Label className="text-sm">Date</Label>
               <Input
-                type="date" className="mt-1"
+                type="date" className="mt-1 text-sm"
                 value={localQuote.date_received}
                 onChange={(e) => updateLocalField('date_received', e.target.value)}
               />
             </div>
           </div>
           <div>
-            <Label>Contact Info</Label>
-            <Input className="mt-1" value={localQuote.contact_info} onChange={(e) => updateLocalField('contact_info', e.target.value)} placeholder="Phone, email, etc."/>
+            <Label className="text-sm">Contact Info</Label>
+            <Input 
+              className="mt-1 text-sm" 
+              value={localQuote.contact_info} 
+              onChange={(e) => updateLocalField('contact_info', e.target.value)} 
+              placeholder="Phone, email, etc."
+            />
           </div>
           <div>
-            <Label className="mb-2 block">Quick Evaluation</Label>
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+            <Label className="mb-2 block text-sm">Quick Evaluation</Label>
+            <div className="grid grid-cols-2 gap-2">
               {[
                 { key: 'liked_sales_rep' as keyof VendorQuote, label: 'Good Rep' },
                 { key: 'offers_financing' as keyof VendorQuote, label: 'Financing' },
@@ -121,22 +127,30 @@ export const VendorCard: React.FC<VendorCardProps> = ({ quote, onUpdate, onRemov
             </div>
           </div>
           <div>
-            <Label>Notes</Label>
-            <Textarea className="mt-1 resize-none" value={localQuote.notes} onChange={(e) => updateLocalField('notes', e.target.value)} placeholder="Additional notes..." rows={2} />
+            <Label className="text-sm">Notes</Label>
+            <Textarea 
+              className="mt-1 resize-none text-sm" 
+              value={localQuote.notes} 
+              onChange={(e) => updateLocalField('notes', e.target.value)} 
+              placeholder="Additional notes..." 
+              rows={2} 
+            />
           </div>
-          <div className="flex flex-col sm:flex-row gap-2 pt-2">
-            <Button onClick={handleSave} size="sm" className="flex-1">
+          <div className="flex flex-col gap-2 pt-2">
+            <Button onClick={handleSave} size="sm" className="w-full">
               <Check className="h-4 w-4 mr-1" /> Save
             </Button>
-            <Button onClick={handleCancel} size="sm" variant="outline" className="flex-1 sm:flex-initial">
-              Cancel
-            </Button>
-            {showRemove && (
-              <Button variant="destructive" size="sm" onClick={() => onRemove(quote.id)} className="sm:w-auto">
-                <Trash2 className="h-4 w-4 mr-1 sm:mr-0" />
-                <span className="sm:hidden">Delete</span>
+            <div className="flex gap-2">
+              <Button onClick={handleCancel} size="sm" variant="outline" className="flex-1">
+                Cancel
               </Button>
-            )}
+              {showRemove && (
+                <Button variant="destructive" size="sm" onClick={() => onRemove(quote.id)} className="flex-1">
+                  <Trash2 className="h-4 w-4 mr-1" />
+                  <span>Delete</span>
+                </Button>
+              )}
+            </div>
           </div>
         </CardContent>
       </Card>
@@ -147,35 +161,45 @@ export const VendorCard: React.FC<VendorCardProps> = ({ quote, onUpdate, onRemov
   const starCount = getStarCount();
   return (
     <Card className="hover:shadow-lg transition-all duration-200 group border-l-4 border-l-primary/20 hover:border-l-primary">
-      <CardContent className="p-4" onClick={() => setIsEditing(true)}>
-        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-3 mb-3">
+      <CardContent className="p-3 md:p-4" onClick={() => setIsEditing(true)}>
+        <div className="flex justify-between items-start gap-2 mb-3">
           <div className="flex-1 min-w-0">
-            <h3 className="font-semibold text-base truncate mb-2">{localQuote.vendor_name || 'Untitled Vendor'}</h3>
+            <h3 className="font-semibold text-sm md:text-base truncate mb-1 md:mb-2">
+              {localQuote.vendor_name || 'Untitled Vendor'}
+            </h3>
             <div className="flex items-center gap-1">
-              <DollarSign className="h-4 w-4 text-green-600" />
-              <span className="text-xl font-bold text-primary">{currencySymbol}{localQuote.estimate_amount?.toLocaleString() || '0'}</span>
+              <DollarSign className="h-4 w-4 text-green-600 flex-shrink-0" />
+              <span className="text-lg md:text-xl font-bold text-primary">
+                {currencySymbol}{localQuote.estimate_amount?.toLocaleString() || '0'}
+              </span>
             </div>
           </div>
-          <div className="flex flex-row sm:flex-col items-center sm:items-end justify-between sm:justify-start gap-2">
-            <Badge className={getBadgeColor(starCount)}>{starCount}/5 Stars</Badge>
+          <div className="flex flex-col items-end gap-2">
+            <Badge className={`${getBadgeColor(starCount)} text-xs`}>
+              {starCount}/5
+            </Badge>
             <div className="flex gap-1">
-              <Button variant="ghost" size="icon" className="h-8 w-8 p-0 opacity-70 sm:opacity-0 group-hover:opacity-100 transition-opacity">
-                <Edit3 className="h-4 w-4" />
+              <Button 
+                variant="ghost" 
+                size="icon" 
+                className="h-7 w-7 md:h-8 md:w-8 p-0 opacity-100 md:opacity-0 group-hover:opacity-100 transition-opacity"
+              >
+                <Edit3 className="h-3 w-3 md:h-4 md:w-4" />
               </Button>
               {showRemove && (
                 <Button 
                   variant="ghost" 
                   size="icon" 
                   onClick={(e) => { e.stopPropagation(); onRemove(quote.id); }} 
-                  className="h-8 w-8 p-0 opacity-70 sm:opacity-0 group-hover:opacity-100 transition-opacity text-destructive hover:text-destructive"
+                  className="h-7 w-7 md:h-8 md:w-8 p-0 opacity-100 md:opacity-0 group-hover:opacity-100 transition-opacity text-destructive hover:text-destructive"
                 >
-                  <Trash2 className="h-4 w-4" />
+                  <Trash2 className="h-3 w-3 md:h-4 md:w-4" />
                 </Button>
               )}
             </div>
           </div>
         </div>
-        <div className="space-y-1 text-sm text-muted-foreground">
+        <div className="space-y-1 text-xs md:text-sm text-muted-foreground">
           {localQuote.contact_info && (
             <div className="flex items-center gap-2 truncate">
               <Phone className="h-3 w-3 flex-shrink-0" /> 

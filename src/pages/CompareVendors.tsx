@@ -65,17 +65,17 @@ const CompareVendors: React.FC = () => {
         structuredData={seoData.compareVendors.structuredData}
       />
 
-      <div className="max-w-7xl mx-auto p-4">
+      <div className="max-w-7xl mx-auto p-3 md:p-4">
         {/* Compact header at very top */}
-        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-6">
+        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3 md:gap-4 mb-4 md:mb-6">
           <div className="flex flex-col lg:items-start space-y-2">
             <div className="flex items-center gap-2">
-              <div className="inline-flex items-center justify-center w-10 h-10 bg-teal/20 rounded-full">
-                <Scale className="h-6 w-6 text-teal" />
+              <div className="inline-flex items-center justify-center w-8 h-8 md:w-10 md:h-10 bg-teal/20 rounded-full">
+                <Scale className="h-5 w-5 md:h-6 md:w-6 text-teal" />
               </div>
-              <h1 className="text-2xl font-bold text-foreground">Vendor Comparison</h1>
+              <h1 className="text-xl md:text-2xl font-bold text-foreground">Vendor Comparison</h1>
             </div>
-            <p className="text-muted-foreground text-sm text-center lg:text-left bg-sage/30 px-3 py-1 rounded-md">
+            <p className="text-muted-foreground text-xs md:text-sm text-center lg:text-left bg-sage/30 px-2 md:px-3 py-1 rounded-md">
               Compare quotes and find the best value
             </p>
           </div>
@@ -88,7 +88,7 @@ const CompareVendors: React.FC = () => {
 
         <WarningBanner />
 
-        <div className="space-y-6">
+        <div className="space-y-4 md:space-y-6">
           <ProjectSelector
             projects={projects}
             currentProjectId={currentProjectId}
@@ -101,11 +101,11 @@ const CompareVendors: React.FC = () => {
             currencySymbol={currency.symbol}
           />
 
-          <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
+          <div className="flex flex-col gap-3 md:gap-4">
             <div className="flex items-center gap-2">
-              <Filter className="h-4 w-4 text-gray-500" />
+              <Filter className="h-4 w-4 text-gray-500 flex-shrink-0" />
               <Select value={sortBy} onValueChange={(value: 'amount' | 'rating' | 'date') => setSortBy(value)}>
-                <SelectTrigger className="w-full sm:w-48">
+                <SelectTrigger className="w-full text-sm">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -115,15 +115,20 @@ const CompareVendors: React.FC = () => {
                 </SelectContent>
               </Select>
             </div>
-            <div className="flex gap-2 w-full sm:w-auto">
+            <div className="flex flex-col sm:flex-row gap-2 w-full">
               <Button 
                 onClick={() => navigate('/marketplace')} 
                 variant="outline" 
-                className="gap-2 flex-1 sm:flex-initial"
+                className="gap-2 w-full sm:flex-1 text-sm"
               >
-                <Store className="h-4 w-4" /> See Vendors in Your Area
+                <Store className="h-4 w-4" /> 
+                <span className="hidden sm:inline">See Vendors in Your Area</span>
+                <span className="sm:hidden">Find Vendors</span>
               </Button>
-              <Button onClick={addQuote} className="gap-2 flex-1 sm:flex-initial bg-teal hover:bg-teal/90 text-teal-foreground">
+              <Button 
+                onClick={addQuote} 
+                className="gap-2 w-full sm:flex-1 bg-teal hover:bg-teal/90 text-teal-foreground text-sm"
+              >
                 <Plus className="h-4 w-4" /> Add Quote
               </Button>
             </div>
