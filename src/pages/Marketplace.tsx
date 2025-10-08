@@ -10,11 +10,13 @@ import { useAuth } from "@/hooks/useAuth";
 import { useNavigate } from "react-router-dom";
 import { InternalLinks } from "@/components/InternalLinks";
 import { FAQ } from "@/components/FAQ";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 export default function Marketplace() {
   const [showForm, setShowForm] = useState(false);
   const { user } = useAuth();
   const navigate = useNavigate();
+  const isMobile = useIsMobile();
 
   const handleCreateListing = () => {
     if (!user) {
@@ -36,21 +38,30 @@ export default function Marketplace() {
       />
       
       <div className="max-w-7xl mx-auto p-4">
-        <div className="bg-white rounded-2xl shadow-xl p-6 md:p-8">
-        <div className="flex justify-between items-center mb-8">
-          <div>
-            <h1 className="text-4xl font-bold mb-2">Community Marketplace</h1>
-            <p className="text-muted-foreground">
+        <div className="bg-white rounded-2xl shadow-xl p-4 md:p-6 lg:p-8">
+        <div className="mb-6 md:mb-8">
+          <div className="mb-4">
+            <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold mb-2">Community Marketplace</h1>
+            <p className="text-sm md:text-base text-muted-foreground">
               Discover vendors, vacation rentals, and unique gifts. Click any listing to visit their website.
             </p>
           </div>
-          <div className="flex gap-2">
+          <div className="flex flex-col sm:flex-row gap-2">
             {user && (
-              <Button onClick={() => navigate("/my-listings")} variant="outline" size="lg">
+              <Button 
+                onClick={() => navigate("/my-listings")} 
+                variant="outline" 
+                size={isMobile ? "default" : "lg"}
+                className="w-full sm:w-auto"
+              >
                 My Listings
               </Button>
             )}
-            <Button onClick={handleCreateListing} size="lg">
+            <Button 
+              onClick={handleCreateListing} 
+              size={isMobile ? "default" : "lg"}
+              className="w-full sm:w-auto"
+            >
               <Plus className="mr-2 h-4 w-4" />
               List Your Business
             </Button>
@@ -61,11 +72,11 @@ export default function Marketplace() {
           <MarketplaceListingForm onClose={() => setShowForm(false)} />
         ) : (
           <Tabs defaultValue="all" className="w-full">
-            <TabsList className="grid w-full max-w-md grid-cols-4 mb-8">
-              <TabsTrigger value="all">All</TabsTrigger>
-              <TabsTrigger value="vendor">Vendors</TabsTrigger>
-              <TabsTrigger value="vacation">Vacations</TabsTrigger>
-              <TabsTrigger value="gift">Gifts</TabsTrigger>
+            <TabsList className="grid w-full max-w-full sm:max-w-md grid-cols-4 mb-6 md:mb-8 h-auto">
+              <TabsTrigger value="all" className="text-xs sm:text-sm px-2 sm:px-3">All</TabsTrigger>
+              <TabsTrigger value="vendor" className="text-xs sm:text-sm px-2 sm:px-3">Vendors</TabsTrigger>
+              <TabsTrigger value="vacation" className="text-xs sm:text-sm px-2 sm:px-3">Vacations</TabsTrigger>
+              <TabsTrigger value="gift" className="text-xs sm:text-sm px-2 sm:px-3">Gifts</TabsTrigger>
             </TabsList>
             
             <TabsContent value="all">
