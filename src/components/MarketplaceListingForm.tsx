@@ -7,7 +7,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { X, Loader2 } from "lucide-react";
+import { X, Loader2, Tag } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 
 interface MarketplaceListingFormProps {
   onClose: () => void;
@@ -34,6 +35,8 @@ export function MarketplaceListingForm({ onClose }: MarketplaceListingFormProps)
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isFetchingMetadata, setIsFetchingMetadata] = useState(false);
   const [isGeocodingAddress, setIsGeocodingAddress] = useState(false);
+  const [tags, setTags] = useState<string[]>([]);
+  const [tagInput, setTagInput] = useState("");
   const { toast } = useToast();
 
   // Geocode address
@@ -77,6 +80,26 @@ export function MarketplaceListingForm({ onClose }: MarketplaceListingFormProps)
       });
     } finally {
       setIsGeocodingAddress(false);
+    }
+  };
+
+  // Handle adding tags
+  const handleAddTag = () => {
+    const trimmedTag = tagInput.trim().toLowerCase();
+    if (trimmedTag && !tags.includes(trimmedTag) && tags.length < 10) {
+      setTags([...tags, trimmedTag]);
+      setTagInput("");
+    }
+  };
+
+  const handleRemoveTag = (tagToRemove: string) => {
+    setTags(tags.filter(tag => tag !== tagToRemove));
+  };
+
+  const handleTagKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      handleAddTag();
     }
   };
 
@@ -175,6 +198,7 @@ export function MarketplaceListingForm({ onClose }: MarketplaceListingFormProps)
           location_city: locationData?.city || null,
           location_state: locationData?.state || null,
           location_country: locationData?.country || null,
+          tags: tags.length > 0 ? tags : [],
           status: 'pending',
         })
         .select()
@@ -316,6 +340,49 @@ export function MarketplaceListingForm({ onClose }: MarketplaceListingFormProps)
               required
             />
             <p className="text-xs text-muted-foreground">{description.length}/1000 characters</p>
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="tags">Tags (up to 10)</Label>
+            <div className="flex gap-2">
+              <Input
+                id="tags"
+                value={tagInput}
+                onChange={(e) => setTagInput(e.target.value)}
+                onKeyPress={handleTagKeyPress}
+                placeholder={category === "vendor" ? "e.g., plumbing, roofing" : 
+                            category === "vacation" ? "e.g., beach, family-friendly" : 
+                            "e.g., handmade, wedding"}
+                maxLength={30}
+                disabled={tags.length >= 10}
+              />
+              <Button
+                type="button"
+                variant="outline"
+                onClick={handleAddTag}
+                disabled={!tagInput.trim() || tags.length >= 10}
+              >
+                <Tag className="h-4 w-4" />
+              </Button>
+            </div>
+            {tags.length > 0 && (
+              <div className="flex flex-wrap gap-2 mt-2">
+                {tags.map((tag) => (
+                  <Badge key={tag} variant="secondary" className="gap-1">
+                    {tag}
+                    <X 
+                      className="h-3 w-3 cursor-pointer hover:text-destructive" 
+                      onClick={() => handleRemoveTag(tag)}
+                    />
+                  </Badge>
+                ))}
+              </div>
+            )}
+            <p className="text-xs text-muted-foreground">
+              {category === "vendor" && "Add tags like: plumbing, electrical, roofing, landscaping, etc."}
+              {category === "vacation" && "Add tags like: beach, mountain, pet-friendly, family-friendly, etc."}
+              {category === "gift" && "Add tags like: wedding, birthday, christmas, handmade, personalized, etc."}
+            </p>
           </div>
 
           <div className="grid grid-cols-2 gap-4">

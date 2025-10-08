@@ -1,7 +1,7 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { ExternalLink, Mail, Phone, Flag, MapPin } from "lucide-react";
+import { ExternalLink, Mail, Phone, Flag, MapPin, Tag } from "lucide-react";
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -32,6 +32,7 @@ interface MarketplaceListing {
   location_city: string | null;
   location_state: string | null;
   location_country: string | null;
+  tags: string[] | null;
   user_id: string;
   created_at: string;
 }
@@ -201,6 +202,22 @@ export function MarketplaceListingCard({ listing }: MarketplaceListingCardProps)
             <span>
               {listing.location_city}{listing.location_city && listing.location_state ? ', ' : ''}{listing.location_state}
             </span>
+          </div>
+        )}
+
+        {listing.tags && listing.tags.length > 0 && (
+          <div className="mb-4">
+            <div className="flex items-center gap-1 text-xs text-muted-foreground mb-2">
+              <Tag className="h-3 w-3" />
+              <span>Tags</span>
+            </div>
+            <div className="flex flex-wrap gap-1">
+              {listing.tags.map((tag) => (
+                <Badge key={tag} variant="outline" className="text-xs">
+                  {tag}
+                </Badge>
+              ))}
+            </div>
           </div>
         )}
 
