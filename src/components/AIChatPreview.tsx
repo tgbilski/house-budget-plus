@@ -17,7 +17,7 @@ Get actionable advice on cutting costs, optimizing budgets, and maximizing your 
 
 Try our AI assistant on any page to get personalized insights based on your actual financial data!`;
 
-const PROMPT = "How can AI help with my house budget?";
+const PROMPT = "How can House Budget Calculator and AI help me plan my budget?";
 
 export const AIChatPreview = () => {
   const [showResponse, setShowResponse] = useState(false);
