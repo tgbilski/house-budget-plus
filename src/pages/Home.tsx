@@ -1,12 +1,13 @@
 import React from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Calculator, Scale, Target, Plane, Brain, ArrowRight, Gift, ChevronDown, UserCheck, Crown, Store, Home as HomeIcon, Heart, Check } from "lucide-react";
+import { Calculator, Scale, Target, Plane, Brain, ArrowRight, Gift, ChevronDown, UserCheck, Crown, Store, Home as HomeIcon, Heart } from "lucide-react";
 import { Link } from "react-router-dom";
 import { SEO } from "@/components/SEO";
 import { seoData } from "@/utils/seoData";
 import { AdSense } from "@/components/AdSense";
 import { BadgeDisplay } from "@/components/BadgeDisplay";
 import { RSSFeed } from "@/components/RSSFeed";
+import { AIChatPreview } from "@/components/AIChatPreview";
 import { LucideIcon } from 'lucide-react';
 import { useAuth } from "@/hooks/useAuth";
 import { useSubscription } from "@/hooks/useSubscription";
@@ -197,16 +198,10 @@ const HeroSectionContent = () => (
             <strong>Your data stays yours.</strong> No bank connections required. Our AI helps you develop a personalized financial plan using only the data you choose to share.
           </p>
           
-          {/* Feature List */}
-          <ul className="text-sm md:text-base text-gray-700 mb-6 space-y-2">
-            <li className="flex items-center gap-2"><span className="bg-green-500 rounded-full p-1 flex-shrink-0"><Check className="h-4 w-4 text-white stroke-[3]" /></span> Budget expenses</li>
-            <li className="flex items-center gap-2"><span className="bg-green-500 rounded-full p-1 flex-shrink-0"><Check className="h-4 w-4 text-white stroke-[3]" /></span> Save money</li>
-            <li className="flex items-center gap-2"><span className="bg-green-500 rounded-full p-1 flex-shrink-0"><Check className="h-4 w-4 text-white stroke-[3]" /></span> Compare estimates</li>
-            <li className="flex items-center gap-2"><span className="bg-green-500 rounded-full p-1 flex-shrink-0"><Check className="h-4 w-4 text-white stroke-[3]" /></span> Plan vacations</li>
-            <li className="flex items-center gap-2"><span className="bg-green-500 rounded-full p-1 flex-shrink-0"><Check className="h-4 w-4 text-white stroke-[3]" /></span> Gift tracking</li>
-            <li className="flex items-center gap-2"><span className="bg-green-500 rounded-full p-1 flex-shrink-0"><Check className="h-4 w-4 text-white stroke-[3]" /></span> Advertise yourself</li>
-            <li className="flex items-center gap-2"><span className="bg-green-500 rounded-full p-1 flex-shrink-0"><Check className="h-4 w-4 text-white stroke-[3]" /></span> Leverage AI</li>
-          </ul>
+          {/* AI Chat Preview */}
+          <div className="mb-6">
+            <AIChatPreview />
+          </div>
           
           {/* Conditional Button Display */}
           <PremiumButton />
