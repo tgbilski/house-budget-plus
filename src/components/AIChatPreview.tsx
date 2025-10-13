@@ -9,6 +9,12 @@ Our AI analyzes your income vs. expenses to identify savings opportunities and s
 **Vendor Cost Optimization**
 Compare contractor quotes and get recommendations for the best value on home improvement projects.
 
+**Vacation Planning**
+Plan and compare vacation destinations with cost breakdowns for travel, lodging, and activities—all within your budget.
+
+**Gift List Management**
+Organize gift ideas for every occasion with budget tracking to ensure you never overspend during the holidays.
+
 **Savings Goal Planning**
 Track progress toward financial goals with personalized projections and timeline estimates.
 
