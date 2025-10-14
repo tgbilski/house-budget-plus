@@ -7,6 +7,7 @@ import { ArrowLeft, Calendar, Clock } from 'lucide-react';
 import { useBlogPosts } from '@/hooks/useBlogPosts';
 import { SEO } from '@/components/SEO';
 import ReactMarkdown from 'react-markdown';
+import { AdSense } from '@/components/AdSense';
 
 const BlogPost: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -180,6 +181,11 @@ const BlogPost: React.FC = () => {
               </ReactMarkdown>
             </CardContent>
           </Card>
+
+          {/* AdSense Ad */}
+          <div className="mt-8">
+            <AdSense adSlot="1234567890" />
+          </div>
 
           <div className="mt-8 text-center">
             <Link to="/blog">

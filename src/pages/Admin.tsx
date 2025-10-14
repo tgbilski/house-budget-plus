@@ -293,17 +293,7 @@ export default function Admin() {
         description="Manage blog posts and marketplace listings"
         keywords="admin, blog management, marketplace management"
       />
-      <Header />
       <main className="flex-1 container mx-auto px-4 py-8">
-        <div className="flex items-center gap-3 mb-6">
-          <div className="inline-flex items-center justify-center w-12 h-12 bg-primary/10 rounded-full">
-            <Shield className="h-6 w-6 text-primary" />
-          </div>
-          <div>
-            <h1 className="text-4xl font-bold">Admin Dashboard</h1>
-            <p className="text-muted-foreground">Manage blog posts and marketplace listings</p>
-          </div>
-        </div>
 
         <Tabs defaultValue="blog" className="w-full">
           <TabsList className="mb-6">
@@ -386,7 +376,6 @@ export default function Admin() {
           </TabsContent>
         </Tabs>
       </main>
-      <Footer />
     </div>
   );
 }

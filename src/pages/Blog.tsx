@@ -12,6 +12,7 @@ import { BlogPostForm } from '@/components/BlogPostForm';
 import { SEO } from '@/components/SEO';
 import { seoData } from '@/utils/seoData';
 import { toast } from 'sonner';
+import { AdSense } from '@/components/AdSense';
 
 const Blog: React.FC = () => {
   const { posts, loading, createPost, updatePost, deletePost } = useBlogPosts();
@@ -239,6 +240,11 @@ const Blog: React.FC = () => {
               </div>
             </div>
           )}
+
+          {/* AdSense Ad */}
+          <div className="py-6 md:py-8">
+            <AdSense adSlot="1234567890" />
+          </div>
         </div>
       </div>
     </>
