@@ -223,16 +223,19 @@ const MarketplacePromo = () => (
     
     <div className="max-w-6xl mx-auto relative z-10">
       {/* Promotional Banner */}
-      <div className="bg-gradient-to-r from-purple-600 to-pink-600 rounded-xl p-4 md:p-6 mb-6 md:mb-8 text-white text-center">
-        <h3 className="text-xl md:text-2xl lg:text-3xl font-bold mb-2 md:mb-3">
-          🚀 ADVERTISE YOUR LISTING WITH US! 🚀
+      <div className="bg-gradient-to-r from-primary/90 to-primary rounded-xl p-4 md:p-6 mb-6 md:mb-8 border border-primary/20 text-center">
+        <h3 className="text-xl md:text-2xl lg:text-3xl font-bold mb-2 md:mb-3 text-white">
+          Advertise Your Listing With Us
         </h3>
+        <p className="text-white/90 mb-4 text-sm md:text-base">
+          Reach thousands of homeowners looking for trusted services and products
+        </p>
         <Link to="/marketplace">
           <Button 
             size="default"
-            className="bg-white text-purple-600 hover:bg-gray-100 font-bold w-full sm:w-auto mt-2"
+            className="bg-white text-primary hover:bg-white/90 font-semibold w-full sm:w-auto shadow-lg"
           >
-            Start Your Listing Now!
+            Start Your Listing Now
           </Button>
         </Link>
       </div>
