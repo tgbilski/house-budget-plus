@@ -75,7 +75,7 @@ export function AppSidebar() {
   }, [user]);
 
   const adminItems = [
-    { title: "Manage Blog", url: "/admin/blog", icon: Shield },
+    { title: "Admin Dashboard", url: "/admin", icon: Shield },
   ];
 
   const allItems = isAdmin 
