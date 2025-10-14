@@ -27,12 +27,11 @@ import Engagement from "@/pages/Engagement";
 import AIInsights from "@/pages/AIInsights";
 import Blog from "@/pages/Blog";
 import BlogPost from "@/pages/BlogPost";
-import AdminBlog from "@/pages/AdminBlog";
+import Admin from "@/pages/Admin";
 import BlogImageUpdater from "@/pages/BlogImageUpdater";
 import { Gifts } from "@/pages/Gifts";
 import Marketplace from "@/pages/Marketplace";
 import MyListings from "@/pages/MyListings";
-import AdminMarketplace from "@/pages/AdminMarketplace";
 import AboutUs from "@/pages/AboutUs";
 import ContactUs from "@/pages/ContactUs";
 import PrivacyPolicy from "@/pages/PrivacyPolicy";
@@ -79,10 +78,9 @@ const AppRoutes = () => {
       <Route path="/gifts" element={<Gifts />} />
       <Route path="/marketplace" element={<Marketplace />} />
       <Route path="/my-listings" element={<MyListings />} />
-      <Route path="/admin/marketplace" element={<AdminMarketplace />} />
       <Route path="/blog" element={<Blog />} />
       <Route path="/blog/:slug" element={<BlogPost />} />
-      <Route path="/admin/blog" element={<AdminBlog />} />
+      <Route path="/admin" element={<Admin />} />
       <Route path="/admin/blog-images" element={<BlogImageUpdater />} />
       <Route path="/ai-insights" element={<AIInsights />} />
       <Route path="/subscription-success" element={<SubscriptionSuccess />} />

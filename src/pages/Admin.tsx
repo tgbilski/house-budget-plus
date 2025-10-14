@@ -9,7 +9,11 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useAdminStatus } from "@/hooks/useAdminStatus";
-import { Loader2, CheckCircle, XCircle, AlertTriangle } from "lucide-react";
+import { useAuth } from "@/hooks/useAuth";
+import { Loader2, CheckCircle, XCircle, AlertTriangle, Shield, PenSquare } from "lucide-react";
+import { BlogPostForm } from "@/components/BlogPostForm";
+import { BlogPost } from "@/hooks/useBlogPosts";
+import { SEO } from "@/components/SEO";
 
 interface Listing {
   id: string;
@@ -28,13 +32,15 @@ interface Listing {
   created_at: string;
 }
 
-export default function AdminMarketplace() {
+export default function Admin() {
   const [flaggedListings, setFlaggedListings] = useState<Listing[]>([]);
   const [pendingListings, setPendingListings] = useState<Listing[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
   const { toast } = useToast();
   const navigate = useNavigate();
   const { isAdmin, loading: adminLoading } = useAdminStatus();
+  const { user } = useAuth();
 
   useEffect(() => {
     if (!adminLoading && !isAdmin) {
@@ -111,7 +117,7 @@ export default function AdminMarketplace() {
         .from('marketplace_listings')
         .update({ 
           status: 'rejected',
-          rejection_reason: 'Flagged by multiple users'
+          rejection_reason: 'Flagged by multiple users or rejected by admin'
         })
         .eq('id', listingId);
 
@@ -129,6 +135,46 @@ export default function AdminMarketplace() {
         description: "Failed to reject listing",
         variant: "destructive",
       });
+    }
+  };
+
+  const handleSaveBlogPost = async (postData: Partial<BlogPost>) => {
+    setSaving(true);
+    try {
+      const slug = postData.title
+        ?.toLowerCase()
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/(^-|-$)/g, '');
+
+      const { error } = await supabase
+        .from('blog_posts')
+        .insert({
+          title: postData.title,
+          content: postData.content,
+          excerpt: postData.excerpt,
+          published: postData.published,
+          featured_image_url: postData.featured_image_url,
+          read_time: postData.read_time,
+          tags: postData.tags,
+          slug: slug,
+          user_id: user!.id,
+        });
+
+      if (error) throw error;
+
+      toast({
+        title: "Success!",
+        description: "Blog post created successfully.",
+      });
+    } catch (error) {
+      console.error('Error creating blog post:', error);
+      toast({
+        title: "Error",
+        description: "Failed to create blog post. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setSaving(false);
     }
   };
 
@@ -154,10 +200,12 @@ export default function AdminMarketplace() {
               <CardTitle className="text-lg">{listing.title}</CardTitle>
               <Badge variant="outline" className="mt-2">{listing.category}</Badge>
             </div>
-            <Badge variant="destructive" className="flex items-center gap-1">
-              <AlertTriangle className="h-3 w-3" />
-              {listing.report_count} reports
-            </Badge>
+            {listing.status === 'flagged' && (
+              <Badge variant="destructive" className="flex items-center gap-1">
+                <AlertTriangle className="h-3 w-3" />
+                {listing.report_count} reports
+              </Badge>
+            )}
           </div>
         </CardHeader>
         <CardContent>
@@ -240,38 +288,101 @@ export default function AdminMarketplace() {
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
+      <SEO
+        title="Admin Dashboard"
+        description="Manage blog posts and marketplace listings"
+        keywords="admin, blog management, marketplace management"
+      />
       <Header />
       <main className="flex-1 container mx-auto px-4 py-8">
-        <h1 className="text-4xl font-bold mb-8">Marketplace Administration</h1>
+        <div className="flex items-center gap-3 mb-6">
+          <div className="inline-flex items-center justify-center w-12 h-12 bg-primary/10 rounded-full">
+            <Shield className="h-6 w-6 text-primary" />
+          </div>
+          <div>
+            <h1 className="text-4xl font-bold">Admin Dashboard</h1>
+            <p className="text-muted-foreground">Manage blog posts and marketplace listings</p>
+          </div>
+        </div>
 
-        <Tabs defaultValue="flagged" className="w-full">
-          <TabsList>
-            <TabsTrigger value="flagged">
-              Flagged ({flaggedListings.length})
-            </TabsTrigger>
-            <TabsTrigger value="pending">
-              Pending ({pendingListings.length})
-            </TabsTrigger>
+        <Tabs defaultValue="blog" className="w-full">
+          <TabsList className="mb-6">
+            <TabsTrigger value="blog">Blog Management</TabsTrigger>
+            <TabsTrigger value="listings">Listing Management</TabsTrigger>
           </TabsList>
 
-          <TabsContent value="flagged" className="mt-6">
-            {flaggedListings.length === 0 ? (
-              <p className="text-muted-foreground text-center py-8">No flagged listings</p>
-            ) : (
-              flaggedListings.map(listing => (
-                <ListingCard key={listing.id} listing={listing} />
-              ))
-            )}
+          <TabsContent value="blog" className="space-y-6">
+            <Card className="border-primary/20 bg-primary/5">
+              <CardContent className="flex items-center gap-3 p-4">
+                <PenSquare className="h-5 w-5 text-primary" />
+                <div>
+                  <p className="font-semibold text-foreground">Blog Admin Access</p>
+                  <p className="text-sm text-muted-foreground">
+                    Create and manage blog posts that will be visible to all users on the blog page.
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>Create New Blog Post</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <BlogPostForm 
+                  onSave={handleSaveBlogPost} 
+                  onCancel={() => navigate('/blog')} 
+                  loading={saving} 
+                />
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardContent className="flex items-center justify-between p-4">
+                <div>
+                  <p className="font-semibold text-foreground">View Published Posts</p>
+                  <p className="text-sm text-muted-foreground">
+                    See how your posts appear to users
+                  </p>
+                </div>
+                <Button variant="outline" onClick={() => navigate('/blog')}>
+                  Go to Blog
+                </Button>
+              </CardContent>
+            </Card>
           </TabsContent>
 
-          <TabsContent value="pending" className="mt-6">
-            {pendingListings.length === 0 ? (
-              <p className="text-muted-foreground text-center py-8">No pending listings</p>
-            ) : (
-              pendingListings.map(listing => (
-                <ListingCard key={listing.id} listing={listing} />
-              ))
-            )}
+          <TabsContent value="listings" className="space-y-6">
+            <Tabs defaultValue="pending" className="w-full">
+              <TabsList>
+                <TabsTrigger value="pending">
+                  Pending ({pendingListings.length})
+                </TabsTrigger>
+                <TabsTrigger value="flagged">
+                  Flagged ({flaggedListings.length})
+                </TabsTrigger>
+              </TabsList>
+
+              <TabsContent value="pending" className="mt-6">
+                {pendingListings.length === 0 ? (
+                  <p className="text-muted-foreground text-center py-8">No pending listings</p>
+                ) : (
+                  pendingListings.map(listing => (
+                    <ListingCard key={listing.id} listing={listing} />
+                  ))
+                )}
+              </TabsContent>
+
+              <TabsContent value="flagged" className="mt-6">
+                {flaggedListings.length === 0 ? (
+                  <p className="text-muted-foreground text-center py-8">No flagged listings</p>
+                ) : (
+                  flaggedListings.map(listing => (
+                    <ListingCard key={listing.id} listing={listing} />
+                  ))
+                )}
+              </TabsContent>
+            </Tabs>
           </TabsContent>
         </Tabs>
       </main>
