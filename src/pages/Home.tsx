@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Calculator, Scale, Target, Plane, Brain, ArrowRight, Gift, ChevronDown, UserCheck, Crown, Store, Home as HomeIcon, Heart, TrendingUp, Users, DollarSign, MessageCircle, Sparkles } from "lucide-react";
+import { Calculator, Scale, Target, Plane, Brain, ArrowRight, Gift, ChevronDown, UserCheck, Crown, Store, Home as HomeIcon, Heart } from "lucide-react";
 import { Link } from "react-router-dom";
 import { SEO } from "@/components/SEO";
 import { seoData } from "@/utils/seoData";
@@ -84,23 +84,6 @@ const featurePreviewsData = [
   }
 ];
 
-const testimonials = [
-  {
-    name: "Sarah M.",
-    text: "Saved over $3,000 in my first year using the budget tools!",
-    role: "Homeowner"
-  },
-  {
-    name: "Mike T.",
-    text: "The vendor comparison tool helped me find the best contractor and save 20%.",
-    role: "Property Manager"
-  },
-  {
-    name: "Jennifer L.",
-    text: "Finally, a budget app that respects my privacy. No bank connections needed!",
-    role: "Financial Planner"
-  }
-];
 
 // --- Reusable and Page-Specific Components ---
 
@@ -169,60 +152,7 @@ const PremiumButton = () => {
   );
 };
 
-const SocialProof = () => (
-  <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8 animate-slide-up">
-    <div className="text-center p-4 bg-white/60 backdrop-blur-sm rounded-xl border border-border/50">
-      <Users className="h-6 w-6 mx-auto mb-2 text-teal" />
-      <div className="text-2xl font-bold text-foreground">10,000+</div>
-      <div className="text-xs text-muted-foreground">Active Users</div>
-    </div>
-    <div className="text-center p-4 bg-white/60 backdrop-blur-sm rounded-xl border border-border/50">
-      <TrendingUp className="h-6 w-6 mx-auto mb-2 text-success" />
-      <div className="text-2xl font-bold text-foreground">$2.5M+</div>
-      <div className="text-xs text-muted-foreground">Total Saved</div>
-    </div>
-    <div className="text-center p-4 bg-white/60 backdrop-blur-sm rounded-xl border border-border/50">
-      <DollarSign className="h-6 w-6 mx-auto mb-2 text-primary" />
-      <div className="text-2xl font-bold text-foreground">$3,200</div>
-      <div className="text-xs text-muted-foreground">Avg. Yearly Savings</div>
-    </div>
-    <div className="text-center p-4 bg-white/60 backdrop-blur-sm rounded-xl border border-border/50">
-      <MessageCircle className="h-6 w-6 mx-auto mb-2 text-teal" />
-      <div className="text-2xl font-bold text-foreground">4.9/5</div>
-      <div className="text-xs text-muted-foreground">User Rating</div>
-    </div>
-  </div>
-);
 
-const TestimonialSection = () => (
-  <section className="py-12 px-4 animate-slide-up" style={{ animationDelay: '0.2s' }}>
-    <div className="max-w-6xl mx-auto">
-      <h2 className="text-3xl md:text-4xl font-bold text-center mb-10 text-foreground">
-        What Our Users Say
-      </h2>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {testimonials.map((testimonial, index) => (
-          <Card key={index} className="bg-white/80 backdrop-blur-sm border-2 hover:border-teal/40 transition-all duration-300 hover:shadow-[var(--shadow-teal)] hover:-translate-y-1">
-            <CardHeader>
-              <div className="flex items-center gap-1 mb-2">
-                {[...Array(5)].map((_, i) => (
-                  <Sparkles key={i} className="h-4 w-4 fill-warning text-warning" />
-                ))}
-              </div>
-              <CardDescription className="text-foreground text-base italic">
-                "{testimonial.text}"
-              </CardDescription>
-              <div className="mt-4">
-                <div className="font-semibold text-foreground">{testimonial.name}</div>
-                <div className="text-sm text-muted-foreground">{testimonial.role}</div>
-              </div>
-            </CardHeader>
-          </Card>
-        ))}
-      </div>
-    </div>
-  </section>
-);
 
 const HeroSectionContent = () => (
   <section className="relative py-8 md:py-12 px-4 rounded-3xl mx-4 shadow-2xl overflow-visible bg-gradient-to-br from-white via-white to-sage/20 mt-16 md:mt-20 border border-border/50 animate-scale-in">
@@ -284,8 +214,6 @@ const HeroSectionContent = () => (
           </p>
         </div>
       </div>
-
-      <SocialProof />
     </div>
   </section>
 );
@@ -497,8 +425,6 @@ const Home = () => {
           <MarketplacePromo />
           <ScrollIndicator />
           <FeaturePreviewsGrid />
-          <ScrollIndicator />
-          <TestimonialSection />
           <ScrollIndicator />
           <AdvertiseSection />
           <ScrollIndicator />
