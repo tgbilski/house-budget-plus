@@ -19,6 +19,7 @@
     /* Custom blue #1c3355 */
     --primary: 213 50% 22%;
     --primary-foreground: 0 0% 98%;
+    --primary-glow: 213 60% 35%;
 
     /* Gray secondary */
     --secondary: 210 40% 96%;
@@ -42,6 +43,7 @@
     /* Teal accent color #7cb5a2 */
     --teal: 161 32% 60%;
     --teal-foreground: 0 0% 98%;
+    --teal-glow: 161 42% 70%;
 
     /* Sage accent color #d3e8c1 */
     --sage: 95 40% 82%;
@@ -57,6 +59,19 @@
     --ring: 213 50% 22%;
 
     --radius: 0.75rem;
+
+    /* Gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--primary-glow)));
+    --gradient-teal: linear-gradient(135deg, hsl(var(--teal)), hsl(var(--teal-glow)));
+    --gradient-subtle: linear-gradient(180deg, hsl(var(--background)), hsl(var(--secondary)));
+
+    /* Shadows */
+    --shadow-elegant: 0 10px 30px -10px hsl(var(--primary) / 0.3);
+    --shadow-glow: 0 0 40px hsl(var(--primary-glow) / 0.4);
+    --shadow-teal: 0 8px 24px -8px hsl(var(--teal) / 0.3);
+
+    /* Animations */
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 
     /* Sidebar colors */
     --sidebar-background: 0 0% 98%;
