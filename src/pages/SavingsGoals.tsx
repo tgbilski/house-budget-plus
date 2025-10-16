@@ -57,7 +57,7 @@ const SavingsGoals: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-gradient-to-br from-white via-background to-sage/10">
       <SEO
         title={seoData.savingsGoals.title}
         description={seoData.savingsGoals.description}
@@ -67,19 +67,23 @@ const SavingsGoals: React.FC = () => {
         structuredData={seoData.savingsGoals.structuredData}
       />
 
-      <div className="max-w-7xl mx-auto p-4">
-        {/* Compact header at very top */}
-        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-6">
-          <div className="flex flex-col lg:items-start space-y-2">
-            <div className="flex items-center gap-2">
-              <div className="inline-flex items-center justify-center w-10 h-10 bg-teal/20 rounded-full">
-                <Target className="h-6 w-6 text-teal" />
+      <div className="max-w-7xl mx-auto p-4 md:p-6 lg:p-8">
+        {/* Enhanced header with gradient background */}
+        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6 mb-8 p-6 rounded-2xl bg-white/60 backdrop-blur-sm border-2 border-border/50 shadow-[var(--shadow-elegant)] animate-fade-in">
+          <div className="flex flex-col lg:items-start space-y-3">
+            <div className="flex items-center gap-3">
+              <div className="inline-flex items-center justify-center w-14 h-14 bg-gradient-to-br from-teal/20 to-teal-glow/20 rounded-2xl shadow-md">
+                <Target className="h-8 w-8 text-teal" />
               </div>
-              <h1 className="text-2xl font-bold text-foreground">Savings Tracker</h1>
+              <div>
+                <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-foreground via-teal to-teal-glow bg-clip-text text-transparent">
+                  Savings Tracker
+                </h1>
+                <p className="text-muted-foreground text-sm mt-1">
+                  Track your progress toward financial goals
+                </p>
+              </div>
             </div>
-            <p className="text-muted-foreground text-sm text-center lg:text-left bg-sage/30 px-3 py-1 rounded-md">
-              Track your progress toward financial goals
-            </p>
           </div>
           
           {/* Year selector at top right on laptop, centered on mobile */}
@@ -89,18 +93,18 @@ const SavingsGoals: React.FC = () => {
         </div>
 
         {!user && (
-          <Alert className="border-yellow-200 bg-yellow-50 mb-6">
-            <AlertTriangle className="h-4 w-4 text-yellow-600" />
-            <AlertDescription className="text-yellow-800">
-              <strong>Demo Mode</strong> -
-              <Link to="/auth" className="underline font-medium ml-1 hover:text-yellow-900">
-                Sign in to save your progress
+          <Alert className="border-2 border-warning/40 bg-warning/10 mb-8 backdrop-blur-sm animate-slide-up">
+            <AlertTriangle className="h-5 w-5 text-warning" />
+            <AlertDescription className="text-foreground">
+              <strong>Demo Mode</strong> - Your changes won't be saved.
+              <Link to="/auth" className="underline font-medium ml-2 hover:text-teal transition-colors">
+                Sign in to track your goals permanently
               </Link>
             </AlertDescription>
           </Alert>
         )}
 
-        <div className="space-y-6">
+        <div className="space-y-8">
           <GoalSelector
             goals={goals}
             currentGoalId={currentGoalId}
@@ -124,34 +128,40 @@ const SavingsGoals: React.FC = () => {
             onUpdateAmount={updateMonthlyAmount}
           />
 
-          <AIChatbot
-            pageContext="I'm on the savings goals page where I can track my monthly savings progress toward financial goals."
-            pageName="Savings Goals"
-          />
+          <div className="animate-slide-up" style={{ animationDelay: '0.3s' }}>
+            <AIChatbot
+              pageContext="I'm on the savings goals page where I can track my monthly savings progress toward financial goals."
+              pageName="Savings Goals"
+            />
+          </div>
 
-          <FAQ 
-            faqs={[
-              {
-                question: "How do I set a savings goal?",
-                answer: "Click on the goal selector dropdown at the top of the page. You can create new goals or select existing ones. Enter your target amount and goal name to get started."
-              },
-              {
-                question: "Can I track multiple savings goals at once?",
-                answer: "Yes! You can create multiple savings goals (like 'Emergency Fund', 'Vacation', 'New Car') and switch between them to track progress for each one separately."
-              },
-              {
-                question: "How do I update my monthly savings?",
-                answer: "Click on any month in the yearly grid and enter the amount you saved that month. The progress bar will automatically update to show your overall achievement toward the goal."
-              },
-              {
-                question: "What happens if I save more than my target?",
-                answer: "Great job! The progress tracker will show 100% when you reach your target. You can continue adding monthly savings and either increase your target or create a new goal."
-              }
-            ]}
-            title="Savings Goals FAQs"
-          />
+          <div className="animate-slide-up" style={{ animationDelay: '0.4s' }}>
+            <FAQ 
+              faqs={[
+                {
+                  question: "How do I set a savings goal?",
+                  answer: "Click on the goal selector at the top of the page. You can create new goals or select existing ones. Enter your target amount and goal name to get started."
+                },
+                {
+                  question: "Can I track multiple savings goals at once?",
+                  answer: "Yes! You can create multiple savings goals (like 'Emergency Fund', 'Vacation', 'New Car') and switch between them to track progress for each one separately."
+                },
+                {
+                  question: "How do I update my monthly savings?",
+                  answer: "Click on any month in the yearly grid and enter the amount you saved that month. The progress bar will automatically update to show your overall achievement toward the goal."
+                },
+                {
+                  question: "What happens if I save more than my target?",
+                  answer: "Great job! The progress tracker will show 100% when you reach your target. You can continue adding monthly savings and either increase your target or create a new goal."
+                }
+              ]}
+              title="Savings Goals FAQs"
+            />
+          </div>
 
-          <InternalLinks currentPage="/savings" category="planning" />
+          <div className="animate-slide-up" style={{ animationDelay: '0.5s' }}>
+            <InternalLinks currentPage="/savings" category="planning" />
+          </div>
         </div>
       </div>
     </div>

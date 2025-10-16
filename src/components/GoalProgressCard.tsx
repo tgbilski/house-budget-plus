@@ -2,8 +2,10 @@
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import { Progress } from '@/components/ui/progress';
-import { Target } from 'lucide-react';
+import { Target, DollarSign } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 interface SavingsGoal {
   title: string;
@@ -23,65 +25,138 @@ export const GoalProgressCard: React.FC<Props> = ({
   progressPercentage,
   onUpdateTarget,
 }) => {
-  const [localTarget, setLocalTarget] = useState('');
+  const [localTarget, setLocalTarget] = useState<string>('');
 
+  // Initialize or update local target input when currentGoal changes
   useEffect(() => {
     if (currentGoal) {
       setLocalTarget(currentGoal.target_amount.toString());
     }
   }, [currentGoal]);
 
+  const handleBlur = () => {
+    const value = parseFloat(localTarget) || 0;
+    if (value > 0 && value !== currentGoal?.target_amount) {
+      onUpdateTarget(value);
+    }
+  };
+
   if (!currentGoal) {
-    return null; // Don't render anything if no goal is selected
+    return null;
   }
 
   const remaining = currentGoal.target_amount - totalSaved;
+  const isComplete = progressPercentage >= 100;
+  const isNearComplete = progressPercentage >= 75 && progressPercentage < 100;
+  const milestones = [25, 50, 75, 100];
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Target className="h-5 w-5" />
-          {currentGoal.title} Progress
+    <Card className="bg-gradient-to-br from-white via-white to-teal/5 backdrop-blur-sm border-2 border-border/50 shadow-[var(--shadow-elegant)] animate-scale-in overflow-hidden relative">
+      {isComplete && (
+        <div className="absolute inset-0 bg-gradient-to-r from-success/5 via-teal/10 to-success/5 animate-glow pointer-events-none" />
+      )}
+      <CardHeader className="relative">
+        <CardTitle className="flex items-center justify-between gap-4">
+          <div className="flex items-center gap-3">
+            <div className={cn(
+              "inline-flex items-center justify-center w-12 h-12 rounded-full transition-all duration-300",
+              isComplete ? "bg-success/20 animate-pulse" : "bg-teal/20"
+            )}>
+              <Target className={cn(
+                "h-7 w-7",
+                isComplete ? "text-success" : "text-teal"
+              )} />
+            </div>
+            <span className="text-2xl font-bold bg-gradient-to-r from-foreground to-teal bg-clip-text text-transparent">
+              {currentGoal.title} Progress
+            </span>
+          </div>
         </CardTitle>
       </CardHeader>
-      <CardContent className="space-y-4">
-        <div className="flex items-center gap-2">
-          <label className="text-sm font-medium w-24">Goal Target:</label>
-          <div className="flex items-center gap-2">
-            <span className="text-lg">$</span>
+      <CardContent className="space-y-6 relative">
+        <div className="flex items-center gap-3">
+          <Label htmlFor="target-input" className="text-sm font-medium whitespace-nowrap">Goal Target:</Label>
+          <div className="relative flex-1 max-w-xs">
+            <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input
+              id="target-input"
               type="number"
               value={localTarget}
               onChange={(e) => setLocalTarget(e.target.value)}
-              onBlur={() => onUpdateTarget(parseFloat(localTarget) || 0)}
-              className="w-32"
-              placeholder="0"
+              onBlur={handleBlur}
+              className="pl-9 font-semibold bg-white/80 border-2 hover:border-teal/40 focus:border-teal transition-all"
+              min="0"
+              step="100"
             />
           </div>
         </div>
 
-        {currentGoal.target_amount > 0 && (
-          <>
-            <div className="space-y-2">
-              <div className="flex justify-between text-sm">
-                <span>Progress</span>
-                <span>{progressPercentage.toFixed(1)}%</span>
-              </div>
-              <Progress value={progressPercentage} className="h-3" />
+        <div className="space-y-4">
+          <div className="relative">
+            <div className="flex justify-between items-center mb-3">
+              <span className="text-sm font-medium text-muted-foreground">Overall Progress</span>
+              <span className={cn(
+                "text-lg font-bold transition-colors",
+                isComplete ? "text-success" : isNearComplete ? "text-teal" : "text-foreground"
+              )}>
+                {progressPercentage.toFixed(1)}%
+              </span>
             </div>
-            <div className="grid grid-cols-2 md:grid-cols-2 gap-4 pt-4">
-              <div className="text-center">
-                <div className="text-2xl font-bold text-green-600">${totalSaved.toLocaleString()}</div>
-                <div className="text-xs text-gray-600">Total Saved</div>
+            
+            <div className="relative h-6 w-full overflow-hidden rounded-full bg-muted/50 shadow-inner">
+              <div 
+                className={cn(
+                  "h-full transition-all duration-700 ease-out rounded-full relative",
+                  isComplete 
+                    ? "bg-gradient-to-r from-success via-teal to-success animate-glow shadow-[0_0_20px_rgba(34,197,94,0.4)]" 
+                    : isNearComplete
+                    ? "bg-gradient-to-r from-teal to-teal-glow shadow-[var(--shadow-teal)]"
+                    : "bg-gradient-to-r from-teal/80 to-teal"
+                )}
+                style={{ width: `${Math.min(progressPercentage, 100)}%` }}
+              >
+                {isComplete && (
+                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent animate-shimmer" />
+                )}
               </div>
-              <div className="text-center">
-                <div className="text-2xl font-bold text-blue-600">${remaining.toLocaleString()}</div>
-                <div className="text-xs text-gray-600">Remaining</div>
+              
+              {milestones.map((milestone) => (
+                <div
+                  key={milestone}
+                  className="absolute top-0 bottom-0 w-0.5 bg-background/40"
+                  style={{ left: `${milestone}%` }}
+                >
+                  <div className={cn(
+                    "absolute -top-6 left-1/2 -translate-x-1/2 text-xs font-medium whitespace-nowrap transition-opacity",
+                    progressPercentage >= milestone ? "text-teal opacity-100" : "text-muted-foreground opacity-60"
+                  )}>
+                    {milestone}%
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-4 mt-6">
+            <div className="bg-white/60 backdrop-blur-sm rounded-xl p-4 border-2 border-border/30 hover:border-teal/40 transition-all hover:shadow-md">
+              <div className="text-sm text-muted-foreground mb-1">Total Saved</div>
+              <div className="text-2xl font-bold text-teal">
+                ${totalSaved.toLocaleString()}
               </div>
             </div>
-          </>
-        )}
+            <div className="bg-white/60 backdrop-blur-sm rounded-xl p-4 border-2 border-border/30 hover:border-teal/40 transition-all hover:shadow-md">
+              <div className="text-sm text-muted-foreground mb-1">
+                {isComplete ? "Exceeded by" : "Remaining"}
+              </div>
+              <div className={cn(
+                "text-2xl font-bold",
+                isComplete ? "text-success" : "text-foreground"
+              )}>
+                ${Math.abs(remaining).toLocaleString()}
+              </div>
+            </div>
+          </div>
+        </div>
       </CardContent>
     </Card>
   );
