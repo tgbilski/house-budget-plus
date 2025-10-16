@@ -76,7 +76,7 @@ const SavingsGoals: React.FC = () => {
                 <Target className="h-8 w-8 text-teal" />
               </div>
               <div>
-                <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-foreground via-teal to-teal-glow bg-clip-text text-transparent">
+                <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-foreground to-teal bg-clip-text text-transparent">
                   Savings Tracker
                 </h1>
                 <p className="text-muted-foreground text-sm mt-1">
