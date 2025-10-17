@@ -282,7 +282,7 @@ export function HouseholdSwitcher({ className, open, onOpenChange }: HouseholdSw
                     <Card key={invite.id} className="border-blue-200 bg-blue-50">
                       <CardContent className="p-3">
                         <p className="text-sm font-medium">
-                          Invitation to join "{invite.household_name}"
+                          Invitation to join "{(invite as any).households?.name || 'a household'}"
                         </p>
                         <div className="flex gap-2 mt-2">
                           <Button
