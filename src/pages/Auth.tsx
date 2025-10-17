@@ -11,26 +11,57 @@ import { useToast } from '@/hooks/use-toast';
 const Auth: React.FC = () => {
   const [isSignUp, setIsSignUp] = useState(false);
   const [isForgotPassword, setIsForgotPassword] = useState(false);
+  const [isResettingPassword, setIsResettingPassword] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [newPassword, setNewPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const { signUp, signIn, signInWithGoogle, user } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
 
-  // Redirect if already authenticated
+  // Check for password reset token and redirect if already authenticated
   useEffect(() => {
-    if (user) {
+    // Check if this is a password reset callback
+    const hashParams = new URLSearchParams(window.location.hash.substring(1));
+    const type = hashParams.get('type');
+    
+    if (type === 'recovery') {
+      setIsResettingPassword(true);
+      setIsForgotPassword(false);
+      setIsSignUp(false);
+    }
+
+    if (user && !isResettingPassword) {
       navigate('/');
     }
-  }, [user, navigate]);
+  }, [user, navigate, isResettingPassword]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
 
     try {
-      if (isForgotPassword) {
+      if (isResettingPassword) {
+        const { error } = await supabase.auth.updateUser({
+          password: newPassword
+        });
+        
+        if (error) {
+          toast({
+            title: "Error",
+            description: error.message,
+            variant: "destructive"
+          });
+        } else {
+          toast({
+            title: "Password updated",
+            description: "Your password has been successfully updated."
+          });
+          setIsResettingPassword(false);
+          navigate('/');
+        }
+      } else if (isForgotPassword) {
         const { error } = await supabase.auth.resetPasswordForEmail(email, {
           redirectTo: `${window.location.origin}/auth`
         });
@@ -69,52 +100,72 @@ const Auth: React.FC = () => {
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
           <CardTitle>
-            {isForgotPassword ? 'Reset Password' : (isSignUp ? 'Sign Up' : 'Sign In')}
+            {isResettingPassword ? 'Set New Password' : (isForgotPassword ? 'Reset Password' : (isSignUp ? 'Sign Up' : 'Sign In'))}
           </CardTitle>
           <CardDescription>
-            {isForgotPassword 
-              ? 'Enter your email to receive a password reset link'
-              : (isSignUp
-                ? 'Create an account to save your budget data'
-                : 'Sign in to access your saved budget data'
+            {isResettingPassword
+              ? 'Enter your new password below'
+              : (isForgotPassword 
+                ? 'Enter your email to receive a password reset link'
+                : (isSignUp
+                  ? 'Create an account to save your budget data'
+                  : 'Sign in to access your saved budget data'
+                )
               )
             }
           </CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
-              <Input
-                id="email"
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-                placeholder="Enter your email"
-              />
-            </div>
-            {!isForgotPassword && (
+            {isResettingPassword ? (
               <div className="space-y-2">
-                <Label htmlFor="password">Password</Label>
+                <Label htmlFor="newPassword">New Password</Label>
                 <Input
-                  id="password"
+                  id="newPassword"
                   type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
+                  value={newPassword}
+                  onChange={(e) => setNewPassword(e.target.value)}
                   required
-                  placeholder="Enter your password"
+                  placeholder="Enter your new password"
                   minLength={6}
                 />
               </div>
+            ) : (
+              <>
+                <div className="space-y-2">
+                  <Label htmlFor="email">Email</Label>
+                  <Input
+                    id="email"
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    required
+                    placeholder="Enter your email"
+                  />
+                </div>
+                {!isForgotPassword && (
+                  <div className="space-y-2">
+                    <Label htmlFor="password">Password</Label>
+                    <Input
+                      id="password"
+                      type="password"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      required
+                      placeholder="Enter your password"
+                      minLength={6}
+                    />
+                  </div>
+                )}
+              </>
             )}
             <Button type="submit" className="w-full" disabled={loading}>
               {loading ? 'Please wait...' : (
-                isForgotPassword ? 'Send Reset Link' : (isSignUp ? 'Sign Up' : 'Sign In')
+                isResettingPassword ? 'Update Password' : (isForgotPassword ? 'Send Reset Link' : (isSignUp ? 'Sign Up' : 'Sign In'))
               )}
             </Button>
             
-            {!isForgotPassword && (
+            {!isForgotPassword && !isResettingPassword && (
               <>
                 <div className="relative">
                   <div className="absolute inset-0 flex items-center">
@@ -169,7 +220,7 @@ const Auth: React.FC = () => {
           </form>
           
           <div className="text-center mt-4 space-y-2">
-            {!isForgotPassword && (
+            {!isForgotPassword && !isResettingPassword && (
               <Button
                 variant="link"
                 onClick={() => setIsSignUp(!isSignUp)}
@@ -182,7 +233,7 @@ const Auth: React.FC = () => {
               </Button>
             )}
             
-            {!isSignUp && (
+            {!isSignUp && !isResettingPassword && (
               <Button
                 variant="link"
                 onClick={() => setIsForgotPassword(!isForgotPassword)}
