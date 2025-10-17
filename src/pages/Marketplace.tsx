@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Plus } from "lucide-react";
+import { Plus, Store } from "lucide-react";
 import { MarketplaceListingForm } from "@/components/MarketplaceListingForm";
 import { MarketplaceGrid } from "@/components/MarketplaceGrid";
 import { SEO } from "@/components/SEO";
@@ -39,13 +39,22 @@ export default function Marketplace() {
       
       <div className="max-w-7xl mx-auto p-4">
         <div className="bg-white rounded-2xl shadow-xl p-4 md:p-6 lg:p-8">
-        <div className="mb-6 md:mb-8">
-          <div className="mb-4">
-            <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold mb-2">Community Marketplace</h1>
-            <p className="text-sm md:text-base text-muted-foreground">
-              Discover vendors, vacation rentals, and unique gifts. Click any listing to visit their website.
-            </p>
+        {/* Enhanced header with gradient background */}
+        <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-background via-teal/5 to-sage/10 border border-teal/20 p-6 mb-6 md:mb-8 shadow-lg">
+          <div className="flex items-center gap-4 mb-2">
+            <div className="inline-flex items-center justify-center w-12 h-12 bg-gradient-to-br from-teal to-teal/60 rounded-2xl shadow-lg">
+              <Store className="h-6 w-6 text-white" />
+            </div>
+            <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold bg-gradient-to-r from-foreground to-teal bg-clip-text text-transparent">
+              Community Marketplace
+            </h1>
           </div>
+          <p className="text-sm md:text-base text-muted-foreground ml-16">
+            Discover vendors, vacation rentals, and unique gifts. Click any listing to visit their website.
+          </p>
+        </div>
+        
+        <div className="mb-6 md:mb-8">
           <div className="flex flex-col sm:flex-row gap-2">
             {user && (
               <Button 

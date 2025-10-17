@@ -66,23 +66,29 @@ const CompareVendors: React.FC = () => {
       />
 
       <div className="max-w-7xl mx-auto p-3 md:p-4">
-        {/* Compact header at very top */}
-        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3 md:gap-4 mb-4 md:mb-6">
-          <div className="flex flex-col lg:items-start space-y-2">
-            <div className="flex items-center gap-2">
-              <div className="inline-flex items-center justify-center w-8 h-8 md:w-10 md:h-10 bg-teal/20 rounded-full">
-                <Scale className="h-5 w-5 md:h-6 md:w-6 text-teal" />
+        {/* Enhanced header with gradient background */}
+        <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-background via-teal/5 to-sage/10 border border-teal/20 p-4 md:p-6 mb-4 md:mb-6 shadow-lg">
+          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3 md:gap-4">
+            <div className="flex flex-col lg:items-start space-y-2">
+              <div className="flex items-center gap-3">
+                <div className="inline-flex items-center justify-center w-10 h-10 md:w-12 md:h-12 bg-gradient-to-br from-teal to-teal/60 rounded-2xl shadow-lg">
+                  <Scale className="h-5 w-5 md:h-6 md:w-6 text-white" />
+                </div>
+                <div>
+                  <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold bg-gradient-to-r from-foreground to-teal bg-clip-text text-transparent">
+                    Vendor Comparison
+                  </h1>
+                  <p className="text-muted-foreground text-xs md:text-sm mt-1">
+                    Compare quotes and find the best value
+                  </p>
+                </div>
               </div>
-              <h1 className="text-xl md:text-2xl font-bold text-foreground">Vendor Comparison</h1>
             </div>
-            <p className="text-muted-foreground text-xs md:text-sm text-center lg:text-left bg-sage/30 px-2 md:px-3 py-1 rounded-md">
-              Compare quotes and find the best value
-            </p>
-          </div>
-          
-          {/* Year selector at top right on laptop, centered on mobile */}
-          <div className="flex justify-center lg:justify-end">
-            <YearSelector />
+            
+            {/* Year selector at top right on laptop, centered on mobile */}
+            <div className="flex justify-center lg:justify-end">
+              <YearSelector />
+            </div>
           </div>
         </div>
 
@@ -135,15 +141,20 @@ const CompareVendors: React.FC = () => {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {quotes.map((quote) => (
-              <VendorCard
+            {quotes.map((quote, index) => (
+              <div
                 key={quote.id}
-                quote={quote}
-                onUpdate={updateQuote}
-                onRemove={removeQuote}
-                showRemove={quotes.length > 1}
-                currencySymbol={currency.symbol}
-              />
+                className="animate-fade-in"
+                style={{ animationDelay: `${index * 0.1}s`, animationFillMode: 'both' }}
+              >
+                <VendorCard
+                  quote={quote}
+                  onUpdate={updateQuote}
+                  onRemove={removeQuote}
+                  showRemove={quotes.length > 1}
+                  currencySymbol={currency.symbol}
+                />
+              </div>
             ))}
           </div>
 

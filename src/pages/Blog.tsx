@@ -105,23 +105,23 @@ const Blog: React.FC = () => {
         ogImage={seoData.blog.ogImage}
         structuredData={seoData.blog.structuredData}
       />
-      <div className="min-h-screen bg-gray-100">
+      <div className="min-h-screen bg-background">
         <div className="max-w-7xl mx-auto p-4 space-y-8">
-          {/* Header Section */}
-          <div className="text-center py-12">
-            <div className="inline-flex items-center justify-center w-16 h-16 bg-primary/10 rounded-full mb-6">
-              <BookOpen className="h-8 w-8 text-primary" />
+          {/* Enhanced Header Section */}
+          <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-background via-teal/5 to-sage/10 border border-teal/20 p-8 md:p-12 shadow-lg text-center">
+            <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-teal to-teal/60 rounded-2xl shadow-lg mb-6">
+              <BookOpen className="h-8 w-8 text-white" />
             </div>
-            <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+            <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-foreground to-teal bg-clip-text text-transparent mb-4">
               Financial Insights Blog
             </h1>
-            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
               Discover expert tips, strategies, and insights to help you master your finances and achieve your financial goals.
             </p>
           </div>
 
           {/* Controls Section */}
-          <div className="bg-white rounded-2xl shadow-lg p-6">
+          <div className="bg-card/50 backdrop-blur-sm border border-border/50 rounded-2xl shadow-lg p-6 hover:shadow-xl transition-shadow">
             <div className="flex flex-col md:flex-row gap-4 items-center justify-between">
               <div className="flex flex-col sm:flex-row gap-4 items-center flex-1">
                 <div className="relative flex-1 max-w-md">
@@ -192,8 +192,12 @@ const Blog: React.FC = () => {
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filteredPosts.map((post) => (
-                <div key={post.id} className="relative group">
+              {filteredPosts.map((post, index) => (
+                <div 
+                  key={post.id} 
+                  className="relative group animate-fade-in"
+                  style={{ animationDelay: `${index * 0.1}s`, animationFillMode: 'both' }}
+                >
                   <BlogPostCard 
                     post={post} 
                     isOwner={isAdmin}
@@ -219,7 +223,7 @@ const Blog: React.FC = () => {
 
           {/* Blog Stats */}
           {filteredPosts.length > 0 && (
-            <div className="bg-white rounded-2xl shadow-lg p-6">
+            <div className="bg-card/50 backdrop-blur-sm border border-border/50 rounded-2xl shadow-lg p-6 hover:shadow-xl transition-shadow">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
                 <div>
                   <div className="text-3xl font-bold text-primary mb-2">{filteredPosts.length}</div>

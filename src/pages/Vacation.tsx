@@ -65,23 +65,29 @@ const Vacation: React.FC = () => {
       />
       
       <div className="max-w-7xl mx-auto p-4">
-        {/* Compact header at very top */}
-        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-6">
-          <div className="flex flex-col lg:items-start space-y-2">
-            <div className="flex items-center gap-2">
-              <div className="inline-flex items-center justify-center w-10 h-10 bg-teal/20 rounded-full">
-                <Plane className="h-6 w-6 text-teal" />
+        {/* Enhanced header with gradient background */}
+        <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-background via-teal/5 to-sage/10 border border-teal/20 p-6 mb-6 shadow-lg">
+          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+            <div className="flex flex-col lg:items-start space-y-2">
+              <div className="flex items-center gap-3">
+                <div className="inline-flex items-center justify-center w-12 h-12 bg-gradient-to-br from-teal to-teal/60 rounded-2xl shadow-lg">
+                  <Plane className="h-6 w-6 text-white" />
+                </div>
+                <div>
+                  <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-foreground to-teal bg-clip-text text-transparent">
+                    Vacation Planner
+                  </h1>
+                  <p className="text-muted-foreground text-sm mt-1">
+                    Compare options for each of your trips
+                  </p>
+                </div>
               </div>
-              <h1 className="text-2xl font-bold text-foreground">Vacation Planner</h1>
             </div>
-            <p className="text-muted-foreground text-sm text-center lg:text-left bg-sage/30 px-3 py-1 rounded-md">
-              Compare options for each of your trips
-            </p>
-          </div>
-          
-          {/* Year selector at top right on laptop, centered on mobile */}
-          <div className="flex justify-center lg:justify-end">
-            <YearSelector />
+            
+            {/* Year selector at top right on laptop, centered on mobile */}
+            <div className="flex justify-center lg:justify-end">
+              <YearSelector />
+            </div>
           </div>
         </div>
 
@@ -123,17 +129,22 @@ const Vacation: React.FC = () => {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {options.map((option) => (
-              <VacationOptionCard
+            {options.map((option, index) => (
+              <div
                 key={option.id}
-                option={option}
-                onUpdate={(optionId, updates) => {
-                  const updatedOption = { ...option, ...updates };
-                  updateOption(updatedOption);
-                }}
-                onReset={removeOption}
-                currencySymbol={currency.symbol}
-              />
+                className="animate-fade-in"
+                style={{ animationDelay: `${index * 0.1}s`, animationFillMode: 'both' }}
+              >
+                <VacationOptionCard
+                  option={option}
+                  onUpdate={(optionId, updates) => {
+                    const updatedOption = { ...option, ...updates };
+                    updateOption(updatedOption);
+                  }}
+                  onReset={removeOption}
+                  currencySymbol={currency.symbol}
+                />
+              </div>
             ))}
           </div>
 
