@@ -15,6 +15,7 @@ const Auth: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const { signUp, signIn, signInWithGoogle, user } = useAuth();
   const navigate = useNavigate();
@@ -49,6 +50,26 @@ const Auth: React.FC = () => {
 
     try {
       if (isResettingPassword) {
+        if (newPassword !== confirmPassword) {
+          toast({
+            title: "Error",
+            description: "Passwords do not match",
+            variant: "destructive"
+          });
+          setLoading(false);
+          return;
+        }
+
+        if (newPassword.length < 6) {
+          toast({
+            title: "Error",
+            description: "Password must be at least 6 characters",
+            variant: "destructive"
+          });
+          setLoading(false);
+          return;
+        }
+
         const { error } = await supabase.auth.updateUser({
           password: newPassword
         });
@@ -124,18 +145,32 @@ const Auth: React.FC = () => {
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
             {isResettingPassword ? (
-              <div className="space-y-2">
-                <Label htmlFor="newPassword">New Password</Label>
-                <Input
-                  id="newPassword"
-                  type="password"
-                  value={newPassword}
-                  onChange={(e) => setNewPassword(e.target.value)}
-                  required
-                  placeholder="Enter your new password"
-                  minLength={6}
-                />
-              </div>
+              <>
+                <div className="space-y-2">
+                  <Label htmlFor="newPassword">New Password</Label>
+                  <Input
+                    id="newPassword"
+                    type="password"
+                    value={newPassword}
+                    onChange={(e) => setNewPassword(e.target.value)}
+                    required
+                    placeholder="Enter your new password"
+                    minLength={6}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="confirmPassword">Confirm Password</Label>
+                  <Input
+                    id="confirmPassword"
+                    type="password"
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    required
+                    placeholder="Confirm your new password"
+                    minLength={6}
+                  />
+                </div>
+              </>
             ) : (
               <>
                 <div className="space-y-2">
