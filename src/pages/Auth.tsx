@@ -23,14 +23,20 @@ const Auth: React.FC = () => {
   // Check for password reset token and redirect if already authenticated
   useEffect(() => {
     // Check if this is a password reset callback
-    const hashParams = new URLSearchParams(window.location.hash.substring(1));
-    const type = hashParams.get('type');
-    
-    if (type === 'recovery') {
-      setIsResettingPassword(true);
-      setIsForgotPassword(false);
-      setIsSignUp(false);
-    }
+    const checkPasswordReset = async () => {
+      const hashParams = new URLSearchParams(window.location.hash.substring(1));
+      const type = hashParams.get('type');
+      const accessToken = hashParams.get('access_token');
+      
+      if (type === 'recovery' && accessToken) {
+        setIsResettingPassword(true);
+        setIsForgotPassword(false);
+        setIsSignUp(false);
+        return;
+      }
+    };
+
+    checkPasswordReset();
 
     if (user && !isResettingPassword) {
       navigate('/');
