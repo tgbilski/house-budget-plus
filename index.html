@@ -30,6 +30,18 @@
       gtag('config', 'AW-17410539920');
     </script>
     
+    <!-- Google Analytics 4 -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-XXXXXXXXXX', {
+        page_path: window.location.pathname,
+        cookie_flags: 'SameSite=None;Secure'
+      });
+    </script>
+    
     <title>House Budget Calculator - Free Online Financial Planning Tool</title>
     <meta name="description" content="Free online house budget calculator. Track monthly income and expenses, manage household finances, and calculate your net budget. Perfect for individuals, families, and roommates." />
     <meta name="keywords" content="budget calculator, house budget, monthly expenses, financial planning, household budget, income tracker, expense calculator" />
