@@ -396,14 +396,6 @@ const FeaturePreviewsGrid = () => {
   );
 };
 
-// Floating Action Button
-const FloatingChatButton = () => (
-  <Link to="/ai-insights">
-    <button className="fixed bottom-8 right-8 z-50 w-16 h-16 bg-gradient-to-br from-teal to-[hsl(var(--teal-glow))] text-white rounded-full shadow-2xl hover:shadow-[var(--shadow-teal)] transition-all duration-300 hover:scale-110 flex items-center justify-center animate-glow">
-      <Brain className="h-7 w-7" />
-    </button>
-  </Link>
-);
 
 // --- Main Page Component ---
 
@@ -443,8 +435,6 @@ const Home = () => {
             <BadgeDisplay />
           </div>
         </div>
-        
-        <FloatingChatButton />
       </div>
     </>
   );
