@@ -1158,12 +1158,9 @@ export type Database = {
         Args: { _user_id: string }
         Returns: Json
       }
-      delete_user_account: {
-        Args: { _user_id: string }
-        Returns: boolean
-      }
+      delete_user_account: { Args: { _user_id: string }; Returns: boolean }
       get_current_user_role: {
-        Args: Record<PropertyKey, never>
+        Args: never
         Returns: Database["public"]["Enums"]["app_role"]
       }
       has_role: {
@@ -1173,10 +1170,7 @@ export type Database = {
         }
         Returns: boolean
       }
-      is_admin: {
-        Args: { _user_id: string }
-        Returns: boolean
-      }
+      is_admin: { Args: { _user_id: string }; Returns: boolean }
       is_household_originator: {
         Args: { _household_id: string; _user_id: string }
         Returns: boolean
@@ -1189,10 +1183,7 @@ export type Database = {
         }
         Returns: undefined
       }
-      user_household_ids: {
-        Args: { _user_id: string }
-        Returns: string[]
-      }
+      user_household_ids: { Args: { _user_id: string }; Returns: string[] }
     }
     Enums: {
       app_role: "admin" | "moderator" | "user"
