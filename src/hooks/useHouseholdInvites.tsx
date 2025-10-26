@@ -17,6 +17,7 @@ type Invite = {
 export function useHouseholdInvites(userId?: string) {
   const [pendingInvites, setPendingInvites] = useState<Invite[]>([]);
   const [loading, setLoading] = useState(false);
+  const [hasPendingInvites, setHasPendingInvites] = useState(false);
 
   const refresh = async () => {
     if (!userId) return;
@@ -40,6 +41,7 @@ export function useHouseholdInvites(userId?: string) {
     
     console.log("Invites query result:", { data, error });
     setPendingInvites(data || []);
+    setHasPendingInvites((data || []).length > 0);
     setLoading(false);
   };
 
@@ -48,8 +50,22 @@ export function useHouseholdInvites(userId?: string) {
   }, [userId]);
 
   const sendInvite = async (email: string, household_id: string) => {
-    if (!userId) return false;
+    if (!userId) return { success: false, error: "No user logged in" };
     setLoading(true);
+    
+    // First check if the email exists in profiles
+    const { data: profileData, error: profileError } = await supabase
+      .from("profiles")
+      .select("email")
+      .eq("email", email)
+      .single();
+    
+    if (profileError || !profileData) {
+      setLoading(false);
+      return { success: false, error: "This email does not exist in our records. Please try again." };
+    }
+    
+    // Email exists, proceed with invite
     const { error } = await supabase
       .from("household_invites")
       .insert([{ 
@@ -58,9 +74,15 @@ export function useHouseholdInvites(userId?: string) {
         status: "pending",
         invited_by: userId
       }]);
+    
     await refresh();
     setLoading(false);
-    return !error;
+    
+    if (error) {
+      return { success: false, error: "Failed to send invite. Please try again." };
+    }
+    
+    return { success: true };
   };
 
   const acceptInvite = async (inviteId: string) => {
@@ -98,6 +120,7 @@ export function useHouseholdInvites(userId?: string) {
   return {
     pendingInvites,
     loading,
+    hasPendingInvites,
     sendInvite,
     acceptInvite,
     declineInvite,

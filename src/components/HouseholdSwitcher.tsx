@@ -60,6 +60,8 @@ export function HouseholdSwitcher({ className, open, onOpenChange }: HouseholdSw
     declineInvite,
     loading: invitesLoading,
   } = useHouseholdInvites(user?.id);
+  
+  const [inviteError, setInviteError] = useState("");
 
   const {
     members: householdMembers,
@@ -100,8 +102,17 @@ export function HouseholdSwitcher({ className, open, onOpenChange }: HouseholdSw
   const handleInvite = async () => {
     if (!inviteEmail.trim() || !currentHousehold?.id) return;
     setIsInviting(true);
-    const ok = await sendInvite(inviteEmail.trim(), currentHousehold.id);
-    if (ok) setInviteEmail("");
+    setInviteError("");
+    
+    const result = await sendInvite(inviteEmail.trim(), currentHousehold.id);
+    
+    if (result.success) {
+      setInviteEmail("");
+      setInviteError("");
+    } else {
+      setInviteError(result.error || "Failed to send invite");
+    }
+    
     setIsInviting(false);
   };
 
@@ -255,42 +266,54 @@ export function HouseholdSwitcher({ className, open, onOpenChange }: HouseholdSw
             {isOriginator && currentHousehold && subscribed && (
               <div>
                 <h3 className="font-medium mb-2">Invite Member</h3>
-                <div className="flex gap-2">
-                  <Input
-                    placeholder="Email address"
-                    value={inviteEmail}
-                    onChange={e => setInviteEmail(e.target.value)}
-                    disabled={isInviting}
-                    type="email"
-                  />
-                  <Button
-                    onClick={handleInvite}
-                    disabled={!inviteEmail.trim() || isInviting}
-                  >
-                    {isInviting ? <Loader2 className="h-4 w-4 animate-spin" /> : "Invite"}
-                  </Button>
+                <div className="space-y-2">
+                  <div className="flex gap-2">
+                    <Input
+                      placeholder="Email address"
+                      value={inviteEmail}
+                      onChange={e => {
+                        setInviteEmail(e.target.value);
+                        setInviteError("");
+                      }}
+                      disabled={isInviting}
+                      type="email"
+                    />
+                    <Button
+                      onClick={handleInvite}
+                      disabled={!inviteEmail.trim() || isInviting}
+                    >
+                      {isInviting ? <Loader2 className="h-4 w-4 animate-spin" /> : "Share"}
+                    </Button>
+                  </div>
+                  {inviteError && (
+                    <p className="text-sm text-destructive">{inviteError}</p>
+                  )}
                 </div>
               </div>
             )}
 
-            {/* Pending Invites */}
+            {/* Pending Invites - Show prominently with alert styling */}
             {pendingInvites.length > 0 && (
               <div>
-                <h3 className="font-medium mb-2">Pending Invites</h3>
+                <h3 className="font-medium mb-2 text-primary">New Household Invitations!</h3>
                 <div className="space-y-2">
                   {pendingInvites.map(invite => (
-                    <Card key={invite.id} className="border-blue-200 bg-blue-50">
-                      <CardContent className="p-3">
-                        <p className="text-sm font-medium">
-                          Invitation to join "{(invite as any).households?.name || 'a household'}"
+                    <Card key={invite.id} className="border-primary bg-primary/5">
+                      <CardContent className="p-4">
+                        <p className="text-sm font-semibold mb-1">
+                          You've been invited to join:
                         </p>
-                        <div className="flex gap-2 mt-2">
+                        <p className="text-base font-bold mb-3">
+                          "{(invite as any).households?.name || 'a household'}"
+                        </p>
+                        <div className="flex gap-2">
                           <Button
                             size="sm"
                             onClick={() => acceptInvite(invite.id)}
                             disabled={invitesLoading}
+                            className="flex-1"
                           >
-                            {invitesLoading ? <Loader2 className="h-3 w-3 animate-spin" /> : <Check className="h-3 w-3" />}
+                            {invitesLoading ? <Loader2 className="h-3 w-3 animate-spin mr-1" /> : <Check className="h-3 w-3 mr-1" />}
                             Accept
                           </Button>
                           <Button
@@ -298,8 +321,9 @@ export function HouseholdSwitcher({ className, open, onOpenChange }: HouseholdSw
                             size="sm"
                             onClick={() => declineInvite(invite.id)}
                             disabled={invitesLoading}
+                            className="flex-1"
                           >
-                            <X className="h-3 w-3" />
+                            <X className="h-3 w-3 mr-1" />
                             Decline
                           </Button>
                         </div>

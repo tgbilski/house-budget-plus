@@ -14,14 +14,16 @@ import { Settings, LogOut, Crown, Home } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { useProfile } from '@/hooks/useProfile';
 import { useSubscription } from '@/hooks/useSubscription';
+import { useHouseholdInvites } from '@/hooks/useHouseholdInvites';
 import { Badge } from '@/components/ui/badge';
 import ProfileSettings from './ProfileSettings';
 import { HouseholdSwitcher } from './HouseholdSwitcher';
 
 const ProfileDropdown: React.FC = () => {
-  const { signOut } = useAuth();
+  const { signOut, user } = useAuth();
   const { profile, getInitials, truncateEmail } = useProfile();
   const { subscribed, subscriptionTier } = useSubscription();
+  const { hasPendingInvites } = useHouseholdInvites(user?.id);
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [householdOpen, setHouseholdOpen] = useState(false);
 
@@ -32,12 +34,15 @@ const ProfileDropdown: React.FC = () => {
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button variant="ghost" className="relative h-8 w-8 rounded-full">
-            <div>
+            <div className="relative">
               <Avatar className="h-8 w-8">
                 <AvatarFallback className="text-sm font-medium">
                   {getInitials()}
                 </AvatarFallback>
               </Avatar>
+              {hasPendingInvites && (
+                <span className="absolute -top-1 -right-1 h-3 w-3 rounded-full bg-destructive border-2 border-background animate-pulse" />
+              )}
             </div>
           </Button>
         </DropdownMenuTrigger>
