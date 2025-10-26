@@ -109,7 +109,13 @@ const Auth: React.FC = () => {
       } else if (isSignUp) {
         const { error } = await signUp(email, password);
         if (!error) {
-          navigate('/');
+          toast({
+            title: "Check your email",
+            description: "We've sent you a confirmation link. Please verify your email before signing in.",
+          });
+          setIsSignUp(false);
+          setEmail('');
+          setPassword('');
         }
       } else {
         const { error } = await signIn(email, password);
