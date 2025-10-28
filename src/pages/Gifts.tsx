@@ -1,6 +1,6 @@
 // src/pages/Gifts.tsx (Final Version)
 import React, { useEffect, useState } from 'react';
-import { useGiftLists } from '@/hooks/useGiftLists';
+import { useGiftLists, useGiftItems } from '@/hooks/useGiftLists';
 import { useAuth } from '@/hooks/useAuth';
 import { useBadges } from '@/hooks/useBadges';
 import { useCurrency } from '@/hooks/useCurrency';
@@ -41,6 +41,9 @@ export function Gifts() {
     loadGiftLists
   } = useGiftLists();
 
+  // Get gift items for the selected list to calculate totals
+  const { items } = useGiftItems(selectedList?.id);
+
   // Award badge when user has gift lists
   useEffect(() => {
     if (user && giftLists.length > 0) {
@@ -48,9 +51,9 @@ export function Gifts() {
     }
   }, [user, giftLists.length, earnBadge]);
 
-  // Calculate budget summary (mock data for now - you can enhance this to read actual gift items)
-  const totalBudget = 500; // This should come from actual gift items
-  const itemCount = 8; // This should come from actual gift items
+  // Calculate budget summary from actual gift items
+  const totalBudget = items.reduce((sum, item) => sum + (item.price || 0), 0);
+  const itemCount = items.length;
 
   if (loading) {
     return (
