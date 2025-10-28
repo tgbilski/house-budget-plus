@@ -88,10 +88,10 @@ export const MonthlySavingsGrid: React.FC<Props> = ({ year, onYearChange, monthl
                     onBlur={() => handleBlur(index)}
                     className={`pl-8 font-semibold bg-white/80 border-2 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md focus:border-teal focus:shadow-[var(--shadow-teal)] ${
                       hasSavings 
-                        ? 'border-success/40 bg-success/5' 
+                        ? 'border-success/60 bg-success/5' 
                         : isCurrentMonth 
-                        ? 'border-teal/40' 
-                        : 'border-border/30'
+                        ? 'border-teal/60' 
+                        : 'border-border/60'
                     }`}
                     placeholder="0"
                   />
