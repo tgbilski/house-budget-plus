@@ -44,6 +44,7 @@ import TermsAndConditions from "@/pages/TermsAndConditions";
 import Disclaimer from "@/pages/Disclaimer";
 import ErrorBoundary from "@/components/ErrorBoundary";
 import { useState, createContext } from "react";
+import { isNativeApp } from "@/utils/capacitor";
 
 interface Currency {
   code: string;
@@ -69,11 +70,25 @@ const queryClient = new QueryClient();
 const AppRoutes = () => {
   const { currentHousehold } = useHouseholdContext();
   const location = useLocation();
+  const isMobileApp = isNativeApp();
 
   useEffect(() => {
     trackPageView(location.pathname + location.search);
   }, [location]);
   
+  // Mobile app routes - only auth and expenses
+  if (isMobileApp) {
+    return (
+      <Routes key={currentHousehold?.id || 'no-household'}>
+        <Route path="/" element={<Auth />} />
+        <Route path="/auth" element={<Auth />} />
+        <Route path="/expenses" element={<Expenses />} />
+        <Route path="*" element={<Auth />} />
+      </Routes>
+    );
+  }
+  
+  // Full web app routes
   return (
     <Routes key={currentHousehold?.id || 'no-household'}>
       <Route path="/" element={<Home />} />
@@ -108,7 +123,20 @@ const AppRoutes = () => {
 // Layout component that uses hooks
 const AppLayout = () => {
   const isMobile = useIsMobile();
+  const isMobileApp = isNativeApp();
 
+  // Simplified layout for mobile app
+  if (isMobileApp) {
+    return (
+      <div className="min-h-screen w-full flex flex-col">
+        <main id="main-content" className="flex-1 p-4">
+          <AppRoutes />
+        </main>
+      </div>
+    );
+  }
+
+  // Full web app layout
   return (
     <SidebarProvider defaultOpen={false}>
       <div 

@@ -23,10 +23,12 @@ import { cn } from '@/lib/utils';
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, PieChart, Pie, Cell, Legend } from 'recharts';
 import { Download, AlertCircle, TrendingDown } from 'lucide-react';
 import { jsPDF } from 'jspdf';
+import { isNativeApp } from '@/utils/capacitor';
 
 export default function Expenses() {
   const { user } = useAuth();
   const { subscribed } = useSubscription();
+  const isMobileApp = isNativeApp();
   const { currency } = useCurrency();
   const { currentHousehold } = useHouseholdContext();
   const { toast } = useToast();
@@ -276,17 +278,23 @@ export default function Expenses() {
     setEditingExpense(null);
   };
 
+  // If not logged in, show auth prompt
   if (!user) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center p-4">
-        <Card className="max-w-md">
-          <CardHeader>
-            <CardTitle>Sign In Required</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="mb-4">Please sign in to track your expenses.</p>
+      <div className="min-h-screen bg-gradient-to-br from-white via-background to-sage/10 flex items-center justify-center p-4">
+        <Card className="max-w-md w-full border-2 shadow-[var(--shadow-elegant)]">
+          <CardContent className="pt-6 text-center space-y-4">
+            <div className="w-16 h-16 bg-gradient-to-br from-primary/20 to-primary-glow/20 rounded-full flex items-center justify-center mx-auto">
+              <Mic className="w-8 h-8 text-primary" />
+            </div>
+            <h2 className="text-2xl font-bold">Welcome to Voice Expense Tracker</h2>
+            <p className="text-muted-foreground">
+              Please sign in to start tracking your expenses with voice input.
+            </p>
             <Link to="/auth">
-              <Button className="w-full">Sign In</Button>
+              <Button size="lg" className="w-full">
+                Sign In / Sign Up
+              </Button>
             </Link>
           </CardContent>
         </Card>
@@ -294,6 +302,46 @@ export default function Expenses() {
     );
   }
 
+  // Mobile app subscription check
+  if (isMobileApp && !subscribed) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-white via-background to-sage/10 flex items-center justify-center p-4">
+        <Card className="max-w-md w-full border-2 shadow-[var(--shadow-elegant)]">
+          <CardContent className="pt-6 text-center space-y-6">
+            <div className="w-16 h-16 bg-gradient-to-br from-amber-500/20 to-orange-500/20 rounded-full flex items-center justify-center mx-auto">
+              <AlertCircle className="w-8 h-8 text-amber-600" />
+            </div>
+            <h2 className="text-2xl font-bold">Subscribers Only</h2>
+            <p className="text-muted-foreground">
+              This mobile app feature is available for subscribed users only.
+            </p>
+            <div className="p-4 bg-muted/50 rounded-lg">
+              <p className="text-sm text-muted-foreground">
+                For more information, please visit our website at:
+              </p>
+              <a 
+                href="https://housebudgetcalculator.com" 
+                className="text-primary font-semibold hover:underline mt-2 block"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                housebudgetcalculator.com
+              </a>
+            </div>
+            <Button 
+              variant="outline" 
+              onClick={() => window.location.href = 'https://housebudgetcalculator.com'}
+              className="w-full"
+            >
+              Visit Website
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
+  // Web app subscription check
   if (!subscribed) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-white via-background to-sage/10">

@@ -7,6 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { isNativeApp } from '@/utils/capacitor';
 
 const Auth: React.FC = () => {
   const [isSignUp, setIsSignUp] = useState(false);
@@ -20,6 +21,7 @@ const Auth: React.FC = () => {
   const { signUp, signIn, signInWithGoogle, user } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
+  const isMobileApp = isNativeApp();
 
   // Check for password reset token and redirect if already authenticated
   useEffect(() => {
@@ -40,9 +42,10 @@ const Auth: React.FC = () => {
     checkPasswordReset();
 
     if (user && !isResettingPassword) {
-      navigate('/');
+      // Redirect to expenses page if in mobile app, otherwise home
+      navigate(isMobileApp ? '/expenses' : '/');
     }
-  }, [user, navigate, isResettingPassword]);
+  }, [user, navigate, isResettingPassword, isMobileApp]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
