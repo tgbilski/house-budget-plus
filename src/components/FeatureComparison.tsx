@@ -13,13 +13,12 @@ const features = [
   { name: 'Vendor Comparison Tool', free: true, premium: true },
   { name: 'Gift Lists', free: true, premium: true },
   { name: 'Community Marketplace Access', free: true, premium: true },
-  { name: 'AI Financial Insights (Limited)', free: true, premium: false },
-  { name: 'AI Financial Insights (Unlimited)', free: false, premium: true },
-  { name: 'PDF Bank Statement Processing', free: false, premium: true },
-  { name: 'Household Sharing (Multiple Users)', free: false, premium: true },
-  { name: 'Premium Marketplace Listings', free: false, premium: true },
-  { name: 'Priority Support', free: false, premium: true },
-  { name: 'Ad-Free Experience', free: false, premium: true },
+  { name: 'AI Financial Insights (3 queries)', free: true, premium: false },
+  { name: 'Unlimited PDF Processing', free: false, premium: true },
+  { name: 'AI Expense Categorization', free: false, premium: true },
+  { name: '10 AI Insights per Month', free: false, premium: true },
+  { name: 'Household Sharing', free: false, premium: true },
+  { name: 'Data Export & Reports', free: false, premium: true },
 ];
 
 export const FeatureComparison: React.FC = () => {
@@ -94,10 +93,10 @@ export const FeatureComparison: React.FC = () => {
                 Premium
               </CardTitle>
               <CardDescription className="text-lg">
-                <span className="text-3xl font-bold text-foreground">$9.99</span>/month
+                <span className="text-3xl font-bold text-foreground">$4.99</span>/month
               </CardDescription>
               <p className="text-sm text-muted-foreground mt-2">
-                Full access to all features
+                Or $39.99/year (save 33%)
               </p>
             </CardHeader>
             <CardContent className="space-y-4 pb-8">
