@@ -7,16 +7,14 @@ import { useAuth } from '@/hooks/useAuth';
 import { useSubscription } from '@/hooks/useSubscription';
 
 const features = [
-  { name: 'Monthly Budget Calculator', free: true, premium: true },
-  { name: 'Savings Goals Tracker', free: true, premium: true },
-  { name: 'Vacation Planner', free: true, premium: true },
-  { name: 'Vendor Comparison Tool', free: true, premium: true },
-  { name: 'Gift Lists', free: true, premium: true },
+  { name: 'Budget Planning & Tracking Tools', free: true, premium: true },
+  { name: 'Savings Goals & Vacation Planner', free: true, premium: true },
+  { name: 'Vendor Comparison & Gift Lists', free: true, premium: true },
   { name: 'Community Marketplace Access', free: true, premium: true },
-  { name: '10 AI Insights per Month', free: false, premium: true },
+  { name: '10 AI Financial Insights per Month', free: false, premium: true },
+  { name: 'Share Budget with Family & Friends', free: false, premium: true },
+  { name: 'PDF Budget Exports & Reports', free: false, premium: true },
   { name: 'Unlimited PDF Processing with AI', free: false, premium: true },
-  { name: 'Household Sharing', free: false, premium: true },
-  { name: 'Budget PDF Export', free: false, premium: true },
 ];
 
 export const FeatureComparison: React.FC = () => {
