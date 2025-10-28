@@ -120,11 +120,37 @@ export function useExpenses(selectedDate: Date) {
     }
   };
 
+  const updateExpense = async (id: string, updates: Partial<Omit<Expense, 'id' | 'user_id' | 'household_id' | 'created_at' | 'updated_at'>>) => {
+    try {
+      const { error } = await supabase
+        .from('expenses')
+        .update(updates)
+        .eq('id', id);
+
+      if (error) throw error;
+
+      toast({
+        title: 'Success',
+        description: 'Expense updated successfully',
+      });
+
+      await fetchExpenses();
+    } catch (error) {
+      console.error('Error updating expense:', error);
+      toast({
+        title: 'Error',
+        description: 'Failed to update expense',
+        variant: 'destructive',
+      });
+    }
+  };
+
   return {
     expenses,
     loading,
     addExpense,
     deleteExpense,
+    updateExpense,
     refetch: fetchExpenses,
   };
 }

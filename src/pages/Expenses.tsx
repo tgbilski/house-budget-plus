@@ -4,11 +4,15 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useAuth } from '@/hooks/useAuth';
 import { useSubscription } from '@/hooks/useSubscription';
 import { useExpenses } from '@/hooks/useExpenses';
 import { useCurrency } from '@/hooks/useCurrency';
-import { Mic, MicOff, Calendar as CalendarIcon, Trash2, TrendingUp } from 'lucide-react';
+import { Mic, MicOff, Calendar as CalendarIcon, Trash2, TrendingUp, Edit2 } from 'lucide-react';
 import { format } from 'date-fns';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
@@ -25,7 +29,7 @@ export default function Expenses() {
   const { currency } = useCurrency();
   const { toast } = useToast();
   const [selectedDate, setSelectedDate] = useState(new Date());
-  const { expenses, loading, addExpense, deleteExpense } = useExpenses(selectedDate);
+  const { expenses, loading, addExpense, deleteExpense, updateExpense } = useExpenses(selectedDate);
   
   const [isRecording, setIsRecording] = useState(false);
   const [transcription, setTranscription] = useState('');
@@ -33,26 +37,33 @@ export default function Expenses() {
   const [isProcessing, setIsProcessing] = useState(false);
   const [aiStatus, setAiStatus] = useState('');
   
+  // Edit dialog state
+  const [editingExpense, setEditingExpense] = useState<any>(null);
+  const [editForm, setEditForm] = useState({ amount: '', merchant: '', category: '' });
+  
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioChunksRef = useRef<Blob[]>([]);
 
-  // Calculate chart data
+  // Calculate chart data - monthly aggregation
   const chartData = React.useMemo(() => {
-    const dailyTotals = expenses.reduce((acc, expense) => {
-      const date = new Date(expense.date).getDate();
-      if (!acc[date]) {
-        acc[date] = 0;
+    const monthlyTotals: Record<number, number> = {};
+    
+    // Get all expenses for the entire year
+    expenses.forEach((expense) => {
+      const expenseDate = new Date(expense.date);
+      const month = expenseDate.getMonth(); // 0-11
+      if (!monthlyTotals[month]) {
+        monthlyTotals[month] = 0;
       }
-      acc[date] += Number(expense.amount);
-      return acc;
-    }, {} as Record<number, number>);
+      monthlyTotals[month] += Number(expense.amount);
+    });
 
-    return Object.entries(dailyTotals)
-      .map(([day, amount]) => ({
-        day: parseInt(day),
-        amount: amount,
-      }))
-      .sort((a, b) => a.day - b.day);
+    // Create array with all 12 months
+    const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    return monthNames.map((name, index) => ({
+      month: name,
+      amount: monthlyTotals[index] || 0,
+    }));
   }, [expenses]);
 
   const totalSpent = expenses.reduce((sum, exp) => sum + Number(exp.amount), 0);
@@ -214,6 +225,27 @@ export default function Expenses() {
         variant: 'destructive',
       });
     }
+  };
+
+  const openEditDialog = (expense: any) => {
+    setEditingExpense(expense);
+    setEditForm({
+      amount: expense.amount.toString(),
+      merchant: expense.merchant || '',
+      category: expense.category,
+    });
+  };
+
+  const handleEditSave = async () => {
+    if (!editingExpense) return;
+
+    await updateExpense(editingExpense.id, {
+      amount: parseFloat(editForm.amount),
+      merchant: editForm.merchant || null,
+      category: editForm.category,
+    });
+
+    setEditingExpense(null);
   };
 
   if (!user) {
@@ -535,39 +567,130 @@ export default function Expenses() {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-3xl font-bold text-primary mb-4">
+              <p className="text-3xl font-bold text-primary mb-2">
                 {currency.symbol}{totalSpent.toFixed(2)}
               </p>
               <p className="text-sm text-muted-foreground mb-4">
                 {expenses.length} expenses logged
               </p>
-
-              {/* Recent Expenses */}
-              <div className="space-y-2 max-h-[300px] overflow-y-auto">
-                {expenses.slice(-5).reverse().map((expense) => (
-                  <div
-                    key={expense.id}
-                    className="flex items-center justify-between p-3 bg-background/50 rounded-lg"
-                  >
-                    <div>
-                      <p className="font-medium">{currency.symbol}{Number(expense.amount).toFixed(2)}</p>
-                      <p className="text-xs text-muted-foreground">
-                        {expense.merchant || expense.category} • {format(new Date(expense.date), 'MMM d')}
-                      </p>
-                    </div>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => deleteExpense(expense.id)}
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </Button>
-                  </div>
-                ))}
-              </div>
             </CardContent>
           </Card>
         </div>
+
+        {/* Expense Log */}
+        <Card className="mt-6 bg-white/80 backdrop-blur-sm border-2 border-border/50 shadow-[var(--shadow-elegant)]">
+          <CardHeader>
+            <CardTitle>Expense Log - {format(selectedDate, 'MMMM yyyy')}</CardTitle>
+          </CardHeader>
+          <CardContent>
+            {loading ? (
+              <p className="text-center text-muted-foreground py-8">Loading expenses...</p>
+            ) : expenses.length === 0 ? (
+              <p className="text-center text-muted-foreground py-8">No expenses logged yet. Start recording!</p>
+            ) : (
+              <div className="space-y-2 max-h-[500px] overflow-y-auto">
+                {expenses.map((expense) => (
+                  <div
+                    key={expense.id}
+                    className="flex items-center justify-between p-4 bg-background/50 rounded-lg hover:bg-background/80 transition-colors"
+                  >
+                    <div className="flex-1">
+                      <div className="flex items-center gap-3 mb-1">
+                        <p className="text-lg font-semibold">{currency.symbol}{Number(expense.amount).toFixed(2)}</p>
+                        <span className="text-xs text-muted-foreground px-2 py-1 bg-muted rounded">
+                          {expense.category}
+                        </span>
+                      </div>
+                      <p className="text-sm text-muted-foreground">
+                        {expense.merchant && <span className="font-medium">{expense.merchant} • </span>}
+                        {format(new Date(expense.date), 'MMM d, yyyy')}
+                      </p>
+                      {expense.notes && (
+                        <p className="text-xs text-muted-foreground mt-1 italic">"{expense.notes}"</p>
+                      )}
+                    </div>
+                    <div className="flex gap-2">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => openEditDialog(expense)}
+                      >
+                        <Edit2 className="h-4 w-4" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => deleteExpense(expense.id)}
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </CardContent>
+        </Card>
+
+        {/* Edit Expense Dialog */}
+        <Dialog open={!!editingExpense} onOpenChange={(open) => !open && setEditingExpense(null)}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Edit Expense</DialogTitle>
+            </DialogHeader>
+            <div className="space-y-4 py-4">
+              <div className="space-y-2">
+                <Label htmlFor="edit-amount">Amount</Label>
+                <Input
+                  id="edit-amount"
+                  type="number"
+                  step="0.01"
+                  value={editForm.amount}
+                  onChange={(e) => setEditForm({ ...editForm, amount: e.target.value })}
+                  placeholder="0.00"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="edit-merchant">Merchant (Optional)</Label>
+                <Input
+                  id="edit-merchant"
+                  value={editForm.merchant}
+                  onChange={(e) => setEditForm({ ...editForm, merchant: e.target.value })}
+                  placeholder="Enter merchant name"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="edit-category">Category</Label>
+                <Select
+                  value={editForm.category}
+                  onValueChange={(value) => setEditForm({ ...editForm, category: value })}
+                >
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Groceries">Groceries</SelectItem>
+                    <SelectItem value="Dining Out">Dining Out</SelectItem>
+                    <SelectItem value="Transportation">Transportation</SelectItem>
+                    <SelectItem value="Entertainment">Entertainment</SelectItem>
+                    <SelectItem value="Shopping">Shopping</SelectItem>
+                    <SelectItem value="Bills">Bills</SelectItem>
+                    <SelectItem value="Healthcare">Healthcare</SelectItem>
+                    <SelectItem value="Other">Other</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+            <DialogFooter>
+              <Button variant="outline" onClick={() => setEditingExpense(null)}>
+                Cancel
+              </Button>
+              <Button onClick={handleEditSave}>
+                Save Changes
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
 
         {/* Category Breakdown Pie Chart */}
         {categoryData.length > 0 && (
@@ -606,7 +729,7 @@ export default function Expenses() {
         {chartData.length > 0 && (
           <Card className="mt-6 bg-white/80 backdrop-blur-sm border-2 border-border/50 shadow-[var(--shadow-elegant)]">
             <CardHeader>
-              <CardTitle>Daily Spending - {format(selectedDate, 'MMMM yyyy')}</CardTitle>
+              <CardTitle>Monthly Spending - {selectedDate.getFullYear()}</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="h-[300px]">
@@ -614,8 +737,8 @@ export default function Expenses() {
                   <LineChart data={chartData}>
                     <CartesianGrid strokeDasharray="3 3" />
                     <XAxis
-                      dataKey="day"
-                      label={{ value: format(selectedDate, 'MMMM'), position: 'insideBottom', offset: -5 }}
+                      dataKey="month"
+                      label={{ value: selectedDate.getFullYear().toString(), position: 'insideBottom', offset: -5 }}
                     />
                     <YAxis
                       label={{ value: 'Amount', angle: -90, position: 'insideLeft' }}
