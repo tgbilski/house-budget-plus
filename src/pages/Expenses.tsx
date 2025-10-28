@@ -84,7 +84,16 @@ export default function Expenses() {
     return Object.entries(breakdown).map(([name, value]) => ({ name, value }));
   }, [expenses]);
 
-  const COLORS = ['hsl(var(--primary))', 'hsl(var(--secondary))', 'hsl(var(--accent))', 'hsl(var(--muted))', 'hsl(var(--success))', 'hsl(var(--warning))'];
+  const COLORS = [
+    'hsl(217, 91%, 60%)',  // Blue
+    'hsl(142, 76%, 36%)',  // Green
+    'hsl(25, 95%, 53%)',   // Orange
+    'hsl(271, 76%, 53%)',  // Purple
+    'hsl(330, 81%, 60%)',  // Pink
+    'hsl(173, 80%, 40%)',  // Teal
+    'hsl(48, 96%, 53%)',   // Yellow
+    'hsl(0, 84%, 60%)',    // Red
+  ];
 
   // Budget alert threshold (example: warn if over $1000/month)
   const budgetThreshold = 1000;
