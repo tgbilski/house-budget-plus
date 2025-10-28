@@ -599,55 +599,63 @@ export default function Expenses() {
         {/* Expense Log */}
         <Card className="mt-6 bg-white/80 backdrop-blur-sm border-2 border-border/50 shadow-[var(--shadow-elegant)]">
           <CardHeader>
-            <CardTitle>Expense Log - {format(selectedDate, 'MMMM yyyy')}</CardTitle>
+            <CardTitle>Expense Log - {format(selectedDate, 'MMMM d, yyyy')}</CardTitle>
           </CardHeader>
           <CardContent>
             {loading ? (
               <p className="text-center text-muted-foreground py-8">Loading expenses...</p>
-            ) : expenses.length === 0 ? (
-              <p className="text-center text-muted-foreground py-8">No expenses logged yet. Start recording!</p>
-            ) : (
-              <div className="space-y-2 max-h-[500px] overflow-y-auto">
-                {expenses.map((expense) => (
-                  <div
-                    key={expense.id}
-                    className="flex items-center justify-between p-4 bg-background/50 rounded-lg hover:bg-background/80 transition-colors"
-                  >
-                    <div className="flex-1">
-                      <div className="flex items-center gap-3 mb-1">
-                        <p className="text-lg font-semibold">{currency.symbol}{Number(expense.amount).toFixed(2)}</p>
-                        <span className="text-xs text-muted-foreground px-2 py-1 bg-muted rounded">
-                          {expense.category}
-                        </span>
+            ) : (() => {
+              const selectedDateExpenses = expenses.filter(expense => 
+                format(new Date(expense.date), 'yyyy-MM-dd') === format(selectedDate, 'yyyy-MM-dd')
+              );
+              
+              return selectedDateExpenses.length === 0 ? (
+                <p className="text-center text-muted-foreground py-8">
+                  No expenses logged for {format(selectedDate, 'MMMM d, yyyy')}. Start recording!
+                </p>
+              ) : (
+                <div className="space-y-2 max-h-[500px] overflow-y-auto">
+                  {selectedDateExpenses.map((expense) => (
+                    <div
+                      key={expense.id}
+                      className="flex items-center justify-between p-4 bg-background/50 rounded-lg hover:bg-background/80 transition-colors"
+                    >
+                      <div className="flex-1">
+                        <div className="flex items-center gap-3 mb-1">
+                          <p className="text-lg font-semibold">{currency.symbol}{Number(expense.amount).toFixed(2)}</p>
+                          <span className="text-xs text-muted-foreground px-2 py-1 bg-muted rounded">
+                            {expense.category}
+                          </span>
+                        </div>
+                        <p className="text-sm text-muted-foreground">
+                          {expense.merchant && <span className="font-medium">{expense.merchant} • </span>}
+                          {format(new Date(expense.date), 'h:mm a')}
+                        </p>
+                        {expense.notes && (
+                          <p className="text-xs text-muted-foreground mt-1 italic">"{expense.notes}"</p>
+                        )}
                       </div>
-                      <p className="text-sm text-muted-foreground">
-                        {expense.merchant && <span className="font-medium">{expense.merchant} • </span>}
-                        {format(new Date(expense.date), 'MMM d, yyyy')}
-                      </p>
-                      {expense.notes && (
-                        <p className="text-xs text-muted-foreground mt-1 italic">"{expense.notes}"</p>
-                      )}
+                      <div className="flex gap-2">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => openEditDialog(expense)}
+                        >
+                          <Edit2 className="h-4 w-4" />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => deleteExpense(expense.id)}
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
                     </div>
-                    <div className="flex gap-2">
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => openEditDialog(expense)}
-                      >
-                        <Edit2 className="h-4 w-4" />
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => deleteExpense(expense.id)}
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
+                  ))}
+                </div>
+              );
+            })()}
           </CardContent>
         </Card>
 
