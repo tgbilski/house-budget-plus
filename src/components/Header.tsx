@@ -16,8 +16,8 @@ const Header: React.FC = () => {
 
   return (
     <header className="w-full bg-gradient-to-r from-white via-blue-50/30 to-emerald-50/30 border-b border-gray-200 sticky top-0 z-50 shadow-sm backdrop-blur-sm">
-      <div className="w-full px-4 md:px-6 py-2 md:py-3">
-        <div className="flex items-center justify-between min-h-[48px] md:min-h-[56px]">
+      <div className="w-full px-4 md:px-6 py-1.5 md:py-2">
+        <div className="flex items-center justify-between min-h-[40px] md:min-h-[48px]">
           {/* Brand with Logo and Mobile Menu */}
           <div className="flex items-center space-x-2">
             <SidebarTrigger className="md:inline-flex" />
