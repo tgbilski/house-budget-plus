@@ -50,11 +50,6 @@ const Header: React.FC = () => {
             )}
           </div>
         </div>
-        
-        {/* Breadcrumbs */}
-        <div className="mt-2 hidden md:block">
-          <Breadcrumbs />
-        </div>
       </div>
     </header>
   );
