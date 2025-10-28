@@ -157,7 +157,7 @@ const PremiumButton = () => {
 
 
 const HeroSectionContent = () => (
-  <section className="relative py-8 md:py-12 px-4 rounded-3xl mx-4 shadow-2xl overflow-visible bg-gradient-to-br from-white via-white to-sage/20 mt-16 md:mt-20 mb-4 border border-border/50 animate-scale-in">
+  <section className="relative py-8 md:py-12 px-4 rounded-3xl mx-4 shadow-[var(--shadow-elegant)] overflow-visible bg-gradient-to-br from-white via-white to-sage/20 mt-16 md:mt-20 mb-8 border-2 border-primary/20 animate-scale-in">
     <img
       src="/lovable-uploads/ed809955-ef71-4d81-b072-945082f4380a.png"
       alt="House Budget Calculator mascot - friendly budget planning assistant"
@@ -212,7 +212,7 @@ const HeroSectionContent = () => (
 );
 
 const MarketplacePromo = () => (
-  <section className="py-8 md:py-12 px-4 mx-4 my-8 rounded-3xl bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 shadow-2xl border-2 border-gray-700/50 relative overflow-hidden animate-slide-up">
+  <section className="py-8 md:py-12 px-4 mx-4 my-12 rounded-3xl bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 shadow-[0_20px_60px_-20px_rgba(0,0,0,0.5)] border-4 border-teal/30 relative overflow-hidden animate-slide-up">
     <div className="absolute top-0 right-0 w-64 h-64 bg-teal/10 rounded-full blur-3xl"></div>
     <div className="absolute bottom-0 left-0 w-64 h-64 bg-primary/10 rounded-full blur-3xl"></div>
     
@@ -269,7 +269,7 @@ const MarketplacePromo = () => (
 );
 
 const AdvertiseSection = () => (
-  <section className="py-8 px-4 mx-4 my-8 rounded-3xl bg-gradient-to-r from-primary/90 to-[hsl(var(--primary-glow))] shadow-2xl border-2 border-primary/30 text-center relative overflow-hidden animate-slide-up max-w-4xl">
+  <section className="py-8 px-4 mx-4 my-12 rounded-3xl bg-gradient-to-r from-primary/90 to-[hsl(var(--primary-glow))] shadow-[var(--shadow-glow)] border-4 border-primary/50 text-center relative overflow-hidden animate-slide-up max-w-4xl">
     <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_50%,rgba(255,255,255,0.1),transparent)]"></div>
     <h3 className="relative z-10 text-2xl md:text-3xl lg:text-4xl font-bold mb-3 text-white">
       Advertise Your Listing With Us
@@ -316,7 +316,7 @@ const FeaturePreviewsGrid = () => {
   }, []);
 
   return (
-    <section className="py-12 md:py-16 px-4 bg-gradient-to-br from-white to-secondary/30 rounded-3xl mx-4 my-8 shadow-2xl relative overflow-hidden border border-border/50">
+    <section className="py-12 md:py-16 px-4 bg-gradient-to-br from-white to-secondary/30 rounded-3xl mx-4 my-12 shadow-[var(--shadow-elegant)] relative overflow-hidden border-2 border-sage/40">
       <div className="absolute top-0 left-0 w-96 h-96 bg-teal/5 rounded-full blur-3xl"></div>
       <div className="absolute bottom-0 right-0 w-96 h-96 bg-primary/5 rounded-full blur-3xl"></div>
       
