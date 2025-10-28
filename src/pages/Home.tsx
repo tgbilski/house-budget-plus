@@ -24,6 +24,7 @@ import giftPreview from '@/assets/gift-page-preview.png';
 import aiPreview from '@/assets/ai-page-preview.png';
 import marketplacePreview from '@/assets/marketplace-page-preview.png';
 import calculatorHeroPreview from '@/assets/calculator-preview-hero.png';
+import expensesPreview from '@/assets/expenses-page-preview-new.png';
 
 // --- Data for Child Components ---
 
@@ -31,7 +32,7 @@ const featurePreviewsData = [
   {
     title: "Voice Expense Tracker",
     description: "Log expenses instantly by speaking - AI-powered transcription and smart categorization (Premium Feature)",
-    image: calculatorPreview,
+    image: expensesPreview,
     href: "/expenses",
     alt: "Voice Expense Tracker page with conversational logging and spending insights",
     icon: Mic
