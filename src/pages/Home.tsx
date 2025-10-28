@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Calculator, Scale, Target, Plane, Brain, ArrowRight, Gift, ChevronDown, UserCheck, Crown, Store, Home as HomeIcon, Heart } from "lucide-react";
+import { Calculator, Scale, Target, Plane, Brain, ArrowRight, Gift, ChevronDown, UserCheck, Crown, Store, Home as HomeIcon, Heart, Mic } from "lucide-react";
 import { Link } from "react-router-dom";
 import { SEO } from "@/components/SEO";
 import { seoData } from "@/utils/seoData";
@@ -28,6 +28,14 @@ import calculatorHeroPreview from '@/assets/calculator-preview-hero.png';
 // --- Data for Child Components ---
 
 const featurePreviewsData = [
+  {
+    title: "Voice Expense Tracker",
+    description: "Log expenses instantly by speaking - AI-powered transcription and smart categorization (Premium Feature)",
+    image: calculatorPreview,
+    href: "/expenses",
+    alt: "Voice Expense Tracker page with conversational logging and spending insights",
+    icon: Mic
+  },
   {
     title: "Monthly Budget Calculator",
     description: "Track your household income and expenses with our intuitive calculator",
