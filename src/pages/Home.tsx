@@ -16,15 +16,15 @@ import { useSubscription } from "@/hooks/useSubscription";
 import { Button } from "@/components/ui/button";
 
 // Import page preview images
-import calculatorPreview from '@/assets/calculator-page-preview.png';
-import savingsPreview from '@/assets/savings-goal-preview.png';
-import vacationPreview from '@/assets/vacation-page-preview.png';
-import vendorPreview from '@/assets/vendor-compare-preview.png';
-import giftPreview from '@/assets/gift-page-preview.png';
-import aiPreview from '@/assets/ai-page-preview.png';
-import marketplacePreview from '@/assets/marketplace-page-preview.png';
+import voiceExpenseConcept from '@/assets/voice-expense-concept.png';
+import budgetConcept from '@/assets/budget-concept.png';
+import savingsConcept from '@/assets/savings-concept.png';
+import vacationConcept from '@/assets/vacation-concept.png';
+import vendorConcept from '@/assets/vendor-concept.png';
+import giftsConcept from '@/assets/gifts-concept.png';
+import marketplaceConcept from '@/assets/marketplace-concept.png';
+import aiConcept from '@/assets/ai-concept.png';
 import calculatorHeroPreview from '@/assets/calculator-preview-hero.png';
-import expensesPreview from '@/assets/expenses-page-preview-new.png';
 
 // --- Data for Child Components ---
 
@@ -32,65 +32,65 @@ const featurePreviewsData = [
   {
     title: "Voice Expense Tracker",
     description: "Log expenses instantly by speaking - AI-powered transcription and smart categorization (Premium Feature)",
-    image: expensesPreview,
+    image: voiceExpenseConcept,
     href: "/expenses",
-    alt: "Voice Expense Tracker page with conversational logging and spending insights",
+    alt: "Voice-activated expense tracking with microphone and financial data",
     icon: Mic
   },
   {
     title: "Monthly Budget Calculator",
     description: "Track your household income and expenses with our intuitive calculator",
-    image: calculatorPreview,
+    image: budgetConcept,
     href: "/budget",
-    alt: "Monthly Budget Calculator page showing dual calculators with income and expense tracking",
+    alt: "Budget planning workspace with calculator, charts, and financial documents",
     icon: Calculator
   },
   {
     title: "Savings Goals Tracker",
     description: "Set and monitor your financial goals with visual progress tracking",
-    image: savingsPreview,
+    image: savingsConcept,
     href: "/savings",
-    alt: "Savings Goals page showing progress tracker for a new car with monthly entries",
+    alt: "Savings jar with plant growing and progress chart showing financial growth",
     icon: Target
   },
   {
     title: "Vacation Planner",
     description: "Compare vacation destinations and plan your trips within budget",
-    image: vacationPreview,
+    image: vacationConcept,
     href: "/vacation",
-    alt: "Vacation Planner page showing comparison of vacation destinations with cost breakdowns",
+    alt: "Tropical beach vacation planning with tablet showing budget options",
     icon: Plane
   },
   {
     title: "Vendor Comparison Tool",
     description: "Compare contractor quotes and find the best value for your projects",
-    image: vendorPreview,
+    image: vendorConcept,
     href: "/compare-prices",
-    alt: "Vendor Comparison page showing project summary and contractor quote comparisons",
+    alt: "Home renovation with contractor reviewing quotes and ratings on tablet",
     icon: Scale
   },
   {
     title: "Gift Lists",
     description: "Organize your gift ideas for every occasion with budget tracking",
-    image: giftPreview,
+    image: giftsConcept,
     href: "/gifts",
-    alt: "Gift Lists page showing holiday gifts with budget tracking and gift ideas",
+    alt: "Holiday gift planning with wrapped presents and gift list notebook",
     icon: Gift
   },
   {
     title: "Community Marketplace",
     description: "Discover vendors, vacation rentals, and handmade gifts from our community",
-    image: marketplacePreview,
+    image: marketplaceConcept,
     href: "/marketplace",
-    alt: "Community Marketplace page showing vendor, vacation, and gift listings",
+    alt: "Vibrant farmer's market with smartphone showing marketplace listings",
     icon: Store
   },
   {
     title: "AI Financial Advisor",
     description: "Get personalized financial insights and advice powered by AI",
-    image: aiPreview,
+    image: aiConcept,
     href: "/ai-insights",
-    alt: "AI Financial Advisor page showing personalized financial guidance and analysis",
+    alt: "Futuristic AI brain hologram with financial charts and insights",
     icon: Brain
   }
 ];
