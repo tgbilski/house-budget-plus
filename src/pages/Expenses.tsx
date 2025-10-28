@@ -15,7 +15,9 @@ import { useToast } from '@/hooks/use-toast';
 import { Link } from 'react-router-dom';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { cn } from '@/lib/utils';
-import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from 'recharts';
+import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, PieChart, Pie, Cell, Legend } from 'recharts';
+import { Download, AlertCircle, TrendingDown } from 'lucide-react';
+import { jsPDF } from 'jspdf';
 
 export default function Expenses() {
   const { user } = useAuth();
@@ -53,6 +55,55 @@ export default function Expenses() {
   }, [expenses]);
 
   const totalSpent = expenses.reduce((sum, exp) => sum + Number(exp.amount), 0);
+
+  // Calculate category breakdown
+  const categoryData = React.useMemo(() => {
+    const breakdown = expenses.reduce((acc, expense) => {
+      const cat = expense.category || 'Other';
+      if (!acc[cat]) {
+        acc[cat] = 0;
+      }
+      acc[cat] += Number(expense.amount);
+      return acc;
+    }, {} as Record<string, number>);
+
+    return Object.entries(breakdown).map(([name, value]) => ({ name, value }));
+  }, [expenses]);
+
+  const COLORS = ['hsl(var(--primary))', 'hsl(var(--secondary))', 'hsl(var(--accent))', 'hsl(var(--muted))', 'hsl(var(--success))', 'hsl(var(--warning))'];
+
+  // Budget alert threshold (example: warn if over $1000/month)
+  const budgetThreshold = 1000;
+  const isOverBudget = totalSpent > budgetThreshold;
+
+  const exportToPDF = () => {
+    const doc = new jsPDF();
+    doc.setFontSize(20);
+    doc.text('Expense Report', 20, 20);
+    doc.setFontSize(12);
+    doc.text(`Month: ${format(selectedDate, 'MMMM yyyy')}`, 20, 30);
+    doc.text(`Total Spent: ${currency.symbol}${totalSpent.toFixed(2)}`, 20, 40);
+    
+    let yPos = 55;
+    doc.text('Expenses:', 20, yPos);
+    yPos += 10;
+    
+    expenses.forEach((expense, idx) => {
+      if (yPos > 280) {
+        doc.addPage();
+        yPos = 20;
+      }
+      const line = `${format(new Date(expense.date), 'MMM d')} - ${expense.merchant || expense.category} - ${currency.symbol}${Number(expense.amount).toFixed(2)}`;
+      doc.text(line, 20, yPos);
+      yPos += 7;
+    });
+    
+    doc.save(`expenses-${format(selectedDate, 'yyyy-MM')}.pdf`);
+    toast({
+      title: 'Success',
+      description: 'Expense report downloaded',
+    });
+  };
 
   const startRecording = async () => {
     try {
@@ -160,18 +211,152 @@ export default function Expenses() {
 
   if (!subscribed) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center p-4">
-        <Card className="max-w-md">
-          <CardHeader>
-            <CardTitle>Premium Feature</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="mb-4">Voice expense tracking is a premium feature. Upgrade to unlock!</p>
+      <div className="min-h-screen bg-gradient-to-br from-white via-background to-sage/10">
+        <SEO
+          title="Voice Expense Tracker - House Budget Calculator"
+          description="Track your daily expenses effortlessly with voice input and AI-powered categorization"
+          keywords="expense tracker, voice input, budget tracking, AI expense logging"
+        />
+        
+        <div className="max-w-7xl mx-auto p-4 md:p-6 lg:p-8">
+          {/* Hero Section */}
+          <div className="text-center mb-12 animate-fade-in">
+            <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-primary/20 to-primary-glow/20 rounded-3xl shadow-lg mb-6">
+              <Mic className="h-10 w-10 text-primary" />
+            </div>
+            <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-foreground to-primary bg-clip-text text-transparent mb-4">
+              Voice Expense Tracker
+            </h1>
+            <p className="text-xl text-muted-foreground max-w-2xl mx-auto mb-8">
+              Just speak your expenses. Our AI handles the rest - categorizing, organizing, and visualizing your spending automatically.
+            </p>
             <Link to="/settings">
-              <Button className="w-full">Upgrade to Premium</Button>
+              <Button size="lg" className="bg-gradient-to-r from-primary to-primary-glow hover:scale-105 transition-transform">
+                Upgrade to Premium - Start Tracking
+              </Button>
             </Link>
-          </CardContent>
-        </Card>
+          </div>
+
+          {/* Feature Preview Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
+            {/* Voice Input Preview */}
+            <Card className="bg-white/80 backdrop-blur-sm border-2 border-border/50 shadow-[var(--shadow-elegant)]">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Mic className="h-5 w-5" />
+                  Effortless Voice Input
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="flex justify-center mb-4">
+                  <div className="w-32 h-32 rounded-full bg-gradient-to-br from-primary/20 to-primary-glow/20 flex items-center justify-center">
+                    <Mic className="h-16 w-16 text-primary" />
+                  </div>
+                </div>
+                <p className="text-muted-foreground text-center">
+                  "Spent $45.99 at Whole Foods for groceries"
+                </p>
+                <div className="mt-4 p-4 bg-success/10 border border-success/30 rounded-lg">
+                  <p className="text-sm font-medium">✓ AI Parsed:</p>
+                  <p className="text-xs text-muted-foreground">Amount: $45.99 | Merchant: Whole Foods | Category: Groceries</p>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Chart Preview */}
+            <Card className="bg-white/80 backdrop-blur-sm border-2 border-border/50 shadow-[var(--shadow-elegant)]">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <TrendingUp className="h-5 w-5" />
+                  Visual Analytics
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="h-[200px] flex items-center justify-center bg-muted/20 rounded-lg">
+                  <div className="text-center">
+                    <TrendingUp className="h-12 w-12 text-primary mx-auto mb-2" />
+                    <p className="text-sm text-muted-foreground">Daily spending trends</p>
+                    <p className="text-xs text-muted-foreground">Category breakdowns</p>
+                    <p className="text-xs text-muted-foreground">Budget alerts</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Benefits List */}
+          <Card className="bg-white/80 backdrop-blur-sm border-2 border-primary/20 shadow-[var(--shadow-elegant)]">
+            <CardHeader>
+              <CardTitle>What You'll Get</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="flex items-start gap-3">
+                  <div className="w-8 h-8 rounded-full bg-success/20 flex items-center justify-center flex-shrink-0">
+                    <span className="text-success font-bold">✓</span>
+                  </div>
+                  <div>
+                    <h3 className="font-semibold mb-1">Voice-to-Expense Magic</h3>
+                    <p className="text-sm text-muted-foreground">Speak naturally, we'll extract amount, merchant, and category</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3">
+                  <div className="w-8 h-8 rounded-full bg-success/20 flex items-center justify-center flex-shrink-0">
+                    <span className="text-success font-bold">✓</span>
+                  </div>
+                  <div>
+                    <h3 className="font-semibold mb-1">Smart Categorization</h3>
+                    <p className="text-sm text-muted-foreground">AI automatically categorizes your spending</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3">
+                  <div className="w-8 h-8 rounded-full bg-success/20 flex items-center justify-center flex-shrink-0">
+                    <span className="text-success font-bold">✓</span>
+                  </div>
+                  <div>
+                    <h3 className="font-semibold mb-1">Visual Analytics</h3>
+                    <p className="text-sm text-muted-foreground">Charts and graphs show spending patterns</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3">
+                  <div className="w-8 h-8 rounded-full bg-success/20 flex items-center justify-center flex-shrink-0">
+                    <span className="text-success font-bold">✓</span>
+                  </div>
+                  <div>
+                    <h3 className="font-semibold mb-1">Budget Alerts</h3>
+                    <p className="text-sm text-muted-foreground">Get notified when you're approaching limits</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3">
+                  <div className="w-8 h-8 rounded-full bg-success/20 flex items-center justify-center flex-shrink-0">
+                    <span className="text-success font-bold">✓</span>
+                  </div>
+                  <div>
+                    <h3 className="font-semibold mb-1">Export Reports</h3>
+                    <p className="text-sm text-muted-foreground">Download PDF reports for your records</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3">
+                  <div className="w-8 h-8 rounded-full bg-success/20 flex items-center justify-center flex-shrink-0">
+                    <span className="text-success font-bold">✓</span>
+                  </div>
+                  <div>
+                    <h3 className="font-semibold mb-1">Household Tracking</h3>
+                    <p className="text-sm text-muted-foreground">Track expenses across your entire household</p>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="mt-8 text-center">
+                <Link to="/settings">
+                  <Button size="lg" className="bg-gradient-to-r from-primary to-primary-glow hover:scale-105 transition-transform">
+                    Start Your Free Trial Today
+                  </Button>
+                </Link>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
       </div>
     );
   }
@@ -219,6 +404,16 @@ export default function Expenses() {
             </PopoverContent>
           </Popover>
         </div>
+
+        {/* Budget Alert */}
+        {isOverBudget && (
+          <Alert variant="destructive" className="mb-6 animate-fade-in">
+            <AlertCircle className="h-4 w-4" />
+            <AlertDescription>
+              You've exceeded your monthly budget of {currency.symbol}{budgetThreshold.toFixed(2)}. Current spending: {currency.symbol}{totalSpent.toFixed(2)}
+            </AlertDescription>
+          </Alert>
+        )}
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Voice Input Card */}
@@ -290,12 +485,18 @@ export default function Expenses() {
             </CardContent>
           </Card>
 
-          {/* Today's Summary */}
+          {/* Monthly Summary & Export */}
           <Card className="bg-white/80 backdrop-blur-sm border-2 border-border/50 shadow-[var(--shadow-elegant)]">
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <TrendingUp className="h-5 w-5" />
-                This Month
+              <CardTitle className="flex items-center justify-between">
+                <span className="flex items-center gap-2">
+                  <TrendingUp className="h-5 w-5" />
+                  This Month
+                </span>
+                <Button variant="outline" size="sm" onClick={exportToPDF}>
+                  <Download className="h-4 w-4 mr-2" />
+                  Export PDF
+                </Button>
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -332,6 +533,39 @@ export default function Expenses() {
             </CardContent>
           </Card>
         </div>
+
+        {/* Category Breakdown Pie Chart */}
+        {categoryData.length > 0 && (
+          <Card className="mt-6 bg-white/80 backdrop-blur-sm border-2 border-border/50 shadow-[var(--shadow-elegant)]">
+            <CardHeader>
+              <CardTitle>Spending by Category - {format(selectedDate, 'MMMM yyyy')}</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="h-[300px]">
+                <ResponsiveContainer width="100%" height="100%">
+                  <PieChart>
+                    <Pie
+                      data={categoryData}
+                      cx="50%"
+                      cy="50%"
+                      labelLine={false}
+                      label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
+                      outerRadius={100}
+                      fill="hsl(var(--primary))"
+                      dataKey="value"
+                    >
+                      {categoryData.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                      ))}
+                    </Pie>
+                    <Tooltip formatter={(value: number) => `${currency.symbol}${value.toFixed(2)}`} />
+                    <Legend />
+                  </PieChart>
+                </ResponsiveContainer>
+              </div>
+            </CardContent>
+          </Card>
+        )}
 
         {/* Chart */}
         {chartData.length > 0 && (
