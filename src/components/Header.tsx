@@ -6,6 +6,8 @@ import { User } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { useIsMobile } from '@/hooks/use-mobile';
 import ProfileDropdown from './ProfileDropdown';
+import { Breadcrumbs } from './Breadcrumbs';
+import { GlobalSearch } from './GlobalSearch';
 const logoIcon = '/lovable-uploads/f2d56e66-518b-4a91-8172-551b1a54ef32.png';
 
 const Header: React.FC = () => {
@@ -14,36 +16,44 @@ const Header: React.FC = () => {
 
   return (
     <header className="w-full bg-gradient-to-r from-white via-blue-50/30 to-emerald-50/30 border-b border-gray-200 sticky top-0 z-50 shadow-sm backdrop-blur-sm">
-      <div className="w-full px-4 md:px-6 py-2 md:py-3 flex items-center justify-between min-h-[48px] md:min-h-[56px]">
-        {/* Brand with Logo and Mobile Menu */}
-        <div className="flex items-center space-x-2">
-          <SidebarTrigger className="md:inline-flex" />
-          <Link to="/" className="flex items-center space-x-2 md:space-x-3 hover:opacity-80 transition-opacity">
-            <img 
-              src={logoIcon} 
-              alt="House Budget Calculator"
-              className="h-7 w-7 md:h-8 md:w-8 rounded"
-            />
-            {!isMobile && (
-              <h1 className="text-xl font-semibold text-gray-900">
-                House Budget Calculator
-              </h1>
-            )}
-          </Link>
-        </div>
+      <div className="w-full px-4 md:px-6 py-2 md:py-3">
+        <div className="flex items-center justify-between min-h-[48px] md:min-h-[56px]">
+          {/* Brand with Logo and Mobile Menu */}
+          <div className="flex items-center space-x-2">
+            <SidebarTrigger className="md:inline-flex" />
+            <Link to="/" className="flex items-center space-x-2 md:space-x-3 hover:opacity-80 transition-opacity">
+              <img 
+                src={logoIcon} 
+                alt="House Budget Calculator"
+                className="h-7 w-7 md:h-8 md:w-8 rounded"
+              />
+              {!isMobile && (
+                <h1 className="text-xl font-semibold text-gray-900">
+                  House Budget Calculator
+                </h1>
+              )}
+            </Link>
+          </div>
 
-        {/* Auth Button */}
-        <div className="flex items-center">
-          {user ? (
-            <ProfileDropdown />
-          ) : (
-            <Button asChild size="sm">
-              <Link to="/auth" className="flex items-center space-x-2">
-                <User className="h-4 w-4" />
-                <span className="hidden sm:inline">Sign In</span>
-              </Link>
-            </Button>
-          )}
+          {/* Search and Auth */}
+          <div className="flex items-center gap-2 md:gap-4">
+            <GlobalSearch />
+            {user ? (
+              <ProfileDropdown />
+            ) : (
+              <Button asChild size="sm">
+                <Link to="/auth" className="flex items-center space-x-2">
+                  <User className="h-4 w-4" />
+                  <span className="hidden sm:inline">Sign In</span>
+                </Link>
+              </Button>
+            )}
+          </div>
+        </div>
+        
+        {/* Breadcrumbs */}
+        <div className="mt-2 hidden md:block">
+          <Breadcrumbs />
         </div>
       </div>
     </header>

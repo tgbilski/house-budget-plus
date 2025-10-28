@@ -8,6 +8,8 @@ import { AdSense } from "@/components/AdSense";
 import { BadgeDisplay } from "@/components/BadgeDisplay";
 import { RSSFeed } from "@/components/RSSFeed";
 import { AIChatPreview } from "@/components/AIChatPreview";
+import { HowItWorks } from "@/components/HowItWorks";
+import { FeatureComparison } from "@/components/FeatureComparison";
 import { LucideIcon } from 'lucide-react';
 import { useAuth } from "@/hooks/useAuth";
 import { useSubscription } from "@/hooks/useSubscription";
@@ -411,8 +413,12 @@ const Home = () => {
         ogImage={seoData.home.ogImage}
       />
       <div className="min-h-screen overflow-x-hidden relative bg-gradient-to-b from-background to-secondary/20">
-        <div className="space-y-4">
+        <div className="space-y-4" id="main-content">
           <HeroSectionContent />
+          <ScrollIndicator />
+          <HowItWorks />
+          <ScrollIndicator />
+          <FeatureComparison />
           <ScrollIndicator />
           <MarketplacePromo />
           <ScrollIndicator />

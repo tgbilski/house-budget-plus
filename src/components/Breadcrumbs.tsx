@@ -1,92 +1,78 @@
 import React from 'react';
-import { ChevronRight, Home } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
-import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbSeparator } from '@/components/ui/breadcrumb';
+import { ChevronRight, Home } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
-interface BreadcrumbData {
+interface BreadcrumbItem {
   label: string;
   href: string;
 }
 
-const routeMap: Record<string, string> = {
+const routeLabels: Record<string, string> = {
   '/': 'Home',
   '/budget': 'Monthly Budget',
+  '/savings': 'Savings Goals',
   '/compare-prices': 'Compare Vendors',
-  '/takeout': 'Takeout Calendar',
   '/vacation': 'Vacation Planner',
-  '/ai-insights': 'AI Insights',
   '/gifts': 'Gift Lists',
+  '/marketplace': 'Marketplace',
+  '/my-listings': 'My Listings',
+  '/blog': 'Blog',
+  '/ai-insights': 'AI Insights',
   '/settings': 'Settings',
-  '/auth': 'Sign In'
+  '/auth': 'Sign In',
+  '/about': 'About Us',
+  '/contact': 'Contact',
+  '/privacy': 'Privacy Policy',
+  '/terms': 'Terms & Conditions',
+  '/disclaimer': 'Disclaimer',
 };
 
 export const Breadcrumbs: React.FC = () => {
   const location = useLocation();
-  const pathSegments = location.pathname.split('/').filter(Boolean);
-  
-  // Don't show breadcrumbs on home page
-  if (location.pathname === '/' || location.pathname === '/home') {
-    return null;
-  }
-  
-  const breadcrumbs: BreadcrumbData[] = [
-    { label: 'Home', href: '/' }
+  const pathnames = location.pathname.split('/').filter((x) => x);
+
+  // Don't show breadcrumbs on homepage
+  if (pathnames.length === 0) return null;
+
+  const breadcrumbs: BreadcrumbItem[] = [
+    { label: 'Home', href: '/' },
   ];
-  
+
   let currentPath = '';
-  pathSegments.forEach(segment => {
+  pathnames.forEach((segment) => {
     currentPath += `/${segment}`;
-    const label = routeMap[currentPath] || segment.charAt(0).toUpperCase() + segment.slice(1);
+    const label = routeLabels[currentPath] || segment.charAt(0).toUpperCase() + segment.slice(1);
     breadcrumbs.push({ label, href: currentPath });
   });
 
-  // Structured data for breadcrumbs
-  const structuredData = {
-    "@context": "https://schema.org",
-    "@type": "BreadcrumbList",
-    "itemListElement": breadcrumbs.map((crumb, index) => ({
-      "@type": "ListItem",
-      "position": index + 1,
-      "name": crumb.label,
-      "item": `${window.location.origin}${crumb.href}`
-    }))
-  };
-
   return (
-    <>
-      <script type="application/ld+json">
-        {JSON.stringify(structuredData)}
-      </script>
-      
-      <div className="container mx-auto px-4 py-2">
-        <Breadcrumb>
-          <BreadcrumbList>
-            {breadcrumbs.map((crumb, index) => (
-              <React.Fragment key={crumb.href}>
-                <BreadcrumbItem>
-                  {index === breadcrumbs.length - 1 ? (
-                    <span className="text-muted-foreground">{crumb.label}</span>
-                  ) : (
-                    <BreadcrumbLink asChild>
-                      <Link to={crumb.href} className="flex items-center gap-1">
-                        <div className="flex items-center gap-1">
-                          {index === 0 && <Home className="h-4 w-4" />}
-                          <span>{crumb.label}</span>
-                        </div>
-                      </Link>
-                    </BreadcrumbLink>
-                  )}
-                </BreadcrumbItem>
-                {index < breadcrumbs.length - 1 && (
-                  <BreadcrumbSeparator>
-                    <ChevronRight className="h-4 w-4" />
-                  </BreadcrumbSeparator>
+    <nav aria-label="Breadcrumb" className="flex items-center space-x-1 text-sm text-muted-foreground">
+      {breadcrumbs.map((crumb, index) => {
+        const isLast = index === breadcrumbs.length - 1;
+        
+        return (
+          <React.Fragment key={crumb.href}>
+            {index > 0 && <ChevronRight className="h-4 w-4" />}
+            {isLast ? (
+              <span className="font-medium text-foreground" aria-current="page">
+                {crumb.label}
+              </span>
+            ) : (
+              <Link
+                to={crumb.href}
+                className={cn(
+                  "hover:text-foreground transition-colors",
+                  index === 0 && "flex items-center gap-1"
                 )}
-              </React.Fragment>
-            ))}
-          </BreadcrumbList>
-        </Breadcrumb>
-      </div>
-    </>
+              >
+                {index === 0 && <Home className="h-3.5 w-3.5" />}
+                {crumb.label}
+              </Link>
+            )}
+          </React.Fragment>
+        );
+      })}
+    </nav>
   );
 };

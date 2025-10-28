@@ -1,6 +1,7 @@
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { SkipToMain } from "@/components/SkipToMain";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import { useEffect } from "react";
@@ -118,6 +119,7 @@ const App = () => {
                 <HouseholdProvider>
                   <CurrencyContext.Provider value={{ currency, setCurrency }}>
                   <BrowserRouter>
+                    <SkipToMain />
                     <ScrollToTop />
                     <SidebarProvider defaultOpen={isMobile ? false : false}>
                       <div 
@@ -132,7 +134,7 @@ const App = () => {
                            {!isMobile && <AppSidebar />}
                            <div className="flex-1 flex flex-col min-w-0">
                              {isMobile && <AppSidebar />}
-                             <main className="flex-1 p-2 sm:p-4 md:p-6">
+                             <main id="main-content" className="flex-1 p-2 sm:p-4 md:p-6">
                                <AppRoutes />
                              </main>
                              <Footer />

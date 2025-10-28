@@ -1,5 +1,5 @@
 // src/pages/Vacation.tsx
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Plane, Plus, MapPin } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useNavigate } from 'react-router-dom';
@@ -10,6 +10,8 @@ import { useCurrency } from '@/hooks/useCurrency';
 import { YearSelector } from '@/components/YearSelector';
 import { SEO } from '@/components/SEO';
 import { WarningBanner } from '@/components/WarningBanner';
+import { VacationDatePicker } from '@/components/VacationDatePicker';
+import { VacationTotalBudget } from '@/components/VacationTotalBudget';
 import { seoData } from '@/utils/seoData';
 import { useVacationPlanner } from '@/hooks/useVacationPlanner';
 import { VacationOptionCard } from '@/components/VacationOptionCard';
@@ -27,6 +29,8 @@ const Vacation: React.FC = () => {
   const { currency } = useCurrency();
   const { earnBadge } = useBadges();
   const navigate = useNavigate();
+  const [startDate, setStartDate] = useState<Date>();
+  const [endDate, setEndDate] = useState<Date>();
 
   const {
     vacations,
@@ -106,6 +110,22 @@ const Vacation: React.FC = () => {
         )}
 
         <div className="space-y-6">
+          {/* Date Picker */}
+          <div className="bg-white rounded-lg border border-border p-4">
+            <h3 className="text-sm font-medium mb-3">Trip Dates</h3>
+            <VacationDatePicker
+              startDate={startDate}
+              endDate={endDate}
+              onStartDateChange={setStartDate}
+              onEndDateChange={setEndDate}
+            />
+          </div>
+
+          {/* Budget Summary */}
+          {options.length > 0 && (
+            <VacationTotalBudget options={options} currencySymbol={currency.symbol} />
+          )}
+
           <VacationSelector
             vacations={vacations}
             currentVacationId={currentVacationId}

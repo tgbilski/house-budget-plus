@@ -4,6 +4,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Plus, Store } from "lucide-react";
 import { MarketplaceListingForm } from "@/components/MarketplaceListingForm";
 import { MarketplaceGrid } from "@/components/MarketplaceGrid";
+import { MarketplaceSort, SortOption } from "@/components/MarketplaceSort";
 import { SEO } from "@/components/SEO";
 import { seoData } from "@/utils/seoData";
 import { useAuth } from "@/hooks/useAuth";
@@ -14,6 +15,7 @@ import { useIsMobile } from "@/hooks/use-mobile";
 
 export default function Marketplace() {
   const [showForm, setShowForm] = useState(false);
+  const [sortBy, setSortBy] = useState<SortOption>('newest');
   const { user } = useAuth();
   const navigate = useNavigate();
   const isMobile = useIsMobile();
@@ -55,25 +57,31 @@ export default function Marketplace() {
         </div>
         
         <div className="mb-6 md:mb-8">
-          <div className="flex flex-col sm:flex-row gap-2">
-            {user && (
+          <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
+            <div className="flex flex-col sm:flex-row gap-2 flex-1">
+              {user && (
+                <Button 
+                  onClick={() => navigate("/my-listings")} 
+                  variant="outline" 
+                  size={isMobile ? "default" : "lg"}
+                  className="w-full sm:w-auto"
+                >
+                  My Listings
+                </Button>
+              )}
               <Button 
-                onClick={() => navigate("/my-listings")} 
-                variant="outline" 
+                onClick={handleCreateListing} 
                 size={isMobile ? "default" : "lg"}
                 className="w-full sm:w-auto"
               >
-                My Listings
+                <Plus className="mr-2 h-4 w-4" />
+                List Your Business
               </Button>
-            )}
-            <Button 
-              onClick={handleCreateListing} 
-              size={isMobile ? "default" : "lg"}
-              className="w-full sm:w-auto"
-            >
-              <Plus className="mr-2 h-4 w-4" />
-              List Your Business
-            </Button>
+            </div>
+            
+            <div className="w-full sm:w-auto">
+              <MarketplaceSort value={sortBy} onChange={setSortBy} />
+            </div>
           </div>
         </div>
 

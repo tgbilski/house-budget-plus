@@ -1,13 +1,16 @@
 // src/pages/Gifts.tsx (Final Version)
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useGiftLists } from '@/hooks/useGiftLists';
 import { useAuth } from '@/hooks/useAuth';
 import { useBadges } from '@/hooks/useBadges';
+import { useCurrency } from '@/hooks/useCurrency';
 import { SEO } from '@/components/SEO';
 import { seoData } from '@/utils/seoData';
 import { WarningBanner } from '@/components/WarningBanner';
 import { GiftListSelector } from '@/components/GiftListSelector';
 import { GiftCardDisplay } from '@/components/GiftCardDisplay';
+import { GiftBudgetSummary } from '@/components/GiftBudgetSummary';
+import { GiftSearch } from '@/components/GiftSearch';
 import { YearSelector } from '@/components/YearSelector';
 import { Gift, AlertTriangle, ShoppingBag } from 'lucide-react';
 import { Alert, AlertDescription } from '@/components/ui/alert';
@@ -19,7 +22,10 @@ import { FAQ } from '@/components/FAQ';
 export function Gifts() {
   const { user } = useAuth();
   const { earnBadge } = useBadges();
+  const { currency } = useCurrency();
   const navigate = useNavigate();
+  const [searchQuery, setSearchQuery] = useState('');
+  
   // 1. The page's only job is to call our main hook to get the data.
   const {
     loading,
@@ -41,6 +47,10 @@ export function Gifts() {
       earnBadge('gifts');
     }
   }, [user, giftLists.length, earnBadge]);
+
+  // Calculate budget summary (mock data for now - you can enhance this to read actual gift items)
+  const totalBudget = 500; // This should come from actual gift items
+  const itemCount = 8; // This should come from actual gift items
 
   if (loading) {
     return (
@@ -103,6 +113,13 @@ export function Gifts() {
         )}
 
         <div className="space-y-6">
+          {/* Budget Summary */}
+          <GiftBudgetSummary
+            totalBudget={totalBudget}
+            itemCount={itemCount}
+            currencySymbol={currency.symbol}
+          />
+
           {/* 2. It renders the selector and passes down the data and functions it needs. */}
           <GiftListSelector
             giftLists={giftLists}
@@ -116,11 +133,15 @@ export function Gifts() {
             onSetEditingTitle={setEditingTitle}
           />
 
-          <div className="flex justify-end">
+          {/* Search and Actions */}
+          <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
+            <div className="w-full sm:w-96">
+              <GiftSearch value={searchQuery} onChange={setSearchQuery} />
+            </div>
             <Button 
               onClick={() => navigate('/marketplace')} 
               variant="outline" 
-              className="gap-2"
+              className="gap-2 w-full sm:w-auto"
             >
               <ShoppingBag className="h-4 w-4" /> Find Gift Ideas
             </Button>
@@ -160,3 +181,4 @@ export function Gifts() {
     </div>
   );
 }
+
