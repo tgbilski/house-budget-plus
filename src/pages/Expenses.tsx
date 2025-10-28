@@ -12,6 +12,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { useSubscription } from '@/hooks/useSubscription';
 import { useExpenses } from '@/hooks/useExpenses';
 import { useCurrency } from '@/hooks/useCurrency';
+import { useHouseholdContext } from '@/providers/HouseholdProvider';
 import { Mic, MicOff, Calendar as CalendarIcon, Trash2, TrendingUp, Edit2 } from 'lucide-react';
 import { format } from 'date-fns';
 import { supabase } from '@/integrations/supabase/client';
@@ -27,6 +28,7 @@ export default function Expenses() {
   const { user } = useAuth();
   const { subscribed } = useSubscription();
   const { currency } = useCurrency();
+  const { currentHousehold } = useHouseholdContext();
   const { toast } = useToast();
   const [selectedDate, setSelectedDate] = useState(new Date());
   const { expenses, loading, addExpense, deleteExpense, updateExpense } = useExpenses(selectedDate);
@@ -199,24 +201,41 @@ export default function Expenses() {
   const saveExpense = async () => {
     if (!parsedExpense) return;
 
+    console.log('Saving expense:', {
+      parsedExpense,
+      selectedDate,
+      user: user?.id,
+      household: currentHousehold?.id
+    });
+
     try {
-      await addExpense({
+      const expenseData = {
         date: format(selectedDate, 'yyyy-MM-dd'),
         amount: parsedExpense.amount,
         merchant: parsedExpense.merchant === 'Unknown' ? null : parsedExpense.merchant,
         category: parsedExpense.category,
         notes: transcription,
         year: selectedDate.getFullYear(),
-      });
+      };
 
-      setTranscription('');
-      setParsedExpense(null);
-      setAiStatus('');
-      
-      toast({
-        title: 'Saved!',
-        description: `${currency.symbol}${parsedExpense.amount} expense added`,
-      });
+      console.log('Expense data to save:', expenseData);
+
+      const result = await addExpense(expenseData);
+
+      console.log('Save result:', result);
+
+      if (result) {
+        setTranscription('');
+        setParsedExpense(null);
+        setAiStatus('');
+        
+        toast({
+          title: 'Saved!',
+          description: `${currency.symbol}${parsedExpense.amount} expense added`,
+        });
+      } else {
+        throw new Error('Failed to save expense');
+      }
     } catch (error) {
       console.error('Error saving expense:', error);
       toast({
