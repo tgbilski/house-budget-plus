@@ -170,7 +170,7 @@ const PremiumButton = () => {
 
 
 const HeroSectionContent = () => (
-  <section className="relative py-8 md:py-12 px-3 md:px-4 rounded-2xl md:rounded-3xl mx-2 md:mx-4 shadow-[var(--shadow-elegant)] overflow-hidden bg-gradient-to-br from-white via-white to-sage/20 mt-16 md:mt-20 mb-8 border-2 border-primary/20 animate-scale-in">
+  <section className="relative py-8 md:py-12 px-3 md:px-4 rounded-2xl md:rounded-3xl mx-2 md:mx-4 shadow-[var(--shadow-elegant)] overflow-visible bg-gradient-to-br from-white via-white to-sage/20 mt-16 md:mt-20 mb-8 border-2 border-primary/20 animate-scale-in">
     <img
       src="/lovable-uploads/ed809955-ef71-4d81-b072-945082f4380a.png"
       alt="House Budget Calculator mascot - friendly budget planning assistant"
