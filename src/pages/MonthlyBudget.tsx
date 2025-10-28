@@ -186,8 +186,9 @@ const MonthlyBudget: React.FC = () => {
         {/* Budget calculators section with overview chart */}
         {/* CHANGE: Added conditional rendering for loading and error states */}
         {isLoading ? (
-          <div className="text-center p-8">
-            <p>Loading your budget...</p>
+          <div className="flex flex-col items-center justify-center p-12">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mb-4"></div>
+            <p className="text-lg text-muted-foreground">Loading your budget...</p>
           </div>
         ) : error ? (
           <div className="bg-destructive/10 border border-destructive text-destructive rounded-lg p-4 text-center">

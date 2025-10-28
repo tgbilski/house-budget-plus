@@ -2,6 +2,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { SkipToMain } from "@/components/SkipToMain";
+import { MobileBottomNav } from "@/components/MobileBottomNav";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import { useEffect } from "react";
@@ -129,17 +130,18 @@ const App = () => {
                           backgroundImage: 'repeating-linear-gradient(45deg, transparent, transparent 40px, rgba(255,255,255,0.04) 40px, rgba(255,255,255,0.04) 42px)'
                         }}
                       >
-                        <Header />
+                         <Header />
                          <div className="flex flex-1">
                            {!isMobile && <AppSidebar />}
                            <div className="flex-1 flex flex-col min-w-0">
                              {isMobile && <AppSidebar />}
-                             <main id="main-content" className="flex-1 p-2 sm:p-4 md:p-6">
+                             <main id="main-content" className="flex-1 p-2 sm:p-4 md:p-6 pb-20 md:pb-6">
                                <AppRoutes />
                              </main>
                              <Footer />
                            </div>
                          </div>
+                         {isMobile && <MobileBottomNav />}
                        </div>
                      </SidebarProvider>
                    </BrowserRouter>

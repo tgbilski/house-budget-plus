@@ -1,13 +1,10 @@
 import React from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { DollarSign, TrendingUp } from 'lucide-react';
+import type { VacationOption } from '@/hooks/useVacationPlanner';
 
 interface VacationTotalBudgetProps {
-  options: Array<{
-    travelCost: number;
-    lodgingCost: number;
-    carRentalCost: number;
-  }>;
+  options: VacationOption[];
   currencySymbol: string;
 }
 
@@ -15,8 +12,8 @@ export const VacationTotalBudget: React.FC<VacationTotalBudgetProps> = ({
   options,
   currencySymbol,
 }) => {
-  const calculateTotal = (option: any) => {
-    return (option.travelCost || 0) + (option.lodgingCost || 0) + (option.carRentalCost || 0);
+  const calculateTotal = (option: VacationOption) => {
+    return (option.travel_mode_cost || 0) + (option.lodging_cost || 0) + (option.car_rental_cost || 0);
   };
 
   const totals = options.map(calculateTotal);
