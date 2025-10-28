@@ -1,11 +1,13 @@
 // src/components/GiftListSelector.tsx (Updated with CSS Fixes)
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Gift, Edit3, Check, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { supabase } from '@/integrations/supabase/client';
+import { useCurrency } from '@/hooks/useCurrency';
 
 // ... (Interfaces and Props definitions remain the same)
 interface GiftListData {
@@ -38,6 +40,40 @@ export function GiftListSelector({
   onCancelEditing,
   onSetEditingTitle,
 }: GiftListSelectorProps) {
+  const { currency } = useCurrency();
+  const [listTotals, setListTotals] = useState<Record<string, number>>({});
+
+  useEffect(() => {
+    const fetchTotals = async () => {
+      const totals: Record<string, number> = {};
+      
+      for (const list of giftLists) {
+        // Skip demo lists
+        if (list.id.startsWith('demo-')) {
+          totals[list.id] = 70; // Demo total
+          continue;
+        }
+        
+        const { data, error } = await supabase
+          .from('gift_items')
+          .select('price')
+          .eq('list_id', list.id);
+        
+        if (!error && data) {
+          totals[list.id] = data.reduce((sum, item) => sum + (item.price || 0), 0);
+        } else {
+          totals[list.id] = 0;
+        }
+      }
+      
+      setListTotals(totals);
+    };
+    
+    if (giftLists.length > 0) {
+      fetchTotals();
+    }
+  }, [giftLists]);
+
   return (
     <Card className="mb-6">
       <CardContent className="p-4">
@@ -54,10 +90,10 @@ export function GiftListSelector({
                 )}
                 onClick={() => onSelectList(list)}
               >
-                <div className="flex items-center gap-3">
-                  <Gift className="h-5 w-5" />
+                <div className="flex items-center gap-3 flex-1">
+                  <Gift className="h-5 w-5 flex-shrink-0" />
                   {editingListId === list.id ? (
-                    <div className="flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
+                    <div className="flex items-center gap-2 flex-1" onClick={(e) => e.stopPropagation()}>
                       <Input
                         value={editingTitle}
                         onChange={(e) => onSetEditingTitle(e.target.value)}
@@ -88,6 +124,14 @@ export function GiftListSelector({
                       <Badge variant="secondary" className="ml-2">{list.year}</Badge>
                     </>
                   )}
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className={cn(
+                    "text-lg font-bold",
+                    selectedList?.id === list.id ? "text-primary-foreground" : "text-teal"
+                  )}>
+                    {currency.symbol}{(listTotals[list.id] || 0).toFixed(2)}
+                  </span>
                 </div>
                 {editingListId !== list.id && (
                   <Button

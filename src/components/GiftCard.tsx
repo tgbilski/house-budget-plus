@@ -4,11 +4,23 @@ import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
-import { Plus, DollarSign } from 'lucide-react';
+import { Plus, DollarSign, Trash2 } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { useGiftItems, GiftItemData } from '@/hooks/useGiftLists';
 import { GiftItem } from './GiftItem';
+import { useToast } from '@/hooks/use-toast';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 interface GiftListData {
   id?: string;
@@ -22,6 +34,7 @@ interface GiftCardProps {
 
 export function GiftCard({ initialData }: GiftCardProps) {
   const { user } = useAuth();
+  const { toast } = useToast();
   const [listData, setListData] = useState<GiftListData>({ ...initialData });
   const [showNewItem, setShowNewItem] = useState(false);
   
@@ -51,6 +64,42 @@ export function GiftCard({ initialData }: GiftCardProps) {
     setShowNewItem(false);
   };
 
+  const handleResetList = async () => {
+    if (!user || !listData.id) return;
+    
+    // Skip deletion for demo mode
+    if (listData.id.startsWith('demo-')) {
+      toast({
+        title: "Demo Mode",
+        description: "Sign in to reset your gift lists permanently.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    try {
+      const { error } = await supabase
+        .from('gift_items')
+        .delete()
+        .eq('list_id', listData.id);
+      
+      if (error) throw error;
+      
+      await refetchItems();
+      toast({
+        title: "List Reset",
+        description: "All gift ideas have been removed from this list.",
+      });
+    } catch (error) {
+      console.error('Error resetting list:', error);
+      toast({
+        title: "Error",
+        description: "Failed to reset the list. Please try again.",
+        variant: "destructive",
+      });
+    }
+  };
+
   const totalSpent = items.reduce((sum, item) => sum + (item.price || 0), 0);
   const budgetTarget = listData.budget_target || 0;
   // ... (Budget calculation logic is the same)
@@ -62,6 +111,31 @@ export function GiftCard({ initialData }: GiftCardProps) {
       </CardHeader>
       <CardContent className="space-y-3">
         {/* ... (Your Budget Tracking JSX is the same) ... */}
+        
+        {/* Reset button */}
+        {listData.id && items.length > 0 && (
+          <AlertDialog>
+            <AlertDialogTrigger asChild>
+              <Button variant="destructive" size="sm" className="w-full">
+                <Trash2 className="h-4 w-4 mr-2" /> Reset List
+              </Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Reset Gift List?</AlertDialogTitle>
+                <AlertDialogDescription>
+                  This will permanently delete all gift ideas from "{listData.list_title}". This action cannot be undone.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <AlertDialogAction onClick={handleResetList} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+                  Reset List
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+        )}
         
         {/* KEY FIX: We only map over items if the listData.id exists. */}
         {listData.id && items.map((item) => (
