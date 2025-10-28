@@ -9,7 +9,8 @@ import {
   BookOpen,
   Shield,
   Store,
-  FileText
+  FileText,
+  Mic
 } from "lucide-react";
 import { NavLink, useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
@@ -31,6 +32,7 @@ import { useIsMobile } from "@/hooks/use-mobile";
 
 const navigationItems = [
   { title: "Home", url: "/", icon: Home },
+  { title: "Voice Expenses", url: "/expenses", icon: Mic },
   { title: "Monthly Budget", url: "/budget", icon: Calculator },
   { title: "Savings", url: "/savings", icon: PiggyBank },
   { title: "Compare Vendors", url: "/compare-prices", icon: ShoppingCart },

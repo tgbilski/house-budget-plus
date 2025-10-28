@@ -1,12 +1,12 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Home, Calculator, Target, Store, User } from 'lucide-react';
+import { Home, Mic, Target, Store, User } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useAuth } from '@/hooks/useAuth';
 
 const navItems = [
   { icon: Home, label: 'Home', path: '/' },
-  { icon: Calculator, label: 'Budget', path: '/budget' },
+  { icon: Mic, label: 'Expenses', path: '/expenses' },
   { icon: Target, label: 'Goals', path: '/savings' },
   { icon: Store, label: 'Market', path: '/marketplace' },
 ];

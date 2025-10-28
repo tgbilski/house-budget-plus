@@ -19,6 +19,7 @@ import ScrollToTop from "@/components/ScrollToTop";
 import Footer from "@/components/Footer";
 import { useIsMobile } from "@/hooks/use-mobile";
 import Home from "@/pages/Home";
+import Expenses from "@/pages/Expenses";
 import MonthlyBudget from "@/pages/MonthlyBudget";
 import CompareVendors from "@/pages/CompareVendors";
 import SavingsGoals from "@/pages/SavingsGoals";
@@ -76,6 +77,7 @@ const AppRoutes = () => {
   return (
     <Routes key={currentHousehold?.id || 'no-household'}>
       <Route path="/" element={<Home />} />
+      <Route path="/expenses" element={<Expenses />} />
       <Route path="/budget" element={<MonthlyBudget />} />
       <Route path="/savings" element={<SavingsGoals />} />
       <Route path="/home" element={<Home />} />

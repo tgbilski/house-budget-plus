@@ -90,3 +90,7 @@ verify_jwt = true
 [[edge_functions.functions]]
 name = "fetch-url-metadata"
 verify_jwt = true
+
+[[edge_functions.functions]]
+name = "voice-expense"
+verify_jwt = true

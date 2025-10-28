@@ -227,6 +227,48 @@ export type Database = {
           },
         ]
       }
+      expenses: {
+        Row: {
+          amount: number
+          category: string
+          created_at: string
+          date: string
+          household_id: string
+          id: string
+          merchant: string | null
+          notes: string | null
+          updated_at: string
+          user_id: string
+          year: number
+        }
+        Insert: {
+          amount: number
+          category: string
+          created_at?: string
+          date?: string
+          household_id: string
+          id?: string
+          merchant?: string | null
+          notes?: string | null
+          updated_at?: string
+          user_id: string
+          year?: number
+        }
+        Update: {
+          amount?: number
+          category?: string
+          created_at?: string
+          date?: string
+          household_id?: string
+          id?: string
+          merchant?: string | null
+          notes?: string | null
+          updated_at?: string
+          user_id?: string
+          year?: number
+        }
+        Relationships: []
+      }
       gift_items: {
         Row: {
           created_at: string
