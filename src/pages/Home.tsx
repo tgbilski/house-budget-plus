@@ -25,6 +25,10 @@ import giftsConcept from '@/assets/gifts-concept.png';
 import marketplaceConcept from '@/assets/marketplace-concept.png';
 import aiConcept from '@/assets/ai-concept.png';
 import calculatorHeroPreview from '@/assets/calculator-preview-hero.png';
+import localVendorsConcept from '@/assets/local-vendors-concept.png';
+import vacationRentalConcept from '@/assets/vacation-rental-concept.png';
+import handmadeGiftsConcept from '@/assets/handmade-gifts-concept.png';
+import howItWorksConcept from '@/assets/how-it-works-concept.png';
 
 // --- Data for Child Components ---
 
@@ -241,28 +245,61 @@ const MarketplacePromo = () => (
       </p>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-        <div className="group bg-white/90 backdrop-blur-md rounded-2xl p-6 shadow-xl border border-teal/20 hover:shadow-[var(--shadow-teal)] transition-all duration-300 hover:-translate-y-1">
-          <div className="w-16 h-16 mx-auto bg-gradient-to-br from-primary to-[hsl(var(--primary-glow))] rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-lg mb-4">
-            <HomeIcon className="h-8 w-8 text-white" />
+        <div className="group bg-white/90 backdrop-blur-md rounded-2xl overflow-hidden shadow-xl border border-teal/20 hover:shadow-[var(--shadow-teal)] transition-all duration-300 hover:-translate-y-1">
+          <div className="relative h-48 overflow-hidden">
+            <img 
+              src={localVendorsConcept} 
+              alt="Friendly local contractor with tools in front of home"
+              className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+              loading="lazy"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+            <div className="absolute bottom-4 left-1/2 -translate-x-1/2 w-14 h-14 bg-gradient-to-br from-primary to-[hsl(var(--primary-glow))] rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-lg">
+              <HomeIcon className="h-7 w-7 text-white" />
+            </div>
           </div>
-          <h3 className="text-xl font-bold text-gray-900 text-center mb-2">Local Vendors</h3>
-          <p className="text-base text-gray-600 text-center">Find trusted contractors and service providers for your home projects</p>
+          <div className="p-6">
+            <h3 className="text-xl font-bold text-gray-900 text-center mb-2">Local Vendors</h3>
+            <p className="text-base text-gray-600 text-center">Find trusted contractors and service providers for your home projects</p>
+          </div>
         </div>
 
-        <div className="group bg-white/90 backdrop-blur-md rounded-2xl p-6 shadow-xl border border-teal/20 hover:shadow-[var(--shadow-teal)] transition-all duration-300 hover:-translate-y-1">
-          <div className="w-16 h-16 mx-auto bg-gradient-to-br from-teal to-[hsl(var(--teal-glow))] rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-lg mb-4">
-            <Plane className="h-8 w-8 text-white" />
+        <div className="group bg-white/90 backdrop-blur-md rounded-2xl overflow-hidden shadow-xl border border-teal/20 hover:shadow-[var(--shadow-teal)] transition-all duration-300 hover:-translate-y-1">
+          <div className="relative h-48 overflow-hidden">
+            <img 
+              src={vacationRentalConcept} 
+              alt="Beautiful vacation rental beach house at sunset"
+              className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+              loading="lazy"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+            <div className="absolute bottom-4 left-1/2 -translate-x-1/2 w-14 h-14 bg-gradient-to-br from-teal to-[hsl(var(--teal-glow))] rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-lg">
+              <Plane className="h-7 w-7 text-white" />
+            </div>
           </div>
-          <h3 className="text-xl font-bold text-gray-900 text-center mb-2">Vacation Rentals</h3>
-          <p className="text-base text-gray-600 text-center">Discover affordable and unique stays for your next getaway</p>
+          <div className="p-6">
+            <h3 className="text-xl font-bold text-gray-900 text-center mb-2">Vacation Rentals</h3>
+            <p className="text-base text-gray-600 text-center">Discover affordable and unique stays for your next getaway</p>
+          </div>
         </div>
 
-        <div className="group bg-white/90 backdrop-blur-md rounded-2xl p-6 shadow-xl border border-teal/20 hover:shadow-[var(--shadow-teal)] transition-all duration-300 hover:-translate-y-1">
-          <div className="w-16 h-16 mx-auto bg-gradient-to-br from-success to-success/70 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-lg mb-4">
-            <Heart className="h-8 w-8 text-white" />
+        <div className="group bg-white/90 backdrop-blur-md rounded-2xl overflow-hidden shadow-xl border border-teal/20 hover:shadow-[var(--shadow-teal)] transition-all duration-300 hover:-translate-y-1">
+          <div className="relative h-48 overflow-hidden">
+            <img 
+              src={handmadeGiftsConcept} 
+              alt="Artisan handmade crafts and gifts on display"
+              className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+              loading="lazy"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+            <div className="absolute bottom-4 left-1/2 -translate-x-1/2 w-14 h-14 bg-gradient-to-br from-success to-success/70 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-lg">
+              <Heart className="h-7 w-7 text-white" />
+            </div>
           </div>
-          <h3 className="text-xl font-bold text-gray-900 text-center mb-2">Handmade Gifts</h3>
-          <p className="text-base text-gray-600 text-center">Shop unique, handcrafted items perfect for any occasion</p>
+          <div className="p-6">
+            <h3 className="text-xl font-bold text-gray-900 text-center mb-2">Handmade Gifts</h3>
+            <p className="text-base text-gray-600 text-center">Shop unique, handcrafted items perfect for any occasion</p>
+          </div>
         </div>
       </div>
 

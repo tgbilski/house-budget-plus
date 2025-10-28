@@ -1,6 +1,7 @@
 import React from 'react';
 import { Calculator, Target, TrendingUp, Sparkles } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
+import howItWorksConcept from '@/assets/how-it-works-concept.png';
 
 const steps = [
   {
@@ -31,8 +32,18 @@ const steps = [
 
 export const HowItWorks: React.FC = () => {
   return (
-    <section className="py-12 md:py-16 px-4 bg-gradient-to-br from-gray-50 to-white rounded-3xl mx-4 my-8 shadow-2xl border border-border/50">
-      <div className="max-w-6xl mx-auto">
+    <section className="relative py-12 md:py-16 px-4 bg-gradient-to-br from-gray-50 to-white rounded-3xl mx-4 my-8 shadow-2xl border border-border/50 overflow-hidden">
+      {/* Background image overlay */}
+      <div className="absolute inset-0 opacity-5">
+        <img 
+          src={howItWorksConcept} 
+          alt="Step-by-step progress concept"
+          className="w-full h-full object-cover"
+          loading="lazy"
+        />
+      </div>
+      
+      <div className="max-w-6xl mx-auto relative z-10">
         <div className="text-center mb-12">
           <h2 className="text-3xl md:text-4xl font-bold mb-4 text-foreground">How It Works</h2>
           <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto">
