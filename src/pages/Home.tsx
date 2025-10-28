@@ -315,7 +315,7 @@ const MarketplacePromo = () => (
 );
 
 const AdvertiseSection = () => (
-  <section className="py-6 md:py-8 px-3 md:px-4 mx-2 md:mx-4 my-8 md:my-12 rounded-2xl md:rounded-3xl bg-gradient-to-r from-primary/90 to-[hsl(var(--primary-glow))] shadow-[var(--shadow-glow)] border-2 md:border-4 border-primary/50 text-center relative overflow-hidden animate-slide-up max-w-4xl mx-auto">
+  <section className="py-6 md:py-8 px-3 md:px-4 mx-2 md:mx-4 my-8 md:my-12 rounded-2xl md:rounded-3xl bg-gradient-to-r from-primary/90 to-[hsl(var(--primary-glow))] shadow-[var(--shadow-glow)] border-2 md:border-4 border-primary/50 text-center relative overflow-hidden animate-slide-up">
     <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_50%,rgba(255,255,255,0.1),transparent)]"></div>
     <h3 className="relative z-10 text-xl md:text-2xl lg:text-3xl xl:text-4xl font-bold mb-2 md:mb-3 text-white px-2">
       Advertise Your Listing With Us
