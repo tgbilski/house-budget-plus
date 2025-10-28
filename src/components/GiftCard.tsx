@@ -112,8 +112,8 @@ export function GiftCard({ initialData }: GiftCardProps) {
       <CardContent className="space-y-3">
         {/* ... (Your Budget Tracking JSX is the same) ... */}
         
-        {/* Reset button */}
-        {listData.id && items.length > 0 && (
+        {/* Reset button - hide for demo lists */}
+        {listData.id && !listData.id.startsWith('demo-') && items.length > 0 && (
           <AlertDialog>
             <AlertDialogTrigger asChild>
               <Button variant="destructive" size="sm" className="w-full">

@@ -108,7 +108,7 @@ const AppLayout = () => {
   const isMobile = useIsMobile();
 
   return (
-    <SidebarProvider defaultOpen={!isMobile}>
+    <SidebarProvider defaultOpen={false}>
       <div 
         className="min-h-screen w-full flex flex-col relative"
         style={{ 
