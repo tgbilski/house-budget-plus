@@ -88,8 +88,9 @@ export const HowItWorks: React.FC = () => {
         </div>
 
         {/* Connection lines for larger screens */}
-        <div className="hidden lg:block relative -mt-48 pointer-events-none">
-          <svg className="w-full h-12" viewBox="0 0 1000 50" preserveAspectRatio="none">
+        <div className="hidden lg:block absolute top-[180px] left-0 right-0 pointer-events-none px-4">
+          <div className="max-w-6xl mx-auto">
+            <svg className="w-full h-12" viewBox="0 0 1000 50" preserveAspectRatio="none">
             <path
               d="M 250 25 L 375 25"
               stroke="currentColor"
@@ -115,6 +116,7 @@ export const HowItWorks: React.FC = () => {
               className="text-primary/20"
             />
           </svg>
+          </div>
         </div>
       </div>
     </section>
