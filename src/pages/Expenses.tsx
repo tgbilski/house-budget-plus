@@ -85,14 +85,14 @@ export default function Expenses() {
   }, [expenses]);
 
   const COLORS = [
-    'hsl(217, 91%, 60%)',  // Blue
-    'hsl(142, 76%, 36%)',  // Green
-    'hsl(25, 95%, 53%)',   // Orange
-    'hsl(271, 76%, 53%)',  // Purple
-    'hsl(330, 81%, 60%)',  // Pink
-    'hsl(173, 80%, 40%)',  // Teal
-    'hsl(48, 96%, 53%)',   // Yellow
-    'hsl(0, 84%, 60%)',    // Red
+    'hsl(var(--primary))',      // Primary blue
+    'hsl(var(--teal))',         // Teal
+    'hsl(var(--success))',      // Green
+    'hsl(var(--sage))',         // Sage green
+    'hsl(var(--primary-glow))', // Light blue
+    'hsl(var(--teal-glow))',    // Light teal
+    'hsl(var(--accent))',       // Accent
+    'hsl(var(--secondary))',    // Secondary
   ];
 
   // Budget alert threshold (example: warn if over $1000/month)
