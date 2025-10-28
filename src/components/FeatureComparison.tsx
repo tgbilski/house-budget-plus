@@ -13,7 +13,6 @@ const features = [
   { name: 'Vendor Comparison Tool', free: true, premium: true },
   { name: 'Gift Lists', free: true, premium: true },
   { name: 'Community Marketplace Access', free: true, premium: true },
-  { name: '1 Free PDF Processing', free: true, premium: false },
   { name: '10 AI Insights per Month', free: false, premium: true },
   { name: 'Unlimited PDF Processing with AI', free: false, premium: true },
   { name: 'Household Sharing', free: false, premium: true },
