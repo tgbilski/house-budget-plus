@@ -446,7 +446,7 @@ export default function Expenses() {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Mic className="h-5 w-5" />
-                Voice Input
+                What did you spend your money on today?
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
