@@ -170,7 +170,7 @@ const PremiumButton = () => {
 
 
 const HeroSectionContent = () => (
-  <section className="relative py-8 md:py-12 px-4 rounded-3xl mx-4 shadow-[var(--shadow-elegant)] overflow-visible bg-gradient-to-br from-white via-white to-sage/20 mt-16 md:mt-20 mb-8 border-2 border-primary/20 animate-scale-in">
+  <section className="relative py-8 md:py-12 px-3 md:px-4 rounded-2xl md:rounded-3xl mx-2 md:mx-4 shadow-[var(--shadow-elegant)] overflow-hidden bg-gradient-to-br from-white via-white to-sage/20 mt-16 md:mt-20 mb-8 border-2 border-primary/20 animate-scale-in">
     <img
       src="/lovable-uploads/ed809955-ef71-4d81-b072-945082f4380a.png"
       alt="House Budget Calculator mascot - friendly budget planning assistant"
@@ -188,7 +188,7 @@ const HeroSectionContent = () => (
       height="400"
     />
 
-    <div className="max-w-6xl mx-auto relative z-10 pt-12 md:pt-16 grid grid-cols-1 lg:grid-cols-5 gap-8 items-center mb-8">
+    <div className="max-w-6xl mx-auto relative z-10 pt-12 md:pt-16 grid grid-cols-1 lg:grid-cols-5 gap-4 md:gap-8 items-center mb-4 md:mb-8">
       <div className="lg:col-span-2 flex justify-center lg:justify-start order-2 lg:order-1 w-full max-w-xs mx-auto lg:mx-0 animate-fade-in" style={{ animationDelay: '0.2s' }}>
         <img 
           src={calculatorHeroPreview} 
@@ -200,11 +200,11 @@ const HeroSectionContent = () => (
         />
       </div>
       
-      <div className="lg:col-span-3 text-center lg:text-left order-1 lg:order-2">
-        <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 text-foreground leading-tight">
+      <div className="lg:col-span-3 text-center lg:text-left order-1 lg:order-2 px-2">
+        <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold mb-3 md:mb-4 text-foreground leading-tight">
           Own Your <span className="bg-gradient-to-r from-primary to-[hsl(var(--primary-glow))] bg-clip-text text-transparent">House Budget</span>
         </h1>
-        <p className="text-base md:text-lg text-muted-foreground mb-6 leading-relaxed">
+        <p className="text-sm md:text-base lg:text-lg text-muted-foreground mb-4 md:mb-6 leading-relaxed">
           <strong className="text-foreground">Your data stays yours.</strong> No bank connections required. Our AI helps you develop a personalized financial plan using only the data you choose to share.
         </p>
         
@@ -225,26 +225,26 @@ const HeroSectionContent = () => (
 );
 
 const MarketplacePromo = () => (
-  <section className="py-8 md:py-12 px-4 mx-4 my-12 rounded-3xl bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 shadow-[0_20px_60px_-20px_rgba(0,0,0,0.5)] border-4 border-teal/30 relative overflow-hidden animate-slide-up">
+  <section className="py-6 md:py-12 px-3 md:px-4 mx-2 md:mx-4 my-8 md:my-12 rounded-2xl md:rounded-3xl bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 shadow-[0_20px_60px_-20px_rgba(0,0,0,0.5)] border-2 md:border-4 border-teal/30 relative overflow-hidden animate-slide-up">
     <div className="absolute top-0 right-0 w-64 h-64 bg-teal/10 rounded-full blur-3xl"></div>
     <div className="absolute bottom-0 left-0 w-64 h-64 bg-primary/10 rounded-full blur-3xl"></div>
     
     <div className="max-w-6xl mx-auto relative z-10 text-center">
-      <div className="flex items-center justify-center gap-3 mb-4">
-        <Store className="h-8 w-8 md:h-10 md:w-10 text-white flex-shrink-0" />
-        <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white">
+      <div className="flex items-center justify-center gap-2 md:gap-3 mb-3 md:mb-4 px-2">
+        <Store className="h-6 w-6 md:h-8 md:w-8 lg:h-10 lg:w-10 text-white flex-shrink-0" />
+        <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-bold text-white">
           Community Marketplace
         </h2>
-        <Store className="h-8 w-8 md:h-10 md:w-10 text-white flex-shrink-0" />
+        <Store className="h-6 w-6 md:h-8 md:w-8 lg:h-10 lg:w-10 text-white flex-shrink-0" />
       </div>
-      <p className="text-lg md:text-xl text-white font-semibold mb-2 px-2">
+      <p className="text-base md:text-lg lg:text-xl text-white font-semibold mb-2 px-2">
         Connect with Local Vendors, Discover Unique Gifts & Find Perfect Vacation Rentals
       </p>
-      <p className="text-base md:text-lg text-gray-300 max-w-3xl mx-auto px-2 mb-8">
+      <p className="text-sm md:text-base lg:text-lg text-gray-300 max-w-3xl mx-auto px-2 mb-6 md:mb-8">
         Browse our growing community marketplace to find trusted contractors, beautiful handmade gifts, and affordable vacation rentals—all in one place.
       </p>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 mb-6 md:mb-8">
         <div className="group bg-white/90 backdrop-blur-md rounded-2xl overflow-hidden shadow-xl border border-teal/20 hover:shadow-[var(--shadow-teal)] transition-all duration-300 hover:-translate-y-1">
           <div className="relative h-48 overflow-hidden">
             <img 
@@ -315,12 +315,12 @@ const MarketplacePromo = () => (
 );
 
 const AdvertiseSection = () => (
-  <section className="py-8 px-4 mx-4 my-12 rounded-3xl bg-gradient-to-r from-primary/90 to-[hsl(var(--primary-glow))] shadow-[var(--shadow-glow)] border-4 border-primary/50 text-center relative overflow-hidden animate-slide-up max-w-4xl">
+  <section className="py-6 md:py-8 px-3 md:px-4 mx-2 md:mx-4 my-8 md:my-12 rounded-2xl md:rounded-3xl bg-gradient-to-r from-primary/90 to-[hsl(var(--primary-glow))] shadow-[var(--shadow-glow)] border-2 md:border-4 border-primary/50 text-center relative overflow-hidden animate-slide-up max-w-4xl mx-auto">
     <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_50%,rgba(255,255,255,0.1),transparent)]"></div>
-    <h3 className="relative z-10 text-2xl md:text-3xl lg:text-4xl font-bold mb-3 text-white">
+    <h3 className="relative z-10 text-xl md:text-2xl lg:text-3xl xl:text-4xl font-bold mb-2 md:mb-3 text-white px-2">
       Advertise Your Listing With Us
     </h3>
-    <p className="relative z-10 text-white/90 mb-6 text-base md:text-lg">
+    <p className="relative z-10 text-white/90 mb-4 md:mb-6 text-sm md:text-base lg:text-lg px-2">
       Reach thousands of homeowners looking for trusted services and products
     </p>
     <Link to="/marketplace">
@@ -362,19 +362,19 @@ const FeaturePreviewsGrid = () => {
   }, []);
 
   return (
-    <section className="py-12 md:py-16 px-4 bg-gradient-to-br from-white to-secondary/30 rounded-3xl mx-4 my-12 shadow-[var(--shadow-elegant)] relative overflow-hidden border-2 border-sage/40">
+    <section className="py-8 md:py-12 lg:py-16 px-3 md:px-4 bg-gradient-to-br from-white to-secondary/30 rounded-2xl md:rounded-3xl mx-2 md:mx-4 my-8 md:my-12 shadow-[var(--shadow-elegant)] relative overflow-hidden border-2 border-sage/40">
       <div className="absolute top-0 left-0 w-96 h-96 bg-teal/5 rounded-full blur-3xl"></div>
       <div className="absolute bottom-0 right-0 w-96 h-96 bg-primary/5 rounded-full blur-3xl"></div>
       
       <div className="max-w-6xl mx-auto relative z-10">
-        <div className="text-center mb-12 animate-slide-up">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4 text-foreground">Explore Our Features</h2>
-          <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto">
+        <div className="text-center mb-8 md:mb-12 animate-slide-up px-2">
+          <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold mb-3 md:mb-4 text-foreground">Explore Our Features</h2>
+          <p className="text-base md:text-lg lg:text-xl text-muted-foreground max-w-3xl mx-auto">
             Powerful financial planning tools designed to help you save money and achieve your goals
           </p>
         </div>
         
-        <div className="grid grid-cols-1 gap-8">
+        <div className="grid grid-cols-1 gap-6 md:gap-8">
           {featurePreviewsData.map((feature, index) => {
             const isEven = index % 2 === 0;
             return (
@@ -384,9 +384,9 @@ const FeaturePreviewsGrid = () => {
                 className="block feature-card"
                 data-index={index}
               >
-                <Card className={`group relative overflow-hidden transition-all duration-500 border-2 hover:border-primary/40 cursor-pointer h-80 bg-white/80 backdrop-blur-sm hover:shadow-[var(--shadow-elegant)] hover:-translate-y-2 ${inView[index] ? 'animate-slide-up opacity-100' : 'opacity-0'}`} style={{ animationDelay: `${index * 0.1}s` }}>
+                <Card className={`group relative overflow-hidden transition-all duration-500 border-2 hover:border-primary/40 cursor-pointer h-auto md:h-80 bg-white/80 backdrop-blur-sm hover:shadow-[var(--shadow-elegant)] hover:-translate-y-2 ${inView[index] ? 'animate-slide-up opacity-100' : 'opacity-0'}`} style={{ animationDelay: `${index * 0.1}s` }}>
                   <div className={`flex flex-col md:flex-row items-stretch h-full ${isEven ? '' : 'md:flex-row-reverse'}`}>
-                    <div className="w-full md:w-1/2 h-48 md:h-full overflow-hidden flex-shrink-0 relative">
+                    <div className="w-full md:w-1/2 h-40 md:h-full overflow-hidden flex-shrink-0 relative">
                       <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-teal/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-10"></div>
                       <img 
                         src={feature.image} 
@@ -397,14 +397,14 @@ const FeaturePreviewsGrid = () => {
                         height="320"
                       />
                     </div>
-                    <div className="w-full md:w-1/2 p-8 bg-gradient-to-br from-white to-sage/10 h-full flex flex-col justify-center">
-                      <div className="flex items-start gap-4 mb-4">
-                        <div className="w-12 h-12 bg-gradient-to-br from-primary to-[hsl(var(--primary-glow))] rounded-xl flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-300 shadow-lg">
-                          <feature.icon className="h-6 w-6 text-white" />
+                    <div className="w-full md:w-1/2 p-4 md:p-6 lg:p-8 bg-gradient-to-br from-white to-sage/10 h-full flex flex-col justify-center">
+                      <div className="flex items-start gap-3 md:gap-4 mb-3 md:mb-4">
+                        <div className="w-10 h-10 md:w-12 md:h-12 bg-gradient-to-br from-primary to-[hsl(var(--primary-glow))] rounded-xl flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-300 shadow-lg">
+                          <feature.icon className="h-5 w-5 md:h-6 md:w-6 text-white" />
                         </div>
                         <div className="flex-1">
-                          <CardTitle className="text-2xl md:text-3xl group-hover:text-primary transition-colors text-foreground mb-3 font-bold">{feature.title}</CardTitle>
-                          <CardDescription className="text-base md:text-lg text-muted-foreground leading-relaxed">{feature.description}</CardDescription>
+                          <CardTitle className="text-lg md:text-xl lg:text-2xl xl:text-3xl group-hover:text-primary transition-colors text-foreground mb-2 md:mb-3 font-bold">{feature.title}</CardTitle>
+                          <CardDescription className="text-sm md:text-base lg:text-lg text-muted-foreground leading-relaxed">{feature.description}</CardDescription>
                         </div>
                       </div>
                       <div className={`flex items-center text-primary group-hover:translate-x-2 transition-transform duration-300 mt-4 ${isEven ? '' : 'flex-row-reverse'}`}>
