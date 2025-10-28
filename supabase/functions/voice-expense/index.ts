@@ -123,7 +123,12 @@ Examples:
     }
 
     const parseResult = await parseResponse.json();
-    const parsedExpense = JSON.parse(parseResult.choices[0].message.content);
+    let aiContent = parseResult.choices[0].message.content;
+    
+    // Strip markdown code blocks if present
+    aiContent = aiContent.replace(/```json\s*/g, '').replace(/```\s*/g, '').trim();
+    
+    const parsedExpense = JSON.parse(aiContent);
     
     console.log('Parsed expense:', parsedExpense);
 

@@ -31,6 +31,7 @@ export default function Expenses() {
   const [transcription, setTranscription] = useState('');
   const [parsedExpense, setParsedExpense] = useState<any>(null);
   const [isProcessing, setIsProcessing] = useState(false);
+  const [aiStatus, setAiStatus] = useState('');
   
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioChunksRef = useRef<Blob[]>([]);
@@ -147,6 +148,7 @@ export default function Expenses() {
 
   const processAudio = async (audioBlob: Blob) => {
     setIsProcessing(true);
+    setAiStatus('Transcribing audio...');
     try {
       // Convert audio to base64
       const reader = new FileReader();
@@ -154,6 +156,7 @@ export default function Expenses() {
       reader.onloadend = async () => {
         const base64Audio = (reader.result as string).split(',')[1];
 
+        setAiStatus('Analyzing expense details...');
         const { data, error } = await supabase.functions.invoke('voice-expense', {
           body: { audio: base64Audio },
         });
@@ -162,9 +165,16 @@ export default function Expenses() {
 
         setTranscription(data.transcription);
         setParsedExpense(data.expense);
+        setAiStatus('Expense parsed successfully! Review and save below.');
+        
+        toast({
+          title: 'Success',
+          description: 'Expense details extracted',
+        });
       };
     } catch (error) {
       console.error('Error processing audio:', error);
+      setAiStatus('');
       toast({
         title: 'Error',
         description: 'Failed to process voice recording',
@@ -178,17 +188,32 @@ export default function Expenses() {
   const saveExpense = async () => {
     if (!parsedExpense) return;
 
-    await addExpense({
-      date: format(selectedDate, 'yyyy-MM-dd'),
-      amount: parsedExpense.amount,
-      merchant: parsedExpense.merchant === 'Unknown' ? null : parsedExpense.merchant,
-      category: parsedExpense.category,
-      notes: transcription,
-      year: selectedDate.getFullYear(),
-    });
+    try {
+      await addExpense({
+        date: format(selectedDate, 'yyyy-MM-dd'),
+        amount: parsedExpense.amount,
+        merchant: parsedExpense.merchant === 'Unknown' ? null : parsedExpense.merchant,
+        category: parsedExpense.category,
+        notes: transcription,
+        year: selectedDate.getFullYear(),
+      });
 
-    setTranscription('');
-    setParsedExpense(null);
+      setTranscription('');
+      setParsedExpense(null);
+      setAiStatus('');
+      
+      toast({
+        title: 'Saved!',
+        description: `${currency.symbol}${parsedExpense.amount} expense added`,
+      });
+    } catch (error) {
+      console.error('Error saving expense:', error);
+      toast({
+        title: 'Error',
+        description: 'Failed to save expense',
+        variant: 'destructive',
+      });
+    }
   };
 
   if (!user) {
@@ -454,9 +479,19 @@ export default function Expenses() {
                   : "Tap to start recording"}
               </p>
 
+              {/* AI Status */}
+              {aiStatus && (
+                <Alert className="bg-primary/5 border-primary/30">
+                  <AlertDescription className="flex items-center gap-2">
+                    <div className="animate-pulse w-2 h-2 bg-primary rounded-full"></div>
+                    <span className="text-sm">{aiStatus}</span>
+                  </AlertDescription>
+                </Alert>
+              )}
+
               {/* Transcription */}
               {transcription && (
-                <Alert>
+                <Alert className="border-2">
                   <AlertDescription>
                     <strong>You said:</strong> "{transcription}"
                   </AlertDescription>
