@@ -437,7 +437,7 @@ const Home = () => {
         canonical={seoData.home.canonical}
         ogImage={seoData.home.ogImage}
       />
-      <main className="min-h-screen overflow-x-hidden relative bg-gradient-to-b from-background to-secondary/20" id="main-content">
+      <main className="min-h-screen overflow-x-hidden relative bg-secondary/20" id="main-content">
         <HeroSectionContent />
         <ScrollIndicator />
         <HowItWorks />
