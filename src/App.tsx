@@ -103,9 +103,38 @@ const AppRoutes = () => {
   );
 };
 
+// Layout component that uses hooks
+const AppLayout = () => {
+  const isMobile = useIsMobile();
+
+  return (
+    <SidebarProvider defaultOpen={!isMobile}>
+      <div 
+        className="min-h-screen w-full flex flex-col relative"
+        style={{ 
+          backgroundColor: 'hsl(213, 50%, 22%)',
+          backgroundImage: 'repeating-linear-gradient(45deg, transparent, transparent 40px, rgba(255,255,255,0.04) 40px, rgba(255,255,255,0.04) 42px)'
+        }}
+      >
+        <Header />
+        <div className="flex flex-1">
+          {!isMobile && <AppSidebar />}
+          <div className="flex-1 flex flex-col min-w-0">
+            {isMobile && <AppSidebar />}
+            <main id="main-content" className="flex-1 p-2 sm:p-4 md:p-6 pb-20 md:pb-6">
+              <AppRoutes />
+            </main>
+            <Footer />
+          </div>
+        </div>
+        {isMobile && <MobileBottomNav />}
+      </div>
+    </SidebarProvider>
+  );
+};
+
 const App = () => {
   const [currency, setCurrency] = useState(defaultCurrency);
-  const isMobile = useIsMobile();
 
   return (
     <HelmetProvider>
@@ -115,45 +144,24 @@ const App = () => {
           <Sonner />
           <ErrorBoundary>
             <AuthProvider>
-            <SubscriptionProvider>
-              <YearProvider>
-                <HouseholdProvider>
-                  <CurrencyContext.Provider value={{ currency, setCurrency }}>
-                  <BrowserRouter>
-                    <SkipToMain />
-                    <ScrollToTop />
-                    <SidebarProvider defaultOpen={isMobile ? false : false}>
-                      <div 
-                        className="min-h-screen w-full flex flex-col relative"
-                        style={{ 
-                          backgroundColor: 'hsl(213, 50%, 22%)',
-                          backgroundImage: 'repeating-linear-gradient(45deg, transparent, transparent 40px, rgba(255,255,255,0.04) 40px, rgba(255,255,255,0.04) 42px)'
-                        }}
-                      >
-                         <Header />
-                         <div className="flex flex-1">
-                           {!isMobile && <AppSidebar />}
-                           <div className="flex-1 flex flex-col min-w-0">
-                             {isMobile && <AppSidebar />}
-                             <main id="main-content" className="flex-1 p-2 sm:p-4 md:p-6 pb-20 md:pb-6">
-                               <AppRoutes />
-                             </main>
-                             <Footer />
-                           </div>
-                         </div>
-                         {isMobile && <MobileBottomNav />}
-                       </div>
-                     </SidebarProvider>
-                   </BrowserRouter>
-                   </CurrencyContext.Provider>
-                 </HouseholdProvider>
-               </YearProvider>
-             </SubscriptionProvider>
-           </AuthProvider>
+              <SubscriptionProvider>
+                <YearProvider>
+                  <HouseholdProvider>
+                    <CurrencyContext.Provider value={{ currency, setCurrency }}>
+                      <BrowserRouter>
+                        <SkipToMain />
+                        <ScrollToTop />
+                        <AppLayout />
+                      </BrowserRouter>
+                    </CurrencyContext.Provider>
+                  </HouseholdProvider>
+                </YearProvider>
+              </SubscriptionProvider>
+            </AuthProvider>
           </ErrorBoundary>
-         </TooltipProvider>
-       </QueryClientProvider>
-     </HelmetProvider>
+        </TooltipProvider>
+      </QueryClientProvider>
+    </HelmetProvider>
   );
 };
 
