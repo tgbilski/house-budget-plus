@@ -157,25 +157,17 @@ const PremiumButton = () => {
 
 
 const HeroSectionContent = () => (
-  <section className="relative py-8 md:py-12 px-4 rounded-3xl mx-4 shadow-2xl overflow-visible bg-gradient-to-br from-white via-white to-sage/20 mt-16 md:mt-20 mb-4 border border-border/50 animate-scale-in">
+  <section className="relative py-8 md:py-12 px-4 max-w-6xl mx-auto mt-16 md:mt-20 mb-8">
     <img
       src="/lovable-uploads/ed809955-ef71-4d81-b072-945082f4380a.png"
       alt="House Budget Calculator mascot - friendly budget planning assistant"
-      className="absolute top-[-60px] left-1/2 -translate-x-1/2 z-20 w-28 h-28 md:w-32 md:h-32 object-contain drop-shadow-2xl"
+      className="absolute top-[-60px] left-1/2 -translate-x-1/2 z-20 w-28 h-28 md:w-32 md:h-32 object-contain drop-shadow-2xl animate-scale-in"
       loading="eager"
       width="128"
       height="128"
     />
-    <img
-      src="/lovable-uploads/new-house-background.png"
-      alt="House background illustration for budget planning"
-      className="absolute inset-0 w-full h-full object-cover opacity-10 rounded-3xl"
-      loading="eager"
-      width="1200"
-      height="400"
-    />
 
-    <div className="max-w-6xl mx-auto relative z-10 pt-12 md:pt-16 grid grid-cols-1 lg:grid-cols-5 gap-8 items-center mb-8">
+    <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 items-center pt-12 md:pt-16">
       <div className="lg:col-span-2 flex justify-center lg:justify-start order-2 lg:order-1 w-full max-w-xs mx-auto lg:mx-0 animate-fade-in" style={{ animationDelay: '0.2s' }}>
         <img 
           src={calculatorHeroPreview} 
@@ -269,22 +261,24 @@ const MarketplacePromo = () => (
 );
 
 const AdvertiseSection = () => (
-  <section className="py-8 px-4 mx-4 my-8 rounded-3xl bg-gradient-to-r from-primary/90 to-[hsl(var(--primary-glow))] shadow-2xl border-2 border-primary/30 text-center relative overflow-hidden animate-slide-up max-w-4xl">
-    <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_50%,rgba(255,255,255,0.1),transparent)]"></div>
-    <h3 className="relative z-10 text-2xl md:text-3xl lg:text-4xl font-bold mb-3 text-white">
-      Advertise Your Listing With Us
-    </h3>
-    <p className="relative z-10 text-white/90 mb-6 text-base md:text-lg">
-      Reach thousands of homeowners looking for trusted services and products
-    </p>
-    <Link to="/marketplace">
-      <Button 
-        size="lg"
-        className="relative z-10 bg-white text-primary hover:bg-white/90 font-semibold shadow-2xl px-8 py-6 text-lg rounded-2xl hover:scale-105 transition-all duration-300"
-      >
-        Start Your Listing Now
-      </Button>
-    </Link>
+  <section className="py-8 px-4 max-w-4xl mx-auto my-8 text-center">
+    <div className="bg-gradient-to-r from-primary/90 to-[hsl(var(--primary-glow))] rounded-3xl shadow-2xl border-2 border-primary/30 relative overflow-hidden p-8 animate-slide-up">
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_50%,rgba(255,255,255,0.1),transparent)]"></div>
+      <h3 className="relative z-10 text-2xl md:text-3xl lg:text-4xl font-bold mb-3 text-white">
+        Advertise Your Listing With Us
+      </h3>
+      <p className="relative z-10 text-white/90 mb-6 text-base md:text-lg">
+        Reach thousands of homeowners looking for trusted services and products
+      </p>
+      <Link to="/marketplace">
+        <Button 
+          size="lg"
+          className="relative z-10 bg-white text-primary hover:bg-white/90 font-semibold shadow-2xl px-8 py-6 text-lg rounded-2xl hover:scale-105 transition-all duration-300"
+        >
+          Start Your Listing Now
+        </Button>
+      </Link>
+    </div>
   </section>
 );
 
@@ -316,19 +310,15 @@ const FeaturePreviewsGrid = () => {
   }, []);
 
   return (
-    <section className="py-12 md:py-16 px-4 bg-gradient-to-br from-white to-secondary/30 rounded-3xl mx-4 my-8 shadow-2xl relative overflow-hidden border border-border/50">
-      <div className="absolute top-0 left-0 w-96 h-96 bg-teal/5 rounded-full blur-3xl"></div>
-      <div className="absolute bottom-0 right-0 w-96 h-96 bg-primary/5 rounded-full blur-3xl"></div>
+    <section className="py-12 md:py-16 px-4 max-w-6xl mx-auto">
+      <div className="text-center mb-12 animate-slide-up">
+        <h2 className="text-3xl md:text-4xl font-bold mb-4 text-foreground">Explore Our Features</h2>
+        <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto">
+          Powerful financial planning tools designed to help you save money and achieve your goals
+        </p>
+      </div>
       
-      <div className="max-w-6xl mx-auto relative z-10">
-        <div className="text-center mb-12 animate-slide-up">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4 text-foreground">Explore Our Features</h2>
-          <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto">
-            Powerful financial planning tools designed to help you save money and achieve your goals
-          </p>
-        </div>
-        
-        <div className="grid grid-cols-1 gap-8">
+      <div className="grid grid-cols-1 gap-8">
           {featurePreviewsData.map((feature, index) => {
             const isEven = index % 2 === 0;
             return (
@@ -372,10 +362,9 @@ const FeaturePreviewsGrid = () => {
             );
           })}
         </div>
-      </div>
-    </section>
-  );
-};
+      </section>
+    );
+  };
 
 
 // --- Main Page Component ---
@@ -391,7 +380,7 @@ const Home = () => {
         canonical={seoData.home.canonical}
         ogImage={seoData.home.ogImage}
       />
-      <main className="min-h-screen overflow-x-hidden relative bg-gradient-to-b from-background to-secondary/20" id="main-content">
+      <main className="min-h-screen" id="main-content">
         <HeroSectionContent />
         <ScrollIndicator />
         <HowItWorks />
@@ -405,11 +394,13 @@ const Home = () => {
         <AdvertiseSection />
         <ScrollIndicator />
 
-        <section className="bg-gradient-to-br from-gray-900 to-gray-800 rounded-3xl mx-4 my-8 shadow-2xl border-2 border-gray-700/50 p-6 md:p-8 overflow-hidden max-w-7xl">
-          <RSSFeed
-            feedUrl="https://rss.cnn.com/rss/money_news_international.rss"
-            title="Latest Financial News"
-          />
+        <section className="max-w-7xl mx-auto px-4 my-8">
+          <div className="bg-gradient-to-br from-gray-900 to-gray-800 rounded-3xl shadow-2xl border-2 border-gray-700/50 p-6 md:p-8">
+            <RSSFeed
+              feedUrl="https://rss.cnn.com/rss/money_news_international.rss"
+              title="Latest Financial News"
+            />
+          </div>
         </section>
         <ScrollIndicator />
 
