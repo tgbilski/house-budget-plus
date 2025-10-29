@@ -49,7 +49,7 @@ export const GoalSelector: React.FC<Props> = ({
               className={cn(
                 "group relative cursor-pointer transition-all duration-300 w-full rounded-xl px-4 py-3 border-2 flex flex-col gap-2 animate-fade-in",
                 isActive
-                  ? "bg-gradient-to-r from-teal to-teal-glow text-white border-teal shadow-[var(--shadow-teal)] scale-[1.02]"
+                  ? "bg-teal text-white border-teal shadow-[var(--shadow-teal)] scale-[1.02]"
                   : "bg-white/60 backdrop-blur-sm hover:bg-white/80 border-border/30 hover:border-teal/40 hover:shadow-md hover:-translate-y-0.5"
               )}
               style={{ animationDelay: `${index * 0.1}s` }}

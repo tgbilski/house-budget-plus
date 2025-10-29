@@ -55,11 +55,11 @@ export const GoalProgressCard: React.FC<Props> = ({
       {isComplete && (
         <div className="absolute inset-0 bg-gradient-to-r from-success/5 via-teal/10 to-success/5 animate-glow pointer-events-none" />
       )}
-      <CardHeader className="relative">
-        <CardTitle className="flex items-center justify-between gap-4">
+      <CardHeader className="relative pb-4">
+        <CardTitle className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
           <div className="flex items-center gap-3">
             <div className={cn(
-              "inline-flex items-center justify-center w-12 h-12 rounded-full transition-all duration-300",
+              "inline-flex items-center justify-center w-12 h-12 rounded-full transition-all duration-300 flex-shrink-0",
               isComplete ? "bg-success/20 animate-pulse" : "bg-teal/20"
             )}>
               <Target className={cn(
@@ -67,16 +67,16 @@ export const GoalProgressCard: React.FC<Props> = ({
                 isComplete ? "text-success" : "text-teal"
               )} />
             </div>
-            <span className="text-2xl font-bold bg-gradient-to-r from-foreground to-teal bg-clip-text text-transparent">
+            <span className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-foreground to-teal bg-clip-text text-transparent">
               {currentGoal.title} Progress
             </span>
           </div>
         </CardTitle>
       </CardHeader>
-      <CardContent className="space-y-6 relative">
-        <div className="flex items-center gap-3">
-          <Label htmlFor="target-input" className="text-sm font-medium whitespace-nowrap">Goal Target:</Label>
-          <div className="relative flex-1 max-w-xs">
+      <CardContent className="space-y-6 relative px-4 sm:px-6">
+        <div className="flex flex-col sm:flex-row sm:items-center gap-3">
+          <Label htmlFor="target-input" className="text-sm font-medium">Goal Target:</Label>
+          <div className="relative w-full sm:flex-1 sm:max-w-xs">
             <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input
               id="target-input"
@@ -84,7 +84,7 @@ export const GoalProgressCard: React.FC<Props> = ({
               value={localTarget}
               onChange={(e) => setLocalTarget(e.target.value)}
               onBlur={handleBlur}
-              className="pl-9 font-semibold bg-white/80 border-2 hover:border-teal/40 focus:border-teal transition-all"
+              className="pl-9 h-10 font-semibold bg-white/80 border-2 hover:border-teal/40 focus:border-teal transition-all"
               min="0"
               step="100"
             />
@@ -92,7 +92,7 @@ export const GoalProgressCard: React.FC<Props> = ({
         </div>
 
         <div className="space-y-4">
-          <div className="relative">
+          <div className="relative pt-8">
             <div className="flex justify-between items-center mb-3">
               <span className="text-sm font-medium text-muted-foreground">Overall Progress</span>
               <span className={cn(
@@ -120,10 +120,11 @@ export const GoalProgressCard: React.FC<Props> = ({
                 )}
               </div>
               
+              {/* Milestone markers - hidden on very small screens to prevent cramping */}
               {milestones.map((milestone) => (
                 <div
                   key={milestone}
-                  className="absolute top-0 bottom-0 w-0.5 bg-background/40"
+                  className="absolute top-0 bottom-0 w-0.5 bg-background/40 hidden sm:block"
                   style={{ left: `${milestone}%` }}
                 >
                   <div className={cn(
@@ -137,15 +138,15 @@ export const GoalProgressCard: React.FC<Props> = ({
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-4 mt-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6">
             <div className="bg-white/60 backdrop-blur-sm rounded-xl p-4 border-2 border-border/30 hover:border-teal/40 transition-all hover:shadow-md">
-              <div className="text-sm text-muted-foreground mb-1">Total Saved</div>
+              <div className="text-sm text-muted-foreground mb-2">Total Saved</div>
               <div className="text-2xl font-bold text-teal">
                 ${totalSaved.toLocaleString()}
               </div>
             </div>
             <div className="bg-white/60 backdrop-blur-sm rounded-xl p-4 border-2 border-border/30 hover:border-teal/40 transition-all hover:shadow-md">
-              <div className="text-sm text-muted-foreground mb-1">
+              <div className="text-sm text-muted-foreground mb-2">
                 {isComplete ? "Exceeded by" : "Remaining"}
               </div>
               <div className={cn(
