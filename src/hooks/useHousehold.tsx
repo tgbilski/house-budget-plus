@@ -120,7 +120,7 @@ export function useHousehold(userId?: string) {
       setUserHouseholds([]);
       setIsOriginator(false);
     }
-  }, [userId, refresh]);
+  }, [userId]); // Only depend on userId to prevent infinite loops
   
   // No changes needed for the functions below, as they correctly call `refresh`.
   

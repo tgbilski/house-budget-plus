@@ -6,18 +6,7 @@ const HouseholdContext = createContext<ReturnType<typeof useHousehold> | null>(n
 
 export function HouseholdProvider({ children }: { children: React.ReactNode }) {
   const { user } = useAuth();
-  
-  // Debug logging
-  console.log("HouseholdProvider - user:", user);
-  console.log("HouseholdProvider - user.id:", user?.id);
-  
   const householdData = useHousehold(user?.id);
-  
-  // Debug household data
-  console.log("HouseholdProvider - householdData:", householdData);
-  console.log("HouseholdProvider - currentHousehold:", householdData.currentHousehold);
-  console.log("HouseholdProvider - userHouseholds:", householdData.userHouseholds);
-  console.log("HouseholdProvider - loading:", householdData.loading);
 
   return (
     <HouseholdContext.Provider value={householdData}>
