@@ -5,9 +5,9 @@ import { cn } from '@/lib/utils';
 
 const navItems = [
   { icon: Mic, label: 'Expenses', path: '/expenses' },
-  { icon: Calculator, label: 'Budget', path: '/monthly-budget' },
+  { icon: Calculator, label: 'Budget', path: '/budget' },
   { icon: Target, label: 'Goals', path: '/savings' },
-  { icon: Store, label: 'Vendors', path: '/compare-vendors' },
+  { icon: Store, label: 'Vendors', path: '/compare-prices' },
   { icon: Bot, label: 'AI Chat', path: '/ai-insights' },
 ];
 
