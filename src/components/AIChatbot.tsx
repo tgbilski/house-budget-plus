@@ -287,7 +287,7 @@ export function AIChatbot({ pageContext, pageName, calculatorsData = [] }: AICha
 
   return (
     <>
-      {/* Chat Toggle Button with Mascot */}
+      {/* Chat Toggle Button with Mascot - Hidden on mobile where bottom nav is visible */}
       {!isOpen && (
         <button
           style={{
@@ -300,6 +300,7 @@ export function AIChatbot({ pageContext, pageName, calculatorsData = [] }: AICha
             cursor: 'pointer',
             padding: 0,
           }}
+          className="hidden md:block"
           aria-label="Open AI Chatbot"
           onClick={() => setIsOpen(true)}
         >
