@@ -3,6 +3,7 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { SkipToMain } from "@/components/SkipToMain";
 import { MobileBottomNav } from "@/components/MobileBottomNav";
+import { MobileAppHeader } from "@/components/MobileAppHeader";
 import { SubscriptionGuard } from "@/components/SubscriptionGuard";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
@@ -135,7 +136,8 @@ const AppLayout = () => {
   if (isMobileApp) {
     return (
       <div className="min-h-screen w-full flex flex-col">
-        <main id="main-content" className="flex-1 p-4 pb-20">
+        <MobileAppHeader />
+        <main id="main-content" className="flex-1 p-4 pb-20 overflow-auto">
           <AppRoutes />
         </main>
         <MobileBottomNav />
