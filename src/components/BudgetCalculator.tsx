@@ -317,12 +317,12 @@ const BudgetCalculator: React.FC<BudgetCalculatorProps> = ({
 
   return (
     <Card className="w-full max-w-md shadow-md border border-sage/40 bg-sage/5" data-calculator-id={id}>
-      <CardHeader className="pb-2 pt-3 bg-teal/10 rounded-t-lg">
-        <div className="space-y-2">
-          {/* Owner name and Monthly Income side by side */}
-          <div className="grid grid-cols-2 gap-3">
+      <CardHeader className="pb-4 pt-4 bg-teal/10 rounded-t-lg">
+        <div className="space-y-3">
+          {/* Owner name and Monthly Income - stacked on mobile, side by side on larger screens */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <Label className="text-xs text-muted-foreground mb-1 block">
+              <Label className="text-xs text-muted-foreground mb-1.5 block">
                 Calculator {calculatorNumber} Owner
               </Label>
               <Input
@@ -334,16 +334,16 @@ const BudgetCalculator: React.FC<BudgetCalculatorProps> = ({
                   setOwnerName(newName);
                   onNameChange(id, newName);
                 }}
-                className="text-sm font-semibold h-8 border-2 focus:border-primary transition-colors"
+                className="text-sm font-semibold h-9 border-2 focus:border-primary transition-colors"
               />
             </div>
             
             <div>
-              <Label htmlFor={`income-${id}`} className="text-xs font-semibold text-foreground mb-1 block">
+              <Label htmlFor={`income-${id}`} className="text-xs font-semibold text-foreground mb-1.5 block">
                 Monthly Income
               </Label>
               <div className="relative">
-                <span className="absolute left-2 top-1/2 transform -translate-y-1/2 text-muted-foreground text-xs">{currency.symbol}</span>
+                <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground text-xs">{currency.symbol}</span>
                 <Input
                   id={`income-${id}`}
                   type="number"
@@ -352,7 +352,7 @@ const BudgetCalculator: React.FC<BudgetCalculatorProps> = ({
                   step="1"
                   value={monthlyIncome || ''}
                   onChange={(e) => setMonthlyIncome(parseInt(e.target.value) || 0)}
-                  className="pl-6 h-8 text-xs [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                  className="pl-7 h-9 text-sm [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                   placeholder="0"
                 />
               </div>
@@ -376,22 +376,22 @@ const BudgetCalculator: React.FC<BudgetCalculatorProps> = ({
         </div>
       </CardHeader>
 
-      <CardContent className="space-y-2 px-4 pb-3">
+      <CardContent className="space-y-4 px-5 py-4">
         {/* Monthly Expenses in two columns */}
-        <div className="pt-2">
-          <h3 className="text-xs font-semibold text-foreground mb-2">Monthly Expenses</h3>
+        <div>
+          <h3 className="text-xs font-semibold text-foreground mb-3">Monthly Expenses</h3>
           
           {/* Responsive layout: single column on mobile, two columns on larger screens */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-3 gap-y-2">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {expenses.map((expense) => {
               if (!expense.id.startsWith('subscription')) {
                 return (
-                  <div key={expense.id} className="space-y-1">
+                  <div key={expense.id} className="space-y-1.5">
                     <Label className="text-xs text-muted-foreground block">
                       {expense.label}
                     </Label>
                     <div className="relative">
-                      <span className="absolute left-2 top-1/2 transform -translate-y-1/2 text-muted-foreground text-xs">{currency.symbol}</span>
+                      <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground text-xs">{currency.symbol}</span>
                       <Input
                         type="number"
                         min="0"
@@ -399,7 +399,7 @@ const BudgetCalculator: React.FC<BudgetCalculatorProps> = ({
                         step="1"
                         value={expense.amount || ''}
                         onChange={(e) => updateExpense(expense.id, parseInt(e.target.value) || 0)}
-                        className="pl-6 h-7 text-xs w-full [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                        className="pl-7 h-8 text-sm w-full [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                         placeholder="0"
                       />
                     </div>
@@ -411,47 +411,53 @@ const BudgetCalculator: React.FC<BudgetCalculatorProps> = ({
 
             {/* Additional Expenses span full width on mobile, 2 columns on larger screens */}
             {additionalExpenses.map((expense) => (
-              <div key={expense.id} className="col-span-1 sm:col-span-2 flex items-center space-x-2">
-                <Input
-                  value={expense.label}
-                  onChange={(e) => updateAdditionalExpenseLabel(expense.id, e.target.value)}
-                  className="flex-1 h-6 text-xs min-w-0"
-                  placeholder="Expense"
-                />
-                <div className="relative w-20 flex-shrink-0">
-                  <span className="absolute left-1 top-1/2 transform -translate-y-1/2 text-muted-foreground text-xs">{currency.symbol}</span>
+              <div key={expense.id} className="col-span-1 sm:col-span-2 flex items-end gap-2">
+                <div className="flex-1 space-y-1.5">
+                  <Label className="text-xs text-muted-foreground block">Custom Expense</Label>
                   <Input
-                    type="number"
-                    min="0"
-                    max="999999"
-                    step="1"
-                    value={expense.amount || ''}
-                    onChange={(e) => updateExpense(expense.id, parseInt(e.target.value) || 0, true)}
-                    className="pl-4 h-6 text-xs w-20 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                    placeholder="0"
+                    value={expense.label}
+                    onChange={(e) => updateAdditionalExpenseLabel(expense.id, e.target.value)}
+                    className="h-8 text-sm min-w-0"
+                    placeholder="Expense name"
                   />
+                </div>
+                <div className="w-24 space-y-1.5">
+                  <Label className="text-xs text-muted-foreground block">Amount</Label>
+                  <div className="relative">
+                    <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground text-xs">{currency.symbol}</span>
+                    <Input
+                      type="number"
+                      min="0"
+                      max="999999"
+                      step="1"
+                      value={expense.amount || ''}
+                      onChange={(e) => updateExpense(expense.id, parseInt(e.target.value) || 0, true)}
+                      className="pl-7 h-8 text-sm w-24 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                      placeholder="0"
+                    />
+                  </div>
                 </div>
                 <Button
                   variant="destructive"
                   size="sm"
                   onClick={() => removeAdditionalExpense(expense.id)}
-                  className="h-6 w-6 p-0 flex-shrink-0"
+                  className="h-8 w-8 p-0 flex-shrink-0"
                 >
-                  <Trash2 className="h-2 w-2" />
+                  <Trash2 className="h-3 w-3" />
                 </Button>
               </div>
             ))}
 
             {/* Add Expense Button - spans full width */}
             {additionalExpenses.length < 10 && (
-              <div className="col-span-1 sm:col-span-2">
+              <div className="col-span-1 sm:col-span-2 pt-1">
                 <Button
                   variant="outline"
                   size="sm"
                   onClick={addAdditionalExpense}
-                  className="w-full h-6 text-xs"
+                  className="w-full h-8 text-xs"
                 >
-                  <Plus className="h-2 w-2 mr-1" />
+                  <Plus className="h-3 w-3 mr-1" />
                   Add Expense
                 </Button>
               </div>
@@ -478,7 +484,7 @@ const BudgetCalculator: React.FC<BudgetCalculatorProps> = ({
 
             {/* Additional Subscriptions */}
             {additionalSubscriptions.map((subscription, index) => (
-              <div key={subscription.id} className="col-span-2 flex items-center space-x-2">
+              <div key={subscription.id} className="col-span-1 sm:col-span-2 flex items-end gap-2">
                 <div className="flex-1">
                   <StreamingServiceSelector
                     value={subscription.amount}
@@ -494,23 +500,23 @@ const BudgetCalculator: React.FC<BudgetCalculatorProps> = ({
                   variant="destructive"
                   size="sm"
                   onClick={() => removeAdditionalSubscription(subscription.id)}
-                  className="h-6 w-6 p-0"
+                  className="h-8 w-8 p-0 flex-shrink-0"
                 >
-                  <Trash2 className="h-2 w-2" />
+                  <Trash2 className="h-3 w-3" />
                 </Button>
               </div>
             ))}
 
             {/* Add Subscription Button */}
             {additionalSubscriptions.length < 10 && (
-              <div className="col-span-2">
+              <div className="col-span-1 sm:col-span-2 pt-1">
                 <Button
                   variant="outline"
                   size="sm"
                   onClick={addAdditionalSubscription}
-                  className="w-full h-6 text-xs"
+                  className="w-full h-8 text-xs"
                 >
-                  <Plus className="h-2 w-2 mr-1" />
+                  <Plus className="h-3 w-3 mr-1" />
                   Subscription
                 </Button>
               </div>
@@ -519,17 +525,17 @@ const BudgetCalculator: React.FC<BudgetCalculatorProps> = ({
         </div>
 
         {/* Compact Subtotal and Net Result */}
-        <div className="border-t pt-2 space-y-1.5">
+        <div className="border-t pt-3 space-y-2">
           <div className="flex justify-between items-center">
-            <span className="text-xs font-medium text-foreground">Subtotal:</span>
-            <span className="text-xs font-semibold text-foreground">
+            <span className="text-sm font-medium text-foreground">Subtotal:</span>
+            <span className="text-sm font-semibold text-foreground">
               {formatCurrency(totalExpenses)}
             </span>
           </div>
           
           <div className="flex justify-between items-center">
-            <span className="text-sm font-semibold text-foreground">Net Result:</span>
-            <span className={`text-sm font-bold ${
+            <span className="text-base font-semibold text-foreground">Net Result:</span>
+            <span className={`text-base font-bold ${
               netResult >= 0 ? 'text-success' : 'text-destructive'
             }`}>
               {formatCurrency(netResult)}
@@ -543,10 +549,10 @@ const BudgetCalculator: React.FC<BudgetCalculatorProps> = ({
             variant="outline"
             size="sm"
             onClick={handleDownloadPDF}
-            className="w-full h-7 text-xs"
+            className="w-full h-9 text-sm"
           >
-            <Download className="h-3 w-3 mr-1" />
-            PDF
+            <Download className="h-4 w-4 mr-2" />
+            Download PDF
           </Button>
         </div>
       </CardContent>
