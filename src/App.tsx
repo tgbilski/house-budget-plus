@@ -135,7 +135,7 @@ const AppLayout = () => {
   // Simplified layout for mobile app
   if (isMobileApp) {
     return (
-      <div className="min-h-screen w-full flex flex-col">
+      <div className="min-h-screen w-full flex flex-col" style={{ paddingTop: 'env(safe-area-inset-top)' }}>
         <MobileAppHeader />
         <main id="main-content" className="flex-1 p-4 pb-20 overflow-auto">
           <AppRoutes />
