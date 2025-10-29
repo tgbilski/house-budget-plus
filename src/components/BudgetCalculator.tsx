@@ -386,12 +386,12 @@ const BudgetCalculator: React.FC<BudgetCalculatorProps> = ({
             {expenses.map((expense) => {
               if (!expense.id.startsWith('subscription')) {
                 return (
-                  <div key={expense.id} className="flex items-center space-x-2">
-                    <Label className="text-xs text-muted-foreground flex-1 text-left leading-tight">
+                  <div key={expense.id} className="space-y-1">
+                    <Label className="text-xs text-muted-foreground block">
                       {expense.label}
                     </Label>
-                    <div className="relative w-20 flex-shrink-0">
-                      <span className="absolute left-1 top-1/2 transform -translate-y-1/2 text-muted-foreground text-xs">{currency.symbol}</span>
+                    <div className="relative">
+                      <span className="absolute left-2 top-1/2 transform -translate-y-1/2 text-muted-foreground text-xs">{currency.symbol}</span>
                       <Input
                         type="number"
                         min="0"
@@ -399,7 +399,7 @@ const BudgetCalculator: React.FC<BudgetCalculatorProps> = ({
                         step="1"
                         value={expense.amount || ''}
                         onChange={(e) => updateExpense(expense.id, parseInt(e.target.value) || 0)}
-                        className="pl-4 h-6 text-xs w-20 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                        className="pl-6 h-7 text-xs w-full [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                         placeholder="0"
                       />
                     </div>
