@@ -3,6 +3,7 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { SkipToMain } from "@/components/SkipToMain";
 import { MobileBottomNav } from "@/components/MobileBottomNav";
+import { SubscriptionGuard } from "@/components/SubscriptionGuard";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import { useEffect } from "react";
@@ -76,13 +77,18 @@ const AppRoutes = () => {
     trackPageView(location.pathname + location.search);
   }, [location]);
   
-  // Mobile app routes - only auth and expenses
+  // Mobile app routes - calculator pages for subscribers only
   if (isMobileApp) {
     return (
       <Routes key={currentHousehold?.id || 'no-household'}>
         <Route path="/" element={<Auth />} />
         <Route path="/auth" element={<Auth />} />
-        <Route path="/expenses" element={<Expenses />} />
+        <Route path="/expenses" element={<SubscriptionGuard><Expenses /></SubscriptionGuard>} />
+        <Route path="/budget" element={<SubscriptionGuard><MonthlyBudget /></SubscriptionGuard>} />
+        <Route path="/savings" element={<SubscriptionGuard><SavingsGoals /></SubscriptionGuard>} />
+        <Route path="/vacation" element={<SubscriptionGuard><Vacation /></SubscriptionGuard>} />
+        <Route path="/compare-prices" element={<SubscriptionGuard><CompareVendors /></SubscriptionGuard>} />
+        <Route path="/gifts" element={<SubscriptionGuard><Gifts /></SubscriptionGuard>} />
         <Route path="*" element={<Auth />} />
       </Routes>
     );
@@ -129,9 +135,10 @@ const AppLayout = () => {
   if (isMobileApp) {
     return (
       <div className="min-h-screen w-full flex flex-col">
-        <main id="main-content" className="flex-1 p-4">
+        <main id="main-content" className="flex-1 p-4 pb-20">
           <AppRoutes />
         </main>
+        <MobileBottomNav />
       </div>
     );
   }
