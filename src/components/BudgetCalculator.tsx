@@ -381,16 +381,16 @@ const BudgetCalculator: React.FC<BudgetCalculatorProps> = ({
         <div className="pt-2">
           <h3 className="text-xs font-semibold text-foreground mb-2">Monthly Expenses</h3>
           
-          {/* Two column layout for expenses */}
-          <div className="grid grid-cols-2 gap-x-3 gap-y-1">
+          {/* Responsive layout: single column on mobile, two columns on larger screens */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-3 gap-y-2">
             {expenses.map((expense) => {
               if (!expense.id.startsWith('subscription')) {
                 return (
-                  <div key={expense.id} className="flex items-center space-x-1">
-                    <Label className="text-xs text-muted-foreground flex-1 text-left truncate">
+                  <div key={expense.id} className="flex items-center space-x-2">
+                    <Label className="text-xs text-muted-foreground flex-1 text-left leading-tight">
                       {expense.label}
                     </Label>
-                    <div className="relative w-20">
+                    <div className="relative w-20 flex-shrink-0">
                       <span className="absolute left-1 top-1/2 transform -translate-y-1/2 text-muted-foreground text-xs">{currency.symbol}</span>
                       <Input
                         type="number"
@@ -409,16 +409,16 @@ const BudgetCalculator: React.FC<BudgetCalculatorProps> = ({
               return null;
             })}
 
-            {/* Additional Expenses in two columns */}
+            {/* Additional Expenses span full width on mobile, 2 columns on larger screens */}
             {additionalExpenses.map((expense) => (
-              <div key={expense.id} className="col-span-2 flex items-center space-x-1">
+              <div key={expense.id} className="col-span-1 sm:col-span-2 flex items-center space-x-2">
                 <Input
                   value={expense.label}
                   onChange={(e) => updateAdditionalExpenseLabel(expense.id, e.target.value)}
-                  className="flex-1 h-6 text-xs"
+                  className="flex-1 h-6 text-xs min-w-0"
                   placeholder="Expense"
                 />
-                <div className="relative w-20">
+                <div className="relative w-20 flex-shrink-0">
                   <span className="absolute left-1 top-1/2 transform -translate-y-1/2 text-muted-foreground text-xs">{currency.symbol}</span>
                   <Input
                     type="number"
@@ -435,16 +435,16 @@ const BudgetCalculator: React.FC<BudgetCalculatorProps> = ({
                   variant="destructive"
                   size="sm"
                   onClick={() => removeAdditionalExpense(expense.id)}
-                  className="h-6 w-6 p-0"
+                  className="h-6 w-6 p-0 flex-shrink-0"
                 >
                   <Trash2 className="h-2 w-2" />
                 </Button>
               </div>
             ))}
 
-            {/* Add Expense Button - spans both columns */}
+            {/* Add Expense Button - spans full width */}
             {additionalExpenses.length < 10 && (
-              <div className="col-span-2">
+              <div className="col-span-1 sm:col-span-2">
                 <Button
                   variant="outline"
                   size="sm"
@@ -456,11 +456,11 @@ const BudgetCalculator: React.FC<BudgetCalculatorProps> = ({
                 </Button>
               </div>
             )}
-            {/* Default Subscription Expenses */}
+            {/* Default Subscription Expenses - full width */}
             {expenses.map((expense, index) => {
               if (expense.id.startsWith('subscription')) {
                 return (
-                  <div key={expense.id} className="col-span-2">
+                  <div key={expense.id} className="col-span-1 sm:col-span-2">
                     <StreamingServiceSelector
                       value={expense.amount}
                       onChange={(amount) => updateExpense(expense.id, amount)}
