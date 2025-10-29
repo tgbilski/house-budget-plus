@@ -14,7 +14,7 @@ const features = [
   { name: '10 AI Financial Insights per Month', free: false, premium: true },
   { name: 'Share Budget with Family & Friends', free: false, premium: true },
   { name: 'PDF Budget Exports & Reports', free: false, premium: true },
-  { name: 'Unlimited PDF Processing with AI', free: false, premium: true },
+  { name: 'Downloadable iOS App', free: false, premium: true },
 ];
 
 export const FeatureComparison: React.FC = () => {
