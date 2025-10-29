@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Users, Target, Heart, TrendingUp, ArrowRight, Brain, Calculator, Shield, ChevronDown } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { AdSense } from '@/components/AdSense';
+import founderPhoto from '@/assets/founder-photo.jpeg';
 
 const ScrollIndicator = () => (
   <div className="flex justify-center py-4">
@@ -36,7 +37,7 @@ const AboutHeroSection = () => (
       <div className="flex flex-col lg:flex-row items-center gap-8 mb-12 max-w-5xl mx-auto">
         <div className="flex-shrink-0">
           <img
-            src="/lovable-uploads/0a0c2f17-649d-4fbe-a7ee-2d7cf48eedc8.png"
+            src={founderPhoto}
             alt="Toby Bilski, CEO & Founder"
             className="w-48 h-48 md:w-56 md:h-56 object-cover rounded-full shadow-xl border-4 border-white"
           />
