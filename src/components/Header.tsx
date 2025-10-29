@@ -37,7 +37,9 @@ const Header: React.FC = () => {
 
           {/* Search and Auth */}
           <div className="flex items-center gap-2 md:gap-4">
-            <GlobalSearch />
+            <div className="hidden md:block">
+              <GlobalSearch />
+            </div>
             {user ? (
               <ProfileDropdown />
             ) : (
