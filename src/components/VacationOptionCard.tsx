@@ -53,38 +53,37 @@ export const VacationOptionCard: React.FC<VacationOptionCardProps> = ({ option, 
 
   return (
     <Card className="h-full flex flex-col">
-      <CardHeader>
-        <div className="flex items-start justify-between gap-4">
-          <div className="flex-1">
-            <Label>Destination</Label>
+      <CardHeader className="pb-4">
+        <div className="flex flex-col gap-3">
+          <div className="w-full">
+            <Label className="text-sm mb-1.5 block">Destination</Label>
             <Input
               value={localOption.destination}
               onChange={(e) => handleLocalChange('destination', e.target.value)}
               onBlur={() => handleBlur('destination')}
               placeholder={`Option ${option.vacation_number}`}
-              className="text-lg font-semibold h-10 mt-1"
+              className="text-base sm:text-lg font-semibold h-10"
             />
           </div>
-          <div className="text-right">
-            <div className="text-sm text-muted-foreground">Est. Cost</div>
-            <div className="text-2xl font-bold text-primary">{currencySymbol}{totalCost.toLocaleString()}</div>
+          <div className="w-full bg-primary/5 rounded-lg p-3 border border-primary/20">
+            <div className="text-xs sm:text-sm text-muted-foreground mb-1">Estimated Total Cost</div>
+            <div className="text-xl sm:text-2xl font-bold text-primary">{currencySymbol}{totalCost.toLocaleString()}</div>
           </div>
         </div>
       </CardHeader>
       <CardContent className="space-y-4 flex-1 flex flex-col">
-        {/* ... The rest of the component JSX is unchanged ... */}
-         <div className="grid grid-cols-2 gap-4">
-          <div>
-            <Label>Travel Cost</Label>
-            <Input type="number" value={localOption.travel_mode_cost || ''} onChange={(e) => handleLocalChange('travel_mode_cost', parseFloat(e.target.value) || 0)} onBlur={() => handleBlur('travel_mode_cost')} placeholder="0" />
+         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="space-y-1.5">
+            <Label className="text-sm">Travel Cost</Label>
+            <Input type="number" value={localOption.travel_mode_cost || ''} onChange={(e) => handleLocalChange('travel_mode_cost', parseFloat(e.target.value) || 0)} onBlur={() => handleBlur('travel_mode_cost')} placeholder="0" className="h-9" />
           </div>
-          <div>
-            <Label>Lodging Cost</Label>
-            <Input type="number" value={localOption.lodging_cost || ''} onChange={(e) => handleLocalChange('lodging_cost', parseFloat(e.target.value) || 0)} onBlur={() => handleBlur('lodging_cost')} placeholder="0" />
+          <div className="space-y-1.5">
+            <Label className="text-sm">Lodging Cost</Label>
+            <Input type="number" value={localOption.lodging_cost || ''} onChange={(e) => handleLocalChange('lodging_cost', parseFloat(e.target.value) || 0)} onBlur={() => handleBlur('lodging_cost')} placeholder="0" className="h-9" />
           </div>
-           <div>
-            <Label>Car Rental Cost</Label>
-            <Input type="number" value={localOption.car_rental_cost || ''} onChange={(e) => handleLocalChange('car_rental_cost', parseFloat(e.target.value) || 0)} onBlur={() => handleBlur('car_rental_cost')} placeholder="0" />
+           <div className="space-y-1.5">
+            <Label className="text-sm">Car Rental Cost</Label>
+            <Input type="number" value={localOption.car_rental_cost || ''} onChange={(e) => handleLocalChange('car_rental_cost', parseFloat(e.target.value) || 0)} onBlur={() => handleBlur('car_rental_cost')} placeholder="0" className="h-9" />
           </div>
         </div>
         
