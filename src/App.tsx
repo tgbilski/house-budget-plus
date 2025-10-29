@@ -21,6 +21,7 @@ import ScrollToTop from "@/components/ScrollToTop";
 import Footer from "@/components/Footer";
 import { useIsMobile } from "@/hooks/use-mobile";
 import Home from "@/pages/Home";
+import MobileLanding from "@/pages/MobileLanding";
 import Expenses from "@/pages/Expenses";
 import MonthlyBudget from "@/pages/MonthlyBudget";
 import CompareVendors from "@/pages/CompareVendors";
@@ -82,7 +83,7 @@ const AppRoutes = () => {
   if (isMobileApp) {
     return (
       <Routes key={currentHousehold?.id || 'no-household'}>
-        <Route path="/" element={<Auth />} />
+        <Route path="/" element={<MobileLanding />} />
         <Route path="/auth" element={<Auth />} />
         <Route path="/expenses" element={<SubscriptionGuard><Expenses /></SubscriptionGuard>} />
         <Route path="/budget" element={<SubscriptionGuard><MonthlyBudget /></SubscriptionGuard>} />
@@ -90,7 +91,8 @@ const AppRoutes = () => {
         <Route path="/vacation" element={<SubscriptionGuard><Vacation /></SubscriptionGuard>} />
         <Route path="/compare-prices" element={<SubscriptionGuard><CompareVendors /></SubscriptionGuard>} />
         <Route path="/gifts" element={<SubscriptionGuard><Gifts /></SubscriptionGuard>} />
-        <Route path="*" element={<Auth />} />
+        <Route path="/settings" element={<SubscriptionGuard><UserSettings /></SubscriptionGuard>} />
+        <Route path="*" element={<MobileLanding />} />
       </Routes>
     );
   }
