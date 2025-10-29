@@ -119,10 +119,7 @@ export function GiftListSelector({
                       </Button>
                     </div>
                   ) : (
-                    <>
-                      <span className="font-medium">{list.list_title}</span>
-                      <Badge variant="secondary" className="ml-2">{list.year}</Badge>
-                    </>
+                    <span className="font-medium">{list.list_title}</span>
                   )}
                 </div>
                 <div className="flex items-center gap-2">
