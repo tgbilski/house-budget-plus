@@ -135,9 +135,23 @@ const AppLayout = () => {
   // Simplified layout for mobile app
   if (isMobileApp) {
     return (
-      <div className="min-h-screen w-full flex flex-col" style={{ paddingTop: 'env(safe-area-inset-top)' }}>
+      <div 
+        className="min-h-screen w-full flex flex-col relative" 
+        style={{ 
+          paddingTop: 'env(safe-area-inset-top)',
+        }}
+      >
+        {/* Background gradient for safe area */}
+        <div 
+          className="absolute top-0 left-0 right-0 h-32 pointer-events-none"
+          style={{
+            background: 'linear-gradient(to bottom, hsl(var(--primary)) 0%, hsl(var(--primary) / 0.6) 50%, transparent 100%)',
+            marginTop: 'calc(-1 * env(safe-area-inset-top))',
+            paddingTop: 'env(safe-area-inset-top)',
+          }}
+        />
         <MobileAppHeader />
-        <main id="main-content" className="flex-1 p-4 pb-20 overflow-auto">
+        <main id="main-content" className="flex-1 p-4 pb-20 overflow-auto relative z-10">
           <AppRoutes />
         </main>
         <MobileBottomNav />
