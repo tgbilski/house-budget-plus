@@ -1,19 +1,18 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Home, Mic, Target, Store, User } from 'lucide-react';
+import { Mic, Calculator, Target, Store, Bot } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { useAuth } from '@/hooks/useAuth';
 
 const navItems = [
-  { icon: Home, label: 'Home', path: '/' },
   { icon: Mic, label: 'Expenses', path: '/expenses' },
+  { icon: Calculator, label: 'Budget', path: '/monthly-budget' },
   { icon: Target, label: 'Goals', path: '/savings' },
-  { icon: Store, label: 'Market', path: '/marketplace' },
+  { icon: Store, label: 'Vendors', path: '/compare-vendors' },
+  { icon: Bot, label: 'AI Chat', path: '/ai-insights' },
 ];
 
 export const MobileBottomNav: React.FC = () => {
   const location = useLocation();
-  const { user } = useAuth();
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-border md:hidden">
@@ -38,19 +37,6 @@ export const MobileBottomNav: React.FC = () => {
             </Link>
           );
         })}
-        
-        <Link
-          to={user ? '/settings' : '/auth'}
-          className={cn(
-            'flex flex-col items-center justify-center flex-1 h-full space-y-1 transition-colors',
-            (location.pathname === '/settings' || location.pathname === '/auth')
-              ? 'text-primary'
-              : 'text-muted-foreground hover:text-foreground'
-          )}
-        >
-          <User className={cn('h-5 w-5', (location.pathname === '/settings' || location.pathname === '/auth') && 'fill-current')} />
-          <span className="text-xs font-medium">{user ? 'Account' : 'Sign In'}</span>
-        </Link>
       </div>
     </nav>
   );
