@@ -1,7 +1,7 @@
 import { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'app.lovable.0a1c5ef3a0c14de28f499b0a9540368a',
+  appId: 'com.housebudgetcalculator.app',
   appName: 'House Budget Plus',
   webDir: 'dist',
   server: {
