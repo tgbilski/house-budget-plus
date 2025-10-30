@@ -199,28 +199,55 @@ AI-powered voice expense tracking makes this awareness effortless. In the time i
 
 ## Try Voice Expense Tracking Now
 
-Experience the future of expense management with our **AI-powered voice tracking tool**. Simply speak your expenses and watch as AI automatically:
-- Transcribes your voice to text
-- Extracts amount, merchant, and category
-- Updates your budget in real-time
-- Provides personalized savings insights
+Experience the future of expense management with our **AI-powered voice tracking tool** built right into House Budget Calculator. Simply speak your expenses and watch as AI automatically:
+- Transcribes your voice to text with industry-leading accuracy
+- Extracts amount, merchant, and category intelligently
+- Updates your budget in real-time across all devices
+- Provides personalized savings insights based on your spending patterns
+- Syncs with your household for collaborative budgeting
 
-**Start your 30-day challenge today** and discover how much you can save when tracking expenses becomes effortless.
+**Visit our [Expense Tracker](/expenses)** to start using voice-enabled expense logging today. No app download required - works directly in your browser!
 
-[Try Voice Expense Tracking](#) | [View All Expenses](#) | [See Savings Goals](#)
+**Start your 30-day challenge today** and discover how much you can save when tracking expenses becomes effortless. Our users report saving an average of **$400/month** just by being more aware of their spending.
+
+<div style="text-align: center; margin: 2rem 0; padding: 1.5rem; background: linear-gradient(135deg, #10b981, #059669); border-radius: 12px;">
+  <a href="/expenses" style="color: white; text-decoration: none; font-size: 1.2rem; font-weight: bold;">🎤 Start Voice Expense Tracking</a>
+</div>
+
+**Quick Links:**
+- [View All Expenses](/expenses) - Track expenses with voice, PDF upload, or manual entry
+- [Monthly Budget Calculator](/budget) - Create your personalized budget in minutes
+- [Savings Goals Tracker](/savings) - Set and achieve your financial targets
+- [Compare Vendors](/compare-prices) - Find the best prices for household services
+- [AI Budget Insights](/ai-insights) - Get personalized financial recommendations
 
 ---
 
-### Related Resources
+### Why Choose House Budget Calculator?
 
-- [Monthly Budget Calculator](#) - Create your first budget in minutes
-- [Compare Vendors](#) - Find the best prices for household services
-- [Savings Goals Tracker](#) - Set and achieve your financial targets
-- [Budget AI Insights](#) - Get personalized recommendations
+**✓ Voice-Enabled Tracking** - Log expenses in seconds with AI transcription  
+**✓ Smart Categorization** - AI automatically categorizes your spending  
+**✓ Household Sharing** - Collaborate with family members on shared budgets  
+**✓ Real-Time Insights** - Get instant feedback on spending patterns  
+**✓ PDF Receipt Upload** - Extract expense data from receipts automatically  
+**✓ Multi-Device Sync** - Access your budget from anywhere  
+**✓ Privacy First** - Your financial data stays secure and private  
 
 ---
 
-*Have questions about voice expense tracking or need help getting started? Drop your questions in the comments below!*
+## Take Action Today
+
+The difference between people who achieve their financial goals and those who don't comes down to one thing: **awareness**. You can't manage what you don't measure.
+
+Voice expense tracking removes every excuse. No time? It takes 3 seconds. Forget to log expenses? Do it instantly while still at the store. Hate typing? Just speak naturally.
+
+**Your financial transformation starts with a single step.** Visit our [Expense Tracker](/expenses) now and log your first expense by voice. See how easy it can be.
+
+Remember: Every dollar you track is a dollar you can redirect toward your dreams - whether that's a vacation, a new home, financial independence, or simply peace of mind.
+
+---
+
+*Have questions about voice expense tracking or need help getting started? Visit our [Contact page](/contact) or explore our [AI Insights](/ai-insights) feature for personalized guidance!*
   `,
   tags: [
     "expense-tracking",
