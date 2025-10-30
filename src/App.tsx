@@ -37,6 +37,7 @@ import Blog from "@/pages/Blog";
 import BlogPost from "@/pages/BlogPost";
 import Admin from "@/pages/Admin";
 import BlogImageUpdater from "@/pages/BlogImageUpdater";
+import AddBlogPost from "@/pages/AddBlogPost";
 import { Gifts } from "@/pages/Gifts";
 import Marketplace from "@/pages/Marketplace";
 import MyListings from "@/pages/MyListings";
@@ -118,6 +119,7 @@ const AppRoutes = () => {
       <Route path="/blog/:slug" element={<BlogPost />} />
       <Route path="/admin" element={<Admin />} />
       <Route path="/admin/blog-images" element={<BlogImageUpdater />} />
+      <Route path="/admin/add-blog-post" element={<AddBlogPost />} />
       <Route path="/ai-insights" element={<AIInsights />} />
       <Route path="/subscription-success" element={<SubscriptionSuccess />} />
       <Route path="/about" element={<AboutUs />} />
