@@ -1,8 +1,9 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { LogIn, ExternalLink, Smartphone } from 'lucide-react';
+import { LogIn, ExternalLink } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import logo from '@/assets/logo.png';
 
 export const MobileLanding: React.FC = () => {
   const navigate = useNavigate();
@@ -21,8 +22,8 @@ export const MobileLanding: React.FC = () => {
         {/* App Icon and Title */}
         <div className="text-center space-y-4">
           <div className="flex justify-center">
-            <div className="w-24 h-24 bg-gradient-to-br from-primary to-primary/60 rounded-3xl shadow-2xl flex items-center justify-center">
-              <Smartphone className="h-12 w-12 text-white" />
+            <div className="w-24 h-24 rounded-3xl shadow-2xl overflow-hidden">
+              <img src={logo} alt="House Budget Calculator Logo" className="w-full h-full object-cover" />
             </div>
           </div>
           <div>
