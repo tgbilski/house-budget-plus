@@ -3,7 +3,6 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { LogIn, ExternalLink } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import logo from '@/assets/logo.png';
 
 export const MobileLanding: React.FC = () => {
   const navigate = useNavigate();
@@ -17,17 +16,21 @@ export const MobileLanding: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-6 bg-gradient-to-br from-background via-primary/5 to-teal/10">
+    <div className="min-h-screen flex items-center justify-center p-6 bg-gradient-to-br from-white via-sage/20 to-teal/10">
       <div className="max-w-md w-full space-y-8">
         {/* App Icon and Title */}
         <div className="text-center space-y-4">
           <div className="flex justify-center">
-            <div className="w-24 h-24 rounded-3xl shadow-2xl overflow-hidden">
-              <img src={logo} alt="House Budget Calculator Logo" className="w-full h-full object-cover" />
+            <div className="w-32 h-32 rounded-3xl shadow-2xl overflow-hidden bg-white p-2">
+              <img 
+                src="/lovable-uploads/ed809955-ef71-4d81-b072-945082f4380a.png" 
+                alt="House Budget Calculator mascot - friendly budget planning assistant" 
+                className="w-full h-full object-contain drop-shadow-lg"
+              />
             </div>
           </div>
           <div>
-            <h1 className="text-4xl font-bold bg-gradient-to-r from-foreground to-primary bg-clip-text text-transparent">
+            <h1 className="text-4xl font-bold text-foreground">
               Welcome!
             </h1>
             <p className="text-lg text-muted-foreground mt-2">

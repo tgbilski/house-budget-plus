@@ -147,15 +147,15 @@ const AppLayout = () => {
       >
         {/* Background gradient from top */}
         <div 
-          className="absolute top-0 left-0 right-0 pointer-events-none"
+          className="fixed top-0 left-0 right-0 pointer-events-none z-0"
           style={{
             height: 'calc(env(safe-area-inset-top) + 180px)',
             background: 'linear-gradient(to bottom, hsl(var(--primary)) 0%, hsl(var(--primary) / 0.6) 50%, transparent 100%)',
-            marginTop: 'calc(-1 * env(safe-area-inset-top) - 60px)',
-            paddingTop: 'calc(env(safe-area-inset-top) + 60px)',
           }}
         />
-        <MobileAppHeader />
+        <div className="fixed top-0 left-0 right-0 z-30" style={{ paddingTop: 'env(safe-area-inset-top)' }}>
+          <MobileAppHeader />
+        </div>
         <main id="main-content" className="flex-1 p-4 pb-20 overflow-auto relative z-10">
           <AppRoutes />
         </main>
