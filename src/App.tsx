@@ -140,16 +140,18 @@ const AppLayout = () => {
       <div 
         className="min-h-screen w-full flex flex-col relative" 
         style={{ 
-          paddingTop: 'env(safe-area-inset-top)',
+          paddingTop: 'calc(env(safe-area-inset-top) + 60px)',
+          backgroundColor: 'hsl(var(--primary))',
         }}
       >
-        {/* Background gradient for safe area */}
+        {/* Background gradient from top */}
         <div 
-          className="absolute top-0 left-0 right-0 h-32 pointer-events-none"
+          className="absolute top-0 left-0 right-0 pointer-events-none"
           style={{
+            height: 'calc(env(safe-area-inset-top) + 180px)',
             background: 'linear-gradient(to bottom, hsl(var(--primary)) 0%, hsl(var(--primary) / 0.6) 50%, transparent 100%)',
-            marginTop: 'calc(-1 * env(safe-area-inset-top))',
-            paddingTop: 'env(safe-area-inset-top)',
+            marginTop: 'calc(-1 * env(safe-area-inset-top) - 60px)',
+            paddingTop: 'calc(env(safe-area-inset-top) + 60px)',
           }}
         />
         <MobileAppHeader />
