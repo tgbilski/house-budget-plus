@@ -2,6 +2,7 @@ import { useState, useEffect, createContext, useContext, ReactNode } from 'react
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { isNativeApp } from '@/utils/capacitor';
 
 // Auth state cleanup utility
 const cleanupAuthState = () => {
@@ -163,9 +164,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       
       if (error) throw error;
       
-      // The `window.location.href` redirect has been moved to be conditional.
-      // This allows the listener to work first.
-      window.location.href = '/auth';
+      // Redirect to landing page for mobile app, auth page for web
+      const redirectPath = isNativeApp() ? '/' : '/auth';
+      window.location.href = redirectPath;
 
     } catch (error: any) {
       toast({
@@ -174,7 +175,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         variant: "destructive",
       });
       // Force redirect even if sign out fails
-      window.location.href = '/auth';
+      const redirectPath = isNativeApp() ? '/' : '/auth';
+      window.location.href = redirectPath;
     }
   };
 
