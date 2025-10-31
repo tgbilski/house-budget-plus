@@ -13,10 +13,13 @@ import { SEO } from "@/components/SEO";
 import { seoData } from "@/utils/seoData";
 import { Link } from "react-router-dom";
 import { Brain, Crown } from "lucide-react";
+import { isNativeApp } from '@/utils/capacitor';
+import { cn } from '@/lib/utils';
 
 export default function AIInsights() {
   const { user } = useAuth();
   const { earnBadge } = useBadges();
+  const isMobileApp = isNativeApp();
   const {
     subscribed,
     subscriptionTier,
@@ -106,7 +109,10 @@ export default function AIInsights() {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className={cn(
+      "bg-background",
+      isMobileApp ? "" : "min-h-screen"
+    )}>
       <SEO
         title={seoData.aiInsights.title}
         description={seoData.aiInsights.description}

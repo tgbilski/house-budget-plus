@@ -5,6 +5,8 @@ import { useHouseholdContext } from '@/providers/HouseholdProvider';
 import { useYear } from '@/hooks/useYear'; // Import the useYear hook
 import { useSavingsTracker } from '@/hooks/useSavingsTracker';
 import { useBadges } from '@/hooks/useBadges';
+import { isNativeApp } from '@/utils/capacitor';
+import { cn } from '@/lib/utils';
 
 // Import the worker components
 import { GoalSelector } from '@/components/GoalSelector';
@@ -26,6 +28,7 @@ const SavingsGoals: React.FC = () => {
   const { currentHousehold } = useHouseholdContext();
   const { selectedYear, setSelectedYear } = useYear(); // Get the year and its setter function
   const { earnBadge } = useBadges();
+  const isMobileApp = isNativeApp();
 
   // Call the hook with all the props it needs, including the year
   const {
@@ -57,7 +60,10 @@ const SavingsGoals: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-white via-background to-sage/10">
+    <div className={cn(
+      "bg-gradient-to-br from-white via-background to-sage/10",
+      isMobileApp ? "" : "min-h-screen"
+    )}>
       <SEO
         title={seoData.savingsGoals.title}
         description={seoData.savingsGoals.description}

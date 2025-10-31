@@ -20,6 +20,8 @@ import { ProjectSummaryCard } from '@/components/ProjectSummaryCard';
 import { InternalLinks } from '@/components/InternalLinks';
 import { FAQ } from '@/components/FAQ';
 import { vendorComparisonFAQs } from '@/utils/faqData';
+import { isNativeApp } from '@/utils/capacitor';
+import { cn } from '@/lib/utils';
 
 const CompareVendors: React.FC = () => {
   const { user } = useAuth();
@@ -27,6 +29,7 @@ const CompareVendors: React.FC = () => {
   const { selectedYear } = useYear();
   const { earnBadge } = useBadges();
   const navigate = useNavigate();
+  const isMobileApp = isNativeApp();
 
   const {
     projects,
@@ -55,7 +58,10 @@ const CompareVendors: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className={cn(
+      "bg-background",
+      isMobileApp ? "" : "min-h-screen"
+    )}>
       <SEO
         title={seoData.compareVendors.title}
         description={seoData.compareVendors.description}
