@@ -208,7 +208,7 @@ export const RSSFeed: React.FC<RSSFeedProps> = ({
 
   return (
     <section className="py-8 md:py-12 overflow-hidden">
-      <div className="w-full max-w-sm md:max-w-4xl mx-auto px-2">
+      <div className="w-full max-w-6xl mx-auto px-3 md:px-4">
         <div className="text-center mb-6 md:mb-8">
           <h2 className="text-lg md:text-2xl font-bold mb-3 text-white">
             {title}
