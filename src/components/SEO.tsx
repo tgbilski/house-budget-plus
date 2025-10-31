@@ -16,7 +16,7 @@ export const SEO: React.FC<SEOProps> = ({
   keywords, 
   structuredData,
   canonical,
-  ogImage = 'https://www.housebudgetcalculator.com/lovable-uploads/calculator-preview-hero.png'
+  ogImage = 'https://www.housebudgetcalculator.com/lovable-uploads/og-image-social.png'
 }) => {
   const fullTitle = title.includes('Budget Calculator') ? title : `${title} | House Budget Calculator`;
   const fullUrl = canonical || 'https://www.housebudgetcalculator.com';
