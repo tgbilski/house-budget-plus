@@ -143,7 +143,7 @@ const AppLayout = () => {
       <div 
         className="min-h-screen w-full flex flex-col relative" 
         style={{ 
-          paddingTop: 'calc(env(safe-area-inset-top) + 60px)',
+          paddingTop: 'calc(env(safe-area-inset-top) + 120px)',
           backgroundColor: 'hsl(var(--primary))',
         }}
       >
