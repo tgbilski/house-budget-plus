@@ -3,7 +3,7 @@ import { YearSelector } from './YearSelector';
 
 export const MobileAppHeader = () => {
   return (
-    <header className="sticky top-0 z-40 bg-background border-b border-border">
+    <header className="sticky top-0 z-40 bg-background border-b border-border pt-[60px]">
       <div className="flex items-center justify-between px-4 py-3">
         <HouseholdSwitcher />
         <YearSelector />

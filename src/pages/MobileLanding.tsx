@@ -16,24 +16,22 @@ export const MobileLanding: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-6 bg-gradient-to-br from-white via-sage/20 to-teal/10">
+    <div className="min-h-screen flex items-center justify-center p-6 bg-background">
       <div className="max-w-md w-full space-y-8">
         {/* App Icon and Title */}
         <div className="text-center space-y-4">
           <div className="flex justify-center">
-            <div className="w-32 h-32 rounded-3xl shadow-2xl overflow-hidden bg-white p-2">
-              <img 
-                src="/lovable-uploads/ed809955-ef71-4d81-b072-945082f4380a.png" 
-                alt="House Budget Calculator mascot - friendly budget planning assistant" 
-                className="w-full h-full object-contain drop-shadow-lg"
-              />
-            </div>
+            <img 
+              src="/lovable-uploads/ed809955-ef71-4d81-b072-945082f4380a.png" 
+              alt="House Budget Calculator mascot - friendly budget planning assistant" 
+              className="w-32 h-32 object-contain"
+            />
           </div>
           <div>
-            <h1 className="text-4xl font-bold text-foreground">
+            <h1 className="text-4xl font-bold text-white">
               Welcome!
             </h1>
-            <p className="text-lg text-muted-foreground mt-2">
+            <p className="text-lg text-white mt-2">
               House Budget Calculator
             </p>
           </div>
