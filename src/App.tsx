@@ -139,10 +139,21 @@ const AppLayout = () => {
   const location = useLocation();
   const isAuthPage = location.pathname === '/auth';
 
+  // Debug logging
+  console.log('🔍 AppLayout Debug:', {
+    isMobileApp,
+    pathname: location.pathname,
+    isAuthPage
+  });
+
   // Simplified layout for mobile app
   if (isMobileApp) {
+    console.log('📱 Rendering mobile app layout');
+    
     // Auth page - no header or nav
     if (isAuthPage) {
+      console.log('🔐 Rendering AUTH page (no header/nav)');
+
       return (
         <div className="min-h-screen w-full flex flex-col bg-background">
           <main id="main-content" className="flex-1">
