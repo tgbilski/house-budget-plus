@@ -26,7 +26,7 @@ const steps = [
     icon: Sparkles,
     title: 'Get AI Insights',
     description: 'Receive personalized financial advice and spending insights powered by AI. Discover opportunities to save more.',
-    color: 'from-accent to-accent/60',
+    color: 'from-purple-600 to-purple-400',
   },
 ];
 
