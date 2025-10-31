@@ -85,7 +85,6 @@ const AppRoutes = () => {
     return (
       <Routes key={currentHousehold?.id || 'no-household'}>
         <Route path="/" element={<MobileLanding />} />
-        <Route path="/auth" element={<Auth />} />
         <Route path="/expenses" element={<SubscriptionGuard><Expenses /></SubscriptionGuard>} />
         <Route path="/budget" element={<SubscriptionGuard><MonthlyBudget /></SubscriptionGuard>} />
         <Route path="/savings" element={<SubscriptionGuard><SavingsGoals /></SubscriptionGuard>} />
@@ -137,12 +136,12 @@ const AppLayout = () => {
   const isMobile = useIsMobile();
   const isMobileApp = isNativeApp();
   const location = useLocation();
-  const isAuthOrLandingPage = location.pathname === '/auth' || location.pathname === '/';
+  const isLandingPage = location.pathname === '/';
 
   // Simplified layout for mobile app
   if (isMobileApp) {
-    // Auth/Landing pages - no header or nav
-    if (isAuthOrLandingPage) {
+    // Landing page - no header or nav
+    if (isLandingPage) {
       return (
         <div className="min-h-screen w-full flex flex-col bg-background">
           <main id="main-content" className="flex-1">
