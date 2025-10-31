@@ -80,11 +80,11 @@ export const MobileLanding: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-6 bg-background">
+    <div className="min-h-screen flex items-center justify-center p-6 bg-background" style={{ paddingTop: '50px' }}>
       <div className="max-w-md w-full space-y-8">
         {/* App Icon and Title */}
         <div className="text-center space-y-4">
-          <div className="flex justify-center">
+          <div className="flex justify-center" style={{ paddingTop: '30px' }}>
             <img 
               src="/lovable-uploads/ed809955-ef71-4d81-b072-945082f4380a.png" 
               alt="House Budget Calculator mascot - friendly budget planning assistant" 
