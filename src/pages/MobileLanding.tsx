@@ -10,7 +10,6 @@ import { isNativeApp } from '@/utils/capacitor';
 
 export const MobileLanding: React.FC = () => {
   const navigate = useNavigate();
-  const [isSignUp, setIsSignUp] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -29,30 +28,15 @@ export const MobileLanding: React.FC = () => {
     setIsLoading(true);
 
     try {
-      if (isSignUp) {
-        const redirectUrl = `${window.location.origin}/expenses`;
-        const { error } = await supabase.auth.signUp({
-          email,
-          password,
-          options: {
-            emailRedirectTo: redirectUrl
-          }
-        });
+      const { error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
 
-        if (error) throw error;
+      if (error) throw error;
 
-        toast.success('Check your email to confirm your account!');
-      } else {
-        const { error } = await supabase.auth.signInWithPassword({
-          email,
-          password,
-        });
-
-        if (error) throw error;
-
-        toast.success('Signed in successfully!');
-        navigate('/expenses');
-      }
+      toast.success('Signed in successfully!');
+      navigate('/expenses');
     } catch (error: any) {
       toast.error(error.message || 'An error occurred');
     } finally {
@@ -106,12 +90,10 @@ export const MobileLanding: React.FC = () => {
           <CardContent className="p-6 space-y-4">
             <div className="text-center space-y-2">
               <h2 className="text-xl font-semibold text-foreground">
-                {isSignUp ? 'Create Account' : 'Sign In'}
+                Sign In
               </h2>
               <p className="text-sm text-muted-foreground">
-                {isSignUp 
-                  ? 'Sign up to access all premium features!' 
-                  : 'Welcome back! Sign in to continue.'}
+                Welcome back! Sign in to continue.
               </p>
             </div>
             
@@ -147,7 +129,7 @@ export const MobileLanding: React.FC = () => {
                 className="w-full h-12 text-base bg-primary hover:bg-primary/90 shadow-lg"
                 size="lg"
               >
-                {isLoading ? 'Loading...' : (isSignUp ? 'Sign Up' : 'Sign In')}
+                {isLoading ? 'Loading...' : 'Sign In'}
               </Button>
             </form>
 
@@ -169,18 +151,6 @@ export const MobileLanding: React.FC = () => {
             >
               Continue with Google
             </Button>
-
-            <div className="text-center">
-              <button
-                type="button"
-                onClick={() => setIsSignUp(!isSignUp)}
-                className="text-sm text-primary hover:underline"
-              >
-                {isSignUp 
-                  ? 'Already have an account? Sign in' 
-                  : "Don't have an account? Sign up"}
-              </button>
-            </div>
           </CardContent>
         </Card>
 
