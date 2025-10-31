@@ -136,9 +136,23 @@ const AppRoutes = () => {
 const AppLayout = () => {
   const isMobile = useIsMobile();
   const isMobileApp = isNativeApp();
+  const location = useLocation();
+  const isAuthPage = location.pathname === '/auth';
 
   // Simplified layout for mobile app
   if (isMobileApp) {
+    // Auth page - no header or nav
+    if (isAuthPage) {
+      return (
+        <div className="min-h-screen w-full flex flex-col bg-background">
+          <main id="main-content" className="flex-1">
+            <AppRoutes />
+          </main>
+        </div>
+      );
+    }
+
+    // Regular pages with header and nav
     return (
       <div 
         className="min-h-screen w-full flex flex-col relative" 

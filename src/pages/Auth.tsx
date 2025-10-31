@@ -42,7 +42,8 @@ const Auth: React.FC = () => {
     checkPasswordReset();
 
     if (user && !isResettingPassword) {
-      // Redirect to expenses page if in mobile app, otherwise home
+      // Mobile app users always redirect to expenses page after login
+      // The subscription check will happen in the Expenses page
       navigate(isMobileApp ? '/expenses' : '/');
     }
   }, [user, navigate, isResettingPassword, isMobileApp]);
@@ -123,7 +124,8 @@ const Auth: React.FC = () => {
       } else {
         const { error } = await signIn(email, password);
         if (!error) {
-          navigate('/');
+          // Redirect to expenses for mobile app, home for web
+          navigate(isMobileApp ? '/expenses' : '/');
         }
       }
     } finally {
