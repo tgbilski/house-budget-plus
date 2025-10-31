@@ -134,40 +134,44 @@ const SavingsGoals: React.FC = () => {
             onUpdateAmount={updateMonthlyAmount}
           />
 
-          <div className="animate-slide-up" style={{ animationDelay: '0.3s' }}>
-            <AIChatbot
-              pageContext="I'm on the savings goals page where I can track my monthly savings progress toward financial goals."
-              pageName="Savings Goals"
-            />
-          </div>
+          {!isMobileApp && (
+            <>
+              <div className="animate-slide-up" style={{ animationDelay: '0.3s' }}>
+                <AIChatbot
+                  pageContext="I'm on the savings goals page where I can track my monthly savings progress toward financial goals."
+                  pageName="Savings Goals"
+                />
+              </div>
 
-          <div className="animate-slide-up" style={{ animationDelay: '0.4s' }}>
-            <FAQ 
-              faqs={[
-                {
-                  question: "How do I set a savings goal?",
-                  answer: "Click on the goal selector at the top of the page. You can create new goals or select existing ones. Enter your target amount and goal name to get started."
-                },
-                {
-                  question: "Can I track multiple savings goals at once?",
-                  answer: "Yes! You can create multiple savings goals (like 'Emergency Fund', 'Vacation', 'New Car') and switch between them to track progress for each one separately."
-                },
-                {
-                  question: "How do I update my monthly savings?",
-                  answer: "Click on any month in the yearly grid and enter the amount you saved that month. The progress bar will automatically update to show your overall achievement toward the goal."
-                },
-                {
-                  question: "What happens if I save more than my target?",
-                  answer: "Great job! The progress tracker will show 100% when you reach your target. You can continue adding monthly savings and either increase your target or create a new goal."
-                }
-              ]}
-              title="Savings Goals FAQs"
-            />
-          </div>
+              <div className="animate-slide-up" style={{ animationDelay: '0.4s' }}>
+                <FAQ 
+                  faqs={[
+                    {
+                      question: "How do I set a savings goal?",
+                      answer: "Click on the goal selector at the top of the page. You can create new goals or select existing ones. Enter your target amount and goal name to get started."
+                    },
+                    {
+                      question: "Can I track multiple savings goals at once?",
+                      answer: "Yes! You can create multiple savings goals (like 'Emergency Fund', 'Vacation', 'New Car') and switch between them to track progress for each one separately."
+                    },
+                    {
+                      question: "How do I update my monthly savings?",
+                      answer: "Click on any month in the yearly grid and enter the amount you saved that month. The progress bar will automatically update to show your overall achievement toward the goal."
+                    },
+                    {
+                      question: "What happens if I save more than my target?",
+                      answer: "Great job! The progress tracker will show 100% when you reach your target. You can continue adding monthly savings and either increase your target or create a new goal."
+                    }
+                  ]}
+                  title="Savings Goals FAQs"
+                />
+              </div>
 
-          <div className="animate-slide-up" style={{ animationDelay: '0.5s' }}>
-            <InternalLinks currentPage="/savings" category="planning" />
-          </div>
+              <div className="animate-slide-up" style={{ animationDelay: '0.5s' }}>
+                <InternalLinks currentPage="/savings" category="planning" />
+              </div>
+            </>
+          )}
         </div>
       </div>
     </div>

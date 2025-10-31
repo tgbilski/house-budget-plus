@@ -164,15 +164,21 @@ const CompareVendors: React.FC = () => {
             ))}
           </div>
 
-          <AIChatbot
-            pageContext="This is the Vendor Comparison page where users can create projects and compare vendor quotes."
-            pageName="Vendor Comparison"
-          />
+          {!isMobileApp && (
+            <>
+              <AIChatbot
+                pageContext="This is the Vendor Comparison page where users can create projects and compare vendor quotes."
+                pageName="Vendor Comparison"
+              />
 
-          <FAQ faqs={vendorComparisonFAQs} title="Vendor Comparison FAQs" />
+              <FAQ faqs={vendorComparisonFAQs} title="Vendor Comparison FAQs" />
+            </>
+          )}
         </div>
 
-        <InternalLinks currentPage="/compare-prices" category="comparison" />
+        {!isMobileApp && (
+          <InternalLinks currentPage="/compare-prices" category="comparison" />
+        )}
       </div>
     </div>
   );
