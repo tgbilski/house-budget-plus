@@ -28,10 +28,10 @@ export const MobileLanding: React.FC = () => {
             />
           </div>
           <div>
-            <h1 className="text-4xl font-bold text-white">
+            <h1 className="text-4xl font-bold text-primary">
               Welcome!
             </h1>
-            <p className="text-lg text-white mt-2">
+            <p className="text-lg text-primary mt-2">
               House Budget Calculator
             </p>
           </div>
