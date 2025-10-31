@@ -495,7 +495,10 @@ export default function Expenses() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-white via-background to-sage/10">
+    <div className={cn(
+      "bg-gradient-to-br from-white via-background to-sage/10",
+      isMobileApp ? "" : "min-h-screen"
+    )}>
       <SEO
         title="Voice Expense Tracker - House Budget Calculator"
         description="Track your daily expenses effortlessly with voice input and AI-powered categorization"
