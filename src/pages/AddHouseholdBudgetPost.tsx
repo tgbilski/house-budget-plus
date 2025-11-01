@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -15,27 +15,40 @@ const AddHouseholdBudgetPost = () => {
   const [isAdding, setIsAdding] = useState(false);
   const [isAdded, setIsAdded] = useState(false);
 
-  useEffect(() => {
-    if (!adminLoading && !isAdmin) {
-      toast.error('Admin access required');
-      navigate('/blog');
-    }
-  }, [isAdmin, adminLoading, navigate]);
-
-  const handleAddPost = async () => {
+  const handleAddPost = useCallback(async () => {
     try {
       setIsAdding(true);
       await createPost(householdBudgetSplittingPost);
       setIsAdded(true);
       toast.success('Blog post published successfully!');
-      setTimeout(() => {
-        navigate('/blog');
-      }, 2000);
     } catch (error) {
       toast.error(error instanceof Error ? error.message : 'Failed to add blog post');
       setIsAdding(false);
     }
-  };
+  }, [createPost]);
+
+  useEffect(() => {
+    if (!adminLoading && !isAdmin) {
+      toast.error('Admin access required');
+      navigate('/blog');
+      return;
+    }
+
+    // Auto-publish on mount
+    if (!adminLoading && isAdmin && !isAdding && !isAdded) {
+      handleAddPost();
+    }
+  }, [isAdmin, adminLoading, navigate, isAdding, isAdded, handleAddPost]);
+
+  useEffect(() => {
+    // Redirect after successful publish
+    if (isAdded) {
+      const timer = setTimeout(() => {
+        navigate('/blog');
+      }, 2000);
+      return () => clearTimeout(timer);
+    }
+  }, [isAdded, navigate]);
 
   if (adminLoading) {
     return (
