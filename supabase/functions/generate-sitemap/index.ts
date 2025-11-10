@@ -68,10 +68,16 @@ Deno.serve(async (req) => {
     <priority>0.7</priority>
   </url>
   <url>
+    <loc>${baseUrl}/expenses</loc>
+    <lastmod>${currentDate}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>${baseUrl}/ai-insights</loc>
     <lastmod>${currentDate}</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
+    <priority>0.7</priority>
   </url>
   <url>
     <loc>${baseUrl}/marketplace</loc>
@@ -83,7 +89,7 @@ Deno.serve(async (req) => {
     <loc>${baseUrl}/blog</loc>
     <lastmod>${currentDate}</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
+    <priority>0.9</priority>
   </url>`;
 
     // Add blog posts dynamically
