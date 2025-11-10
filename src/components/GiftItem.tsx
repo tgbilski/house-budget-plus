@@ -6,6 +6,7 @@ import { Label } from '@/components/ui/label';
 import { Trash2, ExternalLink, Edit2, Save } from 'lucide-react';
 import { GiftItemData } from '@/hooks/useGiftLists'; // Import the type
 import { supabase } from '@/integrations/supabase/client';
+import { useToast } from '@/hooks/use-toast';
 
 interface GiftItemProps {
   item: Partial<GiftItemData>;
@@ -20,6 +21,7 @@ export function GiftItem({ item, onSave, onDelete, isNew = false, onCancel }: Gi
   const [itemData, setItemData] = useState(item);
   const [urlMetadata, setUrlMetadata] = useState<{title: string, image: string} | null>(null);
   const [loadingMetadata, setLoadingMetadata] = useState(false);
+  const { toast } = useToast();
 
   const handleSave = async () => {
     await onSave(itemData);
@@ -63,6 +65,22 @@ export function GiftItem({ item, onSave, onDelete, isNew = false, onCancel }: Gi
 
       if (error) {
         console.error('Error fetching URL metadata:', error);
+        toast({
+          title: "Unable to fetch URL",
+          description: "The URL couldn't be loaded. Please check if it's valid and try again.",
+          variant: "destructive",
+        });
+        setLoadingMetadata(false);
+        return;
+      }
+
+      if (data?.error) {
+        toast({
+          title: "Invalid URL",
+          description: "The URL returned an error. Please verify the link is correct.",
+          variant: "destructive",
+        });
+        setLoadingMetadata(false);
         return;
       }
 

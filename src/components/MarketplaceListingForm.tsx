@@ -113,10 +113,32 @@ export function MarketplaceListingForm({ onClose }: MarketplaceListingFormProps)
         body: { url }
       });
 
-      if (error) throw error;
+      if (error) {
+        toast({
+          title: "Unable to fetch website",
+          description: "Couldn't load the website preview. Please check if the URL is valid.",
+          variant: "destructive",
+        });
+        setIsFetchingMetadata(false);
+        return;
+      }
+
+      if (data?.error) {
+        toast({
+          title: "Invalid website URL",
+          description: "The website couldn't be reached. Please verify the link is correct.",
+          variant: "destructive",
+        });
+        setIsFetchingMetadata(false);
+        return;
+      }
 
       if (data?.image) {
         setThumbnailUrl(data.image);
+        toast({
+          title: "Image fetched",
+          description: "Successfully loaded website preview image.",
+        });
       }
       
       // Optionally pre-fill title/description if empty
