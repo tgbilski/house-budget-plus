@@ -13,4 +13,4 @@ Allow: /
 User-agent: *
 Allow: /
 
-Sitemap: https://jakfagdthwehkvynykwu.supabase.co/functions/v1/generate-sitemap
+Sitemap: https://www.housebudgetcalculator.com/sitemap.xml
