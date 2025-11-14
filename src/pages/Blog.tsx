@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -13,6 +13,7 @@ import { SEO } from '@/components/SEO';
 import { seoData } from '@/utils/seoData';
 import { toast } from 'sonner';
 import { AdSense } from '@/components/AdSense';
+import { emergencyFundGuidePost } from '@/utils/blogPosts/emergencyFundGuide';
 
 const Blog: React.FC = () => {
   const { posts, loading, createPost, updatePost, deletePost } = useBlogPosts();
@@ -22,6 +23,25 @@ const Blog: React.FC = () => {
   const [showForm, setShowForm] = useState(false);
   const [editingPost, setEditingPost] = useState(null);
   const [formLoading, setFormLoading] = useState(false);
+
+  // Auto-publish emergency fund post if user is admin and post doesn't exist
+  useEffect(() => {
+    const autoPublishEmergencyPost = async () => {
+      if (isAdmin && !loading) {
+        const postExists = posts.some(post => post.slug === emergencyFundGuidePost.slug);
+        if (!postExists) {
+          try {
+            await createPost(emergencyFundGuidePost);
+            toast.success('Emergency fund blog post published automatically!');
+          } catch (error) {
+            console.error('Failed to auto-publish emergency fund post:', error);
+          }
+        }
+      }
+    };
+    
+    autoPublishEmergencyPost();
+  }, [isAdmin, loading, posts, createPost]);
 
   const filteredPosts = posts
     .filter(post => {
