@@ -40,6 +40,7 @@ import BlogImageUpdater from "@/pages/BlogImageUpdater";
 import AddBlogPost from "@/pages/AddBlogPost";
 import AddHouseholdBudgetPost from "@/pages/AddHouseholdBudgetPost";
 import UpdateSitemap from "@/pages/UpdateSitemap";
+import GenerateBlogImages from "@/pages/GenerateBlogImages";
 import { Gifts } from "@/pages/Gifts";
 import Marketplace from "@/pages/Marketplace";
 import MyListings from "@/pages/MyListings";
@@ -123,6 +124,7 @@ const AppRoutes = () => {
       <Route path="/admin/add-blog-post" element={<AddBlogPost />} />
       <Route path="/admin/add-household-budget-post" element={<AddHouseholdBudgetPost />} />
       <Route path="/admin/update-sitemap" element={<UpdateSitemap />} />
+      <Route path="/admin/generate-blog-images" element={<GenerateBlogImages />} />
       <Route path="/ai-insights" element={<AIInsights />} />
       <Route path="/subscription-success" element={<SubscriptionSuccess />} />
       <Route path="/about" element={<AboutUs />} />

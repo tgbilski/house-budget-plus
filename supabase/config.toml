@@ -94,3 +94,11 @@ verify_jwt = true
 [[edge_functions.functions]]
 name = "voice-expense"
 verify_jwt = true
+
+[[edge_functions.functions]]
+name = "generate-sitemap"
+verify_jwt = false
+
+[[edge_functions.functions]]
+name = "generate-blog-images"
+verify_jwt = true
