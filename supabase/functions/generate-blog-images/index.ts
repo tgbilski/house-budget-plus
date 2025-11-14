@@ -13,7 +13,7 @@ Deno.serve(async (req) => {
   try {
     console.log('Starting generate-blog-images function');
     
-    // Get authorization header
+    // Get authorization header and extract JWT
     const authHeader = req.headers.get('Authorization');
     console.log('Authorization header present:', !!authHeader);
     
@@ -25,22 +25,21 @@ Deno.serve(async (req) => {
       );
     }
 
-    // First, verify user with their JWT token using anon key
-    const supabaseAuth = createClient(
+    // Extract JWT token from "Bearer <token>"
+    const jwt = authHeader.replace('Bearer ', '');
+    console.log('JWT extracted, length:', jwt.length);
+
+    // Use service role client to verify the JWT
+    const supabaseClient = createClient(
       Deno.env.get('SUPABASE_URL') ?? '',
-      Deno.env.get('SUPABASE_ANON_KEY') ?? '',
-      {
-        global: {
-          headers: { Authorization: authHeader },
-        },
-      }
+      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
     )
 
-    // Get the user from their JWT
+    // Verify the JWT and get user
     const {
       data: { user },
       error: userError,
-    } = await supabaseAuth.auth.getUser()
+    } = await supabaseClient.auth.getUser(jwt)
 
     console.log('User lookup result:', { hasUser: !!user, error: userError?.message });
 
@@ -54,8 +53,8 @@ Deno.serve(async (req) => {
 
     console.log('Checking admin role for user:', user.id);
 
-    // Check admin role using the authenticated client
-    const { data: roleData, error: roleError } = await supabaseAuth
+    // Check admin role
+    const { data: roleData, error: roleError } = await supabaseClient
       .from('user_roles')
       .select('role')
       .eq('user_id', user.id)
@@ -73,12 +72,6 @@ Deno.serve(async (req) => {
     }
 
     console.log('Admin verified, proceeding with image generation');
-
-    // Now use service role key for the actual operations (fetching posts, uploading, etc.)
-    const supabaseClient = createClient(
-      Deno.env.get('SUPABASE_URL') ?? '',
-      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
-    )
 
     // Fetch all blog posts without featured images or with null images
     const { data: posts, error: postsError } = await supabaseClient
