@@ -8,7 +8,6 @@ import { useBlogPosts } from '@/hooks/useBlogPosts';
 import { SEO } from '@/components/SEO';
 import ReactMarkdown from 'react-markdown';
 import { AdSense } from '@/components/AdSense';
-import { getBlogImageUrl } from '@/utils/blogImages';
 
 const BlogPost: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -66,7 +65,7 @@ const BlogPost: React.FC = () => {
     );
   }
 
-  const imageUrl = getBlogImageUrl(post.slug, post.featured_image_url);
+  const imageUrl = post.featured_image_url || '/placeholder.svg';
 
   return (
     <>

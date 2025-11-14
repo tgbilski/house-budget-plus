@@ -5,7 +5,6 @@ import { Badge } from '@/components/ui/badge';
 import { Calendar, Clock, User } from 'lucide-react';
 import { BlogPost } from '@/hooks/useBlogPosts';
 import { format } from 'date-fns';
-import { getBlogImageUrl } from '@/utils/blogImages';
 
 interface BlogPostCardProps {
   post: BlogPost;
@@ -19,7 +18,7 @@ export const BlogPostCard: React.FC<BlogPostCardProps> = ({
   isOwner = false 
 }) => {
   const publishedDate = post.published_at || post.created_at;
-  const imageUrl = getBlogImageUrl(post.slug, post.featured_image_url);
+  const imageUrl = post.featured_image_url || '/placeholder.svg';
 
   return (
     <Link to={`/blog/${post.slug}`} className="block h-full">
