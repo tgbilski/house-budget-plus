@@ -44,37 +44,45 @@ const Blog: React.FC = () => {
     autoPublishEmergencyPost();
   }, [isAdmin, loading, posts, createPost]);
 
-  // Auto-generate images for blog posts without featured images
-  useEffect(() => {
-    const autoGenerateImages = async () => {
-      if (isAdmin && !loading && posts.length > 0) {
-        const postsWithoutImages = posts.filter(post => !post.featured_image_url);
-        
-        if (postsWithoutImages.length > 0) {
-          console.log(`Found ${postsWithoutImages.length} posts without images, generating...`);
-          
-          try {
-            const { data, error } = await supabase.functions.invoke('generate-blog-images', {
-              body: {}
-            });
+  const handleGenerateImages = async () => {
+    const postsWithoutImages = posts.filter(post => !post.featured_image_url);
+    
+    if (postsWithoutImages.length === 0) {
+      toast.info('All posts already have images!');
+      return;
+    }
 
-            if (error) {
-              console.error('Error generating images:', error);
-            } else {
-              const successCount = data.results?.filter((r: any) => r.success).length || 0;
-              if (successCount > 0) {
-                toast.success(`Generated ${successCount} blog post images!`);
-              }
-            }
-          } catch (error) {
-            console.error('Failed to auto-generate images:', error);
-          }
+    toast.info(`Generating images for ${postsWithoutImages.length} posts...`);
+    
+    try {
+      // Get current session
+      const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+      
+      if (sessionError || !session) {
+        toast.error('Please log in again - your session has expired');
+        return;
+      }
+
+      const { data, error } = await supabase.functions.invoke('generate-blog-images', {
+        body: {}
+      });
+
+      if (error) {
+        console.error('Error generating images:', error);
+        toast.error(`Failed to generate images: ${error.message}`);
+      } else {
+        const successCount = data.results?.filter((r: any) => r.success).length || 0;
+        if (successCount > 0) {
+          toast.success(`Generated ${successCount} blog post images!`);
+          // Refresh posts to show new images
+          window.location.reload();
         }
       }
-    };
-    
-    autoGenerateImages();
-  }, [isAdmin, loading, posts]);
+    } catch (error: any) {
+      console.error('Failed to generate images:', error);
+      toast.error(`Error: ${error.message || 'Unknown error'}`);
+    }
+  };
 
   const filteredPosts = posts
     .filter(post => {
@@ -203,13 +211,22 @@ const Blog: React.FC = () => {
               </div>
 
               {isAdmin && (
-                <Button 
-                  onClick={() => setShowForm(true)}
-                  className="flex items-center gap-2"
-                >
-                  <Plus className="h-4 w-4" />
-                  New Post
-                </Button>
+                <div className="flex gap-2">
+                  <Button 
+                    onClick={handleGenerateImages}
+                    variant="outline"
+                    className="flex items-center gap-2"
+                  >
+                    Generate Images
+                  </Button>
+                  <Button 
+                    onClick={() => setShowForm(true)}
+                    className="flex items-center gap-2"
+                  >
+                    <Plus className="h-4 w-4" />
+                    New Post
+                  </Button>
+                </div>
               )}
             </div>
           </div>
