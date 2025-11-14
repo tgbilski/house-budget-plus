@@ -11,12 +11,26 @@ Deno.serve(async (req) => {
   }
 
   try {
+    console.log('Starting generate-blog-images function');
+    
+    // Get authorization header
+    const authHeader = req.headers.get('Authorization');
+    console.log('Authorization header present:', !!authHeader);
+    
+    if (!authHeader) {
+      console.error('No authorization header provided');
+      return new Response(
+        JSON.stringify({ error: 'No authorization header' }),
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 401 }
+      );
+    }
+
     const supabaseClient = createClient(
       Deno.env.get('SUPABASE_URL') ?? '',
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? '',
       {
         global: {
-          headers: { Authorization: req.headers.get('Authorization')! },
+          headers: { Authorization: authHeader },
         },
       }
     )
@@ -27,9 +41,17 @@ Deno.serve(async (req) => {
       error: userError,
     } = await supabaseClient.auth.getUser()
 
+    console.log('User lookup result:', { hasUser: !!user, error: userError?.message });
+
     if (userError || !user) {
-      throw new Error('Unauthorized')
+      console.error('Auth error:', userError);
+      return new Response(
+        JSON.stringify({ error: 'Unauthorized - could not verify user' }),
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 401 }
+      );
     }
+
+    console.log('Checking admin role for user:', user.id);
 
     const { data: roleData, error: roleError } = await supabaseClient
       .from('user_roles')
@@ -38,9 +60,17 @@ Deno.serve(async (req) => {
       .eq('role', 'admin')
       .maybeSingle()
 
+    console.log('Role check result:', { hasRole: !!roleData, error: roleError?.message });
+
     if (roleError || !roleData) {
-      throw new Error('Admin access required')
+      console.error('Not an admin:', { roleError, roleData });
+      return new Response(
+        JSON.stringify({ error: 'Admin access required' }),
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 403 }
+      );
     }
+
+    console.log('Admin verified, proceeding with image generation');
 
     // Fetch all blog posts without featured images or with null images
     const { data: posts, error: postsError } = await supabaseClient
