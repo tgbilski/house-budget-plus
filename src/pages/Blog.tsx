@@ -14,6 +14,7 @@ import { seoData } from '@/utils/seoData';
 import { toast } from 'sonner';
 import { AdSense } from '@/components/AdSense';
 import { emergencyFundGuidePost } from '@/utils/blogPosts/emergencyFundGuide';
+import { supabase } from '@/integrations/supabase/client';
 
 const Blog: React.FC = () => {
   const { posts, loading, createPost, updatePost, deletePost } = useBlogPosts();
@@ -42,6 +43,38 @@ const Blog: React.FC = () => {
     
     autoPublishEmergencyPost();
   }, [isAdmin, loading, posts, createPost]);
+
+  // Auto-generate images for blog posts without featured images
+  useEffect(() => {
+    const autoGenerateImages = async () => {
+      if (isAdmin && !loading && posts.length > 0) {
+        const postsWithoutImages = posts.filter(post => !post.featured_image_url);
+        
+        if (postsWithoutImages.length > 0) {
+          console.log(`Found ${postsWithoutImages.length} posts without images, generating...`);
+          
+          try {
+            const { data, error } = await supabase.functions.invoke('generate-blog-images', {
+              body: {}
+            });
+
+            if (error) {
+              console.error('Error generating images:', error);
+            } else {
+              const successCount = data.results?.filter((r: any) => r.success).length || 0;
+              if (successCount > 0) {
+                toast.success(`Generated ${successCount} blog post images!`);
+              }
+            }
+          } catch (error) {
+            console.error('Failed to auto-generate images:', error);
+          }
+        }
+      }
+    };
+    
+    autoGenerateImages();
+  }, [isAdmin, loading, posts]);
 
   const filteredPosts = posts
     .filter(post => {
