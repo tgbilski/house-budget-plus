@@ -173,7 +173,7 @@ const Blog: React.FC = () => {
             <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-teal to-teal/60 rounded-2xl shadow-lg mb-6">
               <BookOpen className="h-8 w-8 text-white" />
             </div>
-            <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-foreground to-teal bg-clip-text text-transparent mb-4">
+            <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-foreground to-teal bg-clip-text text-transparent mb-4 pb-2 leading-tight">
               Financial Insights Blog
             </h1>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
