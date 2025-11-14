@@ -38,6 +38,10 @@ Your emergency fund needs to be easily accessible but separate from daily spendi
 
 **Avoid:** Stock market investments, CDs with early withdrawal penalties, or accounts with monthly limits on withdrawals.
 
+## Track Your Progress with Our Savings Goals Tool
+
+Use our [Savings Goals page](/savings) to create a dedicated emergency fund goal and monitor your progress visually. You can set your target amount, add monthly contributions, and watch your progress grow with interactive charts and goal tracking. It's the perfect way to stay motivated and see exactly how close you are to reaching your emergency fund target.
+
 ## 8 Practical Strategies to Build Your Fund
 
 ### 1. Start Small and Stay Consistent
@@ -94,9 +98,15 @@ Not emergencies:
 
 ## Tracking Your Progress
 
-Use our savings goals feature to monitor your emergency fund progress. Watching your balance grow provides motivation to keep going. Celebrate milestones like reaching $500, $1,000, and each month of expenses saved.
+Our [Savings Goals tracker](/savings) makes it easy to monitor your emergency fund progress with visual charts and milestone celebrations. You can:
 
-Set up visual reminders of your goal—a chart on the refrigerator or a progress bar on your phone wallpaper can keep you motivated during tough months.
+- Set your emergency fund target amount (3-6 months of expenses)
+- Log monthly savings contributions
+- View progress charts showing how far you've come
+- Track multiple savings goals simultaneously
+- Get motivated by seeing your balance grow over time
+
+Celebrate milestones like reaching $500, $1,000, and each month of expenses saved. The visual feedback from watching your progress bar fill up provides powerful motivation to keep going, especially during tough months when saving feels difficult.
 
 ## What Happens After You're Fully Funded?
 
@@ -111,9 +121,9 @@ Once your emergency fund reaches your target:
 
 Your emergency fund is the foundation of financial security. It protects your family, reduces stress, and provides options when life throws curveballs. The best time to start was yesterday—the second best time is today.
 
-Use our household budget calculator to determine how much you can save each month without derailing your current budget. Remember: every dollar saved is a step toward greater financial peace of mind.
+Use our [household budget calculator](/budget) to determine how much you can save each month without derailing your current budget, then set up your emergency fund goal on our [Savings Goals page](/savings) to track your progress with visual charts and milestone celebrations.
 
-**Action Step:** Right now, open your banking app and schedule your first automatic transfer to a dedicated savings account. Even $10 per paycheck is progress. The journey of a thousand miles begins with a single step—or in this case, a single dollar.`,
+**Action Step:** Right now, take two actions: First, open your banking app and schedule your first automatic transfer to a dedicated savings account. Second, visit our [Savings Goals page](/savings) and create your emergency fund goal—set your target amount and log your first contribution. Even $10 per paycheck is progress. The journey of a thousand miles begins with a single step—or in this case, a single dollar.`,
   slug: "emergency-fund-guide-families",
   published: true,
   tags: ["Savings", "Emergency Fund", "Financial Planning", "Budget Tips", "Family Finance"],
