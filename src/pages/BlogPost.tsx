@@ -8,6 +8,7 @@ import { useBlogPosts } from '@/hooks/useBlogPosts';
 import { SEO } from '@/components/SEO';
 import ReactMarkdown from 'react-markdown';
 import { AdSense } from '@/components/AdSense';
+import { getBlogImageUrl } from '@/utils/blogImages';
 
 const BlogPost: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -65,6 +66,8 @@ const BlogPost: React.FC = () => {
     );
   }
 
+  const imageUrl = getBlogImageUrl(post.slug, post.featured_image_url);
+
   return (
     <>
       <SEO
@@ -72,13 +75,13 @@ const BlogPost: React.FC = () => {
         description={post.excerpt || post.content.substring(0, 160)}
         keywords={post.tags?.join(', ') || 'house budget, budgeting, financial planning'}
         canonical={`https://www.housebudgetcalculator.com/blog/${slug}`}
-        ogImage={post.featured_image_url || 'https://www.housebudgetcalculator.com/lovable-uploads/calculator-preview-hero.png'}
+        ogImage={imageUrl}
         structuredData={{
           "@context": "https://schema.org",
           "@type": "BlogPosting",
           "headline": post.title,
           "description": post.excerpt || post.content.substring(0, 160),
-          "image": post.featured_image_url || 'https://www.housebudgetcalculator.com/lovable-uploads/calculator-preview-hero.png',
+          "image": imageUrl,
           "datePublished": post.published_at || post.created_at,
           "dateModified": post.updated_at || post.created_at,
           "author": {
@@ -112,19 +115,17 @@ const BlogPost: React.FC = () => {
           </Link>
 
           <Card className="overflow-hidden">
-            {post.featured_image_url && (
-              <div className="w-full h-64 md:h-96 overflow-hidden">
-                <img 
-                  src={post.featured_image_url} 
-                  alt={`Featured image for ${post.title} - Financial advice article`}
-                  className="w-full h-full object-cover"
-                  loading="eager"
-                  fetchPriority="high"
-                  width={800}
-                  height={400}
-                />
-              </div>
-            )}
+            <div className="w-full h-64 md:h-96 overflow-hidden">
+              <img 
+                src={imageUrl} 
+                alt={`Featured image for ${post.title} - Financial advice article`}
+                className="w-full h-full object-cover"
+                loading="eager"
+                fetchPriority="high"
+                width={800}
+                height={400}
+              />
+            </div>
             
             <CardHeader className="space-y-4">
               <div className="flex flex-wrap gap-2">

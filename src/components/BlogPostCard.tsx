@@ -5,6 +5,7 @@ import { Badge } from '@/components/ui/badge';
 import { Calendar, Clock, User } from 'lucide-react';
 import { BlogPost } from '@/hooks/useBlogPosts';
 import { format } from 'date-fns';
+import { getBlogImageUrl } from '@/utils/blogImages';
 
 interface BlogPostCardProps {
   post: BlogPost;
@@ -18,20 +19,19 @@ export const BlogPostCard: React.FC<BlogPostCardProps> = ({
   isOwner = false 
 }) => {
   const publishedDate = post.published_at || post.created_at;
+  const imageUrl = getBlogImageUrl(post.slug, post.featured_image_url);
 
   return (
     <Link to={`/blog/${post.slug}`} className="block h-full">
       <Card className="group relative hover:shadow-xl transition-all duration-300 border-2 hover:border-primary/20 cursor-pointer hover:scale-[1.02] h-full animate-fade-in bg-gradient-to-br from-white to-gray-50 overflow-hidden">
-        {post.featured_image_url && (
-          <div className="w-full h-48 overflow-hidden">
-            <img 
-              src={post.featured_image_url} 
-              alt={post.title}
-              className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-              loading="lazy"
-            />
-          </div>
-        )}
+        <div className="w-full h-48 overflow-hidden">
+          <img 
+            src={imageUrl} 
+            alt={post.title}
+            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+            loading="lazy"
+          />
+        </div>
         
         <CardHeader className="p-6">
           <div className="flex items-center justify-between mb-2">
