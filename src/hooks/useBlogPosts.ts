@@ -67,6 +67,16 @@ export const useBlogPosts = () => {
       if (error) throw error;
       
       await fetchPosts();
+      
+      // Automatically regenerate sitemap after creating a post
+      try {
+        await supabase.functions.invoke('generate-sitemap');
+        console.log('Sitemap updated automatically after blog post creation');
+      } catch (sitemapError) {
+        console.error('Failed to update sitemap:', sitemapError);
+        // Don't throw - sitemap update failure shouldn't block post creation
+      }
+      
       return data;
     } catch (err) {
       throw new Error(err instanceof Error ? err.message : 'Failed to create post');
@@ -87,6 +97,15 @@ export const useBlogPosts = () => {
       if (error) throw error;
       
       await fetchPosts();
+      
+      // Automatically regenerate sitemap after updating a post
+      try {
+        await supabase.functions.invoke('generate-sitemap');
+        console.log('Sitemap updated automatically after blog post update');
+      } catch (sitemapError) {
+        console.error('Failed to update sitemap:', sitemapError);
+      }
+      
       return data;
     } catch (err) {
       throw new Error(err instanceof Error ? err.message : 'Failed to update post');
@@ -105,6 +124,14 @@ export const useBlogPosts = () => {
       if (error) throw error;
       
       await fetchPosts();
+      
+      // Automatically regenerate sitemap after deleting a post
+      try {
+        await supabase.functions.invoke('generate-sitemap');
+        console.log('Sitemap updated automatically after blog post deletion');
+      } catch (sitemapError) {
+        console.error('Failed to update sitemap:', sitemapError);
+      }
     } catch (err) {
       throw new Error(err instanceof Error ? err.message : 'Failed to delete post');
     }
