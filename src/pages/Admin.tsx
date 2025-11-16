@@ -10,10 +10,11 @@ import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useAdminStatus } from "@/hooks/useAdminStatus";
 import { useAuth } from "@/hooks/useAuth";
-import { Loader2, CheckCircle, XCircle, AlertTriangle, Shield, PenSquare } from "lucide-react";
+import { Loader2, CheckCircle, XCircle, AlertTriangle, Shield, PenSquare, TrendingUp, Users, Home, Store, CreditCard } from "lucide-react";
 import { BlogPostForm } from "@/components/BlogPostForm";
 import { BlogPost } from "@/hooks/useBlogPosts";
 import { SEO } from "@/components/SEO";
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
 interface Listing {
   id: string;
@@ -37,6 +38,14 @@ export default function Admin() {
   const [pendingListings, setPendingListings] = useState<Listing[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [metrics, setMetrics] = useState({
+    users: 0,
+    subscribers: 0,
+    listings: 0,
+    households: 0,
+  });
+  const [userGrowth, setUserGrowth] = useState<{ date: string; users: number }[]>([]);
+  const [metricsLoading, setMetricsLoading] = useState(true);
   const { toast } = useToast();
   const navigate = useNavigate();
   const { isAdmin, loading: adminLoading } = useAdminStatus();
@@ -51,8 +60,56 @@ export default function Admin() {
   useEffect(() => {
     if (isAdmin) {
       loadListings();
+      loadMetrics();
     }
   }, [isAdmin]);
+
+  const loadMetrics = async () => {
+    setMetricsLoading(true);
+    try {
+      const [usersRes, subscribersRes, listingsRes, householdsRes, profilesRes] = await Promise.all([
+        supabase.from('profiles').select('id', { count: 'exact', head: true }),
+        supabase.from('subscribers').select('id', { count: 'exact', head: true }).eq('subscribed', true),
+        supabase.from('marketplace_listings').select('id', { count: 'exact', head: true }),
+        supabase.from('households').select('id', { count: 'exact', head: true }),
+        supabase.from('profiles').select('created_at').order('created_at', { ascending: true })
+      ]);
+
+      setMetrics({
+        users: usersRes.count || 0,
+        subscribers: subscribersRes.count || 0,
+        listings: listingsRes.count || 0,
+        households: householdsRes.count || 0,
+      });
+
+      // Process user growth data
+      if (profilesRes.data) {
+        const growthMap = new Map<string, number>();
+        let cumulativeUsers = 0;
+
+        profilesRes.data.forEach(profile => {
+          const date = new Date(profile.created_at).toISOString().split('T')[0];
+          cumulativeUsers++;
+          growthMap.set(date, cumulativeUsers);
+        });
+
+        const growthData = Array.from(growthMap.entries())
+          .map(([date, users]) => ({ date, users }))
+          .slice(-30); // Last 30 days
+
+        setUserGrowth(growthData);
+      }
+    } catch (error) {
+      console.error("Error loading metrics:", error);
+      toast({
+        title: "Error",
+        description: "Failed to load metrics",
+        variant: "destructive",
+      });
+    } finally {
+      setMetricsLoading(false);
+    }
+  };
 
   const loadListings = async () => {
     setIsLoading(true);
@@ -299,6 +356,7 @@ export default function Admin() {
           <TabsList className="mb-6">
             <TabsTrigger value="blog">Blog Management</TabsTrigger>
             <TabsTrigger value="listings">Listing Management</TabsTrigger>
+            <TabsTrigger value="metrics">Metrics</TabsTrigger>
           </TabsList>
 
           <TabsContent value="blog" className="space-y-6">
@@ -373,6 +431,97 @@ export default function Admin() {
                 )}
               </TabsContent>
             </Tabs>
+          </TabsContent>
+
+          <TabsContent value="metrics" className="space-y-6">
+            {metricsLoading ? (
+              <div className="flex justify-center items-center py-12">
+                <Loader2 className="h-8 w-8 animate-spin text-primary" />
+              </div>
+            ) : (
+              <>
+                <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+                  <Card>
+                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                      <CardTitle className="text-sm font-medium">Total Users</CardTitle>
+                      <Users className="h-4 w-4 text-muted-foreground" />
+                    </CardHeader>
+                    <CardContent>
+                      <div className="text-2xl font-bold">{metrics.users}</div>
+                    </CardContent>
+                  </Card>
+
+                  <Card>
+                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                      <CardTitle className="text-sm font-medium">Active Subscribers</CardTitle>
+                      <CreditCard className="h-4 w-4 text-muted-foreground" />
+                    </CardHeader>
+                    <CardContent>
+                      <div className="text-2xl font-bold">{metrics.subscribers}</div>
+                    </CardContent>
+                  </Card>
+
+                  <Card>
+                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                      <CardTitle className="text-sm font-medium">Total Listings</CardTitle>
+                      <Store className="h-4 w-4 text-muted-foreground" />
+                    </CardHeader>
+                    <CardContent>
+                      <div className="text-2xl font-bold">{metrics.listings}</div>
+                    </CardContent>
+                  </Card>
+
+                  <Card>
+                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                      <CardTitle className="text-sm font-medium">Total Households</CardTitle>
+                      <Home className="h-4 w-4 text-muted-foreground" />
+                    </CardHeader>
+                    <CardContent>
+                      <div className="text-2xl font-bold">{metrics.households}</div>
+                    </CardContent>
+                  </Card>
+                </div>
+
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <TrendingUp className="h-5 w-5" />
+                      User Growth (Last 30 Days)
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    {userGrowth.length > 0 ? (
+                      <ResponsiveContainer width="100%" height={350}>
+                        <LineChart data={userGrowth}>
+                          <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
+                          <XAxis 
+                            dataKey="date" 
+                            className="text-xs"
+                            tickFormatter={(value) => new Date(value).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                          />
+                          <YAxis className="text-xs" />
+                          <Tooltip 
+                            labelFormatter={(value) => new Date(value).toLocaleDateString()}
+                            contentStyle={{ backgroundColor: 'hsl(var(--card))', border: '1px solid hsl(var(--border))' }}
+                          />
+                          <Line 
+                            type="monotone" 
+                            dataKey="users" 
+                            stroke="hsl(var(--primary))" 
+                            strokeWidth={2}
+                            dot={{ fill: 'hsl(var(--primary))' }}
+                          />
+                        </LineChart>
+                      </ResponsiveContainer>
+                    ) : (
+                      <div className="flex justify-center items-center h-64 text-muted-foreground">
+                        No user growth data available
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
+              </>
+            )}
           </TabsContent>
         </Tabs>
       </main>
