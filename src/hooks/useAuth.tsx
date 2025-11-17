@@ -61,7 +61,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const signUp = async (email: string, password: string) => {
     const redirectUrl = `${window.location.origin}/`;
     
-    const { error } = await supabase.auth.signUp({
+    const { data, error } = await supabase.auth.signUp({
       email,
       password,
       options: {
@@ -83,9 +83,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         variant: "destructive",
       });
     } else {
+      // Check if email confirmation is required
+      const needsEmailConfirmation = data.user && !data.session;
+      
       toast({
         title: "Success!",
-        description: "Account created successfully. You are now signed in.",
+        description: needsEmailConfirmation 
+          ? "Please check your email to verify your account before signing in."
+          : "Account created successfully. You are now signed in.",
       });
     }
 
