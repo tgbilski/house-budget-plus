@@ -113,13 +113,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           description: error.message,
           variant: "destructive",
         });
-      } else {
-        toast({
-          title: "Welcome back!",
-          description: "You have successfully signed in.",
-        });
-        // ❌ The line `window.location.href = '/';` has been removed.
-        // The `onAuthStateChange` listener will now handle the state update.
       }
 
       return { error };
