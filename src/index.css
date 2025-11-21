@@ -169,6 +169,6 @@
   }
 
   .animate-pulse-subtle {
-    animation: pulse-subtle 4s infinite;
+    animation: pulse-subtle 10s infinite;
   }
 }
