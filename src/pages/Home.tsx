@@ -194,7 +194,7 @@ const PremiumButton = () => {
         </Link>
         <p className="text-xs text-muted-foreground flex items-center gap-2">
           <span className="h-1.5 w-1.5 rounded-full bg-success"></span>
-          No credit card required • Anonymous signup available • Free forever
+          No credit card required • Anonymous data tracking • Support small business
         </p>
       </div>
     );
