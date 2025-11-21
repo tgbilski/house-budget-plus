@@ -127,6 +127,47 @@ const StepCard: React.FC<{
   </Link>
 );
 
+const StickySignupBanner = () => {
+  const { user } = useAuth();
+  const { subscribed } = useSubscription();
+  const [isVisible, setIsVisible] = useState(true);
+
+  if (user && subscribed) {
+    return null;
+  }
+
+  if (!isVisible) {
+    return null;
+  }
+
+  return (
+    <div className="fixed top-0 left-0 right-0 z-50 bg-gradient-to-r from-primary to-[hsl(var(--primary-glow))] text-white shadow-[var(--shadow-elegant)] animate-slide-down">
+      <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between gap-4">
+        <div className="flex items-center gap-2 flex-1">
+          <UserCheck className="h-5 w-5 flex-shrink-0" />
+          <p className="text-sm md:text-base font-semibold">
+            Join 20+ users taking control of their finances today!
+          </p>
+        </div>
+        <div className="flex items-center gap-2">
+          <Link to="/auth">
+            <Button size="sm" className="bg-white text-primary hover:bg-white/90 font-bold shadow-lg">
+              {user ? "Upgrade to Premium" : "Sign Up Free"}
+            </Button>
+          </Link>
+          <button 
+            onClick={() => setIsVisible(false)}
+            className="p-1 hover:bg-white/20 rounded transition-colors"
+            aria-label="Close banner"
+          >
+            <ChevronDown className="h-5 w-5 rotate-180" />
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 const ScrollIndicator = () => (
   <div className="flex justify-center py-4">
     <ChevronDown className="h-8 w-8 text-muted-foreground animate-bounce opacity-50" />
@@ -143,14 +184,18 @@ const PremiumButton = () => {
 
   if (!user) {
     return (
-      <div className="flex justify-center lg:justify-start mb-4">
+      <div className="flex flex-col items-center lg:items-start gap-3 mb-4">
         <Link 
           to="/auth" 
-          className="inline-flex items-center justify-center px-8 py-4 text-base font-semibold text-white bg-gradient-to-r from-primary to-[hsl(var(--primary-glow))] hover:shadow-[var(--shadow-glow)] rounded-xl shadow-lg transition-all duration-300 hover:scale-105 hover:-translate-y-0.5"
+          className="inline-flex items-center justify-center px-10 py-5 text-lg font-bold text-white bg-gradient-to-r from-primary to-[hsl(var(--primary-glow))] hover:shadow-[var(--shadow-glow)] rounded-2xl shadow-xl transition-all duration-300 hover:scale-105 hover:-translate-y-0.5 animate-pulse-subtle"
         >
-          <UserCheck className="h-5 w-5 mr-2" />
-          Sign Up for Free
+          <UserCheck className="h-6 w-6 mr-2" />
+          Start Your Free Budget Now
         </Link>
+        <p className="text-xs text-muted-foreground flex items-center gap-2">
+          <span className="h-1.5 w-1.5 rounded-full bg-success"></span>
+          No credit card required • Anonymous signup available • Free forever
+        </p>
       </div>
     );
   }
@@ -201,11 +246,23 @@ const HeroSectionContent = () => (
       </div>
       
       <div className="lg:col-span-3 text-center lg:text-left order-1 lg:order-2 px-2">
+        <div className="inline-block bg-gradient-to-r from-teal/10 to-primary/10 px-4 py-2 rounded-full mb-3 md:mb-4 border border-primary/20">
+          <p className="text-sm font-semibold text-foreground flex items-center gap-2 justify-center lg:justify-start">
+            <span className="flex h-2 w-2 relative">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
+            </span>
+            Join 20+ users managing their budgets smarter
+          </p>
+        </div>
         <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold mb-3 md:mb-4 text-foreground leading-tight">
-          Own Your <span className="bg-gradient-to-r from-primary to-[hsl(var(--primary-glow))] bg-clip-text text-transparent">House Budget</span>
+          Stop Living <span className="bg-gradient-to-r from-primary to-[hsl(var(--primary-glow))] bg-clip-text text-transparent">Paycheck to Paycheck</span>
         </h1>
+        <p className="text-lg md:text-xl lg:text-2xl font-semibold text-foreground mb-2">
+          Build your personalized budget in 5 minutes
+        </p>
         <p className="text-sm md:text-base lg:text-lg text-muted-foreground mb-4 md:mb-6 leading-relaxed">
-          <strong className="text-foreground">Your data stays yours.</strong> No bank connections required. Our AI helps you develop a personalized financial plan using only the data you choose to share.
+          <strong className="text-foreground">Your data stays yours.</strong> No bank connections required. Our AI helps you create a financial plan using only the data you choose to share.
         </p>
         
         <div className="mb-6 animate-fade-in" style={{ animationDelay: '0.3s' }}>
@@ -216,9 +273,6 @@ const HeroSectionContent = () => (
           <PremiumButton />
         </div>
         
-        <p className="text-sm text-muted-foreground">
-          Free to use • No credit card required • Anonymous signup available
-        </p>
       </div>
     </div>
   </section>
@@ -429,6 +483,7 @@ const FeaturePreviewsGrid = () => {
 const Home = () => {
   return (
     <>
+      <StickySignupBanner />
       <SEO
         title={seoData.home.title}
         description={seoData.home.description}
