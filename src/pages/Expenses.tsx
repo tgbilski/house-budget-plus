@@ -571,7 +571,7 @@ export default function Expenses() {
                     "w-32 h-32 rounded-full transition-all duration-300",
                     isRecording
                       ? "bg-destructive hover:bg-destructive/90 animate-pulse"
-                      : "bg-gradient-to-br from-primary to-primary-glow hover:scale-110 animate-[pulse_8s_ease-in-out_infinite]"
+                      : "bg-gradient-to-br from-primary to-primary-glow hover:scale-110"
                   )}
                 >
                   {isRecording ? (
