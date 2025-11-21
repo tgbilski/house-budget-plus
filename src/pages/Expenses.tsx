@@ -568,16 +568,16 @@ export default function Expenses() {
                   onClick={isRecording ? stopRecording : startRecording}
                   disabled={isProcessing}
                   className={cn(
-                    "w-64 h-64 rounded-full transition-all duration-300",
+                    "w-32 h-32 rounded-full transition-all duration-300",
                     isRecording
                       ? "bg-destructive hover:bg-destructive/90 animate-pulse"
                       : "bg-gradient-to-br from-primary to-primary-glow hover:scale-110"
                   )}
                 >
                   {isRecording ? (
-                    <MicOff className="h-32 w-32" />
+                    <MicOff className="h-20 w-20" />
                   ) : (
-                    <Mic className="h-32 w-32" />
+                    <Mic className="h-20 w-20" />
                   )}
                 </Button>
               </div>
