@@ -246,23 +246,11 @@ const HeroSectionContent = () => (
       </div>
       
       <div className="lg:col-span-3 text-center lg:text-left order-1 lg:order-2 px-2">
-        <div className="inline-block bg-gradient-to-r from-teal/10 to-primary/10 px-4 py-2 rounded-full mb-3 md:mb-4 border border-primary/20">
-          <p className="text-sm font-semibold text-foreground flex items-center gap-2 justify-center lg:justify-start">
-            <span className="flex h-2 w-2 relative">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
-            </span>
-            Join 20+ users managing their budgets smarter
-          </p>
-        </div>
         <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold mb-3 md:mb-4 text-foreground leading-tight">
           Stop Living <span className="bg-gradient-to-r from-primary to-[hsl(var(--primary-glow))] bg-clip-text text-transparent">Paycheck to Paycheck</span>
         </h1>
-        <p className="text-lg md:text-xl lg:text-2xl font-semibold text-foreground mb-2">
+        <p className="text-lg md:text-xl lg:text-2xl font-semibold text-foreground mb-4 md:mb-6">
           Build your personalized budget in 5 minutes
-        </p>
-        <p className="text-sm md:text-base lg:text-lg text-muted-foreground mb-4 md:mb-6 leading-relaxed">
-          <strong className="text-foreground">Your data stays yours.</strong> No bank connections required. Our AI helps you create a financial plan using only the data you choose to share.
         </p>
         
         <div className="mb-6 animate-fade-in" style={{ animationDelay: '0.3s' }}>
