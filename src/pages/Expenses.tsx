@@ -575,9 +575,9 @@ export default function Expenses() {
                   )}
                 >
                   {isRecording ? (
-                    <MicOff className="h-16 w-16" />
+                    <MicOff className="h-48 w-48" />
                   ) : (
-                    <Mic className="h-16 w-16" />
+                    <Mic className="h-48 w-48" />
                   )}
                 </Button>
               </div>
