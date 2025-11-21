@@ -146,8 +146,9 @@ const AppLayout = () => {
 
   // Simplified layout for mobile app
   if (isMobileApp) {
-    // Landing page - no header or nav
-    if (isLandingPage) {
+    // Landing/auth pages - no header or nav
+    const isAuthPage = isLandingPage || location.pathname === '/auth';
+    if (isAuthPage) {
       return (
         <div className="min-h-screen w-full flex flex-col bg-background">
           <main id="main-content" className="flex-1">
