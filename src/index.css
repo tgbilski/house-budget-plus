@@ -169,6 +169,6 @@
   }
 
   .animate-pulse-subtle {
-    animation: pulse-subtle 4s ease-in-out infinite;
+    animation: pulse-subtle 8s ease-in-out infinite;
   }
 }
