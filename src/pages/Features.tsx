@@ -13,6 +13,7 @@ import vendorComparisonImg from '@/assets/features/vendor-comparison.png';
 import giftListsImg from '@/assets/features/gift-lists.png';
 import marketplaceImg from '@/assets/features/marketplace.png';
 import aiAdvisorImg from '@/assets/features/ai-advisor.png';
+import mascotImg from '@/assets/calculator-mascot.png';
 
 const calculators = [
   {
@@ -82,16 +83,20 @@ export default function Features() {
         {/* CTA Section - Now at Top */}
         <section className="container mx-auto px-4 pt-16 pb-8 text-center">
           <div className="space-y-6">
+            <div className="flex justify-center mb-8">
+              <img 
+                src={mascotImg} 
+                alt="House Budget Calculator Mascot" 
+                className="w-48 h-48 md:w-64 md:h-64 drop-shadow-2xl"
+              />
+            </div>
             <h1 className="text-4xl md:text-6xl font-bold text-white">
               Financial Tools & Calculators
             </h1>
-            <p className="text-xl text-white/80 max-w-3xl mx-auto">
-              Everything you need to manage your household finances in one place
-            </p>
             {user ? (
               <div className="space-y-2">
                 <h2 className="text-2xl md:text-3xl font-semibold text-white">
-                  Welcome back! 👋
+                  Welcome back!
                 </h2>
                 <p className="text-lg text-white/70">
                   Choose a tool below to get started
