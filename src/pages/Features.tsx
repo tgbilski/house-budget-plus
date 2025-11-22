@@ -103,7 +103,7 @@ export default function Features() {
                 </p>
               </div>
             ) : (
-              <Link to="/auth">
+              <Link to="/auth" className="inline-block mt-[25px]">
                 <Button 
                   size="lg"
                   className="h-14 px-12 text-xl font-bold bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white shadow-2xl hover:shadow-blue-500/50 transition-all"
