@@ -38,6 +38,12 @@ Deno.serve(async (req) => {
     <priority>1.0</priority>
   </url>
   <url>
+    <loc>${baseUrl}/features</loc>
+    <lastmod>${currentDate}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.95</priority>
+  </url>
+  <url>
     <loc>${baseUrl}/budget</loc>
     <lastmod>${currentDate}</lastmod>
     <changefreq>weekly</changefreq>
