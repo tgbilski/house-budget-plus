@@ -17,7 +17,7 @@ import aiAdvisorImg from '@/assets/features/ai-advisor.png';
 const calculators = [
   {
     title: "Voice Expense Tracker",
-    description: "Log expenses instantly by speaking. AI-powered transcription automatically categorizes your spending.",
+    description: "Log expenses instantly by speaking. AI-powered transcription automatically tracks your spending.",
     image: voiceExpenseImg,
     href: "/expenses",
     isPremium: true
