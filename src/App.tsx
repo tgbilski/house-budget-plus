@@ -22,6 +22,7 @@ import Footer from "@/components/Footer";
 import { useIsMobile } from "@/hooks/use-mobile";
 import Home from "@/pages/Home";
 import Landing from "@/pages/Landing";
+import Features from "@/pages/Features";
 import MobileLanding from "@/pages/MobileLanding";
 import Expenses from "@/pages/Expenses";
 import MonthlyBudget from "@/pages/MonthlyBudget";
@@ -107,6 +108,7 @@ const AppRoutes = () => {
     <Routes key={currentHousehold?.id || 'no-household'}>
       <Route path="/" element={<Home />} />
       <Route path="/landing" element={<Landing />} />
+      <Route path="/features" element={<Features />} />
       <Route path="/expenses" element={<Expenses />} />
       <Route path="/budget" element={<MonthlyBudget />} />
       <Route path="/savings" element={<SavingsGoals />} />
@@ -190,8 +192,8 @@ const AppLayout = () => {
   }
 
   // Full web app layout
-  // Home and landing pages - minimal layout with no header/sidebar
-  if (isHomePage || isLandingPage) {
+  // Home, landing, and features pages - minimal layout with no header/sidebar
+  if (isHomePage || isLandingPage || location.pathname === '/features') {
     return (
       <div className="min-h-screen w-full flex flex-col">
         <main id="main-content" className="flex-1">
