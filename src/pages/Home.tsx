@@ -71,11 +71,6 @@ export default function Home() {
               </Button>
             </Link>
           </div>
-
-          {/* Small trust signal */}
-          <p className="mt-12 text-white/60 text-sm animate-in fade-in duration-1000 delay-700">
-            Join 10,000+ families taking control of their finances
-          </p>
         </div>
       </div>
     </>
