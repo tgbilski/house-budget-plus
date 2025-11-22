@@ -45,7 +45,7 @@ export default function Home() {
           <h1 className="text-3xl sm:text-5xl md:text-7xl lg:text-8xl font-extrabold text-white leading-tight mb-6 sm:mb-8 animate-in fade-in slide-in-from-bottom-4 duration-1000 delay-300">
             <span className="sm:whitespace-nowrap">Stop Overspending,</span>
             <br />
-            <span className="bg-gradient-to-r from-blue-300 to-cyan-300 bg-clip-text text-transparent sm:whitespace-nowrap">
+            <span className="text-sage sm:whitespace-nowrap">
               Start Saving
             </span>
           </h1>
@@ -65,7 +65,7 @@ export default function Home() {
             <Link to="/auth" onClick={handleSignupClick} className="w-full sm:w-auto">
               <Button 
                 size="lg"
-                className="w-full sm:w-auto h-14 sm:h-16 px-8 sm:px-12 text-base sm:text-xl font-bold bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white shadow-2xl hover:shadow-blue-500/50 transition-all duration-300 hover:scale-105"
+                className="w-full sm:w-auto h-14 sm:h-16 px-8 sm:px-12 text-base sm:text-xl font-bold bg-sage text-sage-foreground hover:bg-sage/90 shadow-2xl transition-all duration-300 hover:scale-105"
               >
                 Sign Up For Free
               </Button>
