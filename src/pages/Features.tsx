@@ -87,7 +87,7 @@ export default function Features() {
               <img 
                 src={mascotImg} 
                 alt="House Budget Calculator Mascot" 
-                className="w-48 h-48 md:w-64 md:h-64 drop-shadow-2xl"
+                className="w-12 h-12 md:w-16 md:h-16 drop-shadow-2xl"
               />
             </div>
             <h1 className="text-4xl md:text-6xl font-bold text-white">
