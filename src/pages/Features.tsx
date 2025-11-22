@@ -90,7 +90,7 @@ export default function Features() {
                 className="w-24 h-24 md:w-32 md:h-32 drop-shadow-2xl"
               />
             </div>
-            <h1 className="text-4xl md:text-6xl font-bold text-white">
+            <h1 className="text-4xl md:text-6xl font-bold text-white mb-8">
               Financial Tools & Calculators
             </h1>
             {user ? (

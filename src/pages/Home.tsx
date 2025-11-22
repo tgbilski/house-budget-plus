@@ -42,10 +42,10 @@ export default function Home() {
           </div>
 
           {/* Main Headline */}
-          <h1 className="text-5xl md:text-7xl lg:text-8xl font-extrabold text-white leading-tight mb-8 animate-in fade-in slide-in-from-bottom-4 duration-1000 delay-300">
-            Stop Overspending,
+          <h1 className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-extrabold text-white leading-tight mb-8 animate-in fade-in slide-in-from-bottom-4 duration-1000 delay-300">
+            <span className="whitespace-nowrap">Stop Overspending,</span>
             <br />
-            <span className="bg-gradient-to-r from-blue-300 to-cyan-300 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-blue-300 to-cyan-300 bg-clip-text text-transparent whitespace-nowrap">
               Start Saving
             </span>
           </h1>
