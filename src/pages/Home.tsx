@@ -31,41 +31,41 @@ export default function Home() {
         />
 
         {/* Main content */}
-        <div className="relative z-10 flex flex-col items-center justify-center text-center px-6 py-12 max-w-4xl">
+        <div className="relative z-10 flex flex-col items-center justify-center text-center px-4 sm:px-6 py-8 sm:py-12 max-w-4xl w-full">
           {/* Mascot Icon */}
-          <div className="mb-12 animate-in fade-in zoom-in duration-700">
+          <div className="mb-8 sm:mb-12 animate-in fade-in zoom-in duration-700">
             <img 
               src={calculatorMascot} 
               alt="House Budget Calculator mascot - friendly calculator character" 
-              className="w-48 h-48 md:w-64 md:h-64 drop-shadow-2xl"
+              className="w-32 h-32 sm:w-48 sm:h-48 md:w-64 md:h-64 drop-shadow-2xl"
             />
           </div>
 
           {/* Main Headline */}
-          <h1 className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-extrabold text-white leading-tight mb-8 animate-in fade-in slide-in-from-bottom-4 duration-1000 delay-300">
-            <span className="whitespace-nowrap">Stop Overspending,</span>
+          <h1 className="text-3xl sm:text-5xl md:text-7xl lg:text-8xl font-extrabold text-white leading-tight mb-6 sm:mb-8 animate-in fade-in slide-in-from-bottom-4 duration-1000 delay-300">
+            <span className="sm:whitespace-nowrap">Stop Overspending,</span>
             <br />
-            <span className="bg-gradient-to-r from-blue-300 to-cyan-300 bg-clip-text text-transparent whitespace-nowrap">
+            <span className="bg-gradient-to-r from-blue-300 to-cyan-300 bg-clip-text text-transparent sm:whitespace-nowrap">
               Start Saving
             </span>
           </h1>
 
           {/* CTA Buttons */}
-          <div className="flex flex-col sm:flex-row gap-6 mt-8 animate-in fade-in slide-in-from-bottom-4 duration-1000 delay-500">
-            <Link to="/features" onClick={handleExploreClick}>
+          <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 mt-6 sm:mt-8 animate-in fade-in slide-in-from-bottom-4 duration-1000 delay-500 w-full sm:w-auto">
+            <Link to="/features" onClick={handleExploreClick} className="w-full sm:w-auto">
               <Button 
                 variant="outline"
                 size="lg"
-                className="h-16 px-10 text-xl font-semibold bg-white/10 hover:bg-white/20 text-white border-white/30 hover:border-white/50 backdrop-blur-sm transition-all duration-300 hover:scale-105"
+                className="w-full sm:w-auto h-14 sm:h-16 px-6 sm:px-10 text-base sm:text-xl font-semibold bg-white/10 hover:bg-white/20 text-white border-white/30 hover:border-white/50 backdrop-blur-sm transition-all duration-300 hover:scale-105"
               >
-                Explore House Budget Calculator
+                Explore Calculator
               </Button>
             </Link>
 
-            <Link to="/auth" onClick={handleSignupClick}>
+            <Link to="/auth" onClick={handleSignupClick} className="w-full sm:w-auto">
               <Button 
                 size="lg"
-                className="h-16 px-12 text-xl font-bold bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white shadow-2xl hover:shadow-blue-500/50 transition-all duration-300 hover:scale-105"
+                className="w-full sm:w-auto h-14 sm:h-16 px-8 sm:px-12 text-base sm:text-xl font-bold bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white shadow-2xl hover:shadow-blue-500/50 transition-all duration-300 hover:scale-105"
               >
                 Sign Up For Free
               </Button>
