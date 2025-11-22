@@ -52,7 +52,7 @@ export default function Home() {
 
           {/* CTA Buttons */}
           <div className="flex flex-col sm:flex-row gap-6 mt-8 animate-in fade-in slide-in-from-bottom-4 duration-1000 delay-500">
-            <Link to="/budget" onClick={handleExploreClick}>
+            <Link to="/features" onClick={handleExploreClick}>
               <Button 
                 variant="outline"
                 size="lg"
