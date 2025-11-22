@@ -106,7 +106,7 @@ export default function Features() {
               <Link to="/auth" className="inline-block mt-[25px]">
                 <Button 
                   size="lg"
-                  className="h-14 px-12 text-xl font-bold bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white shadow-2xl hover:shadow-blue-500/50 transition-all"
+                  className="h-14 px-12 text-xl font-bold bg-sage text-sage-foreground hover:bg-sage/90 shadow-2xl transition-all"
                 >
                   Sign Up For Free
                 </Button>
