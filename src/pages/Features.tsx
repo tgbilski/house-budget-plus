@@ -2,6 +2,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Link } from "react-router-dom";
 import { SEO } from "@/components/SEO";
 import { Button } from "@/components/ui/button";
+import { useAuth } from "@/hooks/useAuth";
 
 // Import AI-generated feature images
 import voiceExpenseImg from '@/assets/features/voice-expense.png';
@@ -67,6 +68,8 @@ const calculators = [
 ];
 
 export default function Features() {
+  const { user } = useAuth();
+  
   return (
     <>
       <SEO 
@@ -85,14 +88,25 @@ export default function Features() {
             <p className="text-xl text-white/80 max-w-3xl mx-auto">
               Everything you need to manage your household finances in one place
             </p>
-            <Link to="/auth">
-              <Button 
-                size="lg"
-                className="h-14 px-12 text-xl font-bold bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white shadow-2xl hover:shadow-blue-500/50 transition-all"
-              >
-                Sign Up For Free
-              </Button>
-            </Link>
+            {user ? (
+              <div className="space-y-2">
+                <h2 className="text-2xl md:text-3xl font-semibold text-white">
+                  Welcome back! 👋
+                </h2>
+                <p className="text-lg text-white/70">
+                  Choose a tool below to get started
+                </p>
+              </div>
+            ) : (
+              <Link to="/auth">
+                <Button 
+                  size="lg"
+                  className="h-14 px-12 text-xl font-bold bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white shadow-2xl hover:shadow-blue-500/50 transition-all"
+                >
+                  Sign Up For Free
+                </Button>
+              </Link>
+            )}
           </div>
         </section>
 
