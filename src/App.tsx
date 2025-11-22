@@ -144,12 +144,13 @@ const AppLayout = () => {
   const isMobile = useIsMobile();
   const isMobileApp = isNativeApp();
   const location = useLocation();
-  const isLandingPage = location.pathname === '/';
+  const isHomePage = location.pathname === '/';
+  const isLandingPage = location.pathname === '/landing';
 
   // Simplified layout for mobile app
   if (isMobileApp) {
     // Landing/auth pages - no header or nav
-    const isAuthPage = isLandingPage || location.pathname === '/auth';
+    const isAuthPage = location.pathname === '/mobile-landing' || location.pathname === '/auth';
     if (isAuthPage) {
       return (
         <div className="min-h-screen w-full flex flex-col bg-background">
@@ -189,6 +190,18 @@ const AppLayout = () => {
   }
 
   // Full web app layout
+  // Home and landing pages - minimal layout with no header/sidebar
+  if (isHomePage || isLandingPage) {
+    return (
+      <div className="min-h-screen w-full flex flex-col">
+        <main id="main-content" className="flex-1">
+          <AppRoutes />
+        </main>
+      </div>
+    );
+  }
+
+  // Regular pages with full navigation
   return (
     <SidebarProvider defaultOpen={false}>
       <div 
