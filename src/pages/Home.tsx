@@ -2,8 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { SEO } from "@/components/SEO";
 import { trackButtonClick } from "@/utils/analytics";
-
-const mascotImage = '/lovable-uploads/f2d56e66-518b-4a91-8172-551b1a54ef32.png';
+import calculatorMascot from "@/assets/calculator-mascot.png";
 
 export default function Home() {
   const handleSignupClick = () => {
@@ -36,9 +35,9 @@ export default function Home() {
           {/* Mascot Icon */}
           <div className="mb-12 animate-in fade-in zoom-in duration-700">
             <img 
-              src={mascotImage} 
-              alt="House Budget mascot" 
-              className="w-48 h-48 md:w-64 md:h-64 drop-shadow-2xl rounded-2xl"
+              src={calculatorMascot} 
+              alt="House Budget Calculator mascot - friendly calculator character" 
+              className="w-48 h-48 md:w-64 md:h-64 drop-shadow-2xl"
             />
           </div>
 
