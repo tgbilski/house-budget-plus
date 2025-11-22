@@ -192,8 +192,8 @@ const AppLayout = () => {
   }
 
   // Full web app layout
-  // Home, landing, and features pages - minimal layout with no header/sidebar
-  if (isHomePage || isLandingPage || location.pathname === '/features') {
+  // Home and landing pages - minimal layout with no header/sidebar
+  if (isHomePage || isLandingPage) {
     return (
       <div className="min-h-screen w-full flex flex-col">
         <main id="main-content" className="flex-1">
@@ -203,7 +203,7 @@ const AppLayout = () => {
     );
   }
 
-  // Regular pages with full navigation
+  // Features page and regular pages with full navigation
   return (
     <SidebarProvider defaultOpen={false}>
       <div 

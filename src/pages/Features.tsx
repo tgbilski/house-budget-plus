@@ -76,29 +76,28 @@ export default function Features() {
       />
       
       <div className="min-h-screen" style={{ backgroundColor: 'hsl(213, 50%, 22%)' }}>
-        {/* Header Section */}
-        <section className="container mx-auto px-4 pt-16 pb-12 text-center">
-          <Link to="/">
-            <Button 
-              variant="ghost" 
-              className="mb-8 text-white/80 hover:text-white hover:bg-white/10"
-            >
-              ← Back to Home
-            </Button>
-          </Link>
-          
-          <div className="space-y-4 mb-12">
+        {/* CTA Section - Now at Top */}
+        <section className="container mx-auto px-4 pt-16 pb-8 text-center">
+          <div className="space-y-6">
             <h1 className="text-4xl md:text-6xl font-bold text-white">
               Financial Tools & Calculators
             </h1>
             <p className="text-xl text-white/80 max-w-3xl mx-auto">
               Everything you need to manage your household finances in one place
             </p>
+            <Link to="/auth">
+              <Button 
+                size="lg"
+                className="h-14 px-12 text-xl font-bold bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white shadow-2xl hover:shadow-blue-500/50 transition-all"
+              >
+                Sign Up For Free
+              </Button>
+            </Link>
           </div>
         </section>
 
         {/* Calculator Grid */}
-        <section className="container mx-auto px-4 pb-20">
+        <section className="container mx-auto px-4 pb-20 pt-8">
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
             {calculators.map((calc) => (
               <Link key={calc.title} to={calc.href} className="block group">
@@ -116,11 +115,11 @@ export default function Features() {
                     )}
                     <div className="absolute inset-0 bg-gradient-to-t from-background/90 to-transparent" />
                   </div>
-                  <CardHeader className="relative">
-                    <CardTitle className="text-2xl mb-2 group-hover:text-primary transition-colors">
+                  <CardHeader className="relative bg-white">
+                    <CardTitle className="text-2xl mb-2 group-hover:text-primary transition-colors text-foreground">
                       {calc.title}
                     </CardTitle>
-                    <CardDescription className="text-base leading-relaxed">
+                    <CardDescription className="text-base leading-relaxed text-muted-foreground">
                       {calc.description}
                     </CardDescription>
                   </CardHeader>
@@ -130,25 +129,7 @@ export default function Features() {
           </div>
         </section>
 
-        {/* CTA Section */}
-        <section className="container mx-auto px-4 pb-20 text-center">
-          <div className="space-y-6">
-            <h2 className="text-3xl md:text-4xl font-bold text-white">
-              Ready to get started?
-            </h2>
-            <p className="text-lg text-white/80">
-              Sign up now and start taking control of your finances
-            </p>
-            <Link to="/auth">
-              <Button 
-                size="lg"
-                className="h-14 px-12 text-xl font-bold bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white shadow-2xl hover:shadow-blue-500/50 transition-all"
-              >
-                Sign Up For Free
-              </Button>
-            </Link>
-          </div>
-        </section>
+        {/* Removed bottom CTA - now at top */}
       </div>
     </>
   );

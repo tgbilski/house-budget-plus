@@ -1,5 +1,4 @@
 import { 
-  Home, 
   Calculator, 
   PiggyBank, 
   ShoppingCart, 
@@ -16,6 +15,7 @@ import { NavLink, useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
+import logoImage from "@/assets/logo.png";
 import {
   Sidebar,
   SidebarContent,
@@ -31,7 +31,7 @@ import { cn } from "@/lib/utils";
 import { useIsMobile } from "@/hooks/use-mobile";
 
 const navigationItems = [
-  { title: "Home", url: "/features", icon: Home },
+  { title: "Home", url: "/features", icon: "mascot" }, // Special case for mascot
   { title: "Voice Expenses", url: "/expenses", icon: Mic },
   { title: "Monthly Budget", url: "/budget", icon: Calculator },
   { title: "Savings", url: "/savings", icon: PiggyBank },
@@ -129,7 +129,15 @@ export function AppSidebar() {
                       title={!open && !isMobile ? item.title : undefined}
                     >
                       <div className="flex items-center gap-3">
-                        <item.icon className="h-5 w-5 flex-shrink-0" />
+                        {item.icon === "mascot" ? (
+                          <img 
+                            src={logoImage} 
+                            alt="Home" 
+                            className="h-5 w-5 flex-shrink-0 rounded"
+                          />
+                        ) : (
+                          <item.icon className="h-5 w-5 flex-shrink-0" />
+                        )}
                         {(open || isMobile) && <span>{item.title}</span>}
                       </div>
                     </NavLink>
