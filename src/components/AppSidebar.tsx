@@ -31,7 +31,7 @@ import { cn } from "@/lib/utils";
 import { useIsMobile } from "@/hooks/use-mobile";
 
 const navigationItems = [
-  { title: "Home", url: "/", icon: Home },
+  { title: "Home", url: "/features", icon: Home },
   { title: "Voice Expenses", url: "/expenses", icon: Mic },
   { title: "Monthly Budget", url: "/budget", icon: Calculator },
   { title: "Savings", url: "/savings", icon: PiggyBank },
