@@ -90,6 +90,8 @@ const AppRoutes = () => {
     return (
       <Routes key={currentHousehold?.id || 'no-household'}>
         <Route path="/" element={<MobileLanding />} />
+        <Route path="/features" element={<Features />} />
+        <Route path="/auth" element={<Auth />} />
         <Route path="/expenses" element={<SubscriptionGuard><Expenses /></SubscriptionGuard>} />
         <Route path="/budget" element={<SubscriptionGuard><MonthlyBudget /></SubscriptionGuard>} />
         <Route path="/savings" element={<SubscriptionGuard><SavingsGoals /></SubscriptionGuard>} />
