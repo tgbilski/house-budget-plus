@@ -113,11 +113,25 @@ const Auth: React.FC = () => {
           setIsForgotPassword(false);
         }
       } else if (isSignUp) {
-        const { error } = await signUp(email, password);
-        if (!error) {
+        // Redirect to features page after email verification
+        const { error } = await supabase.auth.signUp({
+          email,
+          password,
+          options: {
+            emailRedirectTo: `${window.location.origin}/features`
+          }
+        });
+        
+        if (error) {
+          toast({
+            title: "Error",
+            description: error.message,
+            variant: "destructive"
+          });
+        } else {
           toast({
             title: "Check your email",
-            description: "We've sent you a confirmation link. Please verify your email before signing in.",
+            description: "We've sent you a confirmation link. Please verify your email to access your account.",
           });
           setIsSignUp(false);
           setEmail('');
