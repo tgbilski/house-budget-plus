@@ -230,7 +230,7 @@ const Auth: React.FC = () => {
             )}
             <Button type="submit" className="w-full bg-primary hover:bg-primary/90 text-primary-foreground" disabled={loading}>
               {loading ? 'Please wait...' : (
-                isResettingPassword ? 'Update Password' : (isForgotPassword ? 'Send Reset Link' : (isSignUp ? 'Sign Up' : 'Sign In'))
+                isResettingPassword ? 'Update Password' : (isForgotPassword ? 'Send Reset Link' : (isSignUp ? 'Verify Email' : 'Sign In'))
               )}
             </Button>
             
