@@ -82,20 +82,21 @@ export default function Admin() {
         households: householdsRes.count || 0,
       });
 
-      // Process user growth data
+      // Process user growth data by month
       if (profilesRes.data) {
         const growthMap = new Map<string, number>();
         let cumulativeUsers = 0;
 
         profilesRes.data.forEach(profile => {
-          const date = new Date(profile.created_at).toISOString().split('T')[0];
+          const date = new Date(profile.created_at);
+          const monthKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
           cumulativeUsers++;
-          growthMap.set(date, cumulativeUsers);
+          growthMap.set(monthKey, cumulativeUsers);
         });
 
         const growthData = Array.from(growthMap.entries())
           .map(([date, users]) => ({ date, users }))
-          .slice(-30); // Last 30 days
+          .slice(-12); // Last 12 months
 
         setUserGrowth(growthData);
       }
@@ -486,7 +487,7 @@ export default function Admin() {
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2">
                       <TrendingUp className="h-5 w-5" />
-                      User Growth (Last 30 Days)
+                      User Growth (Last 12 Months)
                     </CardTitle>
                   </CardHeader>
                   <CardContent className="p-2 sm:p-6">
@@ -497,11 +498,17 @@ export default function Admin() {
                           <XAxis 
                             dataKey="date" 
                             className="text-xs"
-                            tickFormatter={(value) => new Date(value).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                            tickFormatter={(value) => {
+                              const [year, month] = value.split('-');
+                              return new Date(year, month - 1).toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
+                            }}
                           />
                           <YAxis className="text-xs" />
                           <Tooltip 
-                            labelFormatter={(value) => new Date(value).toLocaleDateString()}
+                            labelFormatter={(value) => {
+                              const [year, month] = value.split('-');
+                              return new Date(year, month - 1).toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+                            }}
                             contentStyle={{ backgroundColor: 'hsl(var(--card))', border: '1px solid hsl(var(--border))' }}
                           />
                           <Line 
