@@ -483,7 +483,7 @@ export default function Expenses() {
               <div className="mt-8 text-center">
                 <Link to="/settings">
                   <Button size="lg" className="bg-gradient-to-r from-primary to-primary-glow hover:scale-105 transition-transform">
-                    Start Your Free Trial Today
+                    Get Started
                   </Button>
                 </Link>
               </div>
