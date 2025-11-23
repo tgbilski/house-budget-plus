@@ -15,6 +15,7 @@ const Auth: React.FC = () => {
   const [isSignUp, setIsSignUp] = useState(true);
   const [isForgotPassword, setIsForgotPassword] = useState(false);
   const [isResettingPassword, setIsResettingPassword] = useState(false);
+  const [verificationSent, setVerificationSent] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
@@ -129,13 +130,7 @@ const Auth: React.FC = () => {
             variant: "destructive"
           });
         } else {
-          toast({
-            title: "Check your email",
-            description: "We've sent you a confirmation link. Please verify your email to access your account.",
-          });
-          setIsSignUp(false);
-          setEmail('');
-          setPassword('');
+          setVerificationSent(true);
         }
       } else {
         const { error } = await signIn(email, password);
@@ -167,24 +162,35 @@ const Auth: React.FC = () => {
       />
       
       <Card className="w-full max-w-md bg-transparent border-0 shadow-none">
-        <CardHeader className="text-center">
-          <CardTitle className="text-2xl text-foreground">
-            {isResettingPassword ? 'Set New Password' : (isForgotPassword ? 'Reset Password' : (isSignUp ? 'Sign Up' : 'Sign In'))}
-          </CardTitle>
-          <CardDescription className="text-foreground/80">
-            {isResettingPassword
-              ? 'Enter your new password below'
-              : (isForgotPassword 
-                ? 'Enter your email to receive a password reset link'
-                : (isSignUp
-                  ? 'Create an account to save your budget data'
-                  : 'Sign in to access your saved budget data'
-                )
-              )
-            }
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
+        {verificationSent ? (
+          <CardHeader className="text-center">
+            <CardTitle className="text-3xl text-foreground mb-4">
+              This is exciting!
+            </CardTitle>
+            <CardDescription className="text-foreground/80 text-lg">
+              Please verify your email to get started. Check your inbox for the verification link.
+            </CardDescription>
+          </CardHeader>
+        ) : (
+          <>
+            <CardHeader className="text-center">
+              <CardTitle className="text-2xl text-foreground">
+                {isResettingPassword ? 'Set New Password' : (isForgotPassword ? 'Reset Password' : (isSignUp ? 'Sign Up' : 'Sign In'))}
+              </CardTitle>
+              <CardDescription className="text-foreground/80">
+                {isResettingPassword
+                  ? 'Enter your new password below'
+                  : (isForgotPassword 
+                    ? 'Enter your email to receive a password reset link'
+                    : (isSignUp
+                      ? 'Create an account to save your budget data'
+                      : 'Sign in to access your saved budget data'
+                    )
+                  )
+                }
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
             {isResettingPassword ? (
               <>
@@ -327,6 +333,8 @@ const Auth: React.FC = () => {
             )}
           </div>
         </CardContent>
+          </>
+        )}
       </Card>
     </div>
   );
