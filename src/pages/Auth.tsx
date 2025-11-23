@@ -135,12 +135,12 @@ const Auth: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-sage flex items-center justify-center p-4">
-      <Card className="w-full max-w-md shadow-xl">
+      <Card className="w-full max-w-md bg-transparent border-0 shadow-none">
         <CardHeader className="text-center">
-          <CardTitle className="text-2xl">
+          <CardTitle className="text-2xl text-white">
             {isResettingPassword ? 'Set New Password' : (isForgotPassword ? 'Reset Password' : (isSignUp ? 'Sign Up' : 'Sign In'))}
           </CardTitle>
-          <CardDescription>
+          <CardDescription className="text-white/90">
             {isResettingPassword
               ? 'Enter your new password below'
               : (isForgotPassword 
@@ -221,10 +221,10 @@ const Auth: React.FC = () => {
               <>
                 <div className="relative">
                   <div className="absolute inset-0 flex items-center">
-                    <span className="w-full border-t" />
+                    <span className="w-full border-t border-white/20" />
                   </div>
                   <div className="relative flex justify-center text-xs uppercase">
-                    <span className="bg-background px-2 text-muted-foreground">
+                    <span className="bg-sage px-2 text-white/90">
                       Or continue with
                     </span>
                   </div>
@@ -265,7 +265,7 @@ const Auth: React.FC = () => {
             )}
             
             {isSignUp && (
-              <p className="text-sm text-muted-foreground text-center mt-2">
+              <p className="text-sm text-white/80 text-center mt-2">
                 To save your data, sign in
               </p>
             )}
@@ -276,7 +276,7 @@ const Auth: React.FC = () => {
               <Button
                 variant="link"
                 onClick={() => setIsSignUp(!isSignUp)}
-                className="text-sm"
+                className="text-sm text-white hover:text-white/80"
               >
                 {isSignUp
                   ? 'Already have an account? Sign In'
@@ -289,7 +289,7 @@ const Auth: React.FC = () => {
               <Button
                 variant="link"
                 onClick={() => setIsForgotPassword(!isForgotPassword)}
-                className="text-sm block w-full"
+                className="text-sm block w-full text-white hover:text-white/80"
               >
                 {isForgotPassword ? 'Back to Sign In' : 'Forgot your password?'}
               </Button>
