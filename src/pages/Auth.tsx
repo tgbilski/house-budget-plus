@@ -8,6 +8,8 @@ import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { isNativeApp } from '@/utils/capacitor';
+import { ArrowLeft } from 'lucide-react';
+import mascotIcon from '@/assets/calculator-mascot.png';
 
 const Auth: React.FC = () => {
   const [isSignUp, setIsSignUp] = useState(false);
@@ -134,7 +136,22 @@ const Auth: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-sage flex items-center justify-center p-4">
+    <div className="min-h-screen bg-sage flex items-center justify-center p-4 relative">
+      <Button
+        variant="ghost"
+        size="icon"
+        onClick={() => navigate('/')}
+        className="absolute top-4 left-4 text-foreground hover:bg-foreground/10"
+      >
+        <ArrowLeft className="h-6 w-6" />
+      </Button>
+      
+      <img 
+        src={mascotIcon} 
+        alt="Budget Mascot" 
+        className="absolute top-4 right-4 w-16 h-16 object-contain"
+      />
+      
       <Card className="w-full max-w-md bg-transparent border-0 shadow-none">
         <CardHeader className="text-center">
           <CardTitle className="text-2xl text-foreground">
