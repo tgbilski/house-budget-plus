@@ -134,10 +134,10 @@ const Auth: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background flex items-center justify-center p-4">
-      <Card className="w-full max-w-md">
+    <div className="min-h-screen bg-sage flex items-center justify-center p-4">
+      <Card className="w-full max-w-md shadow-xl">
         <CardHeader className="text-center">
-          <CardTitle>
+          <CardTitle className="text-2xl">
             {isResettingPassword ? 'Set New Password' : (isForgotPassword ? 'Reset Password' : (isSignUp ? 'Sign Up' : 'Sign In'))}
           </CardTitle>
           <CardDescription>
@@ -211,7 +211,7 @@ const Auth: React.FC = () => {
                 )}
               </>
             )}
-            <Button type="submit" className="w-full" disabled={loading}>
+            <Button type="submit" className="w-full bg-primary hover:bg-primary/90 text-primary-foreground" disabled={loading}>
               {loading ? 'Please wait...' : (
                 isResettingPassword ? 'Update Password' : (isForgotPassword ? 'Send Reset Link' : (isSignUp ? 'Sign Up' : 'Sign In'))
               )}
@@ -233,7 +233,7 @@ const Auth: React.FC = () => {
                 <Button
                   type="button"
                   variant="outline"
-                  className="w-full"
+                  className="w-full border-primary/20 hover:bg-primary/5"
                   onClick={async () => {
                     setLoading(true);
                     await signInWithGoogle();

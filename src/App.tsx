@@ -194,8 +194,9 @@ const AppLayout = () => {
   }
 
   // Full web app layout
-  // Home and landing pages - minimal layout with no header/sidebar
-  if (isHomePage || isLandingPage) {
+  // Home, landing, and auth pages - minimal layout with no header/sidebar
+  const isAuthPage = location.pathname === '/auth';
+  if (isHomePage || isLandingPage || isAuthPage) {
     return (
       <div className="min-h-screen w-full flex flex-col">
         <main id="main-content" className="flex-1">
