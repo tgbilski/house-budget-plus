@@ -12,7 +12,7 @@ import { ArrowLeft } from 'lucide-react';
 import mascotIcon from '@/assets/calculator-mascot.png';
 
 const Auth: React.FC = () => {
-  const [isSignUp, setIsSignUp] = useState(false);
+  const [isSignUp, setIsSignUp] = useState(true);
   const [isForgotPassword, setIsForgotPassword] = useState(false);
   const [isResettingPassword, setIsResettingPassword] = useState(false);
   const [email, setEmail] = useState('');
