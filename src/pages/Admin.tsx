@@ -352,11 +352,11 @@ export default function Admin() {
       />
       <main className="flex-1 container mx-auto px-4 py-8">
 
-        <Tabs defaultValue="blog" className="w-full">
-          <TabsList className="mb-6">
-            <TabsTrigger value="blog">Blog Management</TabsTrigger>
-            <TabsTrigger value="listings">Listing Management</TabsTrigger>
-            <TabsTrigger value="metrics">Metrics</TabsTrigger>
+        <Tabs defaultValue="metrics" className="w-full">
+          <TabsList className="mb-6 w-full grid grid-cols-3 lg:w-auto lg:inline-flex">
+            <TabsTrigger value="metrics" className="text-xs sm:text-sm">Metrics</TabsTrigger>
+            <TabsTrigger value="listings" className="text-xs sm:text-sm">Listings</TabsTrigger>
+            <TabsTrigger value="blog" className="text-xs sm:text-sm">Blog</TabsTrigger>
           </TabsList>
 
           <TabsContent value="blog" className="space-y-6">
@@ -402,11 +402,11 @@ export default function Admin() {
 
           <TabsContent value="listings" className="space-y-6">
             <Tabs defaultValue="pending" className="w-full">
-              <TabsList>
-                <TabsTrigger value="pending">
+              <TabsList className="w-full grid grid-cols-2 lg:w-auto lg:inline-flex">
+                <TabsTrigger value="pending" className="text-xs sm:text-sm">
                   Pending ({pendingListings.length})
                 </TabsTrigger>
-                <TabsTrigger value="flagged">
+                <TabsTrigger value="flagged" className="text-xs sm:text-sm">
                   Flagged ({flaggedListings.length})
                 </TabsTrigger>
               </TabsList>
@@ -440,7 +440,7 @@ export default function Admin() {
               </div>
             ) : (
               <>
-                <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+                <div className="grid gap-4 sm:gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
                   <Card>
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                       <CardTitle className="text-sm font-medium">Total Users</CardTitle>
@@ -489,9 +489,9 @@ export default function Admin() {
                       User Growth (Last 30 Days)
                     </CardTitle>
                   </CardHeader>
-                  <CardContent>
+                  <CardContent className="p-2 sm:p-6">
                     {userGrowth.length > 0 ? (
-                      <ResponsiveContainer width="100%" height={350}>
+                      <ResponsiveContainer width="100%" height={250} className="sm:h-[350px]">
                         <LineChart data={userGrowth}>
                           <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
                           <XAxis 
