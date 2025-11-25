@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { SEO } from "@/components/SEO";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
+import { ChevronDown } from "lucide-react";
 
 // Import AI-generated feature images
 import voiceExpenseImg from '@/assets/features/voice-expense.png';
@@ -93,9 +94,13 @@ export default function Features() {
             <h1 className="text-4xl md:text-6xl font-bold text-white mb-6">
               Financial Tools & Calculators
             </h1>
-            <p className="text-lg md:text-xl text-white/80 max-w-3xl mx-auto mb-12">
+            <p className="text-lg md:text-xl text-white/80 max-w-3xl mx-auto mb-6">
               Powerful budget planning tools to track expenses, compare vendors, plan vacations, and achieve your savings goals with smart financial insights
             </p>
+            <ChevronDown 
+              className="w-8 h-8 text-white/60 mx-auto animate-bounce" 
+              aria-label="Scroll down to view tools"
+            />
             {user && (
               <div className="space-y-2">
                 <h2 className="text-2xl md:text-3xl font-semibold text-white">
