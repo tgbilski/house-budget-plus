@@ -21,7 +21,7 @@ export default function Home() {
         title="House Budget - Stop Overspending, Start Saving"
         description="Take control of your finances with our simple house budget calculator. Track expenses, set goals, and save more money."
         keywords="house budget, budget calculator, expense tracker, savings goals, financial planning"
-        ogImage="https://0a1c5ef3-a0c1-4de2-8f49-9b0a9540368a.lovableproject.com/lovable-uploads/og-image-social.png"
+        ogImage="https://www.housebudgetcalculator.com/lovable-uploads/og-image-social.png"
       />
       
       <div className="min-h-screen w-full relative overflow-hidden">
