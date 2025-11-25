@@ -48,6 +48,9 @@ const MonthlyBudget: React.FC = () => {
   const totalIncome = Object.values(budgetData).reduce((sum, data) => sum + (data.income || 0), 0);
   const totalExpenses = Object.values(budgetData).reduce((sum, data) => sum + (data.expenses || 0), 0);
   const netBalance = totalIncome - totalExpenses;
+  
+  console.log('MonthlyBudget - budgetData:', budgetData);
+  console.log('MonthlyBudget - Total Income:', totalIncome, 'Total Expenses:', totalExpenses, 'Net Balance:', netBalance);
 
   // CHANGE: Implemented type-safe event listener.
   useEffect(() => {
