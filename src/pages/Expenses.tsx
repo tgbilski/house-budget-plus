@@ -93,7 +93,7 @@ export default function Expenses() {
   }, [yearlyExpenses]);
 
   const totalSpent = expenses.reduce((sum, exp) => sum + Number(exp.amount), 0);
-
+  const yearlyTotal = yearlyExpenses.reduce((sum, exp) => sum + Number(exp.amount), 0);
   // Calculate category breakdown
   const categoryData = React.useMemo(() => {
     const breakdown = expenses.reduce((acc, expense) => {
@@ -561,6 +561,46 @@ export default function Expenses() {
               />
             </PopoverContent>
           </Popover>
+        </div>
+
+        {/* Yearly Spending Summary */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6 animate-fade-in">
+          <Card className="bg-gradient-to-br from-primary/10 to-primary-glow/10 border-primary/20">
+            <CardContent className="p-4 text-center">
+              <p className="text-xs text-muted-foreground uppercase tracking-wide">Year Total</p>
+              <p className="text-2xl md:text-3xl font-bold text-primary">
+                {currency.symbol}{yearlyTotal.toFixed(2)}
+              </p>
+              <p className="text-xs text-muted-foreground">{selectedDate.getFullYear()}</p>
+            </CardContent>
+          </Card>
+          <Card className="bg-gradient-to-br from-teal/10 to-teal-glow/10 border-teal/20">
+            <CardContent className="p-4 text-center">
+              <p className="text-xs text-muted-foreground uppercase tracking-wide">This Month</p>
+              <p className="text-2xl md:text-3xl font-bold text-teal">
+                {currency.symbol}{totalSpent.toFixed(2)}
+              </p>
+              <p className="text-xs text-muted-foreground">{format(selectedDate, 'MMMM')}</p>
+            </CardContent>
+          </Card>
+          <Card className="bg-gradient-to-br from-sage/10 to-success/10 border-sage/20">
+            <CardContent className="p-4 text-center">
+              <p className="text-xs text-muted-foreground uppercase tracking-wide">Monthly Avg</p>
+              <p className="text-2xl md:text-3xl font-bold text-sage">
+                {currency.symbol}{(yearlyTotal / (selectedDate.getMonth() + 1)).toFixed(2)}
+              </p>
+              <p className="text-xs text-muted-foreground">per month</p>
+            </CardContent>
+          </Card>
+          <Card className="bg-gradient-to-br from-secondary/30 to-muted/30 border-border/50">
+            <CardContent className="p-4 text-center">
+              <p className="text-xs text-muted-foreground uppercase tracking-wide">Transactions</p>
+              <p className="text-2xl md:text-3xl font-bold text-foreground">
+                {yearlyExpenses.length}
+              </p>
+              <p className="text-xs text-muted-foreground">this year</p>
+            </CardContent>
+          </Card>
         </div>
 
         {/* Budget Alert */}
