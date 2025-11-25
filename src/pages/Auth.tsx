@@ -147,7 +147,7 @@ const Auth: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-sage flex items-center justify-center p-4 relative">
+    <div className={`min-h-screen ${isSignUp ? 'bg-sage' : 'bg-muted'} flex items-center justify-center p-4 relative`}>
       <Button
         variant="ghost"
         size="icon"
