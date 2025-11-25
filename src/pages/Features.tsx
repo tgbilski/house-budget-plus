@@ -108,7 +108,7 @@ export default function Features() {
                   size="lg"
                   className="h-14 px-12 text-xl font-bold bg-sage text-sage-foreground hover:bg-sage/90 shadow-2xl transition-all"
                 >
-                  Sign Up For Free
+                  Sign Up to Save
                 </Button>
               </Link>
             )}
