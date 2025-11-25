@@ -4,7 +4,7 @@ import { SEO } from "@/components/SEO";
 import { trackButtonClick } from "@/utils/analytics";
 import { User } from "lucide-react";
 import calculatorMascot from "@/assets/calculator-mascot.png";
-import calculatorPreview from "@/assets/calculator-preview-hero.png";
+import calculatorPreview from "@/assets/calculator-use-preview.png";
 
 export default function Home() {
   const handleSignupClick = () => {
