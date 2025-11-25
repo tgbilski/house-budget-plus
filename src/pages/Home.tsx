@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { SEO } from "@/components/SEO";
 import { trackButtonClick } from "@/utils/analytics";
 import calculatorMascot from "@/assets/calculator-mascot.png";
-import calculatorPreview from "@/assets/calculator-page-preview.png";
+import calculatorPreview from "@/assets/calculator-preview-hero.png";
 
 export default function Home() {
   const handleSignupClick = () => {
@@ -86,20 +86,20 @@ export default function Home() {
         </div>
 
         {/* Bottom Section - White Background with Calculator Preview */}
-        <div className="bg-white py-12 sm:py-20 px-4 sm:px-8">
+        <div className="bg-white py-6 sm:py-10 px-4 sm:px-8">
           <div className="max-w-7xl mx-auto">
-            <div className="text-center mb-8">
+            <div className="text-center mb-6">
               <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-foreground mb-4">
                 See It In Action
               </h2>
               <p className="text-lg sm:text-xl text-muted-foreground">
-                Our powerful budget calculator makes managing your finances simple and intuitive
+                Our powerful budget calculators make managing your finances, projects, vacations and gift lists simple, fun and intuitive
               </p>
             </div>
             <div className="rounded-lg overflow-hidden shadow-2xl">
               <img 
                 src={calculatorPreview} 
-                alt="Monthly Budget Calculator preview showing expense tracking and budget management features" 
+                alt="Budget calculator interface showing multiple household budget calculators with income and expense tracking" 
                 className="w-full h-auto"
               />
             </div>
