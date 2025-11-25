@@ -44,16 +44,38 @@ export default function Expenses() {
   // Edit dialog state
   const [editingExpense, setEditingExpense] = useState<any>(null);
   const [editForm, setEditForm] = useState({ amount: '', merchant: '', category: '' });
+  const [yearlyExpenses, setYearlyExpenses] = useState<any[]>([]);
   
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioChunksRef = useRef<Blob[]>([]);
 
-  // Calculate chart data - monthly aggregation
+  // Fetch all expenses for the entire year (for the chart)
+  useEffect(() => {
+    const fetchYearlyExpenses = async () => {
+      if (!user || !currentHousehold) return;
+      
+      const { data, error } = await supabase
+        .from('expenses')
+        .select('*')
+        .eq('user_id', user.id)
+        .eq('household_id', currentHousehold.id)
+        .eq('year', selectedDate.getFullYear())
+        .order('date', { ascending: true });
+      
+      if (!error && data) {
+        setYearlyExpenses(data);
+      }
+    };
+    
+    fetchYearlyExpenses();
+  }, [user, currentHousehold, selectedDate.getFullYear(), expenses]);
+
+  // Calculate chart data - monthly aggregation using yearly data
   const chartData = React.useMemo(() => {
     const monthlyTotals: Record<number, number> = {};
     
-    // Get all expenses for the entire year
-    expenses.forEach((expense) => {
+    // Use yearlyExpenses for the chart (all months)
+    yearlyExpenses.forEach((expense) => {
       const expenseDate = new Date(expense.date);
       const month = expenseDate.getMonth(); // 0-11
       if (!monthlyTotals[month]) {
@@ -68,7 +90,7 @@ export default function Expenses() {
       month: name,
       amount: monthlyTotals[index] || 0,
     }));
-  }, [expenses]);
+  }, [yearlyExpenses]);
 
   const totalSpent = expenses.reduce((sum, exp) => sum + Number(exp.amount), 0);
 
