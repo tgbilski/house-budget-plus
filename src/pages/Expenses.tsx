@@ -881,27 +881,35 @@ export default function Expenses() {
               <CardTitle>Monthly Spending - {selectedDate.getFullYear()}</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="h-[300px]">
+              <div className="h-[250px] md:h-[300px]">
                 <ResponsiveContainer width="100%" height="100%">
-                  <LineChart data={chartData}>
-                    <CartesianGrid strokeDasharray="3 3" />
+                  <LineChart data={chartData} margin={{ top: 5, right: 10, left: 0, bottom: 5 }}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
                     <XAxis
                       dataKey="month"
-                      label={{ value: selectedDate.getFullYear().toString(), position: 'insideBottom', offset: -5 }}
+                      tick={{ fontSize: 10 }}
+                      tickMargin={5}
+                      axisLine={{ stroke: 'hsl(var(--border))' }}
                     />
                     <YAxis
-                      label={{ value: 'Amount', angle: -90, position: 'insideLeft' }}
+                      tick={{ fontSize: 10 }}
+                      tickMargin={5}
+                      width={40}
+                      axisLine={{ stroke: 'hsl(var(--border))' }}
+                      tickFormatter={(value) => `${currency.symbol}${value}`}
                     />
                     <Tooltip
                       formatter={(value: number) => [`${currency.symbol}${value.toFixed(2)}`, 'Spent']}
-                      labelFormatter={(label) => `Day ${label}`}
+                      labelFormatter={(label) => label}
+                      contentStyle={{ fontSize: 12 }}
                     />
                     <Line
                       type="monotone"
                       dataKey="amount"
                       stroke="hsl(var(--primary))"
                       strokeWidth={2}
-                      dot={{ fill: 'hsl(var(--primary))' }}
+                      dot={{ fill: 'hsl(var(--primary))', r: 3 }}
+                      activeDot={{ r: 5 }}
                     />
                   </LineChart>
                 </ResponsiveContainer>
