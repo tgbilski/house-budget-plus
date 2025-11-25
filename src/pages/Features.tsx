@@ -93,7 +93,7 @@ export default function Features() {
             <h1 className="text-4xl md:text-6xl font-bold text-white mb-12">
               Financial Tools & Calculators
             </h1>
-            {user ? (
+            {user && (
               <div className="space-y-2">
                 <h2 className="text-2xl md:text-3xl font-semibold text-white">
                   Welcome back!
@@ -102,21 +102,12 @@ export default function Features() {
                   Choose a tool below to get started
                 </p>
               </div>
-            ) : (
-              <Link to="/auth" className="inline-block mt-[25px]">
-                <Button 
-                  size="lg"
-                  className="h-14 px-12 text-xl font-bold bg-sage text-sage-foreground hover:bg-sage/90 shadow-2xl transition-all"
-                >
-                  Sign Up & Save Data
-                </Button>
-              </Link>
             )}
           </div>
         </section>
 
         {/* Calculator Grid */}
-        <section className="container mx-auto px-4 pb-20 pt-8">
+        <section className="container mx-auto px-4 pb-8 pt-8">
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
             {calculators.map((calc) => (
               <Link key={calc.title} to={calc.href} className="block group">
@@ -148,7 +139,19 @@ export default function Features() {
           </div>
         </section>
 
-        {/* Removed bottom CTA - now at top */}
+        {/* Bottom CTA Section */}
+        {!user && (
+          <section className="container mx-auto px-4 pb-20 text-center">
+            <Link to="/auth" className="inline-block">
+              <Button 
+                size="lg"
+                className="h-14 px-12 text-xl font-bold bg-sage text-sage-foreground hover:bg-sage/90 shadow-2xl transition-all"
+              >
+                Sign Up & Save Data
+              </Button>
+            </Link>
+          </section>
+        )}
       </div>
     </>
   );
