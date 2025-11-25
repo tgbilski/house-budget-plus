@@ -103,7 +103,7 @@ export default function Home() {
           <div className="max-w-7xl mx-auto">
             <div className="text-center mb-6">
               <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-foreground mb-4">
-                See It In Action
+                Try it out
               </h2>
               <p className="text-lg sm:text-xl text-muted-foreground">
                 Our powerful budget calculators make managing your finances, projects, vacations and gift lists simple, fun and intuitive
