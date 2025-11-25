@@ -13,7 +13,7 @@ export const seoData: Record<string, SEOData> = {
     description: "Comprehensive suite of free financial tools including budget calculator, vendor comparison, expense tracking, vacation planning, and AI insights. Master your household finances today.",
     keywords: "house budget calculator, financial planning tools, budget tracker, expense calculator, vendor comparison, financial management, household budget",
     canonical: "https://www.housebudgetcalculator.com",
-    ogImage: "https://www.housebudgetcalculator.com/lovable-uploads/calculator-preview-hero.png",
+    ogImage: "https://www.housebudgetcalculator.com/assets/calculator-use-preview.png",
     structuredData: {
       "@context": "https://schema.org",
       "@graph": [
@@ -55,7 +55,7 @@ export const seoData: Record<string, SEOData> = {
     description: "Plan your household finances with our free monthly budget calculator. Track income, expenses, and calculate net budget for individuals, families, and roommates. Save money and build better financial habits.",
     keywords: "budget calculator, monthly budget, expense tracker, household finances, financial planning, money management, income calculator",
     canonical: "https://www.housebudgetcalculator.com/budget",
-    ogImage: "https://www.housebudgetcalculator.com/assets/calculator-page-preview.png",
+    ogImage: "https://www.housebudgetcalculator.com/assets/calculator-use-preview.png",
     structuredData: {
       "@context": "https://schema.org",
       "@type": "HowTo",
@@ -300,7 +300,7 @@ export const seoData: Record<string, SEOData> = {
     description: "Expert articles on budgeting, saving money, and financial planning. Learn practical tips, strategies, and insights to improve your financial health and achieve your money goals.",
     keywords: "financial blog, budgeting tips, money management, savings advice, financial planning, personal finance articles",
     canonical: "https://www.housebudgetcalculator.com/blog",
-    ogImage: "https://www.housebudgetcalculator.com/lovable-uploads/calculator-preview-hero.png",
+    ogImage: "https://www.housebudgetcalculator.com/assets/calculator-use-preview.png",
     structuredData: {
       "@context": "https://schema.org",
       "@type": "Blog",
