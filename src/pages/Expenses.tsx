@@ -615,7 +615,7 @@ export default function Expenses() {
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Voice Input Card */}
-          <Card className="bg-white/80 backdrop-blur-sm border-2 border-border/50 shadow-[var(--shadow-elegant)]">
+          <Card className="bg-gradient-to-br from-sage/20 to-sage/10 backdrop-blur-sm border-2 border-sage/30 shadow-[var(--shadow-elegant)]">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Mic className="h-5 w-5" />
