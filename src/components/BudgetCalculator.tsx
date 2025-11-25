@@ -279,9 +279,13 @@ const BudgetCalculator: React.FC<BudgetCalculatorProps> = ({
     );
   };
 
-  const totalExpenses = expenses.reduce((sum, expense) => sum + expense.amount, 0) +
-    additionalExpenses.reduce((sum, expense) => sum + expense.amount, 0) +
-    additionalSubscriptions.reduce((sum, expense) => sum + expense.amount, 0);
+  const fixedExpensesTotal = expenses.reduce((sum, expense) => sum + expense.amount, 0);
+  const additionalExpensesTotal = additionalExpenses.reduce((sum, expense) => sum + expense.amount, 0);
+  const additionalSubscriptionsTotal = additionalSubscriptions.reduce((sum, expense) => sum + expense.amount, 0);
+  
+  const totalExpenses = fixedExpensesTotal + additionalExpensesTotal + additionalSubscriptionsTotal;
+  
+  console.log(`Calculator ${id} - Fixed: ${fixedExpensesTotal}, Additional: ${additionalExpensesTotal}, Subs: ${additionalSubscriptionsTotal}, Total: ${totalExpenses}`);
   
   const netResult = monthlyIncome - totalExpenses;
 
