@@ -90,9 +90,12 @@ export default function Features() {
                 className="w-24 h-24 md:w-32 md:h-32 drop-shadow-2xl"
               />
             </div>
-            <h1 className="text-4xl md:text-6xl font-bold text-white mb-12">
+            <h1 className="text-4xl md:text-6xl font-bold text-white mb-6">
               Financial Tools & Calculators
             </h1>
+            <p className="text-lg md:text-xl text-white/80 max-w-3xl mx-auto mb-12">
+              Powerful budget planning tools to track expenses, compare vendors, plan vacations, and achieve your savings goals with smart financial insights
+            </p>
             {user && (
               <div className="space-y-2">
                 <h2 className="text-2xl md:text-3xl font-semibold text-white">
