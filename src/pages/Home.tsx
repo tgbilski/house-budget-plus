@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { SEO } from "@/components/SEO";
 import { trackButtonClick } from "@/utils/analytics";
+import { User } from "lucide-react";
 import calculatorMascot from "@/assets/calculator-mascot.png";
 import calculatorPreview from "@/assets/calculator-preview-hero.png";
 
@@ -34,13 +35,25 @@ export default function Home() {
           />
 
           {/* Top Bar with Logo */}
-          <div className="relative z-10 flex items-center gap-3 px-4 sm:px-8 py-4">
-            <img 
-              src={calculatorMascot} 
-              alt="House Budget Calculator mascot" 
-              className="w-12 h-12 sm:w-16 sm:h-16 drop-shadow-lg"
-            />
-            <h2 className="text-white text-xl sm:text-2xl font-bold">House Budget Calculator</h2>
+          <div className="relative z-10 flex items-center justify-between gap-3 px-4 sm:px-8 py-4">
+            <div className="flex items-center gap-3">
+              <img 
+                src={calculatorMascot} 
+                alt="House Budget Calculator mascot" 
+                className="w-12 h-12 sm:w-16 sm:h-16 drop-shadow-lg"
+              />
+              <h2 className="text-white text-xl sm:text-2xl font-bold">House Budget Calculator</h2>
+            </div>
+            <Link to="/auth?mode=signin">
+              <Button 
+                variant="outline"
+                size="sm"
+                className="bg-white/10 hover:bg-white/20 text-white border-white/30 hover:border-white/50 backdrop-blur-sm transition-all"
+              >
+                <User className="h-4 w-4 mr-2" />
+                Sign In
+              </Button>
+            </Link>
           </div>
 
           {/* Hero Content */}
