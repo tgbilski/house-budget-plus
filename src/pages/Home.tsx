@@ -21,6 +21,7 @@ export default function Home() {
         title="House Budget - Stop Overspending, Start Saving"
         description="Take control of your finances with our simple house budget calculator. Track expenses, set goals, and save more money."
         keywords="house budget, budget calculator, expense tracker, savings goals, financial planning"
+        ogImage="https://0a1c5ef3-a0c1-4de2-8f49-9b0a9540368a.lovableproject.com/lovable-uploads/og-image-social.png"
       />
       
       <div className="min-h-screen w-full relative overflow-hidden">
@@ -75,7 +76,7 @@ export default function Home() {
                   size="lg"
                   className="w-full sm:w-auto h-14 sm:h-16 px-6 sm:px-10 text-base sm:text-xl font-semibold bg-white/10 hover:bg-white/20 text-white border-white/30 hover:border-white/50 backdrop-blur-sm transition-all duration-300 hover:scale-105"
                 >
-                  Explore Calculator
+                  Explore Features
                 </Button>
               </Link>
 
@@ -109,11 +110,12 @@ export default function Home() {
                 Our powerful budget calculators make managing your finances, projects, vacations and gift lists simple, fun and intuitive
               </p>
             </div>
-            <div className="rounded-lg overflow-hidden shadow-2xl">
+            <div className="rounded-lg overflow-hidden shadow-2xl max-w-full">
               <img 
                 src={calculatorPreview} 
                 alt="Budget calculator interface showing multiple household budget calculators with income and expense tracking" 
-                className="w-full h-auto"
+                className="w-full h-auto object-contain max-w-full"
+                loading="lazy"
               />
             </div>
           </div>
