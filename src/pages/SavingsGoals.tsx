@@ -8,7 +8,6 @@ import { useBadges } from '@/hooks/useBadges';
 import { isNativeApp } from '@/utils/capacitor';
 import { cn } from '@/lib/utils';
 
-import { GoalSelector } from '@/components/GoalSelector';
 import { MonthlySavingsGrid } from '@/components/MonthlySavingsGrid';
 import { CumulativeSavingsChart } from '@/components/CumulativeSavingsChart';
 
@@ -108,18 +107,13 @@ const SavingsGoals: React.FC = () => {
         )}
 
         <div className="space-y-8">
-          {/* Chart on top, goal selector underneath */}
+          {/* Chart with integrated goal selection */}
           <CumulativeSavingsChart
             monthlyData={monthlyData}
-            goalTitle={currentGoal?.title || 'No Goal Selected'}
-            targetAmount={currentGoal?.target_amount || 0}
-            totalSaved={totalSaved}
-            progressPercentage={progressPercentage}
-          />
-          
-          <GoalSelector
             goals={goals}
             currentGoalId={currentGoalId}
+            totalSaved={totalSaved}
+            progressPercentage={progressPercentage}
             onSelectGoal={setCurrentGoalId}
             editingState={editingState}
             onSetEditingState={setEditingState}
@@ -147,11 +141,11 @@ const SavingsGoals: React.FC = () => {
                   faqs={[
                     {
                       question: "How do I set a savings goal?",
-                      answer: "Click the edit button on any goal card to set a name and target amount. Your changes will be saved automatically."
+                      answer: "Click on the goal name at the top of the chart to edit it. You can set a name and target amount for your goal."
                     },
                     {
                       question: "Can I track multiple savings goals at once?",
-                      answer: "Yes! You can create multiple savings goals (like 'Emergency Fund', 'Vacation', 'New Car') and switch between them to track progress for each one separately."
+                      answer: "Yes! Use the left and right arrows on the chart to switch between your goals. You can have up to 3 savings goals."
                     },
                     {
                       question: "How do I update my monthly savings?",
