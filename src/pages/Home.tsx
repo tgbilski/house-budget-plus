@@ -83,9 +83,9 @@ export default function Home() {
               <Link to="/auth" onClick={handleSignupClick} className="w-full sm:w-auto">
                 <Button 
                   size="lg"
-                  className="w-full sm:w-auto h-14 sm:h-16 px-8 sm:px-12 text-base sm:text-xl font-bold bg-sage text-sage-foreground hover:bg-sage/90 shadow-2xl transition-all duration-300 hover:scale-105"
+                  className="w-full sm:w-auto h-14 sm:h-16 px-8 sm:px-12 text-base sm:text-xl font-bold bg-sage text-sage-foreground hover:bg-sage/90 shadow-2xl transition-all duration-300 hover:scale-105 border-2 border-[hsl(213,50%,22%)]"
                 >
-                  Sign Up For Free
+                  Sign Up (Free)
                 </Button>
               </Link>
             </div>
