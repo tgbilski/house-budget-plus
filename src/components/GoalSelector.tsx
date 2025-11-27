@@ -43,111 +43,78 @@ export const GoalSelector: React.FC<Props> = ({
   };
 
   return (
-    <Card className="bg-white/80 backdrop-blur-sm border-2 border-border/50 shadow-[var(--shadow-elegant)] animate-slide-up h-full">
-      <CardContent className="p-4 space-y-3">
-        {goals.map((goal, index) => {
-          const isActive = currentGoalId === goal.id;
-          const isEditing = editingState.id === goal.id;
-          const progress = goal.target_amount > 0 ? (goal.current_amount / goal.target_amount) * 100 : 0;
-          
-          return (
-            <div
-              key={goal.id}
-              className={cn(
-                "group relative cursor-pointer transition-all duration-300 w-full rounded-xl px-4 py-3 border-2 flex flex-col gap-2 animate-fade-in",
-                isActive
-                  ? "bg-teal text-white border-teal shadow-[var(--shadow-teal)] scale-[1.02]"
-                  : "bg-white/60 backdrop-blur-sm hover:bg-white/80 border-border/30 hover:border-teal/40 hover:shadow-md hover:-translate-y-0.5"
-              )}
-              style={{ animationDelay: `${index * 0.1}s` }}
-              onClick={() => !isEditing && onSelectGoal(goal.id)}
-            >
-              <div className="flex flex-col gap-2 min-w-0 w-full">
+    <Card className="h-full">
+      <CardContent className="p-4">
+        <div className="flex flex-col sm:flex-row gap-2">
+          {goals.map((goal) => {
+            const isActive = currentGoalId === goal.id;
+            const isEditing = editingState.id === goal.id;
+
+            return (
+              <div
+                key={goal.id}
+                onClick={() => !isEditing && onSelectGoal(goal.id)}
+                className={cn(
+                  "group flex-1 cursor-pointer transition-all rounded-lg px-4 py-3 border-2 flex items-center justify-center gap-2",
+                  isActive
+                    ? "bg-primary text-primary-foreground border-primary"
+                    : "bg-muted hover:bg-muted/80 border-transparent"
+                )}
+              >
                 {isEditing ? (
-                  <div className="flex flex-col gap-3 w-full" onClick={(e) => e.stopPropagation()}>
-                    {/* Title input */}
+                  <div className="flex flex-col gap-2 w-full" onClick={(e) => e.stopPropagation()}>
                     <div className="flex items-center gap-2">
                       <Input
                         value={editingState.title}
                         onChange={(e) => onSetEditingState({ ...editingState, title: e.target.value })}
                         onKeyDown={(e) => e.key === 'Enter' && handleSave()}
                         placeholder="Goal name"
-                        className="text-base font-semibold bg-background text-foreground h-9 flex-1"
+                        className="text-base font-semibold bg-background text-foreground h-8 flex-1"
                         autoFocus
                       />
                     </div>
-                    
-                    {/* Target input */}
                     <div className="flex items-center gap-2">
                       <div className="relative flex-1">
-                        <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                        <DollarSign className="absolute left-2 top-1/2 -translate-y-1/2 h-3 w-3 text-muted-foreground" />
                         <Input
                           type="number"
                           value={editingState.target || ''}
                           onChange={(e) => onSetEditingState({ ...editingState, target: parseFloat(e.target.value) || 0 })}
                           onKeyDown={(e) => e.key === 'Enter' && handleSave()}
-                          placeholder="Target amount"
-                          className="pl-9 text-base font-semibold bg-background text-foreground h-9"
+                          placeholder="Target"
+                          className="pl-7 text-sm bg-background text-foreground h-8"
                           min="0"
                           step="100"
                         />
                       </div>
-                      <Button size="icon" variant="ghost" onClick={handleSave} className="h-8 w-8 p-0 hover:bg-success/20 flex-shrink-0">
+                      <Button size="icon" variant="ghost" onClick={handleSave} className="h-6 w-6 p-0 shrink-0 hover:bg-success/20">
                         <Check className="h-4 w-4 text-success" />
                       </Button>
-                      <Button size="icon" variant="ghost" onClick={() => onSetEditingState({ id: null, title: '', target: 0 })} className="h-8 w-8 p-0 hover:bg-destructive/20 flex-shrink-0">
+                      <Button size="icon" variant="ghost" onClick={() => onSetEditingState({ id: null, title: '', target: 0 })} className="h-6 w-6 p-0 shrink-0 hover:bg-destructive/20">
                         <X className="h-4 w-4 text-destructive" />
                       </Button>
                     </div>
                   </div>
                 ) : (
                   <>
-                    <div className="flex items-center gap-2 w-full">
-                      <span className={cn("text-base sm:text-lg font-semibold flex-1", isActive ? "text-white" : "text-foreground")}>
-                        {goal.title}
-                      </span>
-                      <Button
-                        size="icon"
-                        variant="ghost"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          onSetEditingState({ id: goal.id, title: goal.title, target: goal.target_amount });
-                        }}
-                        className={cn(
-                          "h-7 w-7 p-0 transition-all duration-200 flex-shrink-0",
-                          isActive ? "opacity-70 hover:opacity-100 text-white" : "opacity-0 group-hover:opacity-100"
-                        )}
-                      >
-                        <Edit2 className="h-3.5 w-3.5" />
-                      </Button>
-                    </div>
-                    
-                    <div className="flex items-center justify-between gap-3 w-full">
-                      <div className={cn(
-                        "text-sm font-medium px-3 py-1.5 rounded-full",
-                        isActive ? "bg-white/20 text-white" : "bg-muted text-muted-foreground"
-                      )}>
-                        ${goal.current_amount.toLocaleString()} / ${goal.target_amount.toLocaleString()}
-                      </div>
-                      
-                      {progress > 0 && (
-                        <div className="flex-1 h-2 bg-muted rounded-full overflow-hidden max-w-[120px]">
-                          <div 
-                            className={cn(
-                              "h-full transition-all duration-500 rounded-full",
-                              isActive ? "bg-white/40" : "bg-gradient-to-r from-teal to-teal-glow"
-                            )}
-                            style={{ width: `${Math.min(progress, 100)}%` }}
-                          />
-                        </div>
-                      )}
-                    </div>
+                    <span className="text-lg font-semibold">{goal.title}</span>
+                    <Button 
+                      size="icon" 
+                      variant="ghost" 
+                      onClick={(e) => { 
+                        e.stopPropagation(); 
+                        onSetEditingState({ id: goal.id, title: goal.title, target: goal.target_amount }); 
+                      }} 
+                      className="h-6 w-6 p-0 opacity-0 group-hover:opacity-100"
+                    >
+                      <Edit2 className="h-3 w-3" />
+                    </Button>
                   </>
                 )}
               </div>
-            </div>
-          );
-        })}
+            );
+          })}
+        </div>
       </CardContent>
     </Card>
   );
