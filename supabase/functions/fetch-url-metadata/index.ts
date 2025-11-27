@@ -22,17 +22,32 @@ serve(async (req) => {
     }
 
     // Fetch the webpage
-    const response = await fetch(url, {
-      headers: {
-        'User-Agent': 'Mozilla/5.0 (compatible; LinkPreview/1.0)'
+    let html = ''
+    try {
+      const response = await fetch(url, {
+        headers: {
+          'User-Agent': 'Mozilla/5.0 (compatible; LinkPreview/1.0)'
+        }
+      })
+
+      if (response.ok) {
+        html = await response.text()
+      } else {
+        // URL not accessible - return empty metadata
+        console.log(`URL returned ${response.status}: ${url}`)
+        return new Response(
+          JSON.stringify({ title: '', description: '', image: '', url }),
+          { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        )
       }
-    })
-
-    if (!response.ok) {
-      throw new Error(`Failed to fetch URL: ${response.status}`)
+    } catch (fetchError) {
+      // Network error - return empty metadata
+      console.log(`Failed to fetch URL: ${url}`, fetchError)
+      return new Response(
+        JSON.stringify({ title: '', description: '', image: '', url }),
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      )
     }
-
-    const html = await response.text()
     
     // Extract metadata using regex patterns
     const titleMatch = html.match(/<title[^>]*>([^<]+)<\/title>/i)
