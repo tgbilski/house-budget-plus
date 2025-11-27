@@ -108,25 +108,23 @@ const SavingsGoals: React.FC = () => {
         )}
 
         <div className="space-y-8">
-          {/* Two-column layout for Goal Selector and Chart */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <GoalSelector
-              goals={goals}
-              currentGoalId={currentGoalId}
-              onSelectGoal={setCurrentGoalId}
-              editingState={editingState}
-              onSetEditingState={setEditingState}
-              onUpdateGoal={updateGoal}
-            />
-            
-            <CumulativeSavingsChart
-              monthlyData={monthlyData}
-              goalTitle={currentGoal?.title || 'No Goal Selected'}
-              targetAmount={currentGoal?.target_amount || 0}
-              totalSaved={totalSaved}
-              progressPercentage={progressPercentage}
-            />
-          </div>
+          {/* Chart on top, goal selector underneath */}
+          <CumulativeSavingsChart
+            monthlyData={monthlyData}
+            goalTitle={currentGoal?.title || 'No Goal Selected'}
+            targetAmount={currentGoal?.target_amount || 0}
+            totalSaved={totalSaved}
+            progressPercentage={progressPercentage}
+          />
+          
+          <GoalSelector
+            goals={goals}
+            currentGoalId={currentGoalId}
+            onSelectGoal={setCurrentGoalId}
+            editingState={editingState}
+            onSetEditingState={setEditingState}
+            onUpdateGoal={updateGoal}
+          />
 
           <MonthlySavingsGrid
             year={selectedYear.toString()}
