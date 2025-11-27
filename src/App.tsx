@@ -77,7 +77,6 @@ const queryClient = new QueryClient();
 
 // Main App Routes Component (needs to be inside HouseholdProvider)
 const AppRoutes = () => {
-  const { currentHousehold } = useHouseholdContext();
   const location = useLocation();
   const isMobileApp = isNativeApp();
 
@@ -88,7 +87,7 @@ const AppRoutes = () => {
   // Mobile app routes - calculator pages for subscribers only
   if (isMobileApp) {
     return (
-      <Routes key={currentHousehold?.id || 'no-household'}>
+      <Routes>
         <Route path="/" element={<MobileLanding />} />
         <Route path="/features" element={<Features />} />
         <Route path="/auth" element={<Auth />} />
@@ -107,7 +106,7 @@ const AppRoutes = () => {
   
   // Full web app routes
   return (
-    <Routes key={currentHousehold?.id || 'no-household'}>
+    <Routes>
       <Route path="/" element={<Home />} />
       <Route path="/landing" element={<Landing />} />
       <Route path="/features" element={<Features />} />
