@@ -5,15 +5,16 @@ import { SkipToMain } from "@/components/SkipToMain";
 import { MobileBottomNav } from "@/components/MobileBottomNav";
 import { MobileAppHeader } from "@/components/MobileAppHeader";
 import { SubscriptionGuard } from "@/components/SubscriptionGuard";
+import { SplashScreen } from "@/components/SplashScreen";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import { useEffect } from "react";
 import { trackPageView } from "@/utils/analytics";
 import { HelmetProvider } from 'react-helmet-async';
-import { AuthProvider } from "@/hooks/useAuth";
+import { AuthProvider, useAuth } from "@/hooks/useAuth";
 import { SubscriptionProvider } from "@/hooks/useSubscription";
 import { YearProvider } from "@/hooks/useYear";
-import { HouseholdProvider, useHouseholdContext } from "@/providers/HouseholdProvider";
+import { HouseholdProvider } from "@/providers/HouseholdProvider";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import Header from "@/components/Header";
 import { AppSidebar } from "@/components/AppSidebar";
@@ -144,11 +145,17 @@ const AppRoutes = () => {
 
 // Layout component that uses hooks
 const AppLayout = () => {
+  const { loading: authLoading } = useAuth();
   const isMobile = useIsMobile();
   const isMobileApp = isNativeApp();
   const location = useLocation();
   const isHomePage = location.pathname === '/';
   const isLandingPage = location.pathname === '/landing';
+
+  // Show splash screen while auth is initializing
+  if (authLoading) {
+    return <SplashScreen isLoading={true} />;
+  }
 
   // Simplified layout for mobile app
   if (isMobileApp) {
