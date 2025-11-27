@@ -15,7 +15,6 @@ import { WarningBanner } from '@/components/WarningBanner';
 import { YearSelector } from '@/components/YearSelector';
 import { useVendorProjects } from '@/hooks/useVendorProjects';
 import { VendorCard } from '@/components/VendorCard';
-import { ProjectSelector } from '@/components/ProjectSelector';
 import { ProjectSummaryCard } from '@/components/ProjectSummaryCard';
 import { InternalLinks } from '@/components/InternalLinks';
 import { FAQ } from '@/components/FAQ';
@@ -101,16 +100,13 @@ const CompareVendors: React.FC = () => {
         <WarningBanner />
 
         <div className="space-y-4 md:space-y-6">
-          <ProjectSelector
+          <ProjectSummaryCard
             projects={projects}
             currentProjectId={currentProjectId}
-            onSelectProject={setCurrentProjectId}
-            onUpdateTitle={updateProjectTitle}
-          />
-
-          <ProjectSummaryCard
             stats={summaryStats}
             currencySymbol={currency.symbol}
+            onSelectProject={setCurrentProjectId}
+            onUpdateTitle={updateProjectTitle}
           />
 
           <div className="flex flex-col gap-3 md:gap-4">

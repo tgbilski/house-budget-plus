@@ -1,9 +1,15 @@
 // src/components/ProjectSummaryCard.tsx
-import React from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { TrendingDown, TrendingUp, FileText, BadgePercent } from 'lucide-react';
+import React, { useState } from 'react';
+import { Card, CardContent, CardHeader } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { TrendingDown, TrendingUp, FileText, BadgePercent, ChevronLeft, ChevronRight, Edit2, Check, X, Scale } from 'lucide-react';
+import { cn } from '@/lib/utils';
+import type { VendorProject } from '@/hooks/useVendorProjects';
 
 interface Props {
+  projects: VendorProject[];
+  currentProjectId: string | null;
   stats: {
     quoteCount: number;
     lowestQuote: number;
@@ -11,28 +17,148 @@ interface Props {
     savingsPotential: number;
   };
   currencySymbol: string;
+  onSelectProject: (id: string) => void;
+  onUpdateTitle: (projectId: string, newTitle: string) => void;
 }
 
 const StatBox: React.FC<{ icon: React.ElementType; title: string; value: string; color: string }> = ({ icon: Icon, title, value, color }) => (
-  <div className="flex items-start gap-3 min-w-0">
+  <div className="flex items-center gap-3 min-w-0 bg-white/60 backdrop-blur-sm rounded-xl p-3 border border-border/30">
     <div className={`p-2 rounded-lg bg-opacity-10 flex-shrink-0 ${color.replace('text-', 'bg-')}`}>
-      <Icon className={`h-5 w-5 sm:h-6 sm:w-6 ${color}`} />
+      <Icon className={`h-4 w-4 sm:h-5 sm:w-5 ${color}`} />
     </div>
     <div className="min-w-0 flex-1">
-      <p className="text-xs sm:text-sm text-muted-foreground truncate">{title}</p>
-      <p className="text-lg sm:text-2xl font-bold truncate">{value}</p>
+      <p className="text-xs text-muted-foreground truncate">{title}</p>
+      <p className="text-base sm:text-lg font-bold truncate">{value}</p>
     </div>
   </div>
 );
 
+export const ProjectSummaryCard: React.FC<Props> = ({ 
+  projects, 
+  currentProjectId, 
+  stats, 
+  currencySymbol,
+  onSelectProject,
+  onUpdateTitle 
+}) => {
+  const [editingState, setEditingState] = useState({ id: '', title: '' });
+  
+  const currentProject = projects.find(p => p.id === currentProjectId);
+  const currentIndex = projects.findIndex(p => p.id === currentProjectId);
+  const isEditing = editingState.id === currentProjectId;
 
-export const ProjectSummaryCard: React.FC<Props> = ({ stats, currencySymbol }) => {
+  const handlePrevious = () => {
+    if (currentIndex > 0) {
+      onSelectProject(projects[currentIndex - 1].id);
+    }
+  };
+
+  const handleNext = () => {
+    if (currentIndex < projects.length - 1) {
+      onSelectProject(projects[currentIndex + 1].id);
+    }
+  };
+
+  const handleSave = () => {
+    if (editingState.id && editingState.title.trim()) {
+      onUpdateTitle(editingState.id, editingState.title.trim());
+    }
+    setEditingState({ id: '', title: '' });
+  };
+
+  const startEditing = () => {
+    if (currentProject) {
+      setEditingState({ id: currentProject.id, title: currentProject.title });
+    }
+  };
+
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Project Summary</CardTitle>
+    <Card className="bg-white/80 backdrop-blur-sm border-2 border-border/50 shadow-[var(--shadow-elegant)]">
+      <CardHeader className="pb-2">
+        {/* Navigation and Title Row */}
+        <div className="flex items-center justify-between gap-2">
+          {/* Left Arrow */}
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={handlePrevious}
+            disabled={currentIndex <= 0}
+            className="h-10 w-10 shrink-0 disabled:opacity-30"
+          >
+            <ChevronLeft className="h-6 w-6" />
+          </Button>
+
+          {/* Center: Title and Edit */}
+          <div className="flex-1 flex flex-col items-center gap-1 min-w-0">
+            {isEditing ? (
+              <div className="flex items-center gap-2 w-full max-w-sm" onClick={(e) => e.stopPropagation()}>
+                <Input
+                  value={editingState.title}
+                  onChange={(e) => setEditingState({ ...editingState, title: e.target.value })}
+                  onKeyDown={(e) => e.key === 'Enter' && handleSave()}
+                  placeholder="Project name"
+                  className="text-center text-lg font-semibold bg-background text-foreground h-9"
+                  autoFocus
+                />
+                <Button size="icon" variant="ghost" onClick={handleSave} className="h-8 w-8 p-0 hover:bg-success/20 shrink-0">
+                  <Check className="h-4 w-4 text-success" />
+                </Button>
+                <Button size="icon" variant="ghost" onClick={() => setEditingState({ id: '', title: '' })} className="h-8 w-8 p-0 hover:bg-destructive/20 shrink-0">
+                  <X className="h-4 w-4 text-destructive" />
+                </Button>
+              </div>
+            ) : (
+              <div className="flex items-center gap-2 group cursor-pointer" onClick={startEditing}>
+                <div className="inline-flex items-center justify-center w-8 h-8 bg-gradient-to-br from-teal/20 to-teal-glow/20 rounded-lg shrink-0">
+                  <Scale className="h-4 w-4 text-teal" />
+                </div>
+                <h2 className="text-xl font-bold text-foreground truncate">
+                  {currentProject?.title || 'No Project Selected'}
+                </h2>
+                <Button 
+                  size="icon" 
+                  variant="ghost" 
+                  className="h-6 w-6 p-0 opacity-0 group-hover:opacity-100 shrink-0"
+                  onClick={(e) => { e.stopPropagation(); startEditing(); }}
+                >
+                  <Edit2 className="h-3 w-3" />
+                </Button>
+              </div>
+            )}
+            
+            {/* Project indicator dots */}
+            {!isEditing && (
+              <div className="flex items-center gap-1.5 mt-1">
+                {projects.map((project, index) => (
+                  <button
+                    key={project.id}
+                    onClick={() => onSelectProject(project.id)}
+                    className={cn(
+                      "w-2 h-2 rounded-full transition-all",
+                      index === currentIndex 
+                        ? "bg-primary w-4" 
+                        : "bg-muted-foreground/30 hover:bg-muted-foreground/50"
+                    )}
+                  />
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Right Arrow */}
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={handleNext}
+            disabled={currentIndex >= projects.length - 1}
+            className="h-10 w-10 shrink-0 disabled:opacity-30"
+          >
+            <ChevronRight className="h-6 w-6" />
+          </Button>
+        </div>
       </CardHeader>
-      <CardContent className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+      
+      <CardContent className="grid grid-cols-2 lg:grid-cols-4 gap-3 pt-2">
         <StatBox icon={FileText} title="Quotes Received" value={`${stats.quoteCount}`} color="text-blue-500" />
         <StatBox icon={TrendingDown} title="Lowest Quote" value={`${currencySymbol}${stats.lowestQuote.toLocaleString()}`} color="text-green-500" />
         <StatBox icon={TrendingUp} title="Highest Quote" value={`${currencySymbol}${stats.highestQuote.toLocaleString()}`} color="text-red-500" />
