@@ -1,6 +1,6 @@
 // src/components/VacationOptionCard.tsx
 import React, { useState, useEffect } from 'react';
-import { Star, RefreshCw } from 'lucide-react';
+import { X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -52,8 +52,18 @@ export const VacationOptionCard: React.FC<VacationOptionCardProps> = ({ option, 
   ].filter(Boolean).length;
 
   return (
-    <Card className="h-full flex flex-col">
-      <CardHeader className="pb-4">
+    <Card className="h-full flex flex-col relative group">
+      {/* Delete button */}
+      <Button
+        variant="ghost"
+        size="icon"
+        onClick={() => onReset(option.id)}
+        className="absolute top-2 right-2 h-7 w-7 opacity-0 group-hover:opacity-100 transition-opacity hover:bg-destructive/10 hover:text-destructive z-10"
+      >
+        <X className="h-4 w-4" />
+      </Button>
+      
+      <CardHeader className="pb-4 pr-10">
         <div className="flex flex-col gap-3">
           <div className="w-full">
             <Label className="text-sm mb-1.5 block">Destination</Label>
@@ -89,8 +99,7 @@ export const VacationOptionCard: React.FC<VacationOptionCardProps> = ({ option, 
         
         <div className="flex-1" />
         {/* ... evaluation and notes sections ... */}
-        <div className="flex justify-between items-center pt-2">
-            <Button variant="ghost" size="sm" onClick={() => onReset(option.id)} className="text-muted-foreground gap-2"><RefreshCw className="h-4 w-4" /> Reset</Button>
+        <div className="flex justify-end items-center pt-2">
             {/* ... star rating ... */}
         </div>
       </CardContent>
