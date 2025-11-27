@@ -10,12 +10,10 @@ import { useCurrency } from '@/hooks/useCurrency';
 import { YearSelector } from '@/components/YearSelector';
 import { SEO } from '@/components/SEO';
 import { WarningBanner } from '@/components/WarningBanner';
-import { VacationDatePicker } from '@/components/VacationDatePicker';
-import { VacationTotalBudget } from '@/components/VacationTotalBudget';
+import { VacationSummaryCard } from '@/components/VacationSummaryCard';
 import { seoData } from '@/utils/seoData';
 import { useVacationPlanner } from '@/hooks/useVacationPlanner';
 import { VacationOptionCard } from '@/components/VacationOptionCard';
-import { VacationSelector } from '@/components/VacationSelector';
 import { Link } from 'react-router-dom';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { AlertTriangle } from 'lucide-react';
@@ -37,9 +35,7 @@ const Vacation: React.FC = () => {
     options,
     currentVacationId,
     isLoading,
-    editingState,
     setCurrentVacationId,
-    setEditingState,
     addOption,
     removeOption,
     updateOption,
@@ -117,28 +113,17 @@ const Vacation: React.FC = () => {
         )}
 
         <div className="space-y-6">
-          {/* Date Picker */}
-          <div className="bg-white rounded-lg border border-border p-4">
-            <h3 className="text-sm font-medium mb-3">Trip Dates</h3>
-            <VacationDatePicker
-              startDate={startDate}
-              endDate={endDate}
-              onStartDateChange={setStartDate}
-              onEndDateChange={setEndDate}
-            />
-          </div>
-
-          {/* Budget Summary */}
-          {options.length > 0 && (
-            <VacationTotalBudget options={options} currencySymbol={currency.symbol} />
-          )}
-
-          <VacationSelector
+          {/* Combined Summary Card with carousel, dates, and stats */}
+          <VacationSummaryCard
             vacations={vacations}
             currentVacationId={currentVacationId}
+            options={options}
+            currencySymbol={currency.symbol}
+            startDate={startDate}
+            endDate={endDate}
+            onStartDateChange={setStartDate}
+            onEndDateChange={setEndDate}
             onSelectVacation={setCurrentVacationId}
-            editingState={editingState}
-            onSetEditingState={setEditingState}
             onUpdateTitle={updateVacationTitle}
           />
 
