@@ -26,11 +26,10 @@ export function useSavingsTracker({ user, currentHousehold, year }: UseSavingsTr
   const [monthlyData, setMonthlyData] = useState<Record<string, number>>({});
   const [isLoading, setIsLoading] = useState(true);
 
-  // FIX: Add state to manage the editing of goal titles
-  const [editingState, setEditingState] = useState<{ id: string | null; title: string }>({ id: null, title: '' });
+  // State to manage the editing of goal titles and targets
+  const [editingState, setEditingState] = useState<{ id: string | null; title: string; target: number }>({ id: null, title: '', target: 0 });
 
   const fetchGoals = useCallback(async () => {
-    // ... This function remains the same from the last version ...
     setIsLoading(true);
     let baseGoals: SavingsGoal[] = Array.from({ length: 3 }, (_, i) => ({
       id: `temp-${i + 1}-${Date.now()}`, user_id: user?.id || 'guest', household_id: currentHousehold?.id || 'guest',
@@ -87,34 +86,25 @@ export function useSavingsTracker({ user, currentHousehold, year }: UseSavingsTr
   useEffect(() => { fetchGoals(); }, [fetchGoals]);
   useEffect(() => { fetchMonthlyData(); }, [fetchMonthlyData]);
   
-  // FIX: Add the function to update the goal title
-  const updateGoalTitle = async (goalId: string, title: string) => {
-    setGoals(prev => prev.map(g => g.id === goalId ? { ...g, title } : g));
-    setEditingState({ id: null, title: '' }); // Exit editing mode
+  // Combined function to update both title and target
+  const updateGoal = async (goalId: string, title: string, target: number) => {
+    const goal = goals.find(g => g.id === goalId);
+    if (!goal) return;
+
+    // Update local state immediately
+    setGoals(prev => prev.map(g => g.id === goalId ? { ...g, title, target_amount: target } : g));
+    setEditingState({ id: null, title: '', target: 0 }); // Exit editing mode
 
     if (!user) return; // Don't save for guests
 
-    const { error } = await supabase.from('savings_goals').update({ title }).eq('id', goalId);
-    if (error) {
-      toast.error("Failed to update goal title.");
-      fetchGoals(); // Revert on error
-    } else {
-      toast.success("Goal title updated!");
-    }
-  };
-
-  const updateGoalTarget = async (target: number) => {
-    if (!currentGoal || !user) return;
-
-    setGoals(prev => prev.map(g => g.id === currentGoal.id ? { ...g, target_amount: target } : g));
-
-    if (currentGoal.id.startsWith('temp-')) {
+    // If this is a temp goal, create it
+    if (goalId.startsWith('temp-')) {
       const newGoal = {
         user_id: user.id,
         household_id: currentHousehold?.id || '',
         year,
-        title: currentGoal.title,
-        goal_number: currentGoal.goal_number,
+        title,
+        goal_number: goal.goal_number,
         target_amount: target,
         current_amount: 0
       };
@@ -122,24 +112,30 @@ export function useSavingsTracker({ user, currentHousehold, year }: UseSavingsTr
       try {
         const { data, error } = await supabase.from('savings_goals').insert(newGoal).select().single();
         if (error) throw error;
-        setGoals(prev => prev.map(g => g.id === currentGoal.id ? data : g));
-        setCurrentGoalId(data.id);
+        setGoals(prev => prev.map(g => g.id === goalId ? data : g));
+        if (currentGoalId === goalId) {
+          setCurrentGoalId(data.id);
+        }
+        toast.success("Goal saved!");
       } catch (error) {
-        toast.error("Failed to save goal target.");
+        toast.error("Failed to save goal.");
         fetchGoals();
       }
     } else {
+      // Update existing goal
       try {
-        const { error } = await supabase.from('savings_goals').update({ target_amount: target }).eq('id', currentGoal.id);
+        const { error } = await supabase.from('savings_goals').update({ title, target_amount: target }).eq('id', goalId);
         if (error) throw error;
+        toast.success("Goal updated!");
       } catch (error) {
-        toast.error("Failed to update goal target.");
+        toast.error("Failed to update goal.");
         fetchGoals();
       }
     }
   };
 
   const updateMonthlyAmount = async (monthIndex: number, amount: number) => {
+    const currentGoal = goals.find(g => g.id === currentGoalId);
     if (!currentGoal || !user) return;
 
     const monthKey = monthIndex.toString();
@@ -221,18 +217,16 @@ export function useSavingsTracker({ user, currentHousehold, year }: UseSavingsTr
 
   const currentGoal = useMemo(() => goals.find(g => g.id === currentGoalId), [goals, currentGoalId]);
 
-  // FIX: Add the new state and functions to the return object
   return {
     goals,
     currentGoal,
     currentGoalId,
     monthlyData,
     isLoading,
-    editingState, // Provide the state for the component
-    setEditingState, // Provide the function to change the state
+    editingState,
+    setEditingState,
     setCurrentGoalId,
-    updateGoalTitle, // Provide the function to save the title
-    updateGoalTarget,
+    updateGoal,
     updateMonthlyAmount,
   };
 }

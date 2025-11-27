@@ -2,15 +2,13 @@
 import React, { useEffect } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import { useHouseholdContext } from '@/providers/HouseholdProvider';
-import { useYear } from '@/hooks/useYear'; // Import the useYear hook
+import { useYear } from '@/hooks/useYear';
 import { useSavingsTracker } from '@/hooks/useSavingsTracker';
 import { useBadges } from '@/hooks/useBadges';
 import { isNativeApp } from '@/utils/capacitor';
 import { cn } from '@/lib/utils';
 
-// Import the worker components
 import { GoalSelector } from '@/components/GoalSelector';
-import { GoalProgressCard } from '@/components/GoalProgressCard';
 import { MonthlySavingsGrid } from '@/components/MonthlySavingsGrid';
 import { CumulativeSavingsChart } from '@/components/CumulativeSavingsChart';
 
@@ -27,22 +25,20 @@ import { FAQ } from '@/components/FAQ';
 const SavingsGoals: React.FC = () => {
   const { user } = useAuth();
   const { currentHousehold } = useHouseholdContext();
-  const { selectedYear, setSelectedYear } = useYear(); // Get the year and its setter function
+  const { selectedYear, setSelectedYear } = useYear();
   const { earnBadge } = useBadges();
   const isMobileApp = isNativeApp();
 
-  // Call the hook with all the props it needs, including the year
   const {
     goals,
     currentGoal,
     currentGoalId,
     monthlyData,
     isLoading,
-    editingState,      // Correct name
-    setEditingState,   // Correct name
+    editingState,
+    setEditingState,
     setCurrentGoalId,
-    updateGoalTitle,
-    updateGoalTarget,
+    updateGoal,
     updateMonthlyAmount,
   } = useSavingsTracker({ user, currentHousehold, year: selectedYear });
   
@@ -120,22 +116,17 @@ const SavingsGoals: React.FC = () => {
               onSelectGoal={setCurrentGoalId}
               editingState={editingState}
               onSetEditingState={setEditingState}
-              onUpdateTitle={updateGoalTitle}
+              onUpdateGoal={updateGoal}
             />
             
             <CumulativeSavingsChart
               monthlyData={monthlyData}
               goalTitle={currentGoal?.title || 'No Goal Selected'}
               targetAmount={currentGoal?.target_amount || 0}
+              totalSaved={totalSaved}
+              progressPercentage={progressPercentage}
             />
           </div>
-
-          <GoalProgressCard
-            currentGoal={currentGoal}
-            totalSaved={totalSaved}
-            progressPercentage={progressPercentage}
-            onUpdateTarget={updateGoalTarget}
-          />
 
           <MonthlySavingsGrid
             year={selectedYear.toString()}
@@ -158,7 +149,7 @@ const SavingsGoals: React.FC = () => {
                   faqs={[
                     {
                       question: "How do I set a savings goal?",
-                      answer: "Click on the goal selector at the top of the page. You can create new goals or select existing ones. Enter your target amount and goal name to get started."
+                      answer: "Click the edit button on any goal card to set a name and target amount. Your changes will be saved automatically."
                     },
                     {
                       question: "Can I track multiple savings goals at once?",

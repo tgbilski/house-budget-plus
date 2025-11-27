@@ -3,7 +3,7 @@ import React from 'react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { Edit2, Check, X } from 'lucide-react';
+import { Edit2, Check, X, DollarSign } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface SavingsGoal {
@@ -13,13 +13,19 @@ interface SavingsGoal {
   current_amount: number;
 }
 
+interface EditingState {
+  id: string | null;
+  title: string;
+  target: number;
+}
+
 interface Props {
   goals: SavingsGoal[];
   currentGoalId: string | null;
   onSelectGoal: (id: string) => void;
-  editingState: { id: string | null; title: string };
-  onSetEditingState: (state: { id: string | null; title: string }) => void;
-  onUpdateTitle: (goalId: string, newTitle: string) => void;
+  editingState: EditingState;
+  onSetEditingState: (state: EditingState) => void;
+  onUpdateGoal: (goalId: string, title: string, target: number) => void;
 }
 
 export const GoalSelector: React.FC<Props> = ({
@@ -28,19 +34,20 @@ export const GoalSelector: React.FC<Props> = ({
   onSelectGoal,
   editingState,
   onSetEditingState,
-  onUpdateTitle,
+  onUpdateGoal,
 }) => {
   const handleSave = () => {
     if (editingState.id && editingState.title.trim()) {
-      onUpdateTitle(editingState.id, editingState.title.trim());
+      onUpdateGoal(editingState.id, editingState.title.trim(), editingState.target);
     }
   };
 
   return (
-    <Card className="bg-white/80 backdrop-blur-sm border-2 border-border/50 shadow-[var(--shadow-elegant)] animate-slide-up">
+    <Card className="bg-white/80 backdrop-blur-sm border-2 border-border/50 shadow-[var(--shadow-elegant)] animate-slide-up h-full">
       <CardContent className="p-4 space-y-3">
         {goals.map((goal, index) => {
           const isActive = currentGoalId === goal.id;
+          const isEditing = editingState.id === goal.id;
           const progress = goal.target_amount > 0 ? (goal.current_amount / goal.target_amount) * 100 : 0;
           
           return (
@@ -53,24 +60,45 @@ export const GoalSelector: React.FC<Props> = ({
                   : "bg-white/60 backdrop-blur-sm hover:bg-white/80 border-border/30 hover:border-teal/40 hover:shadow-md hover:-translate-y-0.5"
               )}
               style={{ animationDelay: `${index * 0.1}s` }}
-              onClick={() => onSelectGoal(goal.id)}
+              onClick={() => !isEditing && onSelectGoal(goal.id)}
             >
               <div className="flex flex-col gap-2 min-w-0 w-full">
-                {editingState.id === goal.id ? (
-                  <div className="flex items-center gap-2 w-full" onClick={(e) => e.stopPropagation()}>
-                    <Input
-                      value={editingState.title}
-                      onChange={(e) => onSetEditingState({ ...editingState, title: e.target.value })}
-                      onKeyDown={(e) => e.key === 'Enter' && handleSave()}
-                      className="text-base font-semibold bg-background text-foreground h-9 flex-1"
-                      autoFocus
-                    />
-                    <Button size="icon" variant="ghost" onClick={handleSave} className="h-8 w-8 p-0 hover:bg-success/20 flex-shrink-0">
-                      <Check className="h-4 w-4 text-success" />
-                    </Button>
-                    <Button size="icon" variant="ghost" onClick={() => onSetEditingState({ id: null, title: '' })} className="h-8 w-8 p-0 hover:bg-destructive/20 flex-shrink-0">
-                      <X className="h-4 w-4 text-destructive" />
-                    </Button>
+                {isEditing ? (
+                  <div className="flex flex-col gap-3 w-full" onClick={(e) => e.stopPropagation()}>
+                    {/* Title input */}
+                    <div className="flex items-center gap-2">
+                      <Input
+                        value={editingState.title}
+                        onChange={(e) => onSetEditingState({ ...editingState, title: e.target.value })}
+                        onKeyDown={(e) => e.key === 'Enter' && handleSave()}
+                        placeholder="Goal name"
+                        className="text-base font-semibold bg-background text-foreground h-9 flex-1"
+                        autoFocus
+                      />
+                    </div>
+                    
+                    {/* Target input */}
+                    <div className="flex items-center gap-2">
+                      <div className="relative flex-1">
+                        <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                        <Input
+                          type="number"
+                          value={editingState.target || ''}
+                          onChange={(e) => onSetEditingState({ ...editingState, target: parseFloat(e.target.value) || 0 })}
+                          onKeyDown={(e) => e.key === 'Enter' && handleSave()}
+                          placeholder="Target amount"
+                          className="pl-9 text-base font-semibold bg-background text-foreground h-9"
+                          min="0"
+                          step="100"
+                        />
+                      </div>
+                      <Button size="icon" variant="ghost" onClick={handleSave} className="h-8 w-8 p-0 hover:bg-success/20 flex-shrink-0">
+                        <Check className="h-4 w-4 text-success" />
+                      </Button>
+                      <Button size="icon" variant="ghost" onClick={() => onSetEditingState({ id: null, title: '', target: 0 })} className="h-8 w-8 p-0 hover:bg-destructive/20 flex-shrink-0">
+                        <X className="h-4 w-4 text-destructive" />
+                      </Button>
+                    </div>
                   </div>
                 ) : (
                   <>
@@ -83,7 +111,7 @@ export const GoalSelector: React.FC<Props> = ({
                         variant="ghost"
                         onClick={(e) => {
                           e.stopPropagation();
-                          onSetEditingState({ id: goal.id, title: goal.title });
+                          onSetEditingState({ id: goal.id, title: goal.title, target: goal.target_amount });
                         }}
                         className={cn(
                           "h-7 w-7 p-0 transition-all duration-200 flex-shrink-0",
