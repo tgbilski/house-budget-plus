@@ -20,6 +20,7 @@ import { AIChatbot } from '@/components/AIChatbot';
 import { YearSelector } from '@/components/YearSelector';
 import { InternalLinks } from '@/components/InternalLinks';
 import { FAQ } from '@/components/FAQ';
+import heroSavingsImg from '@/assets/hero-savings.png';
 
 const SavingsGoals: React.FC = () => {
   const { user } = useAuth();
@@ -70,27 +71,38 @@ const SavingsGoals: React.FC = () => {
       />
 
       <div className="max-w-7xl mx-auto p-4 md:p-6 lg:p-8">
-        {/* Enhanced header with gradient background */}
-        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6 mb-8 p-6 rounded-2xl bg-white/60 backdrop-blur-sm border-2 border-border/50 shadow-[var(--shadow-elegant)] animate-fade-in">
-          <div className="flex flex-col lg:items-start space-y-3">
-            <div className="flex items-center gap-3">
-              <div className="inline-flex items-center justify-center w-14 h-14 bg-gradient-to-br from-teal/20 to-teal-glow/20 rounded-2xl shadow-md">
-                <Target className="h-8 w-8 text-teal" />
+        {/* Enhanced header with background image */}
+        <div className="relative overflow-hidden rounded-2xl mb-8 shadow-[var(--shadow-elegant)] animate-fade-in">
+          <img 
+            src={heroSavingsImg} 
+            alt="" 
+            className="absolute inset-0 w-full h-full object-cover"
+            aria-hidden="true"
+          />
+          <div className="absolute inset-0 bg-gradient-to-r from-background/95 via-background/80 to-background/60" />
+          <div className="relative p-6">
+            <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
+              <div className="flex flex-col lg:items-start space-y-3">
+                <div className="flex items-center gap-3">
+                  <div className="inline-flex items-center justify-center w-14 h-14 bg-gradient-to-br from-teal/20 to-teal-glow/20 rounded-2xl shadow-md backdrop-blur-sm">
+                    <Target className="h-8 w-8 text-teal" />
+                  </div>
+                  <div>
+                    <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-foreground to-teal bg-clip-text text-transparent">
+                      Savings Tracker
+                    </h1>
+                    <p className="text-muted-foreground text-sm mt-1">
+                      Track your progress toward financial goals
+                    </p>
+                  </div>
+                </div>
               </div>
-              <div>
-                <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-foreground to-teal bg-clip-text text-transparent">
-                  Savings Tracker
-                </h1>
-                <p className="text-muted-foreground text-sm mt-1">
-                  Track your progress toward financial goals
-                </p>
+              
+              {/* Year selector at top right on laptop, centered on mobile */}
+              <div className="flex justify-center lg:justify-end">
+                <YearSelector />
               </div>
             </div>
-          </div>
-          
-          {/* Year selector at top right on laptop, centered on mobile */}
-          <div className="flex justify-center lg:justify-end">
-            <YearSelector />
           </div>
         </div>
 
