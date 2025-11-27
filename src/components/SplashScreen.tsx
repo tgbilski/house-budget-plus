@@ -1,0 +1,64 @@
+import calculatorMascot from "@/assets/calculator-mascot.png";
+
+interface SplashScreenProps {
+  isLoading: boolean;
+}
+
+export const SplashScreen = ({ isLoading }: SplashScreenProps) => {
+  if (!isLoading) return null;
+
+  return (
+    <div 
+      className="fixed inset-0 z-[9999] flex flex-col items-center justify-center transition-opacity duration-500"
+      style={{ backgroundColor: 'hsl(213, 50%, 22%)' }}
+    >
+      {/* Subtle pattern overlay */}
+      <div 
+        className="absolute inset-0 opacity-30"
+        style={{
+          backgroundImage: 'repeating-linear-gradient(45deg, transparent, transparent 40px, rgba(255,255,255,0.02) 40px, rgba(255,255,255,0.02) 42px)'
+        }}
+      />
+      
+      {/* Content */}
+      <div className="relative z-10 flex flex-col items-center gap-6 animate-fade-in">
+        {/* Mascot with pulse animation */}
+        <div className="relative">
+          <img 
+            src={calculatorMascot} 
+            alt="House Budget Calculator" 
+            className="w-24 h-24 sm:w-32 sm:h-32 drop-shadow-2xl animate-[pulse_2s_cubic-bezier(0.4,0,0.6,1)_infinite]"
+          />
+          {/* Glow effect */}
+          <div 
+            className="absolute inset-0 rounded-full blur-xl opacity-40"
+            style={{ backgroundColor: 'hsl(var(--sage))' }}
+          />
+        </div>
+        
+        {/* App name */}
+        <h1 className="text-2xl sm:text-3xl font-bold text-white text-center">
+          House Budget Calculator
+        </h1>
+        
+        {/* Loading indicator */}
+        <div className="flex items-center gap-2 mt-4">
+          <div className="flex gap-1">
+            <span 
+              className="w-2 h-2 rounded-full bg-sage animate-bounce"
+              style={{ animationDelay: '0ms' }}
+            />
+            <span 
+              className="w-2 h-2 rounded-full bg-sage animate-bounce"
+              style={{ animationDelay: '150ms' }}
+            />
+            <span 
+              className="w-2 h-2 rounded-full bg-sage animate-bounce"
+              style={{ animationDelay: '300ms' }}
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
