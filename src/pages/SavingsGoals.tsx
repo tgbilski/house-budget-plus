@@ -12,6 +12,7 @@ import { cn } from '@/lib/utils';
 import { GoalSelector } from '@/components/GoalSelector';
 import { GoalProgressCard } from '@/components/GoalProgressCard';
 import { MonthlySavingsGrid } from '@/components/MonthlySavingsGrid';
+import { CumulativeSavingsChart } from '@/components/CumulativeSavingsChart';
 
 import { SEO } from '@/components/SEO';
 import { seoData } from '@/utils/seoData';
@@ -111,14 +112,23 @@ const SavingsGoals: React.FC = () => {
         )}
 
         <div className="space-y-8">
-          <GoalSelector
-            goals={goals}
-            currentGoalId={currentGoalId}
-            onSelectGoal={setCurrentGoalId}
-            editingState={editingState}
-            onSetEditingState={setEditingState}
-            onUpdateTitle={updateGoalTitle}
-          />
+          {/* Two-column layout for Goal Selector and Chart */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <GoalSelector
+              goals={goals}
+              currentGoalId={currentGoalId}
+              onSelectGoal={setCurrentGoalId}
+              editingState={editingState}
+              onSetEditingState={setEditingState}
+              onUpdateTitle={updateGoalTitle}
+            />
+            
+            <CumulativeSavingsChart
+              monthlyData={monthlyData}
+              goalTitle={currentGoal?.title || 'No Goal Selected'}
+              targetAmount={currentGoal?.target_amount || 0}
+            />
+          </div>
 
           <GoalProgressCard
             currentGoal={currentGoal}
