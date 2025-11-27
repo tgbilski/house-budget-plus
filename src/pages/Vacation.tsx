@@ -20,6 +20,7 @@ import { AlertTriangle } from 'lucide-react';
 import { InternalLinks } from '@/components/InternalLinks';
 import { FAQ } from '@/components/FAQ';
 import { vacationPlanningFAQs } from '@/utils/faqData';
+import heroVacationImg from '@/assets/hero-vacation.png';
 
 const Vacation: React.FC = () => {
   const { user } = useAuth();
@@ -72,28 +73,37 @@ const Vacation: React.FC = () => {
       />
       
       <div className="max-w-7xl mx-auto p-4">
-        {/* Enhanced header with gradient background */}
-        <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-background via-teal/5 to-sage/10 border border-teal/20 p-6 mb-6 shadow-lg">
-          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
-            <div className="flex flex-col lg:items-start space-y-2">
-              <div className="flex items-center gap-3">
-                <div className="inline-flex items-center justify-center w-12 h-12 bg-gradient-to-br from-teal to-teal/60 rounded-2xl shadow-lg">
-                  <Plane className="h-6 w-6 text-white" />
-                </div>
-                <div>
-                  <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-foreground to-teal bg-clip-text text-transparent">
-                    Vacation Planner
-                  </h1>
-                  <p className="text-muted-foreground text-sm mt-1">
-                    Compare options for each of your trips
-                  </p>
+        {/* Enhanced header with background image */}
+        <div className="relative overflow-hidden rounded-2xl mb-6 shadow-lg">
+          <img 
+            src={heroVacationImg} 
+            alt="" 
+            className="absolute inset-0 w-full h-full object-cover"
+            aria-hidden="true"
+          />
+          <div className="absolute inset-0 bg-gradient-to-r from-background/95 via-background/80 to-background/60" />
+          <div className="relative p-6">
+            <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+              <div className="flex flex-col lg:items-start space-y-2">
+                <div className="flex items-center gap-3">
+                  <div className="inline-flex items-center justify-center w-12 h-12 bg-gradient-to-br from-teal to-teal/60 rounded-2xl shadow-lg">
+                    <Plane className="h-6 w-6 text-white" />
+                  </div>
+                  <div>
+                    <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-foreground to-teal bg-clip-text text-transparent">
+                      Vacation Planner
+                    </h1>
+                    <p className="text-muted-foreground text-sm mt-1">
+                      Compare options for each of your trips
+                    </p>
+                  </div>
                 </div>
               </div>
-            </div>
-            
-            {/* Year selector at top right on laptop, centered on mobile */}
-            <div className="flex justify-center lg:justify-end">
-              <YearSelector />
+              
+              {/* Year selector at top right on laptop, centered on mobile */}
+              <div className="flex justify-center lg:justify-end">
+                <YearSelector />
+              </div>
             </div>
           </div>
         </div>

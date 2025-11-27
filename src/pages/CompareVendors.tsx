@@ -21,6 +21,7 @@ import { FAQ } from '@/components/FAQ';
 import { vendorComparisonFAQs } from '@/utils/faqData';
 import { isNativeApp } from '@/utils/capacitor';
 import { cn } from '@/lib/utils';
+import heroVendorsImg from '@/assets/hero-vendors.png';
 
 const CompareVendors: React.FC = () => {
   const { user } = useAuth();
@@ -71,28 +72,37 @@ const CompareVendors: React.FC = () => {
       />
 
       <div className="max-w-7xl mx-auto p-3 md:p-4">
-        {/* Enhanced header with gradient background */}
-        <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-background via-teal/5 to-sage/10 border border-teal/20 p-4 md:p-6 mb-4 md:mb-6 shadow-lg">
-          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3 md:gap-4">
-            <div className="flex flex-col lg:items-start space-y-2">
-              <div className="flex items-center gap-3">
-                <div className="inline-flex items-center justify-center w-10 h-10 md:w-12 md:h-12 bg-gradient-to-br from-teal to-teal/60 rounded-2xl shadow-lg">
-                  <Scale className="h-5 w-5 md:h-6 md:w-6 text-white" />
-                </div>
-                <div>
-                  <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold bg-gradient-to-r from-foreground to-teal bg-clip-text text-transparent">
-                    Vendor Comparison
-                  </h1>
-                  <p className="text-muted-foreground text-xs md:text-sm mt-1">
-                    Compare quotes and find the best value
-                  </p>
+        {/* Enhanced header with background image */}
+        <div className="relative overflow-hidden rounded-2xl mb-4 md:mb-6 shadow-lg">
+          <img 
+            src={heroVendorsImg} 
+            alt="" 
+            className="absolute inset-0 w-full h-full object-cover"
+            aria-hidden="true"
+          />
+          <div className="absolute inset-0 bg-gradient-to-r from-background/95 via-background/80 to-background/60" />
+          <div className="relative p-4 md:p-6">
+            <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3 md:gap-4">
+              <div className="flex flex-col lg:items-start space-y-2">
+                <div className="flex items-center gap-3">
+                  <div className="inline-flex items-center justify-center w-10 h-10 md:w-12 md:h-12 bg-gradient-to-br from-teal to-teal/60 rounded-2xl shadow-lg">
+                    <Scale className="h-5 w-5 md:h-6 md:w-6 text-white" />
+                  </div>
+                  <div>
+                    <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold bg-gradient-to-r from-foreground to-teal bg-clip-text text-transparent">
+                      Vendor Comparison
+                    </h1>
+                    <p className="text-muted-foreground text-xs md:text-sm mt-1">
+                      Compare quotes and find the best value
+                    </p>
+                  </div>
                 </div>
               </div>
-            </div>
-            
-            {/* Year selector at top right on laptop, centered on mobile */}
-            <div className="flex justify-center lg:justify-end">
-              <YearSelector />
+              
+              {/* Year selector at top right on laptop, centered on mobile */}
+              <div className="flex justify-center lg:justify-end">
+                <YearSelector />
+              </div>
             </div>
           </div>
         </div>
