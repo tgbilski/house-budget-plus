@@ -13,9 +13,8 @@ import { CumulativeSavingsChart } from '@/components/CumulativeSavingsChart';
 
 import { SEO } from '@/components/SEO';
 import { seoData } from '@/utils/seoData';
-import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Link } from 'react-router-dom';
-import { AlertTriangle, Target } from 'lucide-react';
+import { Target } from 'lucide-react';
+import { WarningBanner } from '@/components/WarningBanner';
 import { AIChatbot } from '@/components/AIChatbot';
 import { YearSelector } from '@/components/YearSelector';
 import { InternalLinks } from '@/components/InternalLinks';
@@ -106,17 +105,7 @@ const SavingsGoals: React.FC = () => {
           </div>
         </div>
 
-        {!user && (
-          <Alert className="border-2 border-warning/40 bg-warning/10 mb-8 backdrop-blur-sm animate-slide-up">
-            <AlertTriangle className="h-5 w-5 text-warning" />
-            <AlertDescription className="text-foreground">
-              <strong>Demo Mode</strong> - Your changes won't be saved.
-              <Link to="/auth" className="underline font-medium ml-2 hover:text-teal transition-colors">
-                Sign in to track your goals permanently
-              </Link>
-            </AlertDescription>
-          </Alert>
-        )}
+        <WarningBanner />
 
         <div className="space-y-8">
           {/* Chart with integrated goal selection */}
