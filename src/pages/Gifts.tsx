@@ -12,9 +12,8 @@ import { GiftCardDisplay } from '@/components/GiftCardDisplay';
 import { GiftBudgetSummary } from '@/components/GiftBudgetSummary';
 import { GiftSearch } from '@/components/GiftSearch';
 import { YearSelector } from '@/components/YearSelector';
-import { Gift, AlertTriangle, ShoppingBag } from 'lucide-react';
-import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Link, useNavigate } from 'react-router-dom';
+import { Gift, ShoppingBag } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { InternalLinks } from '@/components/InternalLinks';
 import { FAQ } from '@/components/FAQ';
@@ -115,18 +114,6 @@ export function Gifts() {
         </div>
 
         <WarningBanner />
-
-        {!user && (
-          <Alert className="border-yellow-200 bg-yellow-50 mb-6">
-            <AlertTriangle className="h-4 w-4 text-yellow-600" />
-            <AlertDescription className="text-yellow-800">
-              <strong>Demo Mode</strong> -
-              <Link to="/auth" className="underline font-medium ml-1 hover:text-yellow-900">
-                Sign in to save your gift lists
-              </Link>
-            </AlertDescription>
-          </Alert>
-        )}
 
         <div className="space-y-6">
           {/* Budget Summary */}

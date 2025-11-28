@@ -22,6 +22,7 @@ import { FAQ } from '@/components/FAQ';
 import { InternalLinks } from '@/components/InternalLinks';
 import { AIChatbot } from '@/components/AIChatbot';
 import { BudgetDonutChart } from '@/components/BudgetDonutChart';
+import { WarningBanner } from '@/components/WarningBanner';
 import heroBudgetImg from '@/assets/hero-budget.png';
 
 interface Calculator {
@@ -195,6 +196,8 @@ const MonthlyBudget: React.FC = () => {
             </div>
           </div>
         </div>
+
+        <WarningBanner />
 
         {/* Budget calculators section with overview chart */}
         {/* CHANGE: Added conditional rendering for loading and error states */}

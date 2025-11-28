@@ -14,9 +14,6 @@ import { VacationSummaryCard } from '@/components/VacationSummaryCard';
 import { seoData } from '@/utils/seoData';
 import { useVacationPlanner } from '@/hooks/useVacationPlanner';
 import { VacationOptionCard } from '@/components/VacationOptionCard';
-import { Link } from 'react-router-dom';
-import { Alert, AlertDescription } from '@/components/ui/alert';
-import { AlertTriangle } from 'lucide-react';
 import { InternalLinks } from '@/components/InternalLinks';
 import { FAQ } from '@/components/FAQ';
 import { vacationPlanningFAQs } from '@/utils/faqData';
@@ -109,18 +106,6 @@ const Vacation: React.FC = () => {
         </div>
 
         <WarningBanner />
-
-        {!user && (
-          <Alert className="border-yellow-200 bg-yellow-50 mb-6">
-            <AlertTriangle className="h-4 w-4 text-yellow-600" />
-            <AlertDescription className="text-yellow-800">
-              <strong>Demo Mode</strong> -
-              <Link to="/auth" className="underline font-medium ml-1 hover:text-yellow-900">
-                Sign in to save your vacation plans
-              </Link>
-            </AlertDescription>
-          </Alert>
-        )}
 
         <div className="space-y-6">
           {/* Combined Summary Card with carousel, dates, and stats */}

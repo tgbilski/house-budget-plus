@@ -1,8 +1,8 @@
 import React from 'react';
-import { Alert, AlertDescription } from '@/components/ui/alert';
-import { AlertTriangle } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
+import { Button } from '@/components/ui/button';
+import { UserPlus } from 'lucide-react';
 
 export const WarningBanner: React.FC = () => {
   const { user } = useAuth();
@@ -10,14 +10,23 @@ export const WarningBanner: React.FC = () => {
   if (user) return null;
 
   return (
-    <Alert className="mb-6 border-yellow-200 bg-yellow-50 dark:border-yellow-800 dark:bg-yellow-950">
-      <AlertTriangle className="h-4 w-4 text-yellow-600 dark:text-yellow-400" />
-      <AlertDescription className="text-yellow-800 dark:text-yellow-200">
-        <strong>Try it out!</strong> You're using this tool in demo mode. 
-        <Link to="/auth" className="underline font-medium ml-1 hover:text-yellow-900 dark:hover:text-yellow-100">
-          Sign in to save your progress
-        </Link> and access all features.
-      </AlertDescription>
-    </Alert>
+    <div className="mb-6 p-4 rounded-xl bg-gradient-to-r from-teal/10 via-primary/5 to-teal/10 border border-teal/20 backdrop-blur-sm">
+      <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div className="text-center sm:text-left">
+          <p className="text-foreground font-medium">
+            Want to save your progress?
+          </p>
+          <p className="text-sm text-muted-foreground mt-1">
+            Sign up for free to keep your data and access it from any device.
+          </p>
+        </div>
+        <Link to="/auth">
+          <Button className="gap-2 bg-teal hover:bg-teal/90 text-teal-foreground whitespace-nowrap">
+            <UserPlus className="h-4 w-4" />
+            Sign Up Free
+          </Button>
+        </Link>
+      </div>
+    </div>
   );
 };
