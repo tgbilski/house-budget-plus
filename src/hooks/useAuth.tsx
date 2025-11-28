@@ -3,6 +3,7 @@ import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { isNativeApp } from '@/utils/capacitor';
+import { trackSignUpConversion, trackGoogleSignUpConversion } from '@/utils/analytics';
 
 // Auth state cleanup utility
 const cleanupAuthState = () => {
@@ -86,6 +87,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       // Check if email confirmation is required
       const needsEmailConfirmation = data.user && !data.session;
       
+      // Track sign-up conversion for Google Ads
+      trackSignUpConversion();
+      
       toast({
         title: "Success!",
         description: needsEmailConfirmation 
@@ -141,6 +145,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           description: error.message,
           variant: "destructive",
         });
+      } else {
+        // Track Google sign-up conversion (fires before redirect)
+        trackGoogleSignUpConversion();
       }
 
       return { error };
