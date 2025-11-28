@@ -206,7 +206,7 @@ export default function Home() {
                     disabled={isLoading}
                     className="w-full h-14 text-lg font-bold bg-sage text-sage-foreground hover:bg-sage/90 shadow-lg transition-all duration-300 hover:scale-[1.02]"
                   >
-                    {isLoading ? "Creating Account..." : "Verify Email (Free)"}
+                    {isLoading ? "Creating Account..." : "Get Started (Free)"}
                   </Button>
                 </form>
                 
