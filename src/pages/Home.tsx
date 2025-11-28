@@ -84,14 +84,14 @@ export default function Home() {
 
           {/* Top Bar with Logo */}
           <div className="relative z-10 flex items-center justify-between gap-3 px-4 sm:px-8 py-4">
-            <div className="flex items-center gap-3">
+            <Link to="/features" className="flex items-center gap-3 hover:opacity-90 transition-opacity">
               <img 
                 src={calculatorMascot} 
                 alt="House Budget Calculator mascot" 
                 className="w-12 h-12 sm:w-16 sm:h-16 drop-shadow-lg"
               />
               <h2 className="text-white text-xl sm:text-2xl font-bold">House Budget Calculator</h2>
-            </div>
+            </Link>
             <Link to="/auth?mode=signin">
               <Button 
                 variant="outline"
