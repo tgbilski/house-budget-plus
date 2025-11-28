@@ -170,11 +170,11 @@ export default function Home() {
             {/* Sign Up Form & Value Props Grid */}
             <div className="grid md:grid-cols-2 gap-8 lg:gap-16 items-start mt-16">
               {/* Sign Up Form - Left Side */}
-              <div className="bg-gradient-to-br from-background to-sage/10 rounded-2xl p-6 sm:p-8 border shadow-lg">
-                <h3 className="text-2xl sm:text-3xl font-bold text-foreground mb-2">
+              <div className="rounded-2xl p-6 sm:p-8 shadow-lg" style={{ backgroundColor: 'hsl(213, 50%, 22%)' }}>
+                <h3 className="text-2xl sm:text-3xl font-bold text-white mb-2">
                   Start Saving Today
                 </h3>
-                <p className="text-muted-foreground mb-6">
+                <p className="text-white/80 mb-6">
                   Create your free account in seconds
                 </p>
                 
@@ -210,9 +210,9 @@ export default function Home() {
                   </Button>
                 </form>
                 
-                <p className="text-sm text-muted-foreground text-center mt-4">
+                <p className="text-sm text-white/70 text-center mt-4">
                   Already have an account?{" "}
-                  <Link to="/auth?mode=signin" className="text-teal font-medium hover:underline">
+                  <Link to="/auth?mode=signin" className="text-sage font-medium hover:underline">
                     Sign in
                   </Link>
                 </p>
