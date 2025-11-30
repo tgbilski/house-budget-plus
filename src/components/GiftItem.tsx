@@ -96,22 +96,22 @@ export function GiftItem({ item, onSave, onDelete, isNew = false, onCancel }: Gi
 
   if (isEditing) {
     return (
-      <div className="border border-gray-200 rounded-lg p-2 space-y-2 bg-gray-50">
-        <div className="space-y-2">
+      <div className="border border-gray-200 rounded-lg p-3 sm:p-2 space-y-3 sm:space-y-2 bg-gray-50">
+        <div className="space-y-3 sm:space-y-2">
           <div>
-            <Label htmlFor={`gift-idea-${item.id}`} className="text-xs font-medium">Gift Idea</Label>
+            <Label htmlFor={`gift-idea-${item.id}`} className="text-sm sm:text-xs font-medium">Gift Idea</Label>
             <Input 
               id={`gift-idea-${item.id}`} 
               value={itemData.gift_idea || ''} 
               onChange={(e) => handleInputChange('gift_idea', e.target.value)} 
               placeholder="Gift idea..." 
-              className="mt-1 text-xs h-8"
+              className="mt-1 text-base sm:text-xs h-10 sm:h-8"
             />
           </div>
           
-          <div className="space-y-2">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-2">
             <div>
-              <Label htmlFor={`price-${item.id}`} className="text-xs font-medium">Price ($)</Label>
+              <Label htmlFor={`price-${item.id}`} className="text-sm sm:text-xs font-medium">Price ($)</Label>
               <Input 
                 id={`price-${item.id}`} 
                 type="number" 
@@ -119,28 +119,28 @@ export function GiftItem({ item, onSave, onDelete, isNew = false, onCancel }: Gi
                 value={itemData.price || ''} 
                 onChange={(e) => handleInputChange('price', parseFloat(e.target.value) || 0)} 
                 placeholder="0.00" 
-                className="mt-1 text-xs h-8"
+                className="mt-1 text-base sm:text-xs h-10 sm:h-8"
               />
             </div>
             <div>
-              <Label htmlFor={`url-${item.id}`} className="text-xs font-medium">Link</Label>
+              <Label htmlFor={`url-${item.id}`} className="text-sm sm:text-xs font-medium">Link</Label>
               <Input 
                 id={`url-${item.id}`} 
                 value={itemData.url || ''} 
                 onChange={(e) => handleInputChange('url', e.target.value)} 
                 placeholder="https://..." 
-                className="mt-1 text-xs h-8"
+                className="mt-1 text-base sm:text-xs h-10 sm:h-8"
               />
             </div>
           </div>
         </div>
         
         {/* Action buttons */}
-        <div className="flex gap-1 pt-1">
-          <Button onClick={handleSave} size="sm" className="flex-1 h-7 text-xs">
-            <Save className="h-3 w-3 mr-1" /> Save
+        <div className="flex gap-2 sm:gap-1 pt-2 sm:pt-1">
+          <Button onClick={handleSave} size="sm" className="flex-1 h-10 sm:h-7 text-sm sm:text-xs">
+            <Save className="h-4 sm:h-3 w-4 sm:w-3 mr-1" /> Save
           </Button>
-          <Button onClick={handleCancel} variant="outline" size="sm" className="flex-1 h-7 text-xs">
+          <Button onClick={handleCancel} variant="outline" size="sm" className="flex-1 h-10 sm:h-7 text-sm sm:text-xs">
             Cancel
           </Button>
         </div>
