@@ -30,9 +30,10 @@ interface GiftListData {
 
 interface GiftCardProps {
   initialData?: GiftListData;
+  onItemsChange?: () => void;
 }
 
-export function GiftCard({ initialData }: GiftCardProps) {
+export function GiftCard({ initialData, onItemsChange }: GiftCardProps) {
   const { user } = useAuth();
   const { toast } = useToast();
   const [listData, setListData] = useState<GiftListData>({ ...initialData });
@@ -62,6 +63,17 @@ export function GiftCard({ initialData }: GiftCardProps) {
   const handleSaveNewItem = async (itemData: Partial<GiftItemData>) => {
     await saveItem(itemData);
     setShowNewItem(false);
+    onItemsChange?.();
+  };
+
+  const handleSaveItem = async (itemData: Partial<GiftItemData>) => {
+    await saveItem(itemData);
+    onItemsChange?.();
+  };
+
+  const handleDeleteItem = async (itemId: string) => {
+    await deleteItem(itemId);
+    onItemsChange?.();
   };
 
   const handleResetList = async () => {
@@ -86,6 +98,7 @@ export function GiftCard({ initialData }: GiftCardProps) {
       if (error) throw error;
       
       await refetchItems();
+      onItemsChange?.();
       toast({
         title: "List Reset",
         description: "All gift ideas have been removed from this list.",
@@ -142,8 +155,8 @@ export function GiftCard({ initialData }: GiftCardProps) {
           <GiftItem
             key={item.id}
             item={item}
-            onSave={saveItem}
-            onDelete={deleteItem}
+            onSave={handleSaveItem}
+            onDelete={handleDeleteItem}
           />
         ))}
 

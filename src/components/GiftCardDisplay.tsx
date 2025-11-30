@@ -13,9 +13,10 @@ interface GiftListData {
 interface GiftCardDisplayProps {
   selectedList: GiftListData | null;
   onSave: () => void;
+  onItemsChange?: () => void;
 }
 
-export function GiftCardDisplay({ selectedList, onSave }: GiftCardDisplayProps) {
+export function GiftCardDisplay({ selectedList, onSave, onItemsChange }: GiftCardDisplayProps) {
   // If no list is selected, this component renders nothing.
   if (!selectedList) {
     return null;
@@ -27,6 +28,7 @@ export function GiftCardDisplay({ selectedList, onSave }: GiftCardDisplayProps) 
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6">
       <GiftCard
         initialData={selectedList}
+        onItemsChange={onItemsChange}
       />
     </div>
   );
