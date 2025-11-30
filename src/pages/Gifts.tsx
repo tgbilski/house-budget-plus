@@ -42,7 +42,7 @@ export function Gifts() {
   } = useGiftLists();
 
   // Get gift items for the selected list to calculate totals
-  const { items } = useGiftItems(selectedList?.id);
+  const { items, refetchItems } = useGiftItems(selectedList?.id);
 
   // Award badge when user has gift lists
   useEffect(() => {
@@ -154,6 +154,7 @@ export function Gifts() {
           <GiftCardDisplay
             selectedList={selectedList}
             onSave={loadGiftLists}
+            onItemsChange={refetchItems}
           />
 
           <FAQ 
