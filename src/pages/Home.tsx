@@ -154,9 +154,9 @@ export default function Home() {
               <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-foreground mb-4">
                 Own Your Budget
               </h2>
-              <p className="text-lg sm:text-xl text-muted-foreground mb-8">
-                Our powerful budget calculators make managing your finances simple, fun and intuitive
-              </p>
+            <p className="text-lg sm:text-xl text-muted-foreground mb-8">
+              Our budget calculators help you make informed financial decisions and track your progress
+            </p>
               <div className="rounded-lg overflow-hidden shadow-2xl max-w-4xl mx-auto">
                 <img 
                   src={calculatorPreview} 

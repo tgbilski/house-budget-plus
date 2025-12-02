@@ -47,7 +47,7 @@ export default function Landing() {
             {/* Trust Badge */}
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20">
               <Users className="h-4 w-4 text-primary" />
-              <span className="text-sm font-medium">Trusted by 10,000+ families</span>
+              <span className="text-sm font-medium">Join families taking control of their finances</span>
             </div>
 
             {/* Main Headline */}
@@ -183,9 +183,9 @@ export default function Landing() {
                       <h3 className="font-bold text-2xl">
                         Want to save even more?
                       </h3>
-                      <p className="text-base text-muted-foreground max-w-md mx-auto">
-                        Track expenses, set goals, and get AI-powered insights to boost your savings by up to 40%.
-                      </p>
+                    <p className="text-base text-muted-foreground max-w-md mx-auto">
+                      Track expenses, set goals, and get AI-powered insights to help identify savings opportunities.
+                    </p>
                     </div>
                     <Button 
                       onClick={handleSignup}
@@ -307,7 +307,7 @@ export default function Landing() {
                   Ready to take control of your finances?
                 </h2>
                 <p className="text-lg text-muted-foreground max-w-xl mx-auto">
-                  Join 10,000+ families who've already started saving smarter
+                  Start saving smarter with our free budgeting tools
                 </p>
               </div>
               <Button 
