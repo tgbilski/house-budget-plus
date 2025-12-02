@@ -6,7 +6,6 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { MessageSquare } from 'lucide-react';
-import { AdSense } from '@/components/AdSense';
 
 const ContactUs: React.FC = () => {
   const [formData, setFormData] = useState({
@@ -119,10 +118,6 @@ const ContactUs: React.FC = () => {
               </p>
             </CardContent>
           </Card>
-
-          <div className="mt-8">
-            <AdSense adSlot="1234567890" />
-          </div>
         </div>
       </div>
     </>
