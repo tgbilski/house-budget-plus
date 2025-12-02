@@ -5,7 +5,6 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Users, Target, Heart, TrendingUp, ArrowRight, Brain, Calculator, Shield, ChevronDown } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { AdSense } from '@/components/AdSense';
 import founderPhoto from '@/assets/founder-photo.jpeg';
 
 const ScrollIndicator = () => (
@@ -266,15 +265,6 @@ const AboutUs: React.FC = () => {
           <OurStorySection />
           <ScrollIndicator />
           <CTASection />
-          
-          {/* AdSense Ad */}
-          <div className="py-6 md:py-8 overflow-hidden">
-            <div className="w-full max-w-2xl mx-auto px-4">
-              <div className="max-w-full overflow-hidden">
-                <AdSense adSlot="1234567890" />
-              </div>
-            </div>
-          </div>
         </div>
       </div>
     </>

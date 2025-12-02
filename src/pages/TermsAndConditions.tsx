@@ -1,7 +1,6 @@
 import React from 'react';
 import { SEO } from '@/components/SEO';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { AdSense } from '@/components/AdSense';
 
 const TermsAndConditions: React.FC = () => {
   return (
@@ -189,10 +188,6 @@ const TermsAndConditions: React.FC = () => {
               </p>
             </CardContent>
           </Card>
-
-          <div className="mt-8">
-            <AdSense adSlot="1234567890" />
-          </div>
         </div>
       </div>
     </>
