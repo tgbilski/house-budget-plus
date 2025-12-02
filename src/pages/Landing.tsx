@@ -36,7 +36,7 @@ export default function Landing() {
     <>
       <SEO 
         title="Stop Overspending, Start Saving - Free Budget Calculator"
-        description="Calculate your savings potential in 30 seconds. Join thousands of families taking control of their finances with smart budgeting tools."
+        description="Calculate your savings potential in 30 seconds. Take control of your finances with smart budgeting tools and calculators."
         keywords="budget calculator, expense tracker, savings calculator, personal finance, money management"
       />
       
@@ -83,7 +83,7 @@ export default function Landing() {
                 <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center">
                   <TrendingDown className="h-5 w-5 text-primary" />
                 </div>
-                <span className="font-medium">Proven Results</span>
+                <span className="font-medium">Easy to Use</span>
               </div>
             </div>
           </div>

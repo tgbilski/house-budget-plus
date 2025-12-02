@@ -203,7 +203,7 @@ const OurStorySection = () => (
               lack the right tools to visualize and manage their money effectively.
             </p>
             <p className="text-gray-600 leading-relaxed">
-              Today, we're proud to help thousands of families make informed financial decisions, reach their savings goals, 
+              Today, we help families make informed financial decisions, reach their savings goals, 
               and build more secure financial futures. Our platform continues to evolve based on user feedback and the 
               changing needs of modern households.
             </p>
