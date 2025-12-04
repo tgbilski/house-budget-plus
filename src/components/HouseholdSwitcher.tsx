@@ -238,10 +238,12 @@ export function HouseholdSwitcher({ className, open, onOpenChange }: HouseholdSw
                 <h3 className="font-medium mb-2">Switch Household</h3>
                 <Select
                   value={currentHousehold?.id || ""}
-                  onValueChange={id => {
-                    switchHousehold(id);
+                  onValueChange={async (id) => {
+                    await switchHousehold(id);
                     if (onOpenChange) onOpenChange(false);
                     else setIsOpen(false);
+                    // Reload to refresh all data for the new household
+                    window.location.reload();
                   }}
                   disabled={userHouseholds.length === 0}
                 >
