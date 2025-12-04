@@ -13,6 +13,11 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { 
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from '@/components/ui/collapsible';
+import { 
   Trash2, 
   ExternalLink, 
   Edit2, 
@@ -24,7 +29,8 @@ import {
   Star,
   AlertCircle,
   ChevronDown,
-  ChevronUp
+  MoreHorizontal,
+  StickyNote
 } from 'lucide-react';
 import { GiftItemData, GiftStatus, GiftPriority, GIFT_CATEGORIES } from '@/hooks/useGiftLists';
 import { supabase } from '@/integrations/supabase/client';
@@ -40,17 +46,17 @@ interface GiftItemProps {
   onCancel?: () => void;
 }
 
-const STATUS_CONFIG: Record<GiftStatus, { label: string; icon: React.ElementType; color: string; bgColor: string }> = {
-  idea: { label: 'Idea', icon: Gift, color: 'text-gray-600', bgColor: 'bg-gray-100' },
-  purchased: { label: 'Purchased', icon: ShoppingCart, color: 'text-blue-600', bgColor: 'bg-blue-100' },
-  wrapped: { label: 'Wrapped', icon: Package, color: 'text-purple-600', bgColor: 'bg-purple-100' },
-  delivered: { label: 'Delivered', icon: Truck, color: 'text-green-600', bgColor: 'bg-green-100' }
+const STATUS_CONFIG: Record<GiftStatus, { label: string; icon: React.ElementType; color: string; bgColor: string; borderColor: string }> = {
+  idea: { label: 'Idea', icon: Gift, color: 'text-gray-600', bgColor: 'bg-gray-100', borderColor: 'border-gray-300' },
+  purchased: { label: 'Purchased', icon: ShoppingCart, color: 'text-blue-600', bgColor: 'bg-blue-50', borderColor: 'border-blue-300' },
+  wrapped: { label: 'Wrapped', icon: Package, color: 'text-purple-600', bgColor: 'bg-purple-50', borderColor: 'border-purple-300' },
+  delivered: { label: 'Delivered', icon: Truck, color: 'text-green-600', bgColor: 'bg-green-50', borderColor: 'border-green-300' }
 };
 
-const PRIORITY_CONFIG: Record<GiftPriority, { label: string; color: string; bgColor: string }> = {
-  must_have: { label: 'Must Have', color: 'text-red-600', bgColor: 'bg-red-100' },
-  nice_to_have: { label: 'Nice to Have', color: 'text-amber-600', bgColor: 'bg-amber-100' },
-  backup: { label: 'Backup', color: 'text-gray-500', bgColor: 'bg-gray-100' }
+const PRIORITY_CONFIG: Record<GiftPriority, { label: string; color: string; icon?: React.ElementType }> = {
+  must_have: { label: 'Must Have', color: 'text-red-500', icon: Star },
+  nice_to_have: { label: 'Nice to Have', color: 'text-amber-500' },
+  backup: { label: 'Backup', color: 'text-gray-400' }
 };
 
 export function GiftItem({ item, onSave, onDelete, onStatusChange, isNew = false, onCancel }: GiftItemProps) {
@@ -107,7 +113,6 @@ export function GiftItem({ item, onSave, onDelete, onStatusChange, isNew = false
     }
   };
 
-  // Fetch URL metadata when URL changes
   useEffect(() => {
     if (itemData.url && itemData.url.startsWith('http') && !isEditing) {
       fetchUrlMetadata(itemData.url);
@@ -120,14 +125,7 @@ export function GiftItem({ item, onSave, onDelete, onStatusChange, isNew = false
       const { data, error } = await supabase.functions.invoke('fetch-url-metadata', {
         body: { url }
       });
-
-      if (error) {
-        console.error('Error fetching URL metadata:', error);
-        setLoadingMetadata(false);
-        return;
-      }
-
-      if (data && (data.image || data.title)) {
+      if (!error && data && (data.image || data.title)) {
         setUrlMetadata({ title: data.title, image: data.image });
       }
     } catch (error) {
@@ -139,128 +137,111 @@ export function GiftItem({ item, onSave, onDelete, onStatusChange, isNew = false
 
   const currentStatus = (itemData.status as GiftStatus) || 'idea';
   const currentPriority = (itemData.priority as GiftPriority) || 'nice_to_have';
-  const StatusIcon = STATUS_CONFIG[currentStatus].icon;
+  const statusConfig = STATUS_CONFIG[currentStatus];
+  const StatusIcon = statusConfig.icon;
+  const PriorityIcon = PRIORITY_CONFIG[currentPriority].icon;
 
+  // Edit Mode
   if (isEditing) {
     return (
       <div className="border-2 border-primary/20 rounded-xl p-4 space-y-4 bg-gradient-to-br from-background to-muted/30 shadow-lg">
-        <div className="space-y-4">
-          {/* Gift Idea Name */}
-          <div>
-            <Label htmlFor={`gift-idea-${item.id}`} className="text-sm font-semibold">Gift Idea *</Label>
-            <Input 
-              id={`gift-idea-${item.id}`} 
-              value={itemData.gift_idea || ''} 
-              onChange={(e) => handleInputChange('gift_idea', e.target.value)} 
-              placeholder="What's the gift?" 
-              className="mt-1"
-            />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {/* Left Column */}
+          <div className="space-y-3">
+            <div>
+              <Label className="text-sm font-semibold">Gift Idea *</Label>
+              <Input 
+                value={itemData.gift_idea || ''} 
+                onChange={(e) => handleInputChange('gift_idea', e.target.value)} 
+                placeholder="What's the gift?" 
+                className="mt-1"
+              />
+            </div>
+            <div className="grid grid-cols-2 gap-2">
+              <div>
+                <Label className="text-sm font-semibold">Price ($)</Label>
+                <Input 
+                  type="number" 
+                  step="0.01"
+                  value={itemData.price || ''} 
+                  onChange={(e) => handleInputChange('price', parseFloat(e.target.value) || 0)} 
+                  placeholder="0.00" 
+                  className="mt-1"
+                />
+              </div>
+              <div>
+                <Label className="text-sm font-semibold">Quantity</Label>
+                <Input 
+                  type="number" 
+                  min="1"
+                  value={itemData.quantity || 1} 
+                  onChange={(e) => handleInputChange('quantity', parseInt(e.target.value) || 1)} 
+                  className="mt-1"
+                />
+              </div>
+            </div>
+            <div>
+              <Label className="text-sm font-semibold">Link (optional)</Label>
+              <Input 
+                value={itemData.url || ''} 
+                onChange={(e) => handleInputChange('url', e.target.value)} 
+                placeholder="https://..." 
+                className="mt-1"
+              />
+            </div>
           </div>
           
-          {/* Price and Category Row */}
-          <div className="grid grid-cols-2 gap-3">
+          {/* Right Column */}
+          <div className="space-y-3">
+            <div className="grid grid-cols-2 gap-2">
+              <div>
+                <Label className="text-sm font-semibold">Priority</Label>
+                <Select 
+                  value={itemData.priority || 'nice_to_have'} 
+                  onValueChange={(value) => handleInputChange('priority', value as GiftPriority)}
+                >
+                  <SelectTrigger className="mt-1">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="must_have">Must Have</SelectItem>
+                    <SelectItem value="nice_to_have">Nice to Have</SelectItem>
+                    <SelectItem value="backup">Backup</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div>
+                <Label className="text-sm font-semibold">Category</Label>
+                <Select 
+                  value={itemData.category || ''} 
+                  onValueChange={(value) => handleInputChange('category', value)}
+                >
+                  <SelectTrigger className="mt-1">
+                    <SelectValue placeholder="Select" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {GIFT_CATEGORIES.map(cat => (
+                      <SelectItem key={cat} value={cat}>{cat}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
             <div>
-              <Label htmlFor={`price-${item.id}`} className="text-sm font-semibold">Price ($)</Label>
-              <Input 
-                id={`price-${item.id}`} 
-                type="number" 
-                step="0.01"
-                value={itemData.price || ''} 
-                onChange={(e) => handleInputChange('price', parseFloat(e.target.value) || 0)} 
-                placeholder="0.00" 
-                className="mt-1"
+              <Label className="text-sm font-semibold">Notes (size, color, etc.)</Label>
+              <Textarea 
+                value={itemData.notes || ''} 
+                onChange={(e) => handleInputChange('notes', e.target.value)} 
+                placeholder="Size M, Blue color preferred..." 
+                className="mt-1 min-h-[80px]"
               />
             </div>
-            <div>
-              <Label className="text-sm font-semibold">Category</Label>
-              <Select 
-                value={itemData.category || ''} 
-                onValueChange={(value) => handleInputChange('category', value)}
-              >
-                <SelectTrigger className="mt-1">
-                  <SelectValue placeholder="Select category" />
-                </SelectTrigger>
-                <SelectContent>
-                  {GIFT_CATEGORIES.map(cat => (
-                    <SelectItem key={cat} value={cat}>{cat}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-
-          {/* Priority and Quantity Row */}
-          <div className="grid grid-cols-2 gap-3">
-            <div>
-              <Label className="text-sm font-semibold">Priority</Label>
-              <Select 
-                value={itemData.priority || 'nice_to_have'} 
-                onValueChange={(value) => handleInputChange('priority', value as GiftPriority)}
-              >
-                <SelectTrigger className="mt-1">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="must_have">
-                    <span className="flex items-center gap-2">
-                      <Star className="h-3 w-3 text-red-500 fill-red-500" /> Must Have
-                    </span>
-                  </SelectItem>
-                  <SelectItem value="nice_to_have">
-                    <span className="flex items-center gap-2">
-                      <Star className="h-3 w-3 text-amber-500" /> Nice to Have
-                    </span>
-                  </SelectItem>
-                  <SelectItem value="backup">
-                    <span className="flex items-center gap-2">
-                      <AlertCircle className="h-3 w-3 text-gray-400" /> Backup Option
-                    </span>
-                  </SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            <div>
-              <Label htmlFor={`quantity-${item.id}`} className="text-sm font-semibold">Quantity</Label>
-              <Input 
-                id={`quantity-${item.id}`} 
-                type="number" 
-                min="1"
-                value={itemData.quantity || 1} 
-                onChange={(e) => handleInputChange('quantity', parseInt(e.target.value) || 1)} 
-                className="mt-1"
-              />
-            </div>
-          </div>
-
-          {/* URL */}
-          <div>
-            <Label htmlFor={`url-${item.id}`} className="text-sm font-semibold">Link (optional)</Label>
-            <Input 
-              id={`url-${item.id}`} 
-              value={itemData.url || ''} 
-              onChange={(e) => handleInputChange('url', e.target.value)} 
-              placeholder="https://..." 
-              className="mt-1"
-            />
-          </div>
-
-          {/* Notes */}
-          <div>
-            <Label htmlFor={`notes-${item.id}`} className="text-sm font-semibold">Notes (size, color, preferences)</Label>
-            <Textarea 
-              id={`notes-${item.id}`} 
-              value={itemData.notes || ''} 
-              onChange={(e) => handleInputChange('notes', e.target.value)} 
-              placeholder="Add any specific details like size, color, model..." 
-              className="mt-1 min-h-[60px]"
-            />
           </div>
         </div>
         
-        {/* Action buttons */}
-        <div className="flex gap-2 pt-2">
+        <div className="flex gap-2 pt-2 border-t">
           <Button onClick={handleSave} size="sm" className="flex-1">
-            <Save className="h-4 w-4 mr-1" /> Save Gift
+            <Save className="h-4 w-4 mr-1" /> Save
           </Button>
           <Button onClick={handleCancel} variant="outline" size="sm" className="flex-1">
             Cancel
@@ -270,153 +251,163 @@ export function GiftItem({ item, onSave, onDelete, onStatusChange, isNew = false
     );
   }
 
+  // Display Mode - Clean Row Layout
   return (
-    <div className={cn(
-      "border rounded-xl overflow-hidden transition-all duration-300 group shadow-sm hover:shadow-md",
-      currentStatus === 'delivered' && "border-green-200 bg-green-50/50",
-      currentStatus === 'wrapped' && "border-purple-200 bg-purple-50/50",
-      currentStatus === 'purchased' && "border-blue-200 bg-blue-50/50",
-      currentStatus === 'idea' && "border-gray-200 bg-white"
-    )}>
-      {/* Image Preview */}
-      {urlMetadata?.image && (
-        <div className="relative h-32 w-full overflow-hidden bg-muted">
-          <img 
-            src={urlMetadata.image} 
-            alt="Product preview" 
-            className="w-full h-full object-cover"
-            onError={(e) => {
-              e.currentTarget.style.display = 'none';
-            }}
-          />
-          {/* Priority Badge Overlay */}
-          {currentPriority === 'must_have' && (
-            <div className="absolute top-2 left-2">
-              <Badge className="bg-red-500 text-white text-xs">
-                <Star className="h-3 w-3 mr-1 fill-white" /> Must Have
-              </Badge>
+    <Collapsible open={isExpanded} onOpenChange={setIsExpanded}>
+      <div className={cn(
+        "border rounded-lg transition-all",
+        statusConfig.borderColor,
+        statusConfig.bgColor
+      )}>
+        {/* Main Row - Always Visible */}
+        <div className="flex items-center gap-3 p-3">
+          {/* Thumbnail */}
+          {urlMetadata?.image ? (
+            <img 
+              src={urlMetadata.image} 
+              alt="" 
+              className="w-12 h-12 rounded-md object-cover flex-shrink-0"
+              onError={(e) => e.currentTarget.style.display = 'none'}
+            />
+          ) : (
+            <div className={cn(
+              "w-12 h-12 rounded-md flex items-center justify-center flex-shrink-0",
+              statusConfig.bgColor
+            )}>
+              <StatusIcon className={cn("h-5 w-5", statusConfig.color)} />
             </div>
           )}
-        </div>
-      )}
-      
-      <div className="p-3">
-        {/* Header Row with Status and Actions */}
-        <div className="flex items-start justify-between gap-2 mb-2">
+          
+          {/* Main Info */}
           <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-2 flex-wrap">
-              <h4 className="font-semibold text-sm text-foreground leading-tight">
+            <div className="flex items-center gap-2">
+              <h4 className="font-medium text-sm truncate">
                 {itemData.gift_idea || 'Untitled Gift'}
               </h4>
-              {!urlMetadata?.image && currentPriority === 'must_have' && (
-                <Star className="h-3 w-3 text-red-500 fill-red-500 flex-shrink-0" />
+              {currentPriority === 'must_have' && (
+                <Star className="h-3.5 w-3.5 text-red-500 fill-red-500 flex-shrink-0" />
               )}
             </div>
-            
-            {/* Category and Quantity */}
-            <div className="flex items-center gap-2 mt-1 flex-wrap">
-              {itemData.category && (
-                <Badge variant="outline" className="text-xs py-0 h-5">
-                  {itemData.category}
-                </Badge>
-              )}
-              {(itemData.quantity || 1) > 1 && (
-                <span className="text-xs text-muted-foreground">
-                  Qty: {itemData.quantity_purchased || 0}/{itemData.quantity || 1}
+            <div className="flex items-center gap-2 mt-0.5 text-xs text-muted-foreground">
+              {itemData.category && <span>{itemData.category}</span>}
+              {itemData.category && itemData.notes && <span>•</span>}
+              {itemData.notes && (
+                <span className="flex items-center gap-0.5 truncate">
+                  <StickyNote className="h-3 w-3" /> Has notes
                 </span>
               )}
             </div>
           </div>
           
           {/* Price */}
-          {itemData.price ? (
-            <span className="font-bold text-base text-green-600 whitespace-nowrap">
-              ${Number(itemData.price).toFixed(2)}
-            </span>
-          ) : null}
-        </div>
-
-        {/* Status Progress Bar */}
-        <div className="flex items-center gap-1 my-3">
-          {(['idea', 'purchased', 'wrapped', 'delivered'] as GiftStatus[]).map((status, idx) => {
-            const config = STATUS_CONFIG[status];
-            const Icon = config.icon;
-            const isActive = status === currentStatus;
-            const isPast = ['idea', 'purchased', 'wrapped', 'delivered'].indexOf(currentStatus) >= idx;
-            
-            return (
-              <button
-                key={status}
-                onClick={() => handleStatusClick(status)}
-                className={cn(
-                  "flex-1 flex items-center justify-center gap-1 py-1.5 px-1 rounded-md text-xs font-medium transition-all",
-                  "hover:scale-105 cursor-pointer",
-                  isActive && config.bgColor,
-                  isActive && config.color,
-                  !isActive && isPast && "bg-muted/50 text-muted-foreground",
-                  !isActive && !isPast && "bg-transparent text-muted-foreground/50"
-                )}
-                title={config.label}
-              >
-                <Icon className="h-3.5 w-3.5" />
-                <span className="hidden sm:inline">{config.label}</span>
-              </button>
-            );
-          })}
-        </div>
-
-        {/* Notes Preview */}
-        {itemData.notes && (
-          <p className="text-xs text-muted-foreground bg-muted/50 rounded-md p-2 mb-2 line-clamp-2">
-            📝 {itemData.notes}
-          </p>
-        )}
-
-        {/* URL Link */}
-        {itemData.url && (
-          <a 
-            href={itemData.url} 
-            target="_blank" 
-            rel="noopener noreferrer"
-            className="flex items-center gap-1 text-xs text-blue-600 hover:text-blue-800 hover:underline mb-2"
-          >
-            <ExternalLink className="h-3 w-3 flex-shrink-0" /> 
-            <span className="truncate">
-              {urlMetadata?.title || 'View product'}
-            </span>
-          </a>
-        )}
-
-        {/* Action Buttons */}
-        <div className="flex items-center justify-between pt-2 border-t border-border/50">
-          <div className="flex items-center gap-1">
-            <Button 
-              size="sm" 
-              variant="ghost" 
-              onClick={() => setIsEditing(true)} 
-              className="h-7 text-xs"
-            >
-              <Edit2 className="h-3 w-3 mr-1" /> Edit
-            </Button>
-            {item.id && (
-              <Button 
-                size="sm" 
-                variant="ghost" 
-                onClick={handleDelete} 
-                className="h-7 text-xs text-destructive hover:text-destructive"
-              >
-                <Trash2 className="h-3 w-3 mr-1" /> Delete
-              </Button>
+          <div className="text-right flex-shrink-0">
+            {itemData.price ? (
+              <span className="font-semibold text-green-600">
+                ${Number(itemData.price).toFixed(2)}
+              </span>
+            ) : (
+              <span className="text-muted-foreground text-sm">No price</span>
+            )}
+            {(itemData.quantity || 1) > 1 && (
+              <div className="text-xs text-muted-foreground">
+                ×{itemData.quantity}
+              </div>
             )}
           </div>
           
-          {itemData.purchased_at && (
-            <span className="text-xs text-muted-foreground">
-              Bought {new Date(itemData.purchased_at).toLocaleDateString()}
-            </span>
-          )}
+          {/* Status Badge */}
+          <Badge 
+            variant="outline" 
+            className={cn(
+              "flex-shrink-0 cursor-pointer hover:opacity-80",
+              statusConfig.color,
+              statusConfig.bgColor
+            )}
+          >
+            <StatusIcon className="h-3 w-3 mr-1" />
+            {statusConfig.label}
+          </Badge>
+          
+          {/* Expand Button */}
+          <CollapsibleTrigger asChild>
+            <Button variant="ghost" size="sm" className="h-8 w-8 p-0 flex-shrink-0">
+              <ChevronDown className={cn(
+                "h-4 w-4 transition-transform",
+                isExpanded && "rotate-180"
+              )} />
+            </Button>
+          </CollapsibleTrigger>
         </div>
+        
+        {/* Expanded Content */}
+        <CollapsibleContent>
+          <div className="px-3 pb-3 pt-0 space-y-3 border-t border-border/50">
+            {/* Status Selector */}
+            <div className="flex items-center gap-1 pt-3">
+              <span className="text-xs text-muted-foreground mr-2">Status:</span>
+              {(['idea', 'purchased', 'wrapped', 'delivered'] as GiftStatus[]).map((status) => {
+                const config = STATUS_CONFIG[status];
+                const Icon = config.icon;
+                const isActive = status === currentStatus;
+                
+                return (
+                  <button
+                    key={status}
+                    onClick={() => handleStatusClick(status)}
+                    className={cn(
+                      "flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium transition-all",
+                      isActive ? cn(config.bgColor, config.color, "ring-1", config.borderColor) : "hover:bg-muted"
+                    )}
+                  >
+                    <Icon className="h-3 w-3" />
+                    {config.label}
+                  </button>
+                );
+              })}
+            </div>
+            
+            {/* Notes */}
+            {itemData.notes && (
+              <div className="bg-background/50 rounded-md p-2 text-sm">
+                <span className="font-medium text-xs text-muted-foreground">Notes:</span>
+                <p className="mt-0.5">{itemData.notes}</p>
+              </div>
+            )}
+            
+            {/* Link */}
+            {itemData.url && (
+              <a 
+                href={itemData.url} 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="flex items-center gap-1 text-sm text-blue-600 hover:underline"
+              >
+                <ExternalLink className="h-3.5 w-3.5" /> 
+                {urlMetadata?.title || 'View product'}
+              </a>
+            )}
+            
+            {/* Actions */}
+            <div className="flex items-center justify-between pt-2 border-t border-border/50">
+              <div className="flex gap-1">
+                <Button size="sm" variant="ghost" onClick={() => setIsEditing(true)} className="h-7 text-xs">
+                  <Edit2 className="h-3 w-3 mr-1" /> Edit
+                </Button>
+                {item.id && (
+                  <Button size="sm" variant="ghost" onClick={handleDelete} className="h-7 text-xs text-destructive hover:text-destructive">
+                    <Trash2 className="h-3 w-3 mr-1" /> Delete
+                  </Button>
+                )}
+              </div>
+              {itemData.purchased_at && (
+                <span className="text-xs text-muted-foreground">
+                  Purchased {new Date(itemData.purchased_at).toLocaleDateString()}
+                </span>
+              )}
+            </div>
+          </div>
+        </CollapsibleContent>
       </div>
-    </div>
+    </Collapsible>
   );
 }
