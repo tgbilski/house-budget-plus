@@ -4,7 +4,6 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { Badge } from '@/components/ui/badge';
 import { 
   Select,
   SelectContent,
@@ -12,6 +11,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover';
 import { 
   Collapsible,
   CollapsibleContent,
@@ -25,7 +29,6 @@ import {
   ShoppingCart, 
   Gift, 
   Package, 
-  Truck,
   Star,
   ChevronDown,
   StickyNote
@@ -43,16 +46,20 @@ interface GiftItemProps {
   onCancel?: () => void;
 }
 
-const STATUS_CONFIG: Record<GiftStatus, { label: string; icon: React.ElementType; color: string; bgColor: string }> = {
-  idea: { label: 'Idea', icon: Gift, color: 'text-slate-600', bgColor: 'bg-slate-100' },
-  purchased: { label: 'Purchased', icon: ShoppingCart, color: 'text-blue-600', bgColor: 'bg-blue-100' },
-  wrapped: { label: 'Wrapped', icon: Package, color: 'text-purple-600', bgColor: 'bg-purple-100' },
-  delivered: { label: 'Delivered', icon: Truck, color: 'text-green-600', bgColor: 'bg-green-100' }
+// Only 3 statuses now - removed "delivered"
+const AVAILABLE_STATUSES: GiftStatus[] = ['idea', 'purchased', 'wrapped'];
+
+const STATUS_CONFIG: Record<GiftStatus, { label: string; icon: React.ElementType; color: string; bgColor: string; activeColor: string }> = {
+  idea: { label: 'Idea', icon: Gift, color: 'text-slate-400', bgColor: 'bg-slate-100', activeColor: 'text-amber-500' },
+  purchased: { label: 'Purchased', icon: ShoppingCart, color: 'text-slate-400', bgColor: 'bg-blue-100', activeColor: 'text-blue-500' },
+  wrapped: { label: 'Wrapped', icon: Package, color: 'text-slate-400', bgColor: 'bg-purple-100', activeColor: 'text-purple-500' },
+  delivered: { label: 'Delivered', icon: Package, color: 'text-slate-400', bgColor: 'bg-green-100', activeColor: 'text-green-500' }
 };
 
 export function GiftItem({ item, onSave, onDelete, onStatusChange, isNew = false, onCancel }: GiftItemProps) {
   const [isEditing, setIsEditing] = useState(isNew);
   const [isExpanded, setIsExpanded] = useState(false);
+  const [statusPopoverOpen, setStatusPopoverOpen] = useState(false);
   const [itemData, setItemData] = useState<Partial<GiftItemData>>({
     ...item,
     status: item.status || 'idea',
@@ -61,6 +68,17 @@ export function GiftItem({ item, onSave, onDelete, onStatusChange, isNew = false
     quantity_purchased: item.quantity_purchased || 0
   });
   const [urlMetadata, setUrlMetadata] = useState<{title: string, image: string} | null>(null);
+
+  // Sync itemData when item prop changes (e.g., after status update)
+  useEffect(() => {
+    setItemData({
+      ...item,
+      status: item.status || 'idea',
+      priority: item.priority || 'nice_to_have',
+      quantity: item.quantity || 1,
+      quantity_purchased: item.quantity_purchased || 0
+    });
+  }, [item]);
 
   const handleSave = async () => {
     await onSave(itemData);
@@ -91,6 +109,7 @@ export function GiftItem({ item, onSave, onDelete, onStatusChange, isNew = false
   };
 
   const handleStatusClick = async (newStatus: GiftStatus) => {
+    setStatusPopoverOpen(false);
     if (item.id && onStatusChange) {
       await onStatusChange(item.id, newStatus);
     } else {
@@ -229,16 +248,51 @@ export function GiftItem({ item, onSave, onDelete, onStatusChange, isNew = false
     );
   }
 
-  // Display Mode - Clean Row Layout
+  // Display Mode - Clean Row Layout with Clickable Status
   return (
     <Collapsible open={isExpanded} onOpenChange={setIsExpanded}>
       <div className="border rounded-lg bg-card overflow-hidden">
         {/* Main Row */}
         <div className="flex items-center p-3 gap-3">
-          {/* Status Icon */}
-          <div className={cn("w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0", statusConfig.bgColor)}>
-            <StatusIcon className={cn("h-4 w-4", statusConfig.color)} />
-          </div>
+          {/* Clickable Status Icon */}
+          <Popover open={statusPopoverOpen} onOpenChange={setStatusPopoverOpen}>
+            <PopoverTrigger asChild>
+              <button 
+                className={cn(
+                  "w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 transition-all",
+                  "hover:ring-2 hover:ring-primary/30 cursor-pointer",
+                  statusConfig.bgColor
+                )}
+                title={`Status: ${statusConfig.label} (click to change)`}
+              >
+                <StatusIcon className={cn("h-5 w-5", statusConfig.activeColor)} />
+              </button>
+            </PopoverTrigger>
+            <PopoverContent className="w-auto p-2 bg-popover z-50" align="start">
+              <div className="flex flex-col gap-1">
+                <p className="text-xs text-muted-foreground px-2 pb-1">Set status:</p>
+                {AVAILABLE_STATUSES.map((status) => {
+                  const config = STATUS_CONFIG[status];
+                  const Icon = config.icon;
+                  const isActive = status === currentStatus;
+                  
+                  return (
+                    <button
+                      key={status}
+                      onClick={() => handleStatusClick(status)}
+                      className={cn(
+                        "flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium transition-colors w-full text-left",
+                        isActive ? cn(config.bgColor, config.activeColor) : "hover:bg-muted"
+                      )}
+                    >
+                      <Icon className={cn("h-4 w-4", isActive ? config.activeColor : "text-muted-foreground")} />
+                      {config.label}
+                    </button>
+                  );
+                })}
+              </div>
+            </PopoverContent>
+          </Popover>
           
           {/* Name & Category */}
           <div className="flex-1 min-w-0 overflow-hidden">
@@ -273,32 +327,9 @@ export function GiftItem({ item, onSave, onDelete, onStatusChange, isNew = false
         {/* Expanded */}
         <CollapsibleContent>
           <div className="px-3 pb-3 space-y-3 border-t">
-            {/* Status Buttons */}
-            <div className="flex flex-wrap gap-1 pt-3">
-              {(['idea', 'purchased', 'wrapped', 'delivered'] as GiftStatus[]).map((status) => {
-                const config = STATUS_CONFIG[status];
-                const Icon = config.icon;
-                const isActive = status === currentStatus;
-                
-                return (
-                  <button
-                    key={status}
-                    onClick={() => handleStatusClick(status)}
-                    className={cn(
-                      "flex items-center gap-1 px-2 py-1 rounded text-xs font-medium transition-colors",
-                      isActive ? cn(config.bgColor, config.color) : "bg-muted hover:bg-muted/80 text-muted-foreground"
-                    )}
-                  >
-                    <Icon className="h-3 w-3" />
-                    {config.label}
-                  </button>
-                );
-              })}
-            </div>
-            
             {/* Notes */}
             {itemData.notes && (
-              <div className="bg-muted rounded p-2 text-sm">
+              <div className="bg-muted rounded p-2 text-sm mt-3">
                 <StickyNote className="h-3 w-3 inline mr-1 text-muted-foreground" />
                 {itemData.notes}
               </div>
