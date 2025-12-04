@@ -247,7 +247,7 @@ export function GiftCard({ initialData, onItemsChange }: GiftCardProps) {
         )}
         
         {/* Gift Items */}
-        <div className="space-y-3">
+        <div className="space-y-2">
           {listData.id && items.map((item) => (
             <GiftItem
               key={item.id}
