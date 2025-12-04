@@ -12,6 +12,8 @@ export interface GiftListData {
   household_id: string;
   year: number;
   budget_target?: number;
+  event_date?: string | null;
+  one_week_alert_dismissed?: boolean;
   created_at: string;
   updated_at: string;
 }
@@ -71,6 +73,8 @@ export function useGiftLists() {
           household_id: 'demo',
           year: selectedYear,
           budget_target: 500,
+          event_date: null,
+          one_week_alert_dismissed: false,
           created_at: new Date().toISOString(),
           updated_at: new Date().toISOString()
         },
@@ -81,6 +85,8 @@ export function useGiftLists() {
           household_id: 'demo',
           year: selectedYear,
           budget_target: 300,
+          event_date: null,
+          one_week_alert_dismissed: false,
           created_at: new Date().toISOString(),
           updated_at: new Date().toISOString()
         },
@@ -91,6 +97,8 @@ export function useGiftLists() {
           household_id: 'demo',
           year: selectedYear,
           budget_target: 200,
+          event_date: null,
+          one_week_alert_dismissed: false,
           created_at: new Date().toISOString(),
           updated_at: new Date().toISOString()
         },
@@ -101,6 +109,8 @@ export function useGiftLists() {
           household_id: 'demo',
           year: selectedYear,
           budget_target: 400,
+          event_date: null,
+          one_week_alert_dismissed: false,
           created_at: new Date().toISOString(),
           updated_at: new Date().toISOString()
         }
@@ -213,6 +223,65 @@ export function useGiftLists() {
     setEditingTitle('');
   };
 
+  const updateEventDate = async (listId: string, eventDate: Date | null) => {
+    if (!user || listId.startsWith('demo-')) return;
+    
+    try {
+      const { error } = await supabase
+        .from('gift_lists')
+        .update({ 
+          event_date: eventDate ? eventDate.toISOString().split('T')[0] : null,
+          one_week_alert_dismissed: false // Reset alert when date changes
+        })
+        .eq('id', listId);
+      
+      if (error) throw error;
+      
+      // Update local state
+      setGiftLists(prev => prev.map(list => 
+        list.id === listId 
+          ? { ...list, event_date: eventDate ? eventDate.toISOString().split('T')[0] : null, one_week_alert_dismissed: false }
+          : list
+      ));
+      
+      if (selectedList?.id === listId) {
+        setSelectedList(prev => prev ? { 
+          ...prev, 
+          event_date: eventDate ? eventDate.toISOString().split('T')[0] : null,
+          one_week_alert_dismissed: false 
+        } : null);
+      }
+    } catch (error) {
+      console.error('Error updating event date:', error);
+    }
+  };
+
+  const dismissOneWeekAlert = async (listId: string) => {
+    if (!user || listId.startsWith('demo-')) return;
+    
+    try {
+      const { error } = await supabase
+        .from('gift_lists')
+        .update({ one_week_alert_dismissed: true })
+        .eq('id', listId);
+      
+      if (error) throw error;
+      
+      // Update local state
+      setGiftLists(prev => prev.map(list => 
+        list.id === listId 
+          ? { ...list, one_week_alert_dismissed: true }
+          : list
+      ));
+      
+      if (selectedList?.id === listId) {
+        setSelectedList(prev => prev ? { ...prev, one_week_alert_dismissed: true } : null);
+      }
+    } catch (error) {
+      console.error('Error dismissing alert:', error);
+    }
+  };
+
   return {
     loading,
     giftLists,
@@ -224,7 +293,9 @@ export function useGiftLists() {
     startEditing,
     saveTitle,
     cancelEditing,
-    loadGiftLists
+    loadGiftLists,
+    updateEventDate,
+    dismissOneWeekAlert
   };
 }
 

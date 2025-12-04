@@ -1,5 +1,5 @@
 // src/pages/Gifts.tsx (Final Version)
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import { useGiftLists, useGiftItems } from '@/hooks/useGiftLists';
 import { useAuth } from '@/hooks/useAuth';
 import { useBadges } from '@/hooks/useBadges';
@@ -12,11 +12,14 @@ import { GiftCardDisplay } from '@/components/GiftCardDisplay';
 import { GiftBudgetSummary } from '@/components/GiftBudgetSummary';
 import { GiftSearch } from '@/components/GiftSearch';
 import { YearSelector } from '@/components/YearSelector';
+import { EventCalendar } from '@/components/EventCalendar';
+import { EventAlertDialog } from '@/components/EventAlertDialog';
 import { Gift, ShoppingBag } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { InternalLinks } from '@/components/InternalLinks';
 import { FAQ } from '@/components/FAQ';
+import { differenceInDays, startOfDay, parseISO } from 'date-fns';
 import heroGiftsImg from '@/assets/hero-gifts.png';
 
 export function Gifts() {
@@ -38,7 +41,9 @@ export function Gifts() {
     startEditing,
     saveTitle,
     cancelEditing,
-    loadGiftLists
+    loadGiftLists,
+    updateEventDate,
+    dismissOneWeekAlert
   } = useGiftLists();
 
   // Get gift items for the selected list to calculate totals
@@ -54,6 +59,29 @@ export function Gifts() {
   // Calculate budget summary from actual gift items
   const totalBudget = items.reduce((sum, item) => sum + (item.price || 0), 0);
   const itemCount = items.length;
+
+  // Check if we should show the one-week alert
+  const shouldShowAlert = useMemo(() => {
+    if (!selectedList?.event_date || selectedList.one_week_alert_dismissed) return false;
+    const eventDate = parseISO(selectedList.event_date);
+    const today = startOfDay(new Date());
+    const daysUntil = differenceInDays(startOfDay(eventDate), today);
+    return daysUntil === 7;
+  }, [selectedList?.event_date, selectedList?.one_week_alert_dismissed]);
+
+  const handleEventDateSelect = (date: Date | undefined) => {
+    if (selectedList) {
+      updateEventDate(selectedList.id, date || null);
+    }
+  };
+
+  const handleDismissAlert = () => {
+    if (selectedList) {
+      dismissOneWeekAlert(selectedList.id);
+    }
+  };
+
+  const eventDate = selectedList?.event_date ? parseISO(selectedList.event_date) : undefined;
 
   if (loading) {
     return (
@@ -150,12 +178,38 @@ export function Gifts() {
             </Button>
           </div>
 
-          {/* 3. It renders the gift card display area for the selected list. */}
-          <GiftCardDisplay
-            selectedList={selectedList}
-            onSave={loadGiftLists}
-            onItemsChange={refetchItems}
-          />
+          {/* 3. Main content with gift cards and calendar on desktop */}
+          <div className="flex flex-col lg:flex-row gap-6">
+            <div className="flex-1">
+              <GiftCardDisplay
+                selectedList={selectedList}
+                onSave={loadGiftLists}
+                onItemsChange={refetchItems}
+              />
+            </div>
+            
+            {/* Calendar sidebar - desktop only */}
+            <div className="hidden lg:block w-80 shrink-0">
+              <div className="sticky top-4">
+                <EventCalendar
+                  eventDate={eventDate}
+                  onDateSelect={handleEventDateSelect}
+                  listTitle={selectedList?.list_title || 'Event'}
+                  disabled={!user || selectedList?.id.startsWith('demo-')}
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* One-week alert dialog */}
+          {selectedList && shouldShowAlert && eventDate && (
+            <EventAlertDialog
+              open={shouldShowAlert}
+              onDismiss={handleDismissAlert}
+              listTitle={selectedList.list_title}
+              eventDate={eventDate}
+            />
+          )}
 
           <FAQ 
             faqs={[

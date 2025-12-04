@@ -324,9 +324,11 @@ export type Database = {
         Row: {
           budget_target: number | null
           created_at: string
+          event_date: string | null
           household_id: string | null
           id: string
           list_title: string
+          one_week_alert_dismissed: boolean | null
           updated_at: string
           user_id: string
           year: number
@@ -334,9 +336,11 @@ export type Database = {
         Insert: {
           budget_target?: number | null
           created_at?: string
+          event_date?: string | null
           household_id?: string | null
           id?: string
           list_title?: string
+          one_week_alert_dismissed?: boolean | null
           updated_at?: string
           user_id: string
           year?: number
@@ -344,9 +348,11 @@ export type Database = {
         Update: {
           budget_target?: number | null
           created_at?: string
+          event_date?: string | null
           household_id?: string | null
           id?: string
           list_title?: string
+          one_week_alert_dismissed?: boolean | null
           updated_at?: string
           user_id?: string
           year?: number
