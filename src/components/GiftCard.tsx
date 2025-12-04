@@ -5,7 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Progress } from '@/components/ui/progress';
-import { Plus, DollarSign, Trash2, Gift, ShoppingCart, Package, Truck } from 'lucide-react';
+import { Plus, DollarSign, Trash2, Gift, ShoppingCart, Package } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { useGiftItems, GiftItemData, GiftStatus } from '@/hooks/useGiftLists';
@@ -132,7 +132,7 @@ export function GiftCard({ initialData, onItemsChange }: GiftCardProps) {
     return acc;
   }, {} as Record<string, number>);
   
-  const completedItems = (statusCounts['purchased'] || 0) + (statusCounts['wrapped'] || 0) + (statusCounts['delivered'] || 0);
+  const completedItems = (statusCounts['purchased'] || 0) + (statusCounts['wrapped'] || 0);
   const completionProgress = totalItems > 0 ? (completedItems / totalItems) * 100 : 0;
   
   return (
@@ -155,22 +155,18 @@ export function GiftCard({ initialData, onItemsChange }: GiftCardProps) {
           </div>
           
           {/* Status Breakdown */}
-          <div className="flex items-center justify-between gap-1 text-xs">
-            <div className="flex items-center gap-1 text-gray-500">
-              <Gift className="h-3 w-3" />
-              <span>{statusCounts['idea'] || 0}</span>
+          <div className="flex items-center justify-center gap-4 text-xs">
+            <div className="flex items-center gap-1 text-amber-500">
+              <Gift className="h-3.5 w-3.5" />
+              <span>{statusCounts['idea'] || 0} ideas</span>
             </div>
             <div className="flex items-center gap-1 text-blue-500">
-              <ShoppingCart className="h-3 w-3" />
-              <span>{statusCounts['purchased'] || 0}</span>
+              <ShoppingCart className="h-3.5 w-3.5" />
+              <span>{statusCounts['purchased'] || 0} purchased</span>
             </div>
             <div className="flex items-center gap-1 text-purple-500">
-              <Package className="h-3 w-3" />
-              <span>{statusCounts['wrapped'] || 0}</span>
-            </div>
-            <div className="flex items-center gap-1 text-green-500">
-              <Truck className="h-3 w-3" />
-              <span>{statusCounts['delivered'] || 0}</span>
+              <Package className="h-3.5 w-3.5" />
+              <span>{statusCounts['wrapped'] || 0} wrapped</span>
             </div>
           </div>
         </div>
