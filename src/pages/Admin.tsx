@@ -15,6 +15,7 @@ import { BlogPostForm } from "@/components/BlogPostForm";
 import { BlogPost } from "@/hooks/useBlogPosts";
 import { SEO } from "@/components/SEO";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { giftListChristmasShoppingPost } from "@/utils/blogPosts/giftListChristmasShopping";
 
 interface Listing {
   id: string;
@@ -38,6 +39,7 @@ export default function Admin() {
   const [pendingListings, setPendingListings] = useState<Listing[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [publishingGiftPost, setPublishingGiftPost] = useState(false);
   const [metrics, setMetrics] = useState({
     users: 0,
     subscribers: 0,
@@ -236,6 +238,43 @@ export default function Admin() {
     }
   };
 
+  const handlePublishGiftListPost = async () => {
+    setPublishingGiftPost(true);
+    try {
+      const { error } = await supabase
+        .from('blog_posts')
+        .insert({
+          title: giftListChristmasShoppingPost.title,
+          content: giftListChristmasShoppingPost.content,
+          excerpt: giftListChristmasShoppingPost.excerpt,
+          published: giftListChristmasShoppingPost.published,
+          featured_image_url: giftListChristmasShoppingPost.featured_image_url,
+          read_time: giftListChristmasShoppingPost.read_time,
+          tags: giftListChristmasShoppingPost.tags,
+          slug: giftListChristmasShoppingPost.slug,
+          user_id: user!.id,
+          published_at: new Date().toISOString(),
+        });
+
+      if (error) throw error;
+
+      toast({
+        title: "Success!",
+        description: "Christmas Gift List blog post published!",
+      });
+      navigate('/blog/christmas-gift-list-organizer-2025');
+    } catch (error: any) {
+      console.error('Error publishing blog post:', error);
+      toast({
+        title: "Error",
+        description: error.message || "Failed to publish blog post.",
+        variant: "destructive",
+      });
+    } finally {
+      setPublishingGiftPost(false);
+    }
+  };
+
   const ListingCard = ({ listing }: { listing: Listing }) => {
     const thumbnailImage = listing.image_urls && listing.image_urls.length > 0 
       ? listing.image_urls[0] 
@@ -361,6 +400,45 @@ export default function Admin() {
           </TabsList>
 
           <TabsContent value="blog" className="space-y-6">
+            {/* Quick Publish Section */}
+            <Card className="border-teal/30 bg-teal/5">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  🎄 Quick Publish: Christmas Gift List Article
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <p className="text-sm text-muted-foreground">
+                  <strong>{giftListChristmasShoppingPost.title}</strong>
+                </p>
+                <p className="text-xs text-muted-foreground">
+                  {giftListChristmasShoppingPost.excerpt}
+                </p>
+                <div className="flex flex-wrap gap-2">
+                  {giftListChristmasShoppingPost.tags.map((tag) => (
+                    <Badge key={tag} variant="secondary" className="text-xs">{tag}</Badge>
+                  ))}
+                </div>
+                <Button 
+                  onClick={handlePublishGiftListPost} 
+                  disabled={publishingGiftPost}
+                  className="bg-teal hover:bg-teal/90"
+                >
+                  {publishingGiftPost ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Publishing...
+                    </>
+                  ) : (
+                    <>
+                      <CheckCircle className="mr-2 h-4 w-4" />
+                      Publish Christmas Gift List Post
+                    </>
+                  )}
+                </Button>
+              </CardContent>
+            </Card>
+
             <Card className="border-primary/20 bg-primary/5">
               <CardContent className="flex items-center gap-3 p-4">
                 <PenSquare className="h-5 w-5 text-primary" />
