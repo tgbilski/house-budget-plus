@@ -145,6 +145,35 @@ export function GiftItem({ item, onSave, onDelete, onStatusChange, isNew = false
   if (isEditing) {
     return (
       <div className="border-2 border-primary/30 rounded-lg p-4 bg-muted/30">
+        {/* Status Selector at Top */}
+        <div className="flex justify-center mb-4">
+          <div className="flex items-center gap-1 p-1 bg-background rounded-full border">
+            {AVAILABLE_STATUSES.map((status) => {
+              const config = STATUS_CONFIG[status];
+              const Icon = config.icon;
+              const isActive = (itemData.status || 'idea') === status;
+              
+              return (
+                <button
+                  key={status}
+                  type="button"
+                  onClick={() => setItemData(prev => ({ ...prev, status }))}
+                  className={cn(
+                    "flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium transition-all",
+                    isActive 
+                      ? cn(config.bgColor, config.activeColor) 
+                      : "text-muted-foreground hover:bg-muted"
+                  )}
+                  title={config.label}
+                >
+                  <Icon className="h-4 w-4" />
+                  <span className="hidden sm:inline">{config.label}</span>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
         <div className="space-y-4">
           <div>
             <Label className="text-sm font-medium">Gift Idea *</Label>
