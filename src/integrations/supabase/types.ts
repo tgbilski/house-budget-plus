@@ -271,29 +271,50 @@ export type Database = {
       }
       gift_items: {
         Row: {
+          category: string | null
           created_at: string
           gift_idea: string | null
           id: string
           list_id: string
+          notes: string | null
           price: number | null
+          priority: string | null
+          purchased_at: string | null
+          quantity: number | null
+          quantity_purchased: number | null
+          status: string | null
           updated_at: string
           url: string | null
         }
         Insert: {
+          category?: string | null
           created_at?: string
           gift_idea?: string | null
           id?: string
           list_id: string
+          notes?: string | null
           price?: number | null
+          priority?: string | null
+          purchased_at?: string | null
+          quantity?: number | null
+          quantity_purchased?: number | null
+          status?: string | null
           updated_at?: string
           url?: string | null
         }
         Update: {
+          category?: string | null
           created_at?: string
           gift_idea?: string | null
           id?: string
           list_id?: string
+          notes?: string | null
           price?: number | null
+          priority?: string | null
+          purchased_at?: string | null
+          quantity?: number | null
+          quantity_purchased?: number | null
+          status?: string | null
           updated_at?: string
           url?: string | null
         }
