@@ -187,6 +187,56 @@ export function useHousehold(userId?: string) {
     }
   };
 
+  const deleteHousehold = async (householdId: string) => {
+    if (!userId) return false;
+    
+    // Find the household to delete
+    const householdToDelete = userHouseholds.find(h => h.id === householdId);
+    if (!householdToDelete) return false;
+    
+    // Only the originator can delete a household
+    if (householdToDelete.originator_id !== userId) return false;
+    
+    setLoading(true);
+    try {
+      // Delete household members first (cascade should handle this, but being explicit)
+      const { error: membersError } = await supabase
+        .from("household_members")
+        .delete()
+        .eq("household_id", householdId);
+      if (membersError) throw membersError;
+
+      // Delete the household
+      const { error: householdError } = await supabase
+        .from("households")
+        .delete()
+        .eq("id", householdId);
+      if (householdError) throw householdError;
+
+      // If we deleted the current household, switch to another one
+      if (currentHousehold?.id === householdId) {
+        const remainingHouseholds = userHouseholds.filter(h => h.id !== householdId);
+        if (remainingHouseholds.length > 0) {
+          await supabase
+            .from("profiles")
+            .update({ current_household_id: remainingHouseholds[0].id })
+            .eq("user_id", userId);
+        } else {
+          // Create a new default household if none remain
+          await createAndSetDefaultHousehold();
+        }
+      }
+
+      await refresh();
+      return true;
+    } catch (error) {
+      console.error("Error deleting household:", error);
+      return false;
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return {
     currentHousehold,
     userHouseholds,
@@ -195,5 +245,6 @@ export function useHousehold(userId?: string) {
     switchHousehold,
     createHousehold,
     renameHousehold,
+    deleteHousehold,
   };
 }

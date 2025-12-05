@@ -25,6 +25,17 @@ import { useSubscription } from "../hooks/useSubscription";
 import { useHouseholdInvites } from "../hooks/useHouseholdInvites";
 import { useHouseholdMembers } from "../hooks/useHouseholdMembers";
 import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import {
   Home,
   Plus,
   Crown,
@@ -32,6 +43,7 @@ import {
   X,
   Pencil,
   Loader2,
+  Trash2,
 } from "lucide-react";
 
 interface HouseholdSwitcherProps {
@@ -51,6 +63,7 @@ export function HouseholdSwitcher({ className, open, onOpenChange }: HouseholdSw
     switchHousehold,
     createHousehold,
     renameHousehold,
+    deleteHousehold,
   } = useHouseholdContext();
 
   const {
@@ -78,6 +91,7 @@ export function HouseholdSwitcher({ className, open, onOpenChange }: HouseholdSw
   const [renaming, setRenaming] = useState(false);
   const [editableName, setEditableName] = useState("");
   const [isRenaming, setIsRenaming] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const handleCreateHousehold = async () => {
     if (!newHouseholdName.trim()) return;
@@ -137,8 +151,18 @@ export function HouseholdSwitcher({ className, open, onOpenChange }: HouseholdSw
     }
   };
 
+  const handleDeleteHousehold = async () => {
+    if (!currentHousehold) return;
+    setIsDeleting(true);
+    const success = await deleteHousehold(currentHousehold.id);
+    setIsDeleting(false);
+    if (success) {
+      window.location.reload();
+    }
+  };
+
   const anyLoading =
-    householdLoading || invitesLoading || membersLoading || isCreating || isInviting || isRenaming;
+    householdLoading || invitesLoading || membersLoading || isCreating || isInviting || isRenaming || isDeleting;
 
   return (
     <Dialog open={open !== undefined ? open : isOpen} onOpenChange={onOpenChange || setIsOpen}>
@@ -218,15 +242,47 @@ export function HouseholdSwitcher({ className, open, onOpenChange }: HouseholdSw
                     </p>
                   </div>
                   {isOriginator && currentHousehold && !renaming && (
-                    <Button
-                      size="icon"
-                      variant="ghost"
-                      className="ml-2"
-                      onClick={startRenaming}
-                      aria-label="Rename household"
-                    >
-                      <Pencil className="h-4 w-4" />
-                    </Button>
+                    <div className="flex gap-1">
+                      <Button
+                        size="icon"
+                        variant="ghost"
+                        onClick={startRenaming}
+                        aria-label="Rename household"
+                      >
+                        <Pencil className="h-4 w-4" />
+                      </Button>
+                      <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                          <Button
+                            size="icon"
+                            variant="ghost"
+                            className="text-destructive hover:text-destructive"
+                            aria-label="Delete household"
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent>
+                          <AlertDialogHeader>
+                            <AlertDialogTitle>Delete Household</AlertDialogTitle>
+                            <AlertDialogDescription>
+                              Are you sure you want to delete "{currentHousehold.name}"? This will remove all members and cannot be undone. Your data associated with this household will also be deleted.
+                            </AlertDialogDescription>
+                          </AlertDialogHeader>
+                          <AlertDialogFooter>
+                            <AlertDialogCancel>Cancel</AlertDialogCancel>
+                            <AlertDialogAction
+                              onClick={handleDeleteHousehold}
+                              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                              disabled={isDeleting}
+                            >
+                              {isDeleting ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
+                              Delete
+                            </AlertDialogAction>
+                          </AlertDialogFooter>
+                        </AlertDialogContent>
+                      </AlertDialog>
+                    </div>
                   )}
                 </CardContent>
               </Card>
