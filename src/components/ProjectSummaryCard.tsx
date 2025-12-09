@@ -87,87 +87,89 @@ export const ProjectSummaryCard: React.FC<Props> = ({
     <Card className="bg-white/80 backdrop-blur-sm border-2 border-border/50 shadow-[var(--shadow-elegant)]">
       <CardHeader className="pb-2">
         {/* Navigation and Title Row */}
-        <div className="flex items-center justify-between gap-2">
-          {/* Left Arrow */}
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={handlePrevious}
-            disabled={currentIndex <= 0}
-            className="h-10 w-10 shrink-0 disabled:opacity-30"
-          >
-            <ChevronLeft className="h-6 w-6" />
-          </Button>
-
-          {/* Center: Title and Edit */}
-          <div className="flex-1 flex flex-col items-center gap-1 min-w-0 px-2">
-            {isEditing ? (
-              <div className="flex flex-col sm:flex-row items-center gap-2 w-full max-w-md" onClick={(e) => e.stopPropagation()}>
-                <Input
-                  value={editingState.title}
-                  onChange={(e) => setEditingState({ ...editingState, title: e.target.value })}
-                  onKeyDown={(e) => e.key === 'Enter' && handleSave()}
-                  placeholder="Project name"
-                  className="text-center text-base sm:text-lg font-semibold bg-background text-foreground h-10 w-full"
-                  autoFocus
-                />
-                <div className="flex gap-2 shrink-0">
-                  <Button size="sm" variant="default" onClick={handleSave} className="h-9 px-4 gap-1">
-                    <Check className="h-4 w-4" /> Save
-                  </Button>
-                  <Button size="sm" variant="outline" onClick={() => setEditingState({ id: '', title: '' })} className="h-9 px-4">
-                    Cancel
-                  </Button>
-                </div>
-              </div>
-            ) : (
-              <div className="flex items-center gap-2 group cursor-pointer" onClick={startEditing}>
-                <div className="inline-flex items-center justify-center w-8 h-8 bg-gradient-to-br from-teal/20 to-teal-glow/20 rounded-lg shrink-0">
-                  <Scale className="h-4 w-4 text-teal" />
-                </div>
-                <h2 className="text-xl font-bold text-foreground truncate">
-                  {currentProject?.title || 'No Project Selected'}
-                </h2>
-                <Button 
-                  size="icon" 
-                  variant="ghost" 
-                  className="h-6 w-6 p-0 opacity-0 group-hover:opacity-100 shrink-0"
-                  onClick={(e) => { e.stopPropagation(); startEditing(); }}
-                >
-                  <Edit2 className="h-3 w-3" />
+        <div className="flex flex-col gap-2">
+          {/* Edit mode - full width form */}
+          {isEditing ? (
+            <div className="flex flex-col items-center gap-3 w-full py-2" onClick={(e) => e.stopPropagation()}>
+              <Input
+                value={editingState.title}
+                onChange={(e) => setEditingState({ ...editingState, title: e.target.value })}
+                onKeyDown={(e) => e.key === 'Enter' && handleSave()}
+                placeholder="Project name"
+                className="text-center text-base sm:text-lg font-semibold bg-background text-foreground h-12 w-full max-w-md"
+                autoFocus
+              />
+              <div className="flex gap-2">
+                <Button size="sm" variant="default" onClick={handleSave} className="h-9 px-6 gap-1">
+                  <Check className="h-4 w-4" /> Save
+                </Button>
+                <Button size="sm" variant="outline" onClick={() => setEditingState({ id: '', title: '' })} className="h-9 px-6">
+                  Cancel
                 </Button>
               </div>
-            )}
-            
-            {/* Project indicator dots */}
-            {!isEditing && (
-              <div className="flex items-center gap-1.5 mt-1">
-                {projects.map((project, index) => (
-                  <button
-                    key={project.id}
-                    onClick={() => onSelectProject(project.id)}
-                    className={cn(
-                      "w-2 h-2 rounded-full transition-all",
-                      index === currentIndex 
-                        ? "bg-primary w-4" 
-                        : "bg-muted-foreground/30 hover:bg-muted-foreground/50"
-                    )}
-                  />
-                ))}
-              </div>
-            )}
-          </div>
+            </div>
+          ) : (
+            /* View mode - arrows with title */
+            <div className="flex items-center justify-between gap-2">
+              {/* Left Arrow */}
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={handlePrevious}
+                disabled={currentIndex <= 0}
+                className="h-10 w-10 shrink-0 disabled:opacity-30"
+              >
+                <ChevronLeft className="h-6 w-6" />
+              </Button>
 
-          {/* Right Arrow */}
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={handleNext}
-            disabled={currentIndex >= projects.length - 1}
-            className="h-10 w-10 shrink-0 disabled:opacity-30"
-          >
-            <ChevronRight className="h-6 w-6" />
-          </Button>
+              {/* Center: Title */}
+              <div className="flex-1 flex flex-col items-center gap-1 min-w-0">
+                <div className="flex items-center gap-2 group cursor-pointer" onClick={startEditing}>
+                  <div className="inline-flex items-center justify-center w-8 h-8 bg-gradient-to-br from-teal/20 to-teal-glow/20 rounded-lg shrink-0">
+                    <Scale className="h-4 w-4 text-teal" />
+                  </div>
+                  <h2 className="text-xl font-bold text-foreground truncate">
+                    {currentProject?.title || 'No Project Selected'}
+                  </h2>
+                  <Button 
+                    size="icon" 
+                    variant="ghost" 
+                    className="h-6 w-6 p-0 opacity-0 group-hover:opacity-100 shrink-0"
+                    onClick={(e) => { e.stopPropagation(); startEditing(); }}
+                  >
+                    <Edit2 className="h-3 w-3" />
+                  </Button>
+                </div>
+                
+                {/* Project indicator dots */}
+                <div className="flex items-center gap-1.5 mt-1">
+                  {projects.map((project, index) => (
+                    <button
+                      key={project.id}
+                      onClick={() => onSelectProject(project.id)}
+                      className={cn(
+                        "w-2 h-2 rounded-full transition-all",
+                        index === currentIndex 
+                          ? "bg-primary w-4" 
+                          : "bg-muted-foreground/30 hover:bg-muted-foreground/50"
+                      )}
+                    />
+                  ))}
+                </div>
+              </div>
+
+              {/* Right Arrow */}
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={handleNext}
+                disabled={currentIndex >= projects.length - 1}
+                className="h-10 w-10 shrink-0 disabled:opacity-30"
+              >
+                <ChevronRight className="h-6 w-6" />
+              </Button>
+            </div>
+          )}
         </div>
       </CardHeader>
       
