@@ -38,22 +38,62 @@ export default function Home() {
     
     setIsLoading(true);
     try {
-      const { error } = await supabase.auth.signUp({
+      // First, try to sign in (handles existing users)
+      const { error: signInError } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
       
-      if (error) throw error;
+      if (!signInError) {
+        // Sign in successful - user exists and password correct
+        trackButtonClick('quick_signin', 'home_page');
+        toast({
+          title: "Welcome back!",
+          description: "You've been signed in successfully.",
+        });
+        navigate("/features");
+        return;
+      }
       
-      trackButtonClick('quick_signup', 'home_page');
-      toast({
-        title: "Account created!",
-        description: "Check your email to verify your account, then sign in.",
-      });
-      navigate("/features");
+      // If sign in failed, check if it's invalid credentials (could be wrong password or no user)
+      if (signInError.message === "Invalid login credentials") {
+        // Try to sign up - if user exists, this will fail with a specific error
+        const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
+          email,
+          password,
+          options: {
+            emailRedirectTo: `${window.location.origin}/`,
+          },
+        });
+        
+        if (signUpError) {
+          throw signUpError;
+        }
+        
+        // Check if user already exists (Supabase returns user but no session when email exists)
+        if (signUpData.user && !signUpData.session && signUpData.user.identities?.length === 0) {
+          toast({
+            title: "Incorrect password",
+            description: "An account with this email already exists. Please check your password.",
+            variant: "destructive",
+          });
+          return;
+        }
+        
+        trackButtonClick('quick_signup', 'home_page');
+        toast({
+          title: "Account created!",
+          description: "Check your email to verify your account, then sign in.",
+        });
+        navigate("/features");
+        return;
+      }
+      
+      // Some other error occurred
+      throw signInError;
     } catch (error: any) {
       toast({
-        title: "Sign up failed",
+        title: "Authentication failed",
         description: error.message,
         variant: "destructive",
       });
