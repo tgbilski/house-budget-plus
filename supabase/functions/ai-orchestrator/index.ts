@@ -1,5 +1,6 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
+import { AGENTS, checkIfOnTopic, selectAgents } from "./routing.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -9,60 +10,6 @@ const corsHeaders = {
 const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
 const supabaseServiceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 const lovableApiKey = Deno.env.get("LOVABLE_API_KEY")!;
-
-// Agent definitions with their domains and database tables
-const AGENTS = {
-  budget: {
-    name: "Budget Agent",
-    emoji: "💰",
-    description: "Handles monthly budget, income, and expense tracking questions",
-    tables: ["budget_data"],
-    keywords: ["budget", "income", "expense", "spending", "money", "bills", "monthly", "cost", "afford"]
-  },
-  savings: {
-    name: "Savings Agent", 
-    emoji: "🎯",
-    description: "Handles savings goals and progress tracking questions",
-    tables: ["savings_goals", "savings_entries"],
-    keywords: ["savings", "save", "goal", "target", "progress", "emergency fund", "saving"]
-  },
-  vendors: {
-    name: "Vendors Agent",
-    emoji: "🏪", 
-    description: "Handles vendor comparisons and quotes questions",
-    tables: ["vendor_projects", "vendor_quotes"],
-    keywords: ["vendor", "quote", "contractor", "comparison", "price", "estimate", "project", "service provider"]
-  },
-  vacation: {
-    name: "Vacation Agent",
-    emoji: "✈️",
-    description: "Handles vacation planning and travel budget questions", 
-    tables: ["vacation_projects", "vacation_options"],
-    keywords: ["vacation", "travel", "trip", "holiday", "destination", "lodging", "flight", "rental"]
-  },
-  expenses: {
-    name: "Expenses Agent",
-    emoji: "📊",
-    description: "Handles expense tracking and categorization questions",
-    tables: ["expenses"],
-    keywords: ["expense", "transaction", "purchase", "spent", "category", "merchant", "receipt"]
-  },
-  gifts: {
-    name: "Gifts Agent",
-    emoji: "🎁",
-    description: "Handles gift lists and budget tracking questions",
-    tables: ["gift_lists", "gift_items"],
-    keywords: ["gift", "present", "birthday", "christmas", "holiday", "wishlist", "shopping list"]
-  }
-};
-
-// Allowed topics for the website
-const ALLOWED_TOPICS = [
-  "budget", "finance", "money", "savings", "expenses", "income", 
-  "vacation", "travel", "vendors", "quotes", "gifts", "shopping",
-  "financial planning", "household budget", "spending", "cost",
-  "investment advice", "debt", "bills", "subscriptions"
-];
 
 serve(async (req) => {
   if (req.method === "OPTIONS") {
@@ -289,61 +236,6 @@ serve(async (req) => {
     });
   }
 });
-
-// Check if question is on-topic for the website
-function checkIfOnTopic(question: string): boolean {
-  const lowerQuestion = question.toLowerCase();
-  
-  // Check for allowed topic keywords
-  const hasAllowedTopic = ALLOWED_TOPICS.some(topic => 
-    lowerQuestion.includes(topic)
-  );
-  
-  // Check for agent-specific keywords
-  const hasAgentKeyword = Object.values(AGENTS).some(agent =>
-    agent.keywords.some(keyword => lowerQuestion.includes(keyword))
-  );
-  
-  // Check for off-topic indicators
-  const offTopicIndicators = [
-    "weather", "sports", "news", "politics", "recipe", "cooking",
-    "movie", "music", "game", "celebrity", "joke", "story",
-    "translate", "code", "programming", "homework", "essay"
-  ];
-  
-  const isOffTopic = offTopicIndicators.some(indicator => 
-    lowerQuestion.includes(indicator)
-  );
-  
-  return (hasAllowedTopic || hasAgentKeyword) && !isOffTopic;
-}
-
-// Select which agents should handle the question
-function selectAgents(question: string): string[] {
-  const lowerQuestion = question.toLowerCase();
-  const selectedAgents: string[] = [];
-  
-  // Score each agent based on keyword matches
-  const scores: Record<string, number> = {};
-  
-  for (const [key, agent] of Object.entries(AGENTS)) {
-    scores[key] = 0;
-    for (const keyword of agent.keywords) {
-      if (lowerQuestion.includes(keyword)) {
-        scores[key]++;
-      }
-    }
-  }
-  
-  // Select agents with positive scores, sorted by score
-  const sortedAgents = Object.entries(scores)
-    .filter(([_, score]) => score > 0)
-    .sort(([, a], [, b]) => b - a)
-    .map(([key]) => key);
-  
-  // Return top 2 agents max for multi-agent queries
-  return sortedAgents.slice(0, 2);
-}
 
 // Fetch data for a specific agent
 async function fetchAgentData(
