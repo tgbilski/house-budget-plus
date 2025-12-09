@@ -21,6 +21,12 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from '@/components/ui/collapsible';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
 import { 
   Trash2, 
   ExternalLink, 
@@ -281,76 +287,88 @@ export function GiftItem({ item, onSave, onDelete, onStatusChange, isNew = false
   return (
     <Collapsible open={isExpanded} onOpenChange={setIsExpanded}>
       <div className="border rounded-lg bg-card overflow-hidden">
-        {/* Main Row */}
-        <div className="flex items-center p-3 gap-3">
-          {/* Clickable Status Icon */}
-          <Popover open={statusPopoverOpen} onOpenChange={setStatusPopoverOpen}>
-            <PopoverTrigger asChild>
-              <button 
-                className={cn(
-                  "w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 transition-all",
-                  "hover:ring-2 hover:ring-primary/30 cursor-pointer",
-                  statusConfig.bgColor
-                )}
-                title={`Status: ${statusConfig.label} (click to change)`}
-              >
-                <StatusIcon className={cn("h-5 w-5", statusConfig.activeColor)} />
-              </button>
-            </PopoverTrigger>
-            <PopoverContent className="w-auto p-2 bg-popover z-50" align="start">
-              <div className="flex flex-col gap-1">
-                <p className="text-xs text-muted-foreground px-2 pb-1">Set status:</p>
-                {AVAILABLE_STATUSES.map((status) => {
-                  const config = STATUS_CONFIG[status];
-                  const Icon = config.icon;
-                  const isActive = status === currentStatus;
-                  
-                  return (
-                    <button
-                      key={status}
-                      onClick={() => handleStatusClick(status)}
-                      className={cn(
-                        "flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium transition-colors w-full text-left",
-                        isActive ? cn(config.bgColor, config.activeColor) : "hover:bg-muted"
+        {/* Main Row - Stacked on mobile, row on desktop */}
+        <div className="flex flex-col sm:flex-row sm:items-center p-3 gap-2 sm:gap-3">
+          {/* Top row on mobile: Status + Name + Price */}
+          <div className="flex items-start sm:items-center gap-2 sm:gap-3 w-full">
+            {/* Clickable Status Icon */}
+            <Popover open={statusPopoverOpen} onOpenChange={setStatusPopoverOpen}>
+              <PopoverTrigger asChild>
+                <button 
+                  className={cn(
+                    "w-8 h-8 sm:w-9 sm:h-9 rounded-full flex items-center justify-center flex-shrink-0 transition-all",
+                    "hover:ring-2 hover:ring-primary/30 cursor-pointer",
+                    statusConfig.bgColor
+                  )}
+                  title={`Status: ${statusConfig.label} (click to change)`}
+                >
+                  <StatusIcon className={cn("h-4 w-4 sm:h-5 sm:w-5", statusConfig.activeColor)} />
+                </button>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto p-2 bg-popover z-50" align="start">
+                <div className="flex flex-col gap-1">
+                  <p className="text-xs text-muted-foreground px-2 pb-1">Set status:</p>
+                  {AVAILABLE_STATUSES.map((status) => {
+                    const config = STATUS_CONFIG[status];
+                    const Icon = config.icon;
+                    const isActive = status === currentStatus;
+                    
+                    return (
+                      <button
+                        key={status}
+                        onClick={() => handleStatusClick(status)}
+                        className={cn(
+                          "flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium transition-colors w-full text-left",
+                          isActive ? cn(config.bgColor, config.activeColor) : "hover:bg-muted"
+                        )}
+                      >
+                        <Icon className={cn("h-4 w-4", isActive ? config.activeColor : "text-muted-foreground")} />
+                        {config.label}
+                      </button>
+                    );
+                  })}
+                </div>
+              </PopoverContent>
+            </Popover>
+            
+            {/* Name & Category - Allow wrapping on mobile */}
+            <div className="flex-1 min-w-0">
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <div className="flex items-start sm:items-center gap-1">
+                      <span className="font-medium text-sm line-clamp-2 sm:truncate">
+                        {itemData.gift_idea || 'Untitled Gift'}
+                      </span>
+                      {currentPriority === 'must_have' && (
+                        <Star className="h-3 w-3 text-red-500 fill-red-500 flex-shrink-0 mt-0.5 sm:mt-0" />
                       )}
-                    >
-                      <Icon className={cn("h-4 w-4", isActive ? config.activeColor : "text-muted-foreground")} />
-                      {config.label}
-                    </button>
-                  );
-                })}
-              </div>
-            </PopoverContent>
-          </Popover>
-          
-          {/* Name & Category */}
-          <div className="flex-1 min-w-0 overflow-hidden">
-            <div className="flex items-center gap-1">
-              <span className="font-medium text-sm truncate block">
-                {itemData.gift_idea || 'Untitled Gift'}
-              </span>
-              {currentPriority === 'must_have' && (
-                <Star className="h-3 w-3 text-red-500 fill-red-500 flex-shrink-0" />
+                    </div>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>{itemData.gift_idea || 'Untitled Gift'}</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+              {itemData.category && (
+                <span className="text-xs text-muted-foreground block">{itemData.category}</span>
               )}
             </div>
-            {itemData.category && (
-              <span className="text-xs text-muted-foreground truncate block">{itemData.category}</span>
-            )}
+            
+            {/* Price + Expand button */}
+            <div className="flex items-center gap-1 flex-shrink-0">
+              <span className="font-semibold text-sm text-green-600 whitespace-nowrap">
+                {itemData.price ? `$${Number(itemData.price).toFixed(2)}` : '-'}
+              </span>
+              
+              {/* Expand */}
+              <CollapsibleTrigger asChild>
+                <Button variant="ghost" size="icon" className="h-7 w-7 flex-shrink-0">
+                  <ChevronDown className={cn("h-4 w-4 transition-transform", isExpanded && "rotate-180")} />
+                </Button>
+              </CollapsibleTrigger>
+            </div>
           </div>
-          
-          {/* Price */}
-          <div className="text-right flex-shrink-0">
-            <span className="font-semibold text-sm text-green-600">
-              {itemData.price ? `$${Number(itemData.price).toFixed(2)}` : '-'}
-            </span>
-          </div>
-          
-          {/* Expand */}
-          <CollapsibleTrigger asChild>
-            <Button variant="ghost" size="icon" className="h-7 w-7 flex-shrink-0">
-              <ChevronDown className={cn("h-4 w-4 transition-transform", isExpanded && "rotate-180")} />
-            </Button>
-          </CollapsibleTrigger>
         </div>
         
         {/* Expanded */}
