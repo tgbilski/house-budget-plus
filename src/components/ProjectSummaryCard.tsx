@@ -26,12 +26,12 @@ const StatBox: React.FC<{ icon: React.ElementType; title: string; value: string;
   <TooltipProvider>
     <Tooltip>
       <TooltipTrigger asChild>
-        <div className="flex items-center gap-2 sm:gap-3 min-w-0 bg-white/60 backdrop-blur-sm rounded-xl p-2 sm:p-3 border border-border/30 cursor-default">
+        <div className="flex flex-col sm:flex-row items-center sm:items-start gap-1 sm:gap-3 min-w-0 bg-white/60 backdrop-blur-sm rounded-xl p-2 sm:p-3 border border-border/30 cursor-default text-center sm:text-left">
           <div className={`p-1.5 sm:p-2 rounded-lg bg-opacity-10 flex-shrink-0 ${color.replace('text-', 'bg-')}`}>
             <Icon className={`h-4 w-4 sm:h-5 sm:w-5 ${color}`} />
           </div>
-          <div className="min-w-0 flex-1">
-            <p className="text-[10px] sm:text-xs text-muted-foreground leading-tight line-clamp-2">{title}</p>
+          <div className="min-w-0 flex-1 w-full">
+            <p className="text-[9px] xs:text-[10px] sm:text-xs text-muted-foreground leading-tight whitespace-normal">{title}</p>
             <p className="text-sm sm:text-lg font-bold truncate">{value}</p>
           </div>
         </div>
@@ -169,11 +169,11 @@ export const ProjectSummaryCard: React.FC<Props> = ({
         </div>
       </CardHeader>
       
-      <CardContent className="grid grid-cols-2 lg:grid-cols-4 gap-3 pt-2">
-        <StatBox icon={FileText} title="Quotes Received" value={`${stats.quoteCount}`} color="text-blue-500" />
-        <StatBox icon={TrendingDown} title="Lowest Quote" value={`${currencySymbol}${stats.lowestQuote.toLocaleString()}`} color="text-green-500" />
-        <StatBox icon={TrendingUp} title="Highest Quote" value={`${currencySymbol}${stats.highestQuote.toLocaleString()}`} color="text-red-500" />
-        <StatBox icon={BadgePercent} title="Savings Potential" value={`${currencySymbol}${stats.savingsPotential.toLocaleString()}`} color="text-indigo-500" />
+      <CardContent className="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3 pt-2">
+        <StatBox icon={FileText} title="Quotes" value={`${stats.quoteCount}`} color="text-blue-500" />
+        <StatBox icon={TrendingDown} title="Lowest" value={`${currencySymbol}${stats.lowestQuote.toLocaleString()}`} color="text-green-500" />
+        <StatBox icon={TrendingUp} title="Highest" value={`${currencySymbol}${stats.highestQuote.toLocaleString()}`} color="text-red-500" />
+        <StatBox icon={BadgePercent} title="Savings" value={`${currencySymbol}${stats.savingsPotential.toLocaleString()}`} color="text-indigo-500" />
       </CardContent>
     </Card>
   );
