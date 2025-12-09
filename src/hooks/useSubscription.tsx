@@ -49,7 +49,7 @@ export function SubscriptionProvider({ children }: { children: ReactNode }) {
       setSubscriptionTier(data.subscription_tier || null);
       setSubscriptionEnd(data.subscription_end || null);
       setAiQueriesCount(data.ai_queries_count || 0);
-      setAiQueriesRemaining(Math.max(0, 10 - (data.ai_queries_count || 0)));
+      setAiQueriesRemaining(Math.max(0, 25 - (data.ai_queries_count || 0)));
       setAiQueriesResetDate(data.ai_queries_reset_date || null);
     } catch (error) {
       console.error('Error checking subscription:', error);
