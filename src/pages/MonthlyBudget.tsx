@@ -20,7 +20,6 @@ import { YearSelector } from '@/components/YearSelector';
 import { budgetCalculatorFAQs } from '@/utils/faqData';
 import { FAQ } from '@/components/FAQ';
 import { InternalLinks } from '@/components/InternalLinks';
-import { AIChatbot } from '@/components/AIChatbot';
 import { BudgetDonutChart } from '@/components/BudgetDonutChart';
 import { WarningBanner } from '@/components/WarningBanner';
 import heroBudgetImg from '@/assets/hero-budget.png';
@@ -243,12 +242,6 @@ const MonthlyBudget: React.FC = () => {
           </div>
         )}
 
-
-        <AIChatbot
-          pageContext="This is the Monthly Budget Calculator page..."
-          pageName="Monthly Budget Calculator"
-          calculatorsData={Object.entries(calculatorNames).map(([id, name]) => ({ calculatorId: id, ownerName: name }))}
-        />
 
         <FAQ faqs={budgetCalculatorFAQs} />
         <InternalLinks currentPage="/budget" category="planning" />

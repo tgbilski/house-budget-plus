@@ -9,7 +9,6 @@ import { useCurrency } from '@/hooks/useCurrency';
 import { useYear } from '@/hooks/useYear';
 import { SEO } from '@/components/SEO';
 import { seoData } from '@/utils/seoData';
-import { AIChatbot } from '@/components/AIChatbot';
 import { useBadges } from '@/hooks/useBadges';
 import { WarningBanner } from '@/components/WarningBanner';
 import { YearSelector } from '@/components/YearSelector';
@@ -171,14 +170,7 @@ const CompareVendors: React.FC = () => {
           </div>
 
           {!isMobileApp && (
-            <>
-              <AIChatbot
-                pageContext="This is the Vendor Comparison page where users can create projects and compare vendor quotes."
-                pageName="Vendor Comparison"
-              />
-
-              <FAQ faqs={vendorComparisonFAQs} title="Vendor Comparison FAQs" />
-            </>
+            <FAQ faqs={vendorComparisonFAQs} title="Vendor Comparison FAQs" />
           )}
         </div>
 

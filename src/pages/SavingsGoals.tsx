@@ -15,7 +15,6 @@ import { SEO } from '@/components/SEO';
 import { seoData } from '@/utils/seoData';
 import { Target } from 'lucide-react';
 import { WarningBanner } from '@/components/WarningBanner';
-import { AIChatbot } from '@/components/AIChatbot';
 import { YearSelector } from '@/components/YearSelector';
 import { InternalLinks } from '@/components/InternalLinks';
 import { FAQ } from '@/components/FAQ';
@@ -131,13 +130,6 @@ const SavingsGoals: React.FC = () => {
           {!isMobileApp && (
             <>
               <div className="animate-slide-up" style={{ animationDelay: '0.3s' }}>
-                <AIChatbot
-                  pageContext="I'm on the savings goals page where I can track my monthly savings progress toward financial goals."
-                  pageName="Savings Goals"
-                />
-              </div>
-
-              <div className="animate-slide-up" style={{ animationDelay: '0.4s' }}>
                 <FAQ 
                   faqs={[
                     {
@@ -161,7 +153,7 @@ const SavingsGoals: React.FC = () => {
                 />
               </div>
 
-              <div className="animate-slide-up" style={{ animationDelay: '0.5s' }}>
+              <div className="animate-slide-up" style={{ animationDelay: '0.4s' }}>
                 <InternalLinks currentPage="/savings" category="planning" />
               </div>
             </>
