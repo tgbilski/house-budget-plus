@@ -102,3 +102,11 @@ verify_jwt = false
 [[edge_functions.functions]]
 name = "generate-blog-images"
 verify_jwt = true
+
+[[edge_functions.functions]]
+name = "ai-orchestrator"
+verify_jwt = true
+
+[[edge_functions.functions]]
+name = "ai-budget-insights"
+verify_jwt = true
