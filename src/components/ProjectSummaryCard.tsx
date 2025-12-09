@@ -100,23 +100,25 @@ export const ProjectSummaryCard: React.FC<Props> = ({
           </Button>
 
           {/* Center: Title and Edit */}
-          <div className="flex-1 flex flex-col items-center gap-1 min-w-0">
+          <div className="flex-1 flex flex-col items-center gap-1 min-w-0 px-2">
             {isEditing ? (
-              <div className="flex items-center gap-2 w-full max-w-sm" onClick={(e) => e.stopPropagation()}>
+              <div className="flex flex-col sm:flex-row items-center gap-2 w-full max-w-md" onClick={(e) => e.stopPropagation()}>
                 <Input
                   value={editingState.title}
                   onChange={(e) => setEditingState({ ...editingState, title: e.target.value })}
                   onKeyDown={(e) => e.key === 'Enter' && handleSave()}
                   placeholder="Project name"
-                  className="text-center text-lg font-semibold bg-background text-foreground h-9"
+                  className="text-center text-base sm:text-lg font-semibold bg-background text-foreground h-10 w-full"
                   autoFocus
                 />
-                <Button size="icon" variant="ghost" onClick={handleSave} className="h-8 w-8 p-0 hover:bg-success/20 shrink-0">
-                  <Check className="h-4 w-4 text-success" />
-                </Button>
-                <Button size="icon" variant="ghost" onClick={() => setEditingState({ id: '', title: '' })} className="h-8 w-8 p-0 hover:bg-destructive/20 shrink-0">
-                  <X className="h-4 w-4 text-destructive" />
-                </Button>
+                <div className="flex gap-2 shrink-0">
+                  <Button size="sm" variant="default" onClick={handleSave} className="h-9 px-4 gap-1">
+                    <Check className="h-4 w-4" /> Save
+                  </Button>
+                  <Button size="sm" variant="outline" onClick={() => setEditingState({ id: '', title: '' })} className="h-9 px-4">
+                    Cancel
+                  </Button>
+                </div>
               </div>
             ) : (
               <div className="flex items-center gap-2 group cursor-pointer" onClick={startEditing}>
