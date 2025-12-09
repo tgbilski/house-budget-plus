@@ -5,6 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { TrendingDown, TrendingUp, FileText, BadgePercent, ChevronLeft, ChevronRight, Edit2, Check, X, Scale } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import type { VendorProject } from '@/hooks/useVendorProjects';
 
 interface Props {
@@ -22,15 +23,25 @@ interface Props {
 }
 
 const StatBox: React.FC<{ icon: React.ElementType; title: string; value: string; color: string }> = ({ icon: Icon, title, value, color }) => (
-  <div className="flex items-center gap-3 min-w-0 bg-white/60 backdrop-blur-sm rounded-xl p-3 border border-border/30">
-    <div className={`p-2 rounded-lg bg-opacity-10 flex-shrink-0 ${color.replace('text-', 'bg-')}`}>
-      <Icon className={`h-4 w-4 sm:h-5 sm:w-5 ${color}`} />
-    </div>
-    <div className="min-w-0 flex-1">
-      <p className="text-xs text-muted-foreground truncate">{title}</p>
-      <p className="text-base sm:text-lg font-bold truncate">{value}</p>
-    </div>
-  </div>
+  <TooltipProvider>
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <div className="flex items-center gap-2 sm:gap-3 min-w-0 bg-white/60 backdrop-blur-sm rounded-xl p-2 sm:p-3 border border-border/30 cursor-default">
+          <div className={`p-1.5 sm:p-2 rounded-lg bg-opacity-10 flex-shrink-0 ${color.replace('text-', 'bg-')}`}>
+            <Icon className={`h-4 w-4 sm:h-5 sm:w-5 ${color}`} />
+          </div>
+          <div className="min-w-0 flex-1">
+            <p className="text-[10px] sm:text-xs text-muted-foreground leading-tight line-clamp-2">{title}</p>
+            <p className="text-sm sm:text-lg font-bold truncate">{value}</p>
+          </div>
+        </div>
+      </TooltipTrigger>
+      <TooltipContent>
+        <p className="font-medium">{title}</p>
+        <p className="text-lg font-bold">{value}</p>
+      </TooltipContent>
+    </Tooltip>
+  </TooltipProvider>
 );
 
 export const ProjectSummaryCard: React.FC<Props> = ({ 
