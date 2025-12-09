@@ -111,13 +111,13 @@ export const VacationSummaryCard: React.FC<Props> = ({
           {/* Center: Title and Edit */}
           <div className="flex-1 flex flex-col items-center gap-1 min-w-0 px-2">
             {isEditing ? (
-              <div className="flex flex-col sm:flex-row items-center gap-2 w-full max-w-md" onClick={(e) => e.stopPropagation()}>
+              <div className="flex flex-col sm:flex-row items-center gap-2 w-full max-w-xl" onClick={(e) => e.stopPropagation()}>
                 <Input
                   value={editingState.title}
                   onChange={(e) => setEditingState({ ...editingState, title: e.target.value })}
                   onKeyDown={(e) => e.key === 'Enter' && handleSave()}
                   placeholder="Trip name"
-                  className="text-center text-base sm:text-lg font-semibold bg-background text-foreground h-10 w-full"
+                  className="text-center text-base sm:text-lg font-semibold bg-background text-foreground h-10 w-full min-w-[280px] sm:min-w-[360px]"
                   autoFocus
                 />
                 <div className="flex gap-2 shrink-0">
