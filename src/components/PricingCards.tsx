@@ -16,7 +16,7 @@ export function PricingCards() {
 
   const features = [
     "Share Households",
-    "AI expense categorization",
+    "Voice Expense Tracking",
     "25 AI Insights / Month",
     "Cancel anytime"
   ];
