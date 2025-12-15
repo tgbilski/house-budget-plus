@@ -135,7 +135,7 @@ export default function Features() {
             {calculators.map((calc) => (
               <Link key={calc.title} to={calc.href} className="block group">
                 <Card className="h-full overflow-hidden hover:shadow-2xl transition-all duration-300 hover:scale-105 border-2 border-white/10 hover:border-primary/40 bg-card/50 backdrop-blur">
-                  <div className="relative h-64 overflow-hidden">
+                  <div className="relative h-64 overflow-hidden border-2 border-black">
                     <img
                       src={calc.image}
                       alt={calc.title}
