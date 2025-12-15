@@ -134,15 +134,16 @@ export default function Features() {
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
             {calculators.map((calc) => (
               <Link key={calc.title} to={calc.href} className="block group">
-                <Card className="h-full overflow-hidden hover:shadow-2xl transition-all duration-300 hover:scale-105 border-4 border-black hover:border-primary/40 bg-card/50 backdrop-blur">
+                <Card className="h-full overflow-hidden transition-all duration-300 hover:scale-105 hover:shadow-[8px_8px_0px_0px_rgba(0,0,0,0.8)] hover:-translate-x-1 hover:-translate-y-1 border-4 border-black bg-card/50 backdrop-blur">
                   <div className="relative h-64 overflow-hidden">
                     <img
                       src={calc.image}
                       alt={calc.title}
                       className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                      loading="eager"
                     />
                     {calc.isPremium && (
-                      <div className="absolute top-4 right-4 bg-amber-500/90 text-white text-xs font-bold px-3 py-1 rounded-full backdrop-blur">
+                      <div className="absolute top-4 right-4 bg-gradient-to-r from-amber-500 to-orange-500 text-white text-xs font-bold px-3 py-1 rounded-full backdrop-blur shadow-lg">
                         PREMIUM
                       </div>
                     )}
