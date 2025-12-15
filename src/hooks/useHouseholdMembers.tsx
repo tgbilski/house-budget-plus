@@ -23,6 +23,7 @@ export function useHouseholdMembers(householdId?: string) {
   const refresh = async () => {
     if (!householdId) return;
     setLoading(true);
+    console.log("[useHouseholdMembers] Refreshing members for householdId:", householdId);
     const { data, error } = await supabase
       .from("household_members")
       .select(`
@@ -34,6 +35,7 @@ export function useHouseholdMembers(householdId?: string) {
         )
       `)
       .eq("household_id", householdId);
+    console.log("[useHouseholdMembers] Query result:", { data, error });
     setMembers(data || []);
     setLoading(false);
   };

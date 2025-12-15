@@ -83,6 +83,10 @@ export function HouseholdSwitcher({ className, open, onOpenChange }: HouseholdSw
     refresh: refreshMembers,
   } = useHouseholdMembers(currentHousehold?.id);
 
+  React.useEffect(() => {
+    console.log("[HouseholdSwitcher] Members updated for household:", currentHousehold?.id, householdMembers);
+  }, [currentHousehold?.id, householdMembers]);
+
   const { subscribed } = useSubscription();
 
   const [isOpen, setIsOpen] = useState(open || false);
