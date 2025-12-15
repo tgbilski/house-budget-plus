@@ -141,7 +141,7 @@ const AppRoutes = () => {
 
 // Layout component that uses hooks
 const AppLayout = () => {
-  const { loading: authLoading } = useAuth();
+  const { loading: authLoading, user } = useAuth();
   const isMobile = useIsMobile();
   const isMobileApp = isNativeApp();
   const location = useLocation();
@@ -149,7 +149,25 @@ const AppLayout = () => {
   const isLandingPage = location.pathname === '/landing';
 
   // Show splash screen while auth is initializing
-  if (authLoading) {
+  // For logged-in users, we wait a bit longer to let subscription/profile load
+  const [initialLoadComplete, setInitialLoadComplete] = useState(false);
+  
+  useEffect(() => {
+    if (!authLoading) {
+      // If no user, show content immediately
+      if (!user) {
+        setInitialLoadComplete(true);
+      } else {
+        // For logged-in users, give a brief delay for subscription/profile to load
+        const timer = setTimeout(() => {
+          setInitialLoadComplete(true);
+        }, 500);
+        return () => clearTimeout(timer);
+      }
+    }
+  }, [authLoading, user]);
+
+  if (authLoading || !initialLoadComplete) {
     return <SplashScreen isLoading={true} />;
   }
 
