@@ -15,7 +15,7 @@ export function PricingCards() {
   };
 
   const features = [
-    "Unlimited PDF processing",
+    "Share Households",
     "AI expense categorization",
     "25 AI Insights / Month",
     "Cancel anytime"
