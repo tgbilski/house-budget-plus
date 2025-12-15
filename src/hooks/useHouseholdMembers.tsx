@@ -26,14 +26,7 @@ export function useHouseholdMembers(householdId?: string) {
     console.log("[useHouseholdMembers] Refreshing members for householdId:", householdId);
     const { data, error } = await supabase
       .from("household_members")
-      .select(`
-        *,
-        profiles:user_id (
-          first_name,
-          last_name,
-          email
-        )
-      `)
+      .select("*")
       .eq("household_id", householdId);
     console.log("[useHouseholdMembers] Query result:", { data, error });
     setMembers(data || []);
