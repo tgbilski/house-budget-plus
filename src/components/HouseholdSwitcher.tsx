@@ -405,8 +405,8 @@ export function HouseholdSwitcher({ className, open, onOpenChange }: HouseholdSw
                             <span className="text-sm font-medium">
                               {displayName} {isCurrentUser && <span className="text-xs text-muted-foreground">(You)</span>}
                             </span>
-                            <span className="text-xs text-muted-foreground capitalize">
-                              {member.role || "member"}
+                            <span className="text-xs text-muted-foreground">
+                              {member.profiles?.email || "No email"}
                             </span>
                           </div>
                           {isOriginator && !isCurrentUser && (
