@@ -53,11 +53,11 @@ export function useHouseholdInvites(userId?: string) {
     if (!userId) return { success: false, error: "No user logged in" };
     setLoading(true);
     
-    // First check if the email exists in profiles and get the user_id
+    // First check if the email exists in profiles and get the user_id (case-insensitive)
     const { data: profileData, error: profileError } = await supabase
       .from("profiles")
       .select("user_id, email")
-      .eq("email", email)
+      .ilike("email", email)
       .single();
     
     if (profileError || !profileData) {
