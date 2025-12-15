@@ -51,9 +51,6 @@ export function PricingCards() {
               </li>
             ))}
           </ul>
-          <div className="w-full bg-primary text-primary-foreground text-center py-3 rounded-md font-medium">
-            Get Monthly Plan
-          </div>
         </CardContent>
       </Card>
 
@@ -89,9 +86,6 @@ export function PricingCards() {
               </li>
             ))}
           </ul>
-          <div className="w-full bg-primary text-primary-foreground text-center py-3 rounded-md font-medium">
-            Get Annual Plan
-          </div>
         </CardContent>
       </Card>
     </div>

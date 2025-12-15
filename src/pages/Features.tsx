@@ -147,15 +147,13 @@ export default function Features() {
                       </div>
                     )}
                   </div>
-                  <CardHeader className="relative bg-white min-h-[140px] flex flex-col justify-between">
-                    <div>
-                      <CardTitle className="text-2xl mb-2 group-hover:text-primary transition-colors text-foreground">
-                        {calc.title}
-                      </CardTitle>
-                      <CardDescription className="text-base leading-relaxed text-muted-foreground line-clamp-3">
-                        {calc.description}
-                      </CardDescription>
-                    </div>
+                  <CardHeader className="relative bg-white min-h-[140px] h-full">
+                    <CardTitle className="text-2xl mb-2 group-hover:text-primary transition-colors text-foreground">
+                      {calc.title}
+                    </CardTitle>
+                    <CardDescription className="text-base leading-relaxed text-muted-foreground line-clamp-3">
+                      {calc.description}
+                    </CardDescription>
                   </CardHeader>
                 </Card>
               </Link>
