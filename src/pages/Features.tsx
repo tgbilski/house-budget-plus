@@ -27,7 +27,7 @@ const calculators = [
     isPremium: true
   },
   {
-    title: "Monthly Budget Calculator",
+    title: "Monthly Calculator",
     description: "Track your household income and expenses with our intuitive calculator and visual charts.",
     image: budgetCalculatorImg,
     href: "/budget"
