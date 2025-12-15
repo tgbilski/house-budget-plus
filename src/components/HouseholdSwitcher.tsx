@@ -345,6 +345,9 @@ export function HouseholdSwitcher({ className, open, onOpenChange }: HouseholdSw
             {isOriginator && currentHousehold && subscribed && (
               <div>
                 <h3 className="font-medium mb-2">Invite Member</h3>
+                <p className="text-xs text-muted-foreground mb-2">
+                  Sharing household: <span className="font-semibold">{currentHousehold.name}</span>
+                </p>
                 <div className="space-y-2">
                   <div className="flex gap-2">
                     <Input
@@ -365,7 +368,7 @@ export function HouseholdSwitcher({ className, open, onOpenChange }: HouseholdSw
                     </Button>
                   </div>
                   <p className="text-xs text-muted-foreground">
-                    Invited users are added immediately to this household and can view and edit shared data.
+                    Invited users are added immediately as members of this active household and can view and edit shared data.
                   </p>
                   {inviteError && (
                     <p className="text-sm text-destructive">{inviteError}</p>
