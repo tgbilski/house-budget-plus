@@ -104,8 +104,20 @@ export default function Features() {
               className="w-8 h-8 text-white/60 mx-auto animate-bounce" 
               aria-label="Scroll down to view tools"
             />
+            {/* Subscription CTA for logged-in non-subscribers */}
+            {user && !subscribed && !loading && (
+              <div className="pt-4">
+                <h2 className="text-2xl md:text-3xl font-bold text-white mb-3">
+                  Unlock Premium Features
+                </h2>
+                <p className="text-white/70 text-lg mb-6">
+                  Get AI-powered insights, voice expense tracking, and unlimited PDF processing
+                </p>
+                <PricingCards />
+              </div>
+            )}
             {user && (
-              <div className="space-y-2">
+              <div className="space-y-2 pt-6">
                 <h2 className="text-2xl md:text-3xl font-semibold text-white">
                   Welcome back!
                 </h2>
@@ -149,21 +161,6 @@ export default function Features() {
             ))}
           </div>
         </section>
-
-        {/* Subscription CTA for logged-in non-subscribers */}
-        {user && !subscribed && !loading && (
-          <section className="container mx-auto px-4 pb-12">
-            <div className="max-w-4xl mx-auto text-center mb-8">
-              <h2 className="text-2xl md:text-3xl font-bold text-white mb-3">
-                Unlock Premium Features
-              </h2>
-              <p className="text-white/70 text-lg">
-                Get AI-powered insights, voice expense tracking, and unlimited PDF processing
-              </p>
-            </div>
-            <PricingCards />
-          </section>
-        )}
 
         {/* Bottom CTA Section for non-logged-in users */}
         {!user && (
