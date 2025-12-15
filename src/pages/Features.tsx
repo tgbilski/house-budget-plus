@@ -3,7 +3,9 @@ import { Link } from "react-router-dom";
 import { SEO } from "@/components/SEO";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
+import { useSubscription } from "@/hooks/useSubscription";
 import { ChevronDown } from "lucide-react";
+import { PricingCards } from "@/components/PricingCards";
 
 // Import AI-generated feature images
 import voiceExpenseImg from '@/assets/features/voice-expense.png';
@@ -71,6 +73,7 @@ const calculators = [
 
 export default function Features() {
   const { user } = useAuth();
+  const { subscribed, loading } = useSubscription();
   
   return (
     <>
@@ -147,7 +150,22 @@ export default function Features() {
           </div>
         </section>
 
-        {/* Bottom CTA Section */}
+        {/* Subscription CTA for logged-in non-subscribers */}
+        {user && !subscribed && !loading && (
+          <section className="container mx-auto px-4 pb-12">
+            <div className="max-w-4xl mx-auto text-center mb-8">
+              <h2 className="text-2xl md:text-3xl font-bold text-white mb-3">
+                Unlock Premium Features
+              </h2>
+              <p className="text-white/70 text-lg">
+                Get AI-powered insights, voice expense tracking, and unlimited PDF processing
+              </p>
+            </div>
+            <PricingCards />
+          </section>
+        )}
+
+        {/* Bottom CTA Section for non-logged-in users */}
         {!user && (
           <section className="container mx-auto px-4 pb-20 text-center">
             <Link to="/auth" className="inline-block">
