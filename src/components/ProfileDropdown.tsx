@@ -23,7 +23,7 @@ const ProfileDropdown: React.FC = () => {
   const { signOut, user } = useAuth();
   const { profile, getInitials, truncateEmail } = useProfile();
   const { subscribed, subscriptionTier } = useSubscription();
-  const { hasPendingInvites } = useHouseholdInvites(user?.id);
+  const { hasPendingInvites, pendingInvites, acceptInvite, declineInvite, loading: invitesLoading } = useHouseholdInvites(user?.id);
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [householdOpen, setHouseholdOpen] = useState(false);
 
@@ -74,6 +74,40 @@ const ProfileDropdown: React.FC = () => {
             </div>
           </DropdownMenuLabel>
           <DropdownMenuSeparator />
+          {pendingInvites && pendingInvites.length > 0 && (
+            <>
+              <DropdownMenuItem className="flex flex-col items-start gap-1 cursor-default focus:bg-transparent">
+                <span className="text-xs font-semibold text-primary">New household invitations</span>
+                {pendingInvites.map((invite) => (
+                  <div key={invite.id} className="w-full rounded-md border border-primary/30 bg-primary/5 px-2 py-2 text-xs flex flex-col gap-1">
+                    <span className="font-medium">
+                      You've been invited to join "{(invite as any).households?.name || 'a household'}"
+                    </span>
+                    <div className="flex gap-2 mt-1">
+                      <Button
+                        size="sm"
+                        className="h-7 px-2 flex-1 text-xs"
+                        onClick={() => acceptInvite(invite.id)}
+                        disabled={invitesLoading}
+                      >
+                        Accept
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        className="h-7 px-2 flex-1 text-xs"
+                        onClick={() => declineInvite(invite.id)}
+                        disabled={invitesLoading}
+                      >
+                        Decline
+                      </Button>
+                    </div>
+                  </div>
+                ))}
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+            </>
+          )}
           <DropdownMenuItem onClick={() => setHouseholdOpen(true)}>
             <Home className="mr-2 h-4 w-4" />
             <span>Household Settings</span>
