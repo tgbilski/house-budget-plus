@@ -163,15 +163,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const signOut = async () => {
     try {
-      // The aggressive cleanup and global sign out are not necessary here.
-      // A simple signOut will trigger the listener, and the app's state will update.
       const { error } = await supabase.auth.signOut();
       
       if (error) throw error;
       
-      // Redirect to landing page for mobile app, auth page for web
-      const redirectPath = isNativeApp() ? '/' : '/auth';
-      window.location.href = redirectPath;
+      // Always redirect to sign in page after sign out
+      window.location.href = '/auth';
 
     } catch (error: any) {
       toast({
@@ -180,8 +177,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         variant: "destructive",
       });
       // Force redirect even if sign out fails
-      const redirectPath = isNativeApp() ? '/' : '/auth';
-      window.location.href = redirectPath;
+      window.location.href = '/auth';
     }
   };
 
