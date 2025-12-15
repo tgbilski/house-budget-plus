@@ -134,8 +134,8 @@ export default function Features() {
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
             {calculators.map((calc) => (
               <Link key={calc.title} to={calc.href} className="block group">
-                <Card className="h-full overflow-hidden hover:shadow-2xl transition-all duration-300 hover:scale-105 border-2 border-white/10 hover:border-primary/40 bg-card/50 backdrop-blur">
-                  <div className="relative h-64 overflow-hidden border-2 border-black">
+                <Card className="h-full overflow-hidden hover:shadow-2xl transition-all duration-300 hover:scale-105 border-2 border-black hover:border-primary/40 bg-card/50 backdrop-blur">
+                  <div className="relative h-64 overflow-hidden">
                     <img
                       src={calc.image}
                       alt={calc.title}
