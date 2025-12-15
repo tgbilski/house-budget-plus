@@ -125,8 +125,9 @@ export function HouseholdSwitcher({ className, open, onOpenChange }: HouseholdSw
     if (result.success) {
       setInviteEmail("");
       setInviteError("");
+      await refreshMembers();
     } else {
-      setInviteError(result.error || "Failed to send invite");
+      setInviteError(result.error || "Failed to share household");
     }
     
     setIsInviting(false);
