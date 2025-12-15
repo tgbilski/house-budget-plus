@@ -146,7 +146,6 @@ export default function Features() {
                         PREMIUM
                       </div>
                     )}
-                    <div className="absolute inset-0 bg-gradient-to-t from-background/90 to-transparent" />
                   </div>
                   <CardHeader className="relative bg-white">
                     <CardTitle className="text-2xl mb-2 group-hover:text-primary transition-colors text-foreground">
