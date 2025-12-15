@@ -147,11 +147,11 @@ export default function Features() {
                       </div>
                     )}
                   </div>
-                  <CardHeader className="relative bg-white">
+                  <CardHeader className="relative bg-white min-h-[140px]">
                     <CardTitle className="text-2xl mb-2 group-hover:text-primary transition-colors text-foreground">
                       {calc.title}
                     </CardTitle>
-                    <CardDescription className="text-base leading-relaxed text-muted-foreground">
+                    <CardDescription className="text-base leading-relaxed text-muted-foreground line-clamp-3">
                       {calc.description}
                     </CardDescription>
                   </CardHeader>
