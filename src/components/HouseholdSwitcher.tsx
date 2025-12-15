@@ -403,10 +403,10 @@ export function HouseholdSwitcher({ className, open, onOpenChange }: HouseholdSw
                         >
                           <div className="flex flex-col">
                             <span className="text-sm font-medium">
-                              {displayName} {isCurrentUser && <span className="text-xs text-muted-foreground">(You)</span>}
+                              {isCurrentUser ? `${displayName} (You)` : displayName}
                             </span>
-                            <span className="text-xs text-muted-foreground">
-                              {member.profiles?.email || "No email"}
+                            <span className="text-xs text-muted-foreground capitalize">
+                              {member.role || "member"}
                             </span>
                           </div>
                           {isOriginator && !isCurrentUser && (
