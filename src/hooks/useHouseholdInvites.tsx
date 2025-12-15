@@ -53,33 +53,37 @@ export function useHouseholdInvites(userId?: string) {
     if (!userId) return { success: false, error: "No user logged in" };
     setLoading(true);
     
-    // First check if the email exists in profiles
+    // First check if the email exists in profiles and get the user_id
     const { data: profileData, error: profileError } = await supabase
       .from("profiles")
-      .select("email")
+      .select("user_id, email")
       .eq("email", email)
       .single();
     
     if (profileError || !profileData) {
       setLoading(false);
-      return { success: false, error: "This email does not exist in our records. Please try again." };
+      return { success: false, error: "This email does not exist in our records. Please ask them to sign up first." };
     }
-    
-    // Email exists, proceed with invite
-    const { error } = await supabase
-      .from("household_invites")
-      .insert([{ 
-        invited_email: email, 
-        household_id, 
-        status: "pending",
-        invited_by: userId
-      }]);
-    
-    await refresh();
+
+    // Auto-accept: directly add the user as a household member
+    const { error: memberError } = await supabase
+      .from("household_members")
+      .upsert(
+        {
+          household_id,
+          user_id: profileData.user_id,
+          role: "member",
+          can_edit: true,
+          can_view: true,
+        },
+        { onConflict: "household_id,user_id" }
+      );
+
     setLoading(false);
-    
-    if (error) {
-      return { success: false, error: "Failed to send invite. Please try again." };
+
+    if (memberError) {
+      console.error("Error adding household member:", memberError);
+      return { success: false, error: "Failed to share household. This user may already have access." };
     }
     
     return { success: true };

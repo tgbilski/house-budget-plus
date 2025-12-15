@@ -24,6 +24,7 @@ import { useAuth } from "../hooks/useAuth";
 import { useSubscription } from "../hooks/useSubscription";
 import { useHouseholdInvites } from "../hooks/useHouseholdInvites";
 import { useHouseholdMembers } from "../hooks/useHouseholdMembers";
+import { supabase } from "@/integrations/supabase/client";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -79,6 +80,7 @@ export function HouseholdSwitcher({ className, open, onOpenChange }: HouseholdSw
   const {
     members: householdMembers,
     loading: membersLoading,
+    refresh: refreshMembers,
   } = useHouseholdMembers(currentHousehold?.id);
 
   const { subscribed } = useSubscription();
@@ -163,6 +165,24 @@ export function HouseholdSwitcher({ className, open, onOpenChange }: HouseholdSw
 
   const anyLoading =
     householdLoading || invitesLoading || membersLoading || isCreating || isInviting || isRenaming || isDeleting;
+
+  const handleRemoveMember = async (memberUserId: string) => {
+    if (!currentHousehold?.id || !isOriginator) return;
+    try {
+      const { error } = await supabase
+        .from("household_members")
+        .delete()
+        .eq("household_id", currentHousehold.id)
+        .eq("user_id", memberUserId);
+      if (error) {
+        console.error("Error removing household member:", error);
+        return;
+      }
+      await refreshMembers();
+    } catch (error) {
+      console.error("Unexpected error removing household member:", error);
+    }
+  };
 
   return (
     <Dialog open={open !== undefined ? open : isOpen} onOpenChange={onOpenChange || setIsOpen}>
@@ -343,10 +363,60 @@ export function HouseholdSwitcher({ className, open, onOpenChange }: HouseholdSw
                       {isInviting ? <Loader2 className="h-4 w-4 animate-spin" /> : "Share"}
                     </Button>
                   </div>
+                  <p className="text-xs text-muted-foreground">
+                    Invited users are added immediately to this household and can view and edit shared data.
+                  </p>
                   {inviteError && (
                     <p className="text-sm text-destructive">{inviteError}</p>
                   )}
                 </div>
+              </div>
+            )}
+
+            {/* Household Members List */}
+            {currentHousehold && (
+              <div>
+                <h3 className="font-medium mb-2">Household Members</h3>
+                <Card className="border-muted">
+                  <CardContent className="p-3 space-y-2">
+                    {householdMembers.length === 0 && (
+                      <p className="text-sm text-muted-foreground">No members yet.</p>
+                    )}
+                    {householdMembers.map((member) => {
+                      const isCurrentUser = member.user_id === user?.id;
+                      const displayName = member.profiles?.first_name || member.profiles?.last_name
+                        ? `${member.profiles?.first_name ?? ""} ${member.profiles?.last_name ?? ""}`.trim()
+                        : member.profiles?.email || "Member";
+
+                      return (
+                        <div
+                          key={member.id}
+                          className="flex items-center justify-between gap-2 rounded-md bg-muted/40 px-2 py-1.5"
+                        >
+                          <div className="flex flex-col">
+                            <span className="text-sm font-medium">
+                              {displayName} {isCurrentUser && <span className="text-xs text-muted-foreground">(You)</span>}
+                            </span>
+                            <span className="text-xs text-muted-foreground capitalize">
+                              {member.role || "member"}
+                            </span>
+                          </div>
+                          {isOriginator && !isCurrentUser && (
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              className="h-7 px-2 text-xs text-destructive border-destructive/40 hover:bg-destructive/5"
+                              onClick={() => handleRemoveMember(member.user_id)}
+                              disabled={anyLoading}
+                            >
+                              Remove
+                            </Button>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </CardContent>
+                </Card>
               </div>
             )}
 
