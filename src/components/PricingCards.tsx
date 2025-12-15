@@ -24,7 +24,10 @@ export function PricingCards() {
   return (
     <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
       {/* Monthly Plan */}
-      <Card className="border-2 border-primary/20 bg-gradient-to-br from-background to-primary/5">
+      <Card 
+        className="border-2 border-primary/20 bg-gradient-to-br from-background to-primary/5 cursor-pointer transition-all hover:border-primary/40 hover:shadow-lg"
+        onClick={() => handleSubscribe('monthly')}
+      >
         <CardHeader className="text-center pb-8">
           <CardTitle className="text-2xl font-bold text-primary flex items-center justify-center gap-2">
             <Zap className="h-5 w-5 text-blue-600" />
@@ -48,18 +51,17 @@ export function PricingCards() {
               </li>
             ))}
           </ul>
-          <Button 
-            onClick={() => handleSubscribe('monthly')}
-            className="w-full bg-primary hover:bg-primary/90"
-            size="lg"
-          >
+          <div className="w-full bg-primary text-primary-foreground text-center py-3 rounded-md font-medium">
             Get Monthly Plan
-          </Button>
+          </div>
         </CardContent>
       </Card>
 
       {/* Annual Plan */}
-      <Card className="border-2 border-primary bg-gradient-to-br from-primary/10 to-primary/20 relative">
+      <Card 
+        className="border-2 border-primary bg-gradient-to-br from-primary/10 to-primary/20 relative cursor-pointer transition-all hover:shadow-lg hover:scale-[1.02]"
+        onClick={() => handleSubscribe('annual')}
+      >
         <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
           <span className="bg-primary text-primary-foreground px-3 py-1 rounded-full text-sm font-medium">
             Best Value
@@ -87,13 +89,9 @@ export function PricingCards() {
               </li>
             ))}
           </ul>
-          <Button 
-            onClick={() => handleSubscribe('annual')}
-            className="w-full bg-primary hover:bg-primary/90"
-            size="lg"
-          >
+          <div className="w-full bg-primary text-primary-foreground text-center py-3 rounded-md font-medium">
             Get Annual Plan
-          </Button>
+          </div>
         </CardContent>
       </Card>
     </div>
