@@ -22,6 +22,7 @@ import { FAQ } from '@/components/FAQ';
 import { InternalLinks } from '@/components/InternalLinks';
 import { BudgetDonutChart } from '@/components/BudgetDonutChart';
 import { WarningBanner } from '@/components/WarningBanner';
+import { MortgagePreapprovalQuestion } from '@/components/MortgagePreapprovalQuestion';
 import heroBudgetImg from '@/assets/hero-budget.png';
 
 interface Calculator {
@@ -212,10 +213,15 @@ const MonthlyBudget: React.FC = () => {
         ) : (
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             {/* Budget Overview Chart - takes 1 column */}
-            <div className="lg:col-span-1">
+            <div className="lg:col-span-1 space-y-4">
               <BudgetDonutChart
                 totalIncome={totalIncome}
                 totalExpenses={totalExpenses}
+                currency={currency}
+              />
+              <MortgagePreapprovalQuestion
+                monthlyIncome={totalIncome}
+                monthlyExpenses={totalExpenses}
                 currency={currency}
               />
             </div>
