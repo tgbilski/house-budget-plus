@@ -58,20 +58,20 @@ export const BudgetDonutChart = ({ totalIncome, totalExpenses, currency }: Budge
   };
 
   return (
-    <div className="bg-white rounded-xl p-4 shadow-md border border-gray-200">
-      <h3 className="text-lg font-bold text-center mb-3">Budget Overview</h3>
+    <div className="bg-card rounded-xl p-4 shadow-md border border-border overflow-hidden">
+      <h3 className="text-lg font-bold text-center mb-3 text-card-foreground">Budget Overview</h3>
       {hasData ? (
-        <div className="flex flex-col md:flex-row gap-4 items-center">
-          {/* Left side - Donut Chart */}
+        <div className="flex flex-col gap-4 items-center">
+          {/* Donut Chart */}
           <div className="flex-shrink-0">
-            <ResponsiveContainer width={180} height={180}>
+            <ResponsiveContainer width={160} height={160}>
               <PieChart>
                 <Pie
                   data={data}
                   cx="50%"
                   cy="50%"
-                  innerRadius={40}
-                  outerRadius={70}
+                  innerRadius={35}
+                  outerRadius={60}
                   paddingAngle={5}
                   dataKey="value"
                   label={renderCustomLabel}
@@ -86,54 +86,54 @@ export const BudgetDonutChart = ({ totalIncome, totalExpenses, currency }: Budge
             </ResponsiveContainer>
           </div>
 
-          {/* Right side - Stats */}
-          <div className="flex-1 space-y-2 w-full">
-            <div className="flex items-center justify-between p-2 bg-green-50 rounded">
+          {/* Stats */}
+          <div className="w-full space-y-2">
+            <div className="flex items-center justify-between p-2 bg-green-500/10 rounded">
               <div className="flex items-center gap-2">
-                <div className="w-3 h-3 rounded-full bg-green-500"></div>
-                <span className="text-sm font-medium text-gray-700">Income</span>
+                <div className="w-3 h-3 rounded-full bg-green-500 flex-shrink-0"></div>
+                <span className="text-sm font-medium text-muted-foreground">Income</span>
               </div>
-              <span className="text-sm font-bold text-green-600">
+              <span className="text-sm font-bold text-green-600 dark:text-green-400">
                 {currency.symbol}{totalIncome.toLocaleString()}
               </span>
             </div>
 
-            <div className="flex items-center justify-between p-2 bg-red-50 rounded border-b border-gray-200">
+            <div className="flex items-center justify-between p-2 bg-red-500/10 rounded">
               <div className="flex items-center gap-2">
-                <div className="w-3 h-3 rounded-full bg-red-500"></div>
-                <span className="text-sm font-medium text-gray-700">Expenses</span>
+                <div className="w-3 h-3 rounded-full bg-red-500 flex-shrink-0"></div>
+                <span className="text-sm font-medium text-muted-foreground">Expenses</span>
               </div>
-              <span className="text-sm font-bold text-red-600">
+              <span className="text-sm font-bold text-red-600 dark:text-red-400">
                 {currency.symbol}{totalExpenses.toLocaleString()}
               </span>
             </div>
 
             {/* Net Balance */}
-            <div className="flex items-center justify-between p-2">
+            <div className="flex items-center justify-between p-2 border-t border-border pt-3">
               <div className="flex items-center gap-2">
                 {netBalance > 0 ? (
-                  <TrendingUp className="w-4 h-4 text-green-600" />
+                  <TrendingUp className="w-4 h-4 text-green-600 dark:text-green-400 flex-shrink-0" />
                 ) : netBalance < 0 ? (
-                  <TrendingDown className="w-4 h-4 text-red-600" />
+                  <TrendingDown className="w-4 h-4 text-red-600 dark:text-red-400 flex-shrink-0" />
                 ) : (
-                  <Minus className="w-4 h-4 text-gray-600" />
+                  <Minus className="w-4 h-4 text-muted-foreground flex-shrink-0" />
                 )}
-                <span className="text-sm font-bold text-gray-900">Net Balance</span>
+                <span className="text-sm font-bold text-foreground">Net Balance</span>
               </div>
               <span className={`text-base font-bold ${
                 netBalance > 0 
-                  ? 'text-green-600' 
+                  ? 'text-green-600 dark:text-green-400' 
                   : netBalance < 0 
-                  ? 'text-red-600' 
-                  : 'text-gray-600'
+                  ? 'text-red-600 dark:text-red-400' 
+                  : 'text-muted-foreground'
               }`}>
                 {currency.symbol}{Math.abs(netBalance).toLocaleString()}
               </span>
             </div>
 
             {netBalance < 0 && (
-              <div className="bg-amber-50 border border-amber-200 rounded p-2 mt-1">
-                <p className="text-xs text-amber-800 text-center">
+              <div className="bg-amber-500/10 border border-amber-500/30 rounded p-2">
+                <p className="text-xs text-amber-700 dark:text-amber-400 text-center">
                   ⚠️ Expenses exceed income by {currency.symbol}{Math.abs(netBalance).toLocaleString()}
                 </p>
               </div>
@@ -141,7 +141,7 @@ export const BudgetDonutChart = ({ totalIncome, totalExpenses, currency }: Budge
           </div>
         </div>
       ) : (
-        <div className="text-center py-8 text-gray-500">
+        <div className="text-center py-8 text-muted-foreground">
           <p className="text-sm font-medium mb-1">No data yet</p>
           <p className="text-xs">Add income and expenses to see your budget</p>
         </div>
