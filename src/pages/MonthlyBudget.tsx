@@ -168,25 +168,13 @@ const MonthlyBudget: React.FC = () => {
           <div className="relative p-6">
             <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
               <div className="flex flex-col lg:items-start space-y-2">
-                <div className="flex items-center gap-3">
-                  <div className="inline-flex items-center justify-center w-12 h-12 bg-gradient-to-br from-teal to-teal/60 rounded-2xl shadow-lg">
-                    <img
-                      src="/lovable-uploads/ed809955-ef71-4d81-b072-945082f4380a.png"
-                      alt="Budget calculator mascot icon"
-                      className="w-7 h-7 object-contain"
-                      loading="eager"
-                      width="28"
-                      height="28"
-                    />
-                  </div>
-                  <div>
-                    <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-foreground to-teal bg-clip-text text-transparent">
-                      Monthly Budget Calculator
-                    </h1>
-                    <p className="text-muted-foreground text-sm mt-1">
-                      Take control of your finances by tracking your household income and expenses.
-                    </p>
-                  </div>
+                <div>
+                  <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-foreground to-teal bg-clip-text text-transparent">
+                    Monthly Budget Calculator
+                  </h1>
+                  <p className="text-muted-foreground text-sm mt-1">
+                    Take control of your finances by tracking your household income and expenses.
+                  </p>
                 </div>
               </div>
               
