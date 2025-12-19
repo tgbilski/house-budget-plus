@@ -51,7 +51,7 @@ export default function Home() {
           title: "Welcome back!",
           description: "You've been signed in successfully.",
         });
-        navigate("/features");
+        navigate("/budget");
         return;
       }
       
@@ -85,7 +85,7 @@ export default function Home() {
           title: "Account created!",
           description: "Check your email to verify your account, then sign in.",
         });
-        navigate("/features");
+        navigate("/budget");
         return;
       }
       
@@ -124,7 +124,7 @@ export default function Home() {
 
           {/* Top Bar with Logo */}
           <div className="relative z-10 flex items-center justify-between gap-3 px-4 sm:px-8 py-4">
-            <Link to="/features" className="flex items-center gap-3 hover:opacity-90 transition-opacity">
+            <Link to="/budget" className="flex items-center gap-3 hover:opacity-90 transition-opacity">
               <img 
                 src={calculatorMascot} 
                 alt="House Budget Calculator mascot" 
@@ -157,13 +157,13 @@ export default function Home() {
 
             {/* CTA Buttons */}
             <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 mt-6 sm:mt-8 animate-in fade-in slide-in-from-bottom-4 duration-1000 delay-300 w-full sm:w-auto">
-              <Link to="/features" onClick={handleExploreClick} className="w-full sm:w-auto">
+              <Link to="/budget" onClick={handleExploreClick} className="w-full sm:w-auto">
                 <Button 
                   variant="outline"
                   size="lg"
                   className="w-full sm:w-auto h-14 sm:h-16 px-6 sm:px-10 text-base sm:text-xl font-semibold bg-white/10 hover:bg-white/20 text-white border-white/30 hover:border-white/50 backdrop-blur-sm transition-all duration-300 hover:scale-105"
                 >
-                  Explore Features
+                  Explore Tools
                 </Button>
               </Link>
 

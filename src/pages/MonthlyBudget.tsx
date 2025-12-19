@@ -23,6 +23,7 @@ import { InternalLinks } from '@/components/InternalLinks';
 import { BudgetDonutChart } from '@/components/BudgetDonutChart';
 import { WarningBanner } from '@/components/WarningBanner';
 import { MortgagePreapprovalQuestion } from '@/components/MortgagePreapprovalQuestion';
+import { ToolsGrid } from '@/components/ToolsGrid';
 import heroBudgetImg from '@/assets/hero-budget.png';
 
 interface Calculator {
@@ -249,6 +250,8 @@ const MonthlyBudget: React.FC = () => {
         )}
 
 
+        <ToolsGrid excludeHref="/budget" />
+        
         <FAQ faqs={budgetCalculatorFAQs} />
         <InternalLinks currentPage="/budget" category="planning" />
       </div>
