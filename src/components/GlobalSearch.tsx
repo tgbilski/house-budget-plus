@@ -18,7 +18,6 @@ const searchablePages = [
   { title: 'Compare Vendors', path: '/compare-prices', keywords: ['vendors', 'contractors', 'compare', 'quotes'] },
   { title: 'Vacation Planner', path: '/vacation', keywords: ['vacation', 'travel', 'trip', 'planner'] },
   { title: 'Gift Lists', path: '/gifts', keywords: ['gifts', 'presents', 'occasions', 'shopping'] },
-  { title: 'Marketplace', path: '/marketplace', keywords: ['marketplace', 'vendors', 'rentals', 'community'] },
   { title: 'AI Financial Advisor', path: '/ai-insights', keywords: ['ai', 'insights', 'advice', 'assistant'] },
   { title: 'Blog', path: '/blog', keywords: ['blog', 'articles', 'tips', 'guides'] },
   { title: 'Settings', path: '/settings', keywords: ['settings', 'profile', 'account', 'preferences'] },

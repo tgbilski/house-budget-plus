@@ -8,8 +8,6 @@ import {
   Brain,
   BookOpen,
   Shield,
-  Store,
-  FileText,
   Mic
 } from "lucide-react";
 import { NavLink, useLocation } from "react-router-dom";
@@ -31,15 +29,13 @@ import { cn } from "@/lib/utils";
 import { useIsMobile } from "@/hooks/use-mobile";
 
 const navigationItems = [
-  { title: "Home", url: "/features", icon: Home },
+  { title: "Home", url: "/budget", icon: Home },
   { title: "Voice Expenses", url: "/expenses", icon: Mic },
   { title: "Monthly Budget", url: "/budget", icon: Calculator },
   { title: "Savings", url: "/savings", icon: PiggyBank },
   { title: "Compare Vendors", url: "/compare-prices", icon: ShoppingCart },
   { title: "Vacation", url: "/vacation", icon: Plane },
   { title: "Gifts", url: "/gifts", icon: Gift },
-  { title: "Marketplace", url: "/marketplace", icon: Store },
-  { title: "My Listings", url: "/my-listings", icon: FileText },
   { title: "Blog", url: "/blog", icon: BookOpen },
   { title: "AI Insights", url: "/ai-insights", icon: Brain },
 ];

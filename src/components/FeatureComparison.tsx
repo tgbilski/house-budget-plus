@@ -10,7 +10,6 @@ const features = [
   { name: 'Budget Planning & Tracking Tools', free: true, premium: true },
   { name: 'Savings Goals & Vacation Planner', free: true, premium: true },
   { name: 'Vendor Comparison & Gift Lists', free: true, premium: true },
-  { name: 'Community Marketplace Access', free: true, premium: true },
   { name: '10 AI Financial Insights per Month', free: false, premium: true },
   { name: 'Share Budget with Family & Friends', free: false, premium: true },
   { name: 'PDF Budget Exports & Reports', free: false, premium: true },

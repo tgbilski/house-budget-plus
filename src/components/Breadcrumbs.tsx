@@ -15,8 +15,6 @@ const routeLabels: Record<string, string> = {
   '/compare-prices': 'Compare Vendors',
   '/vacation': 'Vacation Planner',
   '/gifts': 'Gift Lists',
-  '/marketplace': 'Marketplace',
-  '/my-listings': 'My Listings',
   '/blog': 'Blog',
   '/ai-insights': 'AI Insights',
   '/settings': 'Settings',
