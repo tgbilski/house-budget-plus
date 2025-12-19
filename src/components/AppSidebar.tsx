@@ -1,6 +1,4 @@
 import { 
-  Home,
-  Calculator, 
   PiggyBank, 
   ShoppingCart, 
   Plane, 
@@ -28,10 +26,18 @@ import {
 import { cn } from "@/lib/utils";
 import { useIsMobile } from "@/hooks/use-mobile";
 
+// Custom mascot icon component
+const MascotIcon = ({ className }: { className?: string }) => (
+  <img 
+    src="/lovable-uploads/ed809955-ef71-4d81-b072-945082f4380a.png" 
+    alt="" 
+    className={cn("object-contain", className)}
+  />
+);
+
 const navigationItems = [
-  { title: "Home", url: "/budget", icon: Home },
+  { title: "Monthly Budget", url: "/budget", icon: MascotIcon },
   { title: "Voice Expenses", url: "/expenses", icon: Mic },
-  { title: "Monthly Budget", url: "/budget", icon: Calculator },
   { title: "Savings", url: "/savings", icon: PiggyBank },
   { title: "Compare Vendors", url: "/compare-prices", icon: ShoppingCart },
   { title: "Vacation", url: "/vacation", icon: Plane },
