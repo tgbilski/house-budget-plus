@@ -87,7 +87,6 @@ const AppRoutes = () => {
     return (
       <Routes>
         <Route path="/" element={<MobileLanding />} />
-        <Route path="/features" element={<SubscriptionGuard><MonthlyBudget /></SubscriptionGuard>} />
         <Route path="/auth" element={<Auth />} />
         <Route path="/expenses" element={<SubscriptionGuard><Expenses /></SubscriptionGuard>} />
         <Route path="/budget" element={<SubscriptionGuard><MonthlyBudget /></SubscriptionGuard>} />
@@ -103,16 +102,13 @@ const AppRoutes = () => {
   }
   
   // Full web app routes
-  // Redirect logged-in users from home to budget
-  const { user } = useAuth();
   
   return (
     <Routes>
-      <Route path="/" element={user ? <MonthlyBudget /> : <Home />} />
+      <Route path="/" element={<Home />} />
       <Route path="/landing" element={<Landing />} />
-      <Route path="/features" element={<MonthlyBudget />} /> {/* Redirect old features route */}
-      <Route path="/expenses" element={<Expenses />} />
       <Route path="/budget" element={<MonthlyBudget />} />
+      <Route path="/expenses" element={<Expenses />} />
       <Route path="/savings" element={<SavingsGoals />} />
       <Route path="/home" element={<Home />} />
       <Route path="/compare-prices" element={<CompareVendors />} />
