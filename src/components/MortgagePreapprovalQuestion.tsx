@@ -29,7 +29,7 @@ export const MortgagePreapprovalQuestion: React.FC<MortgagePreapprovalQuestionPr
   const [showAnswer, setShowAnswer] = useState(false);
   const [selectedTier, setSelectedTier] = useState<'low' | 'mid' | 'high'>('mid');
   const { user } = useAuth();
-  const { subscribed, createCheckout } = useSubscription();
+  const { subscribed } = useSubscription();
   const navigate = useNavigate();
 
   const yearlyIncome = monthlyIncome * 12;
@@ -137,8 +137,8 @@ export const MortgagePreapprovalQuestion: React.FC<MortgagePreapprovalQuestionPr
             <p className="text-xs text-muted-foreground mb-3">
               Get personalized mortgage estimates with monthly payment breakdowns.
             </p>
-            <Button onClick={() => createCheckout()} size="sm" className="w-full">
-              Subscribe to Unlock
+            <Button onClick={() => navigate('/settings')} size="sm" className="w-full">
+              Manage Subscription
             </Button>
           </div>
         ) : (
@@ -149,7 +149,7 @@ export const MortgagePreapprovalQuestion: React.FC<MortgagePreapprovalQuestionPr
                 <p className="text-xs text-muted-foreground mb-2">
                   Based on {formatCurrency(yearlyIncome)}/year income (650+ credit)
                 </p>
-                <div className="grid grid-cols-3 gap-1.5">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-1.5">
                   {tiers.map((tier) => (
                     <button
                       key={tier.key}
