@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Link, useNavigate } from "react-router-dom";
 import { SEO } from "@/components/SEO";
 import { trackButtonClick } from "@/utils/analytics";
-import { User, CheckCircle2, PiggyBank, Target, Gift, Plane } from "lucide-react";
+import { User, CheckCircle2, PiggyBank, Target, Gift, Plane, Mic } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
@@ -272,6 +272,16 @@ export default function Home() {
                     <div>
                       <h4 className="font-semibold text-foreground text-lg">Monthly Budget Tracking</h4>
                       <p className="text-muted-foreground">Track income and expenses across multiple budget categories</p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start gap-4">
+                    <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-purple-500/10 flex items-center justify-center">
+                      <Mic className="w-6 h-6 text-purple-600" />
+                    </div>
+                    <div>
+                      <h4 className="font-semibold text-foreground text-lg">AI Voice Expense Tracking</h4>
+                      <p className="text-muted-foreground">Add expenses hands-free with voice recognition powered by AI</p>
                     </div>
                   </div>
 
