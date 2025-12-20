@@ -47,9 +47,8 @@ const Auth: React.FC = () => {
     checkPasswordReset();
 
     if (user && !isResettingPassword) {
-      // Mobile app users always redirect to expenses page after login
-      // The subscription check will happen in the Expenses page
-      navigate(isMobileApp ? '/expenses' : '/features');
+      // Redirect authenticated users to budget page
+      navigate(isMobileApp ? '/budget' : '/budget');
     }
   }, [user, navigate, isResettingPassword, isMobileApp]);
 
@@ -116,12 +115,12 @@ const Auth: React.FC = () => {
           setIsForgotPassword(false);
         }
       } else if (isSignUp) {
-        // Redirect to features page after email verification
+        // Redirect to budget page after email verification
         const { error } = await supabase.auth.signUp({
           email,
           password,
           options: {
-            emailRedirectTo: `${window.location.origin}/features`
+            emailRedirectTo: `${window.location.origin}/budget`
           }
         });
         
@@ -137,8 +136,8 @@ const Auth: React.FC = () => {
       } else {
         const { error } = await signIn(email, password);
         if (!error) {
-          // Redirect to expenses for mobile app, features for web
-          navigate(isMobileApp ? '/expenses' : '/features');
+          // Redirect to budget page after sign in
+          navigate('/budget');
         }
       }
     } finally {
