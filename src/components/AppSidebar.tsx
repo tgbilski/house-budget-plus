@@ -26,17 +26,17 @@ import {
 import { cn } from "@/lib/utils";
 import { useIsMobile } from "@/hooks/use-mobile";
 
-// Custom mascot icon component
-const MascotIcon = ({ className }: { className?: string }) => (
+// Custom house logo icon component (from header)
+const HouseLogoIcon = ({ className }: { className?: string }) => (
   <img 
-    src="/lovable-uploads/ed809955-ef71-4d81-b072-945082f4380a.png" 
+    src="/lovable-uploads/f2d56e66-518b-4a91-8172-551b1a54ef32.png" 
     alt="" 
-    className={cn("object-contain", className)}
+    className={cn("object-contain rounded", className)}
   />
 );
 
 const navigationItems = [
-  { title: "Monthly Budget", url: "/budget", icon: MascotIcon },
+  { title: "Monthly Budget", url: "/budget", icon: HouseLogoIcon },
   { title: "Voice Expenses", url: "/expenses", icon: Mic },
   { title: "Savings", url: "/savings", icon: PiggyBank },
   { title: "Compare Vendors", url: "/compare-prices", icon: ShoppingCart },

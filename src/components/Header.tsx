@@ -8,7 +8,7 @@ import { useIsMobile } from '@/hooks/use-mobile';
 import ProfileDropdown from './ProfileDropdown';
 import { Breadcrumbs } from './Breadcrumbs';
 import { GlobalSearch } from './GlobalSearch';
-const logoIcon = '/lovable-uploads/f2d56e66-518b-4a91-8172-551b1a54ef32.png';
+
 
 const Header: React.FC = () => {
   const { user } = useAuth();
@@ -21,12 +21,7 @@ const Header: React.FC = () => {
           {/* Brand with Logo and Mobile Menu */}
           <div className="flex items-center space-x-2">
             <SidebarTrigger className="md:inline-flex" />
-            <Link to="/" className="flex items-center space-x-2 md:space-x-3 hover:opacity-80 transition-opacity">
-              <img 
-                src={logoIcon} 
-                alt="House Budget Calculator"
-                className="h-7 w-7 md:h-8 md:w-8 rounded"
-              />
+            <Link to="/" className="flex items-center hover:opacity-80 transition-opacity">
               {!isMobile && (
                 <h1 className="text-xl font-semibold text-gray-900">
                   House Budget Calculator
