@@ -144,6 +144,14 @@ const MonthlyBudget: React.FC = () => {
     { title: 'Net Balance', value: netBalance, icon: DollarSign, color: netBalance >= 0 ? 'text-blue-500' : 'text-red-500' },
   ];
 
+  // Get user's first name for personalized greeting
+  const getGreeting = () => {
+    const hour = new Date().getHours();
+    if (hour < 12) return 'Good morning';
+    if (hour < 18) return 'Good afternoon';
+    return 'Good evening';
+  };
+
   return (
     <div className="min-h-screen bg-background">
       <SEO
@@ -156,31 +164,58 @@ const MonthlyBudget: React.FC = () => {
       />
       
       <div className="max-w-7xl mx-auto p-4">
-        {/* Enhanced header with background image */}
-        <div className="relative overflow-hidden rounded-2xl mb-6 shadow-lg">
+        {/* Welcome Hero Section */}
+        <div className="relative overflow-hidden rounded-2xl mb-8 shadow-xl">
           <img 
             src={heroBudgetImg} 
             alt="" 
             className="absolute inset-0 w-full h-full object-cover"
             aria-hidden="true"
           />
-          <div className="absolute inset-0 bg-gradient-to-r from-background/95 via-background/80 to-background/60" />
-          <div className="relative p-6">
-            <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
-              <div className="flex flex-col lg:items-start space-y-2">
-                <div>
-                  <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-foreground to-teal bg-clip-text text-transparent">
-                    Monthly Budget Calculator
-                  </h1>
-                  <p className="text-muted-foreground text-sm mt-1">
-                    Take control of your finances by tracking your household income and expenses.
-                  </p>
-                </div>
+          <div className="absolute inset-0 bg-gradient-to-r from-background/95 via-background/85 to-background/70" />
+          <div className="relative px-6 py-8 md:py-10">
+            <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
+              <div className="flex flex-col space-y-3 max-w-2xl">
+                {/* Personalized Welcome */}
+                <p className="text-lg md:text-xl text-muted-foreground font-medium">
+                  {getGreeting()}{user ? '!' : ', welcome to House Budget Calculator!'}
+                </p>
+                <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold bg-gradient-to-r from-foreground via-foreground to-teal bg-clip-text text-transparent leading-tight">
+                  Your Monthly Budget
+                </h1>
+                <p className="text-muted-foreground text-base md:text-lg max-w-xl">
+                  Take control of your household finances. Track income, manage expenses, and build a stronger financial future — all in one place.
+                </p>
+                
+                {/* Quick Stats Summary */}
+                {(totalIncome > 0 || totalExpenses > 0) && (
+                  <div className="flex flex-wrap gap-4 pt-2">
+                    <div className="flex items-center gap-2 bg-green-500/10 text-green-600 dark:text-green-400 px-3 py-1.5 rounded-full text-sm font-medium">
+                      <PiggyBank className="h-4 w-4" />
+                      <span>{currency.symbol}{totalIncome.toLocaleString()} income</span>
+                    </div>
+                    <div className="flex items-center gap-2 bg-red-500/10 text-red-600 dark:text-red-400 px-3 py-1.5 rounded-full text-sm font-medium">
+                      <Receipt className="h-4 w-4" />
+                      <span>{currency.symbol}{totalExpenses.toLocaleString()} expenses</span>
+                    </div>
+                    <div className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-sm font-medium ${
+                      netBalance >= 0 
+                        ? 'bg-blue-500/10 text-blue-600 dark:text-blue-400' 
+                        : 'bg-orange-500/10 text-orange-600 dark:text-orange-400'
+                    }`}>
+                      <DollarSign className="h-4 w-4" />
+                      <span>{netBalance >= 0 ? '+' : ''}{currency.symbol}{netBalance.toLocaleString()} net</span>
+                    </div>
+                  </div>
+                )}
               </div>
               
-              {/* Year selector at top right on laptop, centered on mobile */}
-              <div className="flex justify-center lg:justify-end">
-                <YearSelector />
+              {/* Year Selector Card */}
+              <div className="flex flex-col items-center lg:items-end gap-3">
+                <div className="bg-card/80 backdrop-blur-sm border border-border/50 rounded-xl p-4 shadow-md">
+                  <p className="text-xs text-muted-foreground mb-2 text-center">Budget Year</p>
+                  <YearSelector />
+                </div>
               </div>
             </div>
           </div>
