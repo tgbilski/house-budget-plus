@@ -112,11 +112,11 @@ export const MortgagePreapprovalQuestion: React.FC<MortgagePreapprovalQuestionPr
         {!showAnswer ? (
           <Button
             variant="outline"
-            className="w-full justify-start text-left h-auto py-3 px-3 hover:bg-primary/10 border-primary/30"
+            className="w-full justify-start text-left h-auto py-3 px-3 hover:bg-primary/10 border-primary/30 overflow-hidden"
             onClick={handleClick}
           >
             <Home className="h-4 w-4 mr-2 flex-shrink-0 text-primary" />
-            <span className="text-xs sm:text-sm font-medium">
+            <span className="text-xs sm:text-sm font-medium truncate">
               How much can I get preapproved for?
             </span>
           </Button>
