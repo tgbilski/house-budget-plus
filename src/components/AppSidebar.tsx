@@ -26,12 +26,12 @@ import {
 import { cn } from "@/lib/utils";
 import { useIsMobile } from "@/hooks/use-mobile";
 
-// Custom house logo icon component (from header)
+// Custom house logo icon component (from header) - uses same sizing as Lucide icons
 const HouseLogoIcon = ({ className }: { className?: string }) => (
   <img 
     src="/lovable-uploads/f2d56e66-518b-4a91-8172-551b1a54ef32.png" 
     alt="" 
-    className={cn("object-contain rounded", className)}
+    className={cn("h-5 w-5 object-contain rounded flex-shrink-0", className)}
   />
 );
 

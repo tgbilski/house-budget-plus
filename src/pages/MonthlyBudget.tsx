@@ -25,6 +25,7 @@ import { WarningBanner } from '@/components/WarningBanner';
 import { MortgagePreapprovalQuestion } from '@/components/MortgagePreapprovalQuestion';
 import { ToolsGrid } from '@/components/ToolsGrid';
 import heroBudgetImg from '@/assets/hero-budget.png';
+import calculatorMascot from '@/assets/calculator-mascot.png';
 
 interface Calculator {
   id: string;
@@ -164,6 +165,15 @@ const MonthlyBudget: React.FC = () => {
       />
       
       <div className="max-w-7xl mx-auto p-4">
+        {/* Calculator Mascot */}
+        <div className="flex justify-center mb-4">
+          <img 
+            src={calculatorMascot} 
+            alt="Budget Calculator Mascot" 
+            className="h-24 md:h-32 w-auto object-contain drop-shadow-lg"
+          />
+        </div>
+
         {/* Welcome Hero Section */}
         <div className="relative overflow-hidden rounded-2xl mb-8 shadow-xl">
           <img 
