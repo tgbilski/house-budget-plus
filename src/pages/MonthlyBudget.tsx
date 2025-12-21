@@ -190,7 +190,7 @@ const MonthlyBudget: React.FC = () => {
                 <p className="text-lg md:text-xl text-muted-foreground font-medium">
                   {getGreeting()}{user ? '!' : ', welcome to House Budget Calculator!'}
                 </p>
-                <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold bg-gradient-to-r from-foreground via-foreground to-teal bg-clip-text text-transparent leading-tight">
+                <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold bg-gradient-to-r from-foreground via-foreground to-teal bg-clip-text text-transparent leading-normal pb-1">
                   Your Monthly Budget
                 </h1>
                 <p className="text-muted-foreground text-base md:text-lg max-w-xl">
