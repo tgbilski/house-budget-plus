@@ -12,7 +12,7 @@ const Header: React.FC = () => {
   const isMobile = useIsMobile();
 
   return (
-    <header className="w-full bg-gradient-to-r from-white via-blue-50/30 to-emerald-50/30 border-b border-gray-200 sticky top-0 z-50 shadow-sm backdrop-blur-sm">
+    <header className="w-full bg-card border-[4px] border-stroke shadow-cartoon sticky top-0 z-50">
       <div className="w-full px-4 md:px-6 py-1.5 md:py-2">
         <div className="flex items-center justify-between min-h-[40px] md:min-h-[48px]">
           {/* Brand with Logo and Mobile Menu */}
