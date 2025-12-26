@@ -167,11 +167,13 @@ const MonthlyBudget: React.FC = () => {
       <div className="max-w-7xl mx-auto p-4">
         {/* Calculator Mascot */}
         <div className="flex justify-center mb-4">
-          <img 
-            src={calculatorMascot} 
-            alt="Budget Calculator Mascot" 
-            className="h-24 md:h-32 w-auto object-contain drop-shadow-lg"
-          />
+          <div className="rounded-full border-[4px] border-stroke shadow-cartoon p-2 bg-card">
+            <img 
+              src={calculatorMascot} 
+              alt="Budget Calculator Mascot" 
+              className="h-20 md:h-28 w-auto object-contain"
+            />
+          </div>
         </div>
 
         {/* Welcome Hero Section */}
