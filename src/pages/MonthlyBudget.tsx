@@ -282,7 +282,7 @@ const MonthlyBudget: React.FC = () => {
         )}
 
 
-        <ToolsGrid excludeHref="/budget" />
+        
         
         <FAQ faqs={budgetCalculatorFAQs} />
         <InternalLinks currentPage="/budget" category="planning" />
