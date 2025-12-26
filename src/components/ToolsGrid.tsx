@@ -73,12 +73,12 @@ export function ToolsGrid({ excludeHref }: ToolsGridProps) {
       <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
         {filteredTools.map((tool) => (
           <Link key={tool.title} to={tool.href} className="block group">
-            <Card className="h-full overflow-hidden transition-all duration-300 hover:scale-[1.02] hover:shadow-lg border border-border/50 bg-card">
-              <div className="relative h-32 overflow-hidden">
+            <Card className="h-full overflow-hidden bg-card hover:translate-y-[-2px] hover:shadow-cartoon-hover transition-all duration-200">
+              <div className="relative h-32 overflow-hidden border-b-[3px] border-stroke">
                 <img
                   src={tool.image}
                   alt={tool.title}
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  className="w-full h-full object-cover"
                   loading="lazy"
                 />
                 {tool.isPremium && (
