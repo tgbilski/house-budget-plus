@@ -87,7 +87,7 @@ export function ToolsGrid({ excludeHref }: ToolsGridProps) {
                   </div>
                 )}
               </div>
-              <CardHeader className="p-3">
+              <CardHeader className="p-3 bg-muted/50">
                 <CardTitle className="text-base group-hover:text-primary transition-colors">
                   {tool.title}
                 </CardTitle>
