@@ -313,8 +313,8 @@ const BudgetCalculator: React.FC<BudgetCalculatorProps> = ({
     <Card className="w-full max-w-md shadow-md border border-sage/40 bg-sage/5" data-calculator-id={id}>
       <CardHeader className="pb-4 pt-4 bg-teal/10 rounded-t-lg">
         <div className="space-y-3">
-          {/* Owner name and Monthly Income - stacked on mobile, side by side on larger screens */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          {/* Owner name and Monthly Income - stacked on separate rows */}
+          <div className="space-y-3">
             <div>
               <Label className="text-xs text-muted-foreground mb-1.5 block">
                 Calculator {calculatorNumber} Owner
