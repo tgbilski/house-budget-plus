@@ -1,5 +1,5 @@
 // src/pages/Gifts.tsx (Final Version)
-import React, { useEffect, useState, useMemo } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { useGiftLists, useGiftItems } from '@/hooks/useGiftLists';
 import { useAuth } from '@/hooks/useAuth';
 import { useBadges } from '@/hooks/useBadges';
@@ -10,7 +10,7 @@ import { WarningBanner } from '@/components/WarningBanner';
 import { GiftListSelector } from '@/components/GiftListSelector';
 import { GiftCardDisplay } from '@/components/GiftCardDisplay';
 import { GiftBudgetSummary } from '@/components/GiftBudgetSummary';
-import { GiftSearch } from '@/components/GiftSearch';
+
 import { YearSelector } from '@/components/YearSelector';
 import { EventCalendar } from '@/components/EventCalendar';
 import { EventAlertDialog } from '@/components/EventAlertDialog';
@@ -26,7 +26,7 @@ export function Gifts() {
   const { user } = useAuth();
   const { earnBadge } = useBadges();
   const { currency } = useCurrency();
-  const [searchQuery, setSearchQuery] = useState('');
+  
   
   // 1. The page's only job is to call our main hook to get the data.
   const {
@@ -163,10 +163,6 @@ export function Gifts() {
             onSetEditingTitle={setEditingTitle}
           />
 
-          {/* Search */}
-          <div className="w-full sm:w-96">
-            <GiftSearch value={searchQuery} onChange={setSearchQuery} />
-          </div>
 
           {/* 3. Main content with gift cards and calendar on desktop */}
           <div className="flex flex-col lg:flex-row gap-6">
