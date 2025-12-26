@@ -19,7 +19,8 @@ export default {
 		},
 		extend: {
 			fontFamily: {
-				'sans': ['Inter', 'sans-serif']
+				'sans': ['Nunito', 'Inter', 'sans-serif'],
+				'display': ['Nunito', 'sans-serif']
 			},
 			colors: {
 				border: 'hsl(var(--border))',
@@ -27,6 +28,7 @@ export default {
 				ring: 'hsl(var(--ring))',
 				background: 'hsl(var(--background))',
 				foreground: 'hsl(var(--foreground))',
+				stroke: 'hsl(var(--stroke))',
 				primary: {
 					DEFAULT: 'hsl(var(--primary))',
 					foreground: 'hsl(var(--primary-foreground))'
@@ -83,9 +85,15 @@ export default {
 				}
 			},
 			borderRadius: {
+				xl: 'calc(var(--radius) + 4px)',
 				lg: 'var(--radius)',
-				md: 'calc(var(--radius) - 2px)',
-				sm: 'calc(var(--radius) - 4px)'
+				md: 'calc(var(--radius) - 4px)',
+				sm: 'calc(var(--radius) - 8px)'
+			},
+			boxShadow: {
+				'cartoon': 'var(--shadow-cartoon)',
+				'cartoon-sm': 'var(--shadow-cartoon-sm)',
+				'cartoon-hover': 'var(--shadow-cartoon-hover)',
 			},
 			keyframes: {
 				'accordion-down': {
@@ -134,6 +142,38 @@ export default {
 						transform: 'scale(1)'
 					}
 				},
+				'bounce-in': {
+					'0%': {
+						opacity: '0',
+						transform: 'scale(0.8)'
+					},
+					'50%': {
+						transform: 'scale(1.05)'
+					},
+					'100%': {
+						opacity: '1',
+						transform: 'scale(1)'
+					}
+				},
+				'wiggle': {
+					'0%, 100%': {
+						transform: 'rotate(-2deg)'
+					},
+					'50%': {
+						transform: 'rotate(2deg)'
+					}
+				},
+				'pop': {
+					'0%': {
+						transform: 'scale(1)'
+					},
+					'50%': {
+						transform: 'scale(1.08)'
+					},
+					'100%': {
+						transform: 'scale(1)'
+					}
+				},
 				'glow': {
 					'0%, 100%': {
 						boxShadow: '0 0 20px hsl(var(--primary) / 0.3)'
@@ -157,6 +197,9 @@ export default {
 				'fade-in': 'fade-in 0.3s ease-out',
 				'slide-up': 'slide-up 0.5s ease-out',
 				'scale-in': 'scale-in 0.3s ease-out',
+				'bounce-in': 'bounce-in 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)',
+				'wiggle': 'wiggle 0.5s ease-in-out',
+				'pop': 'pop 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)',
 				'glow': 'glow 2s ease-in-out infinite',
 				'shimmer': 'shimmer 2s ease-in-out infinite'
 			}
