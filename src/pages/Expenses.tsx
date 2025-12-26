@@ -21,8 +21,7 @@ import { Link } from 'react-router-dom';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { cn } from '@/lib/utils';
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, PieChart, Pie, Cell, Legend } from 'recharts';
-import { Download, AlertCircle, TrendingDown } from 'lucide-react';
-import { jsPDF } from 'jspdf';
+import { AlertCircle, TrendingDown } from 'lucide-react';
 import { isNativeApp } from '@/utils/capacitor';
 
 export default function Expenses() {
@@ -123,34 +122,6 @@ export default function Expenses() {
   const budgetThreshold = 1000;
   const isOverBudget = totalSpent > budgetThreshold;
 
-  const exportToPDF = () => {
-    const doc = new jsPDF();
-    doc.setFontSize(20);
-    doc.text('Expense Report', 20, 20);
-    doc.setFontSize(12);
-    doc.text(`Month: ${format(selectedDate, 'MMMM yyyy')}`, 20, 30);
-    doc.text(`Total Spent: ${currency.symbol}${totalSpent.toFixed(2)}`, 20, 40);
-    
-    let yPos = 55;
-    doc.text('Expenses:', 20, yPos);
-    yPos += 10;
-    
-    expenses.forEach((expense, idx) => {
-      if (yPos > 280) {
-        doc.addPage();
-        yPos = 20;
-      }
-      const line = `${format(new Date(expense.date), 'MMM d')} - ${expense.merchant || expense.category} - ${currency.symbol}${Number(expense.amount).toFixed(2)}`;
-      doc.text(line, 20, yPos);
-      yPos += 7;
-    });
-    
-    doc.save(`expenses-${format(selectedDate, 'yyyy-MM')}.pdf`);
-    toast({
-      title: 'Success',
-      description: 'Expense report downloaded',
-    });
-  };
 
   const startRecording = async () => {
     try {
@@ -487,15 +458,6 @@ export default function Expenses() {
                     <span className="text-success font-bold">✓</span>
                   </div>
                   <div>
-                    <h3 className="font-semibold mb-1">Export Reports</h3>
-                    <p className="text-sm text-muted-foreground">Download PDF reports for your records</p>
-                  </div>
-                </div>
-                <div className="flex items-start gap-3">
-                  <div className="w-8 h-8 rounded-full bg-success/20 flex items-center justify-center flex-shrink-0">
-                    <span className="text-success font-bold">✓</span>
-                  </div>
-                  <div>
                     <h3 className="font-semibold mb-1">Household Tracking</h3>
                     <p className="text-sm text-muted-foreground">Track expenses across your entire household</p>
                   </div>
@@ -696,15 +658,9 @@ export default function Expenses() {
           {/* Monthly Summary & Export */}
           <Card className="bg-white/80 backdrop-blur-sm border-2 border-border/50 shadow-[var(--shadow-elegant)]">
             <CardHeader>
-              <CardTitle className="flex items-center justify-between">
-                <span className="flex items-center gap-2">
-                  <TrendingUp className="h-5 w-5" />
-                  This Month
-                </span>
-                <Button variant="outline" size="sm" onClick={exportToPDF}>
-                  <Download className="h-4 w-4 mr-2" />
-                  Export PDF
-                </Button>
+              <CardTitle className="flex items-center gap-2">
+                <TrendingUp className="h-5 w-5" />
+                This Month
               </CardTitle>
             </CardHeader>
             <CardContent>

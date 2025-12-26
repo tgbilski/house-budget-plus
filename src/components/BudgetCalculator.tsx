@@ -1,6 +1,6 @@
 // src/components/BudgetCalculator.tsx
 import React, { useState, useEffect } from 'react';
-import { Plus, Trash2, Download } from 'lucide-react';
+import { Plus, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -9,7 +9,7 @@ import { useCurrency } from '@/hooks/useCurrency';
 import { useAuth } from '@/hooks/useAuth';
 import { useYear } from '@/hooks/useYear';
 import { useHousehold } from '@/hooks/useHousehold';
-import { generateBudgetPDF } from '@/utils/pdfGenerator';
+
 import { supabase } from '@/integrations/supabase/client';
 import { StreamingServiceSelector } from './StreamingServiceSelector';
 
@@ -308,16 +308,6 @@ const BudgetCalculator: React.FC<BudgetCalculatorProps> = ({
     }).format(amount);
   };
 
-  const handleDownloadPDF = () => {
-    const budgetData = {
-      ownerName,
-      monthlyIncome,
-      expenses,
-      additionalExpenses,
-      currency: currency.symbol
-    };
-    generateBudgetPDF(budgetData);
-  };
 
   return (
     <Card className="w-full max-w-md shadow-md border border-sage/40 bg-sage/5" data-calculator-id={id}>
@@ -547,18 +537,6 @@ const BudgetCalculator: React.FC<BudgetCalculatorProps> = ({
           </div>
         </div>
 
-        {/* Compact Download PDF Button */}
-        <div className="pt-2">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={handleDownloadPDF}
-            className="w-full h-9 text-sm"
-          >
-            <Download className="h-4 w-4 mr-2" />
-            Download PDF
-          </Button>
-        </div>
       </CardContent>
     </Card>
   );

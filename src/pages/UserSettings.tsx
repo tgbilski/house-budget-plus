@@ -23,7 +23,6 @@ export default function UserSettings() {
     openCustomerPortal,
     loading
   } = useSubscription();
-  const [pdfCount, setPdfCount] = useState<number>(0);
   const [isEditingName, setIsEditingName] = useState(false);
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
@@ -35,26 +34,6 @@ export default function UserSettings() {
       setLastName(profile.last_name || '');
     }
   }, [profile]);
-
-  useEffect(() => {
-    const fetchPdfCount = async () => {
-      if (!user) return;
-      try {
-        const { data, error } = await supabase
-          .from('pdf_processing_logs')
-          .select('id')
-          .eq('user_id', user.id);
-
-        if (!error) {
-          setPdfCount(data?.length || 0);
-        }
-      } catch (error) {
-        console.error('Error fetching PDF count:', error);
-      }
-    };
-
-    fetchPdfCount();
-  }, [user]);
 
   const handleSaveName = async () => {
     if (!user) return;
@@ -223,20 +202,6 @@ export default function UserSettings() {
                 <PricingCards />
               </div>
             )}
-          </CardContent>
-        </Card>
-
-        <Separator />
-
-        {/* PDF Usage Info */}
-        <Card>
-          <CardHeader>
-            <CardTitle>PDF Usage</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p>
-              You have processed <strong>{pdfCount}</strong> PDFs.
-            </p>
           </CardContent>
         </Card>
 
