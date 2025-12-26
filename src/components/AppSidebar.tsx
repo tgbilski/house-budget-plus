@@ -26,17 +26,27 @@ import {
 import { cn } from "@/lib/utils";
 import { useIsMobile } from "@/hooks/use-mobile";
 
-// Custom house logo icon component (from header) - slightly larger than Lucide icons
-const HouseLogoIcon = ({ className }: { className?: string }) => (
-  <img 
-    src="/lovable-uploads/f2d56e66-518b-4a91-8172-551b1a54ef32.png" 
-    alt="" 
-    className={cn("h-6 w-6 object-contain rounded flex-shrink-0", className)}
-  />
+// Custom house icon with dollar sign inside
+const HouseDollarIcon = ({ className }: { className?: string }) => (
+  <svg 
+    viewBox="0 0 24 24" 
+    fill="none" 
+    stroke="currentColor" 
+    strokeWidth="2" 
+    strokeLinecap="round" 
+    strokeLinejoin="round"
+    className={cn("h-5 w-5 flex-shrink-0", className)}
+  >
+    {/* House outline */}
+    <path d="M3 10.5L12 3l9 7.5V21a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V10.5z" />
+    {/* Dollar sign inside */}
+    <path d="M12 10v6" />
+    <path d="M14 11.5c0-.83-.67-1.5-1.5-1.5h-1c-.83 0-1.5.67-1.5 1.5s.67 1.5 1.5 1.5h1c.83 0 1.5.67 1.5 1.5s-.67 1.5-1.5 1.5h-1c-.83 0-1.5-.67-1.5-1.5" />
+  </svg>
 );
 
 const navigationItems = [
-  { title: "Monthly Budget", url: "/budget", icon: HouseLogoIcon },
+  { title: "Monthly Budget", url: "/budget", icon: HouseDollarIcon },
   { title: "Voice Expenses", url: "/expenses", icon: Mic },
   { title: "Savings", url: "/savings", icon: PiggyBank },
   { title: "Compare Vendors", url: "/compare-prices", icon: ShoppingCart },
