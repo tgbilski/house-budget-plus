@@ -6,9 +6,6 @@ import { User } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { useIsMobile } from '@/hooks/use-mobile';
 import ProfileDropdown from './ProfileDropdown';
-import { Breadcrumbs } from './Breadcrumbs';
-import { GlobalSearch } from './GlobalSearch';
-
 
 const Header: React.FC = () => {
   const { user } = useAuth();
@@ -30,11 +27,8 @@ const Header: React.FC = () => {
             </Link>
           </div>
 
-          {/* Search and Auth */}
+          {/* Auth */}
           <div className="flex items-center gap-2 md:gap-4">
-            <div className="hidden md:block">
-              <GlobalSearch />
-            </div>
             {user ? (
               <ProfileDropdown />
             ) : (
