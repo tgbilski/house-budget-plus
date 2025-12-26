@@ -93,7 +93,7 @@ export const CumulativeSavingsChart: React.FC<CumulativeSavingsChartProps> = ({
   const isNearComplete = progressPercentage >= 75 && progressPercentage < 100;
 
   return (
-    <Card className="bg-white/80 backdrop-blur-sm border-2 border-border/50 shadow-[var(--shadow-elegant)] animate-slide-up relative overflow-hidden">
+    <Card className="bg-card animate-slide-up relative overflow-hidden">
       {isComplete && (
         <div className="absolute inset-0 bg-gradient-to-r from-success/5 via-teal/10 to-success/5 pointer-events-none" />
       )}

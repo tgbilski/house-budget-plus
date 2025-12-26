@@ -136,7 +136,7 @@ export function GiftCard({ initialData, onItemsChange }: GiftCardProps) {
   const completionProgress = totalItems > 0 ? (completedItems / totalItems) * 100 : 0;
   
   return (
-    <Card className="w-full bg-card border-border text-card-foreground shadow-lg h-fit">
+    <Card className="w-full bg-card h-fit">
       <CardHeader className="pb-3 space-y-3">
         <div className="flex items-center justify-between">
           <h2 className="text-lg font-bold text-foreground leading-tight">{listData.list_title}</h2>

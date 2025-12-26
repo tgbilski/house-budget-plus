@@ -93,7 +93,7 @@ export const VacationSummaryCard: React.FC<Props> = ({
   };
 
   return (
-    <Card className="bg-white/80 backdrop-blur-sm border-2 border-border/50 shadow-[var(--shadow-elegant)]">
+    <Card className="bg-card">
       <CardHeader className="pb-2">
         {/* Navigation and Title Row */}
         <div className="flex flex-col gap-2">

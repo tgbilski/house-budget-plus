@@ -43,7 +43,7 @@ export const MonthlySavingsGrid: React.FC<Props> = ({ year, onYearChange, monthl
   };
 
   return (
-    <Card className="bg-white/80 backdrop-blur-sm border-2 border-border/50 shadow-[var(--shadow-elegant)] animate-slide-up" style={{ animationDelay: '0.2s' }}>
+    <Card className="bg-card animate-slide-up" style={{ animationDelay: '0.2s' }}>
       <CardHeader className="flex flex-row items-center justify-between border-b border-border/50 pb-4">
         <CardTitle className="text-xl font-bold bg-gradient-to-r from-foreground to-teal bg-clip-text text-transparent">
           Monthly Savings Entries
