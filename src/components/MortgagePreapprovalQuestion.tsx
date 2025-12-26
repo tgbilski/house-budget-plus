@@ -101,7 +101,7 @@ export const MortgagePreapprovalQuestion: React.FC<MortgagePreapprovalQuestionPr
   ];
 
   return (
-    <Card className="bg-gradient-to-br from-primary/5 to-primary/10 border-primary/20 overflow-hidden">
+    <Card className="bg-card overflow-hidden">
       <CardHeader className="pb-2 px-4 pt-4">
         <CardTitle className="text-sm flex items-center gap-2">
           <HelpCircle className="h-4 w-4 text-primary flex-shrink-0" />

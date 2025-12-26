@@ -60,7 +60,7 @@ export const VendorCard: React.FC<VendorCardProps> = ({ quote, onUpdate, onRemov
   if (isEditing) {
     // --- EDITING VIEW ---
     return (
-      <Card className="border-l-4 border-l-primary ring-2 ring-primary/20">
+      <Card className="border-l-4 border-l-primary">
         <CardHeader className="pb-3 md:pb-4">
           <div className="space-y-1">
             <Label className="text-sm">Vendor Name</Label>
@@ -160,7 +160,7 @@ export const VendorCard: React.FC<VendorCardProps> = ({ quote, onUpdate, onRemov
   // --- DISPLAY VIEW ---
   const starCount = getStarCount();
   return (
-    <Card className="hover:shadow-lg transition-all duration-200 group border-l-4 border-l-primary/20 hover:border-l-primary">
+    <Card className="group border-l-4 border-l-primary/20">
       <CardContent className="p-3 md:p-4" onClick={() => setIsEditing(true)}>
         <div className="flex justify-between items-start gap-2 mb-3">
           <div className="flex-1 min-w-0">

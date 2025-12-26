@@ -58,7 +58,7 @@ export const BudgetDonutChart = ({ totalIncome, totalExpenses, currency }: Budge
   };
 
   return (
-    <div className="bg-card rounded-xl p-4 shadow-md border border-border overflow-hidden">
+    <div className="bg-card rounded-xl p-4 border-[3px] border-stroke shadow-cartoon overflow-hidden">
       <h3 className="text-lg font-bold text-center mb-3 text-card-foreground">Budget Overview</h3>
       {hasData ? (
         <div className="flex flex-col gap-4 items-center">

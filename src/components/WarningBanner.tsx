@@ -10,7 +10,7 @@ export const WarningBanner: React.FC = () => {
   if (user) return null;
 
   return (
-    <div className="mb-6 p-4 rounded-xl bg-gradient-to-r from-teal/10 via-primary/5 to-teal/10 border border-teal/20 backdrop-blur-sm">
+    <div className="mb-6 p-4 rounded-xl bg-card border-[3px] border-stroke shadow-cartoon">
       <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
         <div className="text-center sm:text-left">
           <p className="text-foreground font-medium">
