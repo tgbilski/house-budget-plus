@@ -14,9 +14,9 @@ import { GiftSearch } from '@/components/GiftSearch';
 import { YearSelector } from '@/components/YearSelector';
 import { EventCalendar } from '@/components/EventCalendar';
 import { EventAlertDialog } from '@/components/EventAlertDialog';
-import { Gift, ShoppingBag } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
-import { Button } from '@/components/ui/button';
+import { Gift } from 'lucide-react';
+
+
 import { InternalLinks } from '@/components/InternalLinks';
 import { FAQ } from '@/components/FAQ';
 import { differenceInDays, startOfDay, parseISO } from 'date-fns';
@@ -26,7 +26,6 @@ export function Gifts() {
   const { user } = useAuth();
   const { earnBadge } = useBadges();
   const { currency } = useCurrency();
-  const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState('');
   
   // 1. The page's only job is to call our main hook to get the data.
@@ -164,18 +163,9 @@ export function Gifts() {
             onSetEditingTitle={setEditingTitle}
           />
 
-          {/* Search and Actions */}
-          <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
-            <div className="w-full sm:w-96">
-              <GiftSearch value={searchQuery} onChange={setSearchQuery} />
-            </div>
-            <Button 
-              onClick={() => navigate('/marketplace')} 
-              variant="outline" 
-              className="gap-2 w-full sm:w-auto"
-            >
-              <ShoppingBag className="h-4 w-4" /> Find Gift Ideas
-            </Button>
+          {/* Search */}
+          <div className="w-full sm:w-96">
+            <GiftSearch value={searchQuery} onChange={setSearchQuery} />
           </div>
 
           {/* 3. Main content with gift cards and calendar on desktop */}
