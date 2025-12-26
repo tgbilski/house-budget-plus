@@ -72,7 +72,7 @@ const CompareVendors: React.FC = () => {
 
       <div className="max-w-7xl mx-auto p-3 md:p-4">
         {/* Enhanced header with background image */}
-        <div className="relative overflow-hidden rounded-2xl mb-4 md:mb-6 shadow-lg">
+        <div className="relative overflow-hidden rounded-xl mb-4 md:mb-6 border-[4px] border-stroke shadow-cartoon">
           <img 
             src={heroVendorsImg} 
             alt="" 
@@ -88,7 +88,7 @@ const CompareVendors: React.FC = () => {
                     <Scale className="h-5 w-5 md:h-6 md:w-6 text-white" />
                   </div>
                   <div>
-                    <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold bg-gradient-to-r from-foreground to-teal bg-clip-text text-transparent">
+                    <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold text-foreground">
                       Vendor Comparison
                     </h1>
                     <p className="text-muted-foreground text-xs md:text-sm mt-1">

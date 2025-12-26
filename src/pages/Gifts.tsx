@@ -107,7 +107,7 @@ export function Gifts() {
       
       <div className="max-w-7xl mx-auto p-4">
         {/* Enhanced header with background image */}
-        <div className="relative overflow-hidden rounded-2xl mb-6 shadow-lg">
+        <div className="relative overflow-hidden rounded-xl mb-6 border-[4px] border-stroke shadow-cartoon">
           <img 
             src={heroGiftsImg} 
             alt="" 
@@ -123,7 +123,7 @@ export function Gifts() {
                     <Gift className="h-6 w-6 text-white" />
                   </div>
                   <div>
-                    <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-foreground to-teal bg-clip-text text-transparent">
+                    <h1 className="text-3xl md:text-4xl font-bold text-foreground">
                       Gift Lists
                     </h1>
                     <p className="text-muted-foreground text-sm mt-1">

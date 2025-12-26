@@ -175,7 +175,7 @@ const MonthlyBudget: React.FC = () => {
         </div>
 
         {/* Welcome Hero Section */}
-        <div className="relative overflow-hidden rounded-2xl mb-8 shadow-xl">
+        <div className="relative overflow-hidden rounded-xl mb-8 border-[4px] border-stroke shadow-cartoon">
           <img 
             src={heroBudgetImg} 
             alt="" 
