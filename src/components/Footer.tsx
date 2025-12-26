@@ -25,6 +25,8 @@ const Footer: React.FC = () => {
               <li><Link to="/savings" className="text-gray-600 hover:text-primary transition-colors">Savings Goals</Link></li>
               <li><Link to="/compare-prices" className="text-gray-600 hover:text-primary transition-colors">Compare Vendors</Link></li>
               <li><Link to="/vacation" className="text-gray-600 hover:text-primary transition-colors">Vacation Planner</Link></li>
+              <li><Link to="/gifts" className="text-gray-600 hover:text-primary transition-colors">Gift Lists</Link></li>
+              <li><Link to="/expenses" className="text-gray-600 hover:text-primary transition-colors">Voice Expense Tracking</Link></li>
               <li><Link to="/ai-insights" className="text-gray-600 hover:text-primary transition-colors">AI Insights</Link></li>
             </ul>
           </div>
@@ -35,7 +37,6 @@ const Footer: React.FC = () => {
             <ul className="space-y-2 text-sm">
               <li><Link to="/about" className="text-gray-600 hover:text-primary transition-colors">About Us</Link></li>
               <li><Link to="/contact" className="text-gray-600 hover:text-primary transition-colors">Contact Us</Link></li>
-              <li><Link to="/gifts" className="text-gray-600 hover:text-primary transition-colors">Gift Ideas</Link></li>
             </ul>
           </div>
 
@@ -52,9 +53,8 @@ const Footer: React.FC = () => {
 
         <Separator className="my-6" />
         
-        <div className="flex flex-col md:flex-row justify-between items-center text-sm text-gray-600">
+        <div className="text-sm text-gray-600">
           <p>&copy; {currentYear} House Budget Calculator. All rights reserved.</p>
-          <p className="mt-2 md:mt-0">Made with ❤️ for better financial planning</p>
         </div>
       </div>
     </footer>
