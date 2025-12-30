@@ -39,6 +39,9 @@ const MonthlyBudget: React.FC = () => {
   const [calculators, setCalculators] = useState<Calculator[]>([]);
   const [budgetData, setBudgetData] = useState<Record<string, { income: number; expenses: number }>>({});
   const [calculatorNames, setCalculatorNames] = useState<Record<string, string>>({});
+  
+  // Track which calculators are visible (1 is always visible, 2-4 can be revealed)
+  const [visibleCalculators, setVisibleCalculators] = useState<Set<string>>(new Set(['1']));
 
   // CHANGE: Added loading and error states for data fetching.
   const [isLoading, setIsLoading] = useState(true);
@@ -91,11 +94,28 @@ const MonthlyBudget: React.FC = () => {
     if (user && currentHousehold) {
       loadCalculators();
     } else {
-      // Always show 4 static calculators.
+      // Always show 4 static calculators, but only first one visible by default
       setCalculators([{ id: '1' }, { id: '2' }, { id: '3' }, { id: '4' }]);
+      setVisibleCalculators(new Set(['1']));
       setIsLoading(false);
     }
   }, [user, currentHousehold, selectedYear]);
+
+  // Function to reveal the next calculator
+  const revealNextCalculator = () => {
+    const allIds = ['1', '2', '3', '4'];
+    const nextHidden = allIds.find(id => !visibleCalculators.has(id));
+    if (nextHidden) {
+      setVisibleCalculators(prev => new Set([...prev, nextHidden]));
+    }
+  };
+
+  // Get the next calculator number that can be revealed
+  const getNextCalculatorNumber = () => {
+    const allIds = ['1', '2', '3', '4'];
+    const nextHidden = allIds.find(id => !visibleCalculators.has(id));
+    return nextHidden ? parseInt(nextHidden) : null;
+  };
 
   // CHANGE: Rewrote loadCalculators to include try/catch/finally and loading/error state management.
   const loadCalculators = async () => {
@@ -114,14 +134,17 @@ const MonthlyBudget: React.FC = () => {
 
       if (dbError) throw dbError;
 
+      // Always set all 4 calculators
+      setCalculators([{ id: '1' }, { id: '2' }, { id: '3' }, { id: '4' }]);
+
       if (data && data.length > 0) {
+        // Show calculators that have data, plus always show calculator 1
         const uniqueCalculators = [...new Set(data.map(item => item.calculator_id))];
-        const sortedCalculators = uniqueCalculators.sort((a, b) => parseInt(a) - parseInt(b));
-        const allCalculators = ['1', '2', '3', '4'];
-        setCalculators(allCalculators.map(id => ({ id })));
+        const visibleSet = new Set(['1', ...uniqueCalculators]);
+        setVisibleCalculators(visibleSet);
       } else {
-        // Always show 4 static calculators.
-        setCalculators([{ id: '1' }, { id: '2' }, { id: '3' }, { id: '4' }]);
+        // Only show calculator 1 by default
+        setVisibleCalculators(new Set(['1']));
       }
     } catch (err) {
       console.error("Error loading calculators:", err);
@@ -260,7 +283,9 @@ const MonthlyBudget: React.FC = () => {
 
             {/* Budget calculators - takes 2 columns */}
             <div className="lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-6">
-              {calculators.map((calculator, index) => (
+              {calculators
+                .filter(calculator => visibleCalculators.has(calculator.id))
+                .map((calculator, index) => (
                 <div
                   key={calculator.id}
                   className="animate-fade-in"
@@ -276,6 +301,24 @@ const MonthlyBudget: React.FC = () => {
                   />
                 </div>
               ))}
+              
+              {/* Add Calculator Button - shows when there are hidden calculators */}
+              {getNextCalculatorNumber() && (
+                <div className="animate-fade-in">
+                  <button
+                    onClick={revealNextCalculator}
+                    className="w-full h-full min-h-[200px] rounded-xl border-[4px] border-dashed border-border/50 bg-muted/20 hover:bg-muted/40 hover:border-primary/50 transition-all duration-200 flex flex-col items-center justify-center gap-3 group"
+                  >
+                    <div className="p-3 rounded-full bg-primary/10 group-hover:bg-primary/20 transition-colors">
+                      <Plus className="h-8 w-8 text-primary" />
+                    </div>
+                    <div className="text-center">
+                      <p className="font-semibold text-foreground">Add Calculator {getNextCalculatorNumber()}</p>
+                      <p className="text-sm text-muted-foreground">Track another income source or scenario</p>
+                    </div>
+                  </button>
+                </div>
+              )}
             </div>
           </div>
         )}
