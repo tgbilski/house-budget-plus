@@ -37,7 +37,7 @@ interface Calculator {
 const MonthlyBudget: React.FC = () => {
   // CHANGE: Initial state for calculators is now an empty array.
   const [calculators, setCalculators] = useState<Calculator[]>([]);
-  const [budgetData, setBudgetData] = useState<Record<string, { income: number; expenses: number }>>({});
+  const [budgetData, setBudgetData] = useState<Record<string, { income: number; expenses: number; housingExpense: number }>>({});
   const [calculatorNames, setCalculatorNames] = useState<Record<string, string>>({});
   
   // Track which calculators are visible (1 is always visible, 2-4 can be revealed)
@@ -55,6 +55,7 @@ const MonthlyBudget: React.FC = () => {
 
   const totalIncome = Object.values(budgetData).reduce((sum, data) => sum + (data.income || 0), 0);
   const totalExpenses = Object.values(budgetData).reduce((sum, data) => sum + (data.expenses || 0), 0);
+  const totalHousingExpense = Object.values(budgetData).reduce((sum, data) => sum + (data.housingExpense || 0), 0);
   const netBalance = totalIncome - totalExpenses;
   
   console.log('MonthlyBudget - budgetData:', budgetData);
@@ -64,10 +65,10 @@ const MonthlyBudget: React.FC = () => {
   useEffect(() => {
     const handleBudgetUpdate = (event: Event) => {
       if (event instanceof CustomEvent) {
-        const { calculatorId, income, totalExpenses } = event.detail;
+        const { calculatorId, income, totalExpenses, housingExpense } = event.detail;
         setBudgetData(prev => ({
           ...prev,
-          [calculatorId]: { income: income || 0, expenses: totalExpenses || 0 }
+          [calculatorId]: { income: income || 0, expenses: totalExpenses || 0, housingExpense: housingExpense || 0 }
         }));
       }
     };
@@ -328,7 +329,7 @@ const MonthlyBudget: React.FC = () => {
           <HomeBuyingToolkit
             monthlyIncome={totalIncome}
             monthlyExpenses={totalExpenses}
-            housingExpense={0} // TODO: Could extract housing expenses from budget data
+            housingExpense={totalHousingExpense}
             currencySymbol={currency.symbol}
           />
         </div>

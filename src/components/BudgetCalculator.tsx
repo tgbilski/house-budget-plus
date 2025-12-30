@@ -289,17 +289,21 @@ const BudgetCalculator: React.FC<BudgetCalculatorProps> = ({
   
   const netResult = monthlyIncome - totalExpenses;
 
+  // Get housing expense (mortgage/rent) for the Major Purchase Toolkit
+  const housingExpense = expenses.find(e => e.id === 'mortgage')?.amount || 0;
+
   useEffect(() => {
     const event = new CustomEvent('budgetUpdate', {
       detail: {
         calculatorId: id,
         income: monthlyIncome,
         totalExpenses: totalExpenses,
-        netResult: netResult
+        netResult: netResult,
+        housingExpense: housingExpense
       }
     });
     window.dispatchEvent(event);
-  }, [id, monthlyIncome, totalExpenses, netResult]);
+  }, [id, monthlyIncome, totalExpenses, netResult, housingExpense]);
 
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('en-US', {
