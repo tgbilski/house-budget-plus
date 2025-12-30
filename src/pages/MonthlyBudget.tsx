@@ -24,6 +24,7 @@ import { BudgetDonutChart } from '@/components/BudgetDonutChart';
 import { WarningBanner } from '@/components/WarningBanner';
 import { MortgagePreapprovalQuestion } from '@/components/MortgagePreapprovalQuestion';
 import { ToolsGrid } from '@/components/ToolsGrid';
+import { HomeBuyingToolkit } from '@/components/home-buying';
 import heroBudgetImg from '@/assets/hero-budget.png';
 import calculatorMascot from '@/assets/calculator-mascot.png';
 
@@ -279,6 +280,15 @@ const MonthlyBudget: React.FC = () => {
           </div>
         )}
 
+        {/* Home Buying Toolkit - Premium Feature */}
+        <div className="mt-8">
+          <HomeBuyingToolkit
+            monthlyIncome={totalIncome}
+            monthlyExpenses={totalExpenses}
+            housingExpense={0} // TODO: Could extract housing expenses from budget data
+            currencySymbol={currency.symbol}
+          />
+        </div>
 
         <ToolsGrid excludeHref="/budget" />
         
