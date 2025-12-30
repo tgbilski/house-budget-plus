@@ -12,9 +12,7 @@ import voiceExpenseImg from '@/assets/features/voice-expense.png';
 import budgetCalculatorImg from '@/assets/features/budget-calculator.png';
 import savingsGoalsImg from '@/assets/features/savings-goals.png';
 import vacationPlannerImg from '@/assets/features/vacation-planner.png';
-import vendorComparisonImg from '@/assets/features/vendor-comparison.png';
 import giftListsImg from '@/assets/features/gift-lists.png';
-import marketplaceImg from '@/assets/features/marketplace.png';
 import aiAdvisorImg from '@/assets/features/ai-advisor.png';
 import mascotImg from '@/assets/calculator-mascot.png';
 
@@ -45,22 +43,10 @@ const calculators = [
     href: "/vacation"
   },
   {
-    title: "Vendor Comparison Tool",
-    description: "Compare contractor quotes side-by-side to find the best value for your home projects.",
-    image: vendorComparisonImg,
-    href: "/compare-prices"
-  },
-  {
     title: "Gift Lists",
     description: "Organize gift ideas for every occasion with budget tracking and shopping lists.",
     image: giftListsImg,
     href: "/gifts"
-  },
-  {
-    title: "Community Marketplace",
-    description: "Discover local vendors, vacation rentals, and handmade gifts from our community.",
-    image: marketplaceImg,
-    href: "/marketplace"
   },
   {
     title: "AI Financial Advisor",

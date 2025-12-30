@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Calculator, TrendingUp, Calendar, MapPin, Gift, Brain } from 'lucide-react';
+import { Calculator, Calendar, MapPin, Gift, Brain } from 'lucide-react';
 
 interface RelatedTool {
   title: string;
@@ -19,13 +19,6 @@ const allTools: RelatedTool[] = [
     href: "/budget",
     icon: Calculator,
     category: "planning"
-  },
-  {
-    title: "Vendor Quote Comparison",
-    description: "Compare contractor quotes and vendor proposals for your projects",
-    href: "/compare-prices",
-    icon: TrendingUp,
-    category: "comparison"
   },
   {
     title: "Savings Goals Tracker",

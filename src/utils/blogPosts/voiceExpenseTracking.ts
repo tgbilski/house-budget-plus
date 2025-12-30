@@ -218,7 +218,6 @@ Experience the future of expense management with our **AI-powered voice tracking
 - [View All Expenses](/expenses) - Track expenses with voice, PDF upload, or manual entry
 - [Monthly Budget Calculator](/budget) - Create your personalized budget in minutes
 - [Savings Goals Tracker](/savings) - Set and achieve your financial targets
-- [Compare Vendors](/compare-prices) - Find the best prices for household services
 - [AI Budget Insights](/ai-insights) - Get personalized financial recommendations
 
 ---

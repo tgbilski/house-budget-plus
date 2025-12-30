@@ -23,7 +23,6 @@ const Footer: React.FC = () => {
             <ul className="space-y-2 text-sm">
               <li><Link to="/budget" className="text-gray-600 hover:text-primary transition-colors">Monthly Budget</Link></li>
               <li><Link to="/savings" className="text-gray-600 hover:text-primary transition-colors">Savings Goals</Link></li>
-              <li><Link to="/compare-prices" className="text-gray-600 hover:text-primary transition-colors">Compare Vendors</Link></li>
               <li><Link to="/vacation" className="text-gray-600 hover:text-primary transition-colors">Vacation Planner</Link></li>
               <li><Link to="/gifts" className="text-gray-600 hover:text-primary transition-colors">Gift Lists</Link></li>
               <li><Link to="/expenses" className="text-gray-600 hover:text-primary transition-colors">Voice Expense Tracking</Link></li>

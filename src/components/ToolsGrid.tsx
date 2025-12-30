@@ -5,7 +5,6 @@ import { Link } from "react-router-dom";
 import voiceExpenseImg from '@/assets/features/voice-expense.png';
 import savingsGoalsImg from '@/assets/features/savings-goals.png';
 import vacationPlannerImg from '@/assets/features/vacation-planner.png';
-import vendorComparisonImg from '@/assets/features/vendor-comparison.png';
 import giftListsImg from '@/assets/features/gift-lists.png';
 import aiAdvisorImg from '@/assets/features/ai-advisor.png';
 
@@ -28,12 +27,6 @@ const tools = [
     description: "Compare vacation destinations, track costs, and plan your dream trips within budget.",
     image: vacationPlannerImg,
     href: "/vacation"
-  },
-  {
-    title: "Vendor Comparison Tool",
-    description: "Compare contractor quotes side-by-side to find the best value for your home projects.",
-    image: vendorComparisonImg,
-    href: "/compare-prices"
   },
   {
     title: "Gift Lists",

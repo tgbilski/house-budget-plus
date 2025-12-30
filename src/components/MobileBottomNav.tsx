@@ -1,12 +1,12 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Mic, Target, Store, Bot } from 'lucide-react';
+import { Mic, Target, Gift, Bot } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const navItems = [
   { icon: Mic, label: 'Expenses', path: '/expenses' },
   { icon: Target, label: 'Savings', path: '/savings' },
-  { icon: Store, label: 'Vendors', path: '/compare-prices' },
+  { icon: Gift, label: 'Gifts', path: '/gifts' },
   { icon: Bot, label: 'AI Chat', path: '/ai-insights' },
 ];
 
