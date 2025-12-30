@@ -99,64 +99,64 @@ export const RentVsBuy: React.FC<RentVsBuyProps> = ({
   }, [rent, rentIncrease, homePrice, downPaymentPercent, interestRate, homeAppreciation, yearsToCompare]);
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       {/* Comparison Header */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-2 gap-2 sm:gap-4">
         {/* Rent Card */}
-        <div className="bg-gradient-to-br from-amber-500/10 via-amber-500/5 to-transparent rounded-xl p-5 border border-amber-500/20">
-          <div className="flex items-center gap-2 mb-3">
-            <Building className="h-5 w-5 text-amber-600" />
-            <h4 className="font-semibold text-foreground">Renting</h4>
+        <div className="bg-gradient-to-br from-amber-500/10 via-amber-500/5 to-transparent rounded-xl p-3 sm:p-5 border border-amber-500/20">
+          <div className="flex items-center gap-2 mb-2 sm:mb-3">
+            <Building className="h-4 w-4 sm:h-5 sm:w-5 text-amber-600" />
+            <h4 className="font-semibold text-foreground text-sm sm:text-base">Renting</h4>
           </div>
-          <p className="text-3xl font-bold text-foreground mb-1">
-            {currencySymbol}{rent.toLocaleString()}<span className="text-base font-normal text-muted-foreground">/mo</span>
+          <p className="text-xl sm:text-3xl font-bold text-foreground mb-1">
+            {currencySymbol}{rent.toLocaleString()}<span className="text-xs sm:text-base font-normal text-muted-foreground">/mo</span>
           </p>
-          <p className="text-sm text-muted-foreground">
+          <p className="text-xs sm:text-sm text-muted-foreground hidden sm:block">
             {currencySymbol}{Math.round(calculations.netRentCost).toLocaleString()} total over {yearsToCompare} years
           </p>
         </div>
 
         {/* Buy Card */}
-        <div className="bg-gradient-to-br from-primary/10 via-primary/5 to-transparent rounded-xl p-5 border border-primary/20">
-          <div className="flex items-center gap-2 mb-3">
-            <Home className="h-5 w-5 text-primary" />
-            <h4 className="font-semibold text-foreground">Buying</h4>
+        <div className="bg-gradient-to-br from-primary/10 via-primary/5 to-transparent rounded-xl p-3 sm:p-5 border border-primary/20">
+          <div className="flex items-center gap-2 mb-2 sm:mb-3">
+            <Home className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />
+            <h4 className="font-semibold text-foreground text-sm sm:text-base">Buying</h4>
           </div>
-          <p className="text-3xl font-bold text-foreground mb-1">
-            {currencySymbol}{Math.round(calculations.totalMonthlyOwnership).toLocaleString()}<span className="text-base font-normal text-muted-foreground">/mo</span>
+          <p className="text-xl sm:text-3xl font-bold text-foreground mb-1">
+            {currencySymbol}{Math.round(calculations.totalMonthlyOwnership).toLocaleString()}<span className="text-xs sm:text-base font-normal text-muted-foreground">/mo</span>
           </p>
-          <p className="text-sm text-muted-foreground">
-            {currencySymbol}{Math.round(calculations.netOwnershipCost).toLocaleString()} net cost over {yearsToCompare} years
+          <p className="text-xs sm:text-sm text-muted-foreground hidden sm:block">
+            {currencySymbol}{Math.round(calculations.netOwnershipCost).toLocaleString()} net over {yearsToCompare} years
           </p>
         </div>
       </div>
 
       {/* Verdict */}
-      <div className={`rounded-xl p-5 border ${
+      <div className={`rounded-xl p-4 sm:p-5 border ${
         calculations.buyingIsBetter 
           ? 'bg-green-500/10 border-green-500/20' 
           : 'bg-amber-500/10 border-amber-500/20'
       }`}>
-        <div className="flex items-center gap-3">
-          <div className={`p-2 rounded-lg ${
+        <div className="flex items-start sm:items-center gap-3">
+          <div className={`p-2 rounded-lg shrink-0 ${
             calculations.buyingIsBetter ? 'bg-green-500/20' : 'bg-amber-500/20'
           }`}>
             {calculations.buyingIsBetter ? (
-              <Home className="h-6 w-6 text-green-600" />
+              <Home className="h-5 w-5 sm:h-6 sm:w-6 text-green-600" />
             ) : (
-              <Building className="h-6 w-6 text-amber-600" />
+              <Building className="h-5 w-5 sm:h-6 sm:w-6 text-amber-600" />
             )}
           </div>
-          <div>
-            <p className={`font-semibold text-lg ${
+          <div className="min-w-0">
+            <p className={`font-semibold text-base sm:text-lg ${
               calculations.buyingIsBetter ? 'text-green-600' : 'text-amber-600'
             }`}>
               {calculations.buyingIsBetter ? 'Buying wins!' : 'Renting is better for now'}
             </p>
-            <p className="text-sm text-muted-foreground">
+            <p className="text-xs sm:text-sm text-muted-foreground">
               {calculations.buyingIsBetter 
-                ? `Over ${yearsToCompare} years, buying saves you ${currencySymbol}${Math.round(calculations.netRentCost - calculations.netOwnershipCost).toLocaleString()} compared to renting.`
-                : `At current rates, renting costs less. Breakeven point is around year ${calculations.breakevenYear}.`
+                ? `Over ${yearsToCompare} years, buying saves you ${currencySymbol}${Math.round(calculations.netRentCost - calculations.netOwnershipCost).toLocaleString()}.`
+                : `Breakeven is around year ${calculations.breakevenYear}.`
               }
             </p>
           </div>
@@ -164,15 +164,15 @@ export const RentVsBuy: React.FC<RentVsBuyProps> = ({
       </div>
 
       {/* Adjustable Inputs */}
-      <div className="bg-muted/30 rounded-xl p-5 border border-border/50 space-y-5">
-        <h5 className="font-medium text-foreground">Adjust Your Comparison</h5>
+      <div className="bg-muted/30 rounded-xl p-4 sm:p-5 border border-border/50 space-y-4 sm:space-y-5">
+        <h5 className="font-medium text-foreground text-sm sm:text-base">Adjust Your Comparison</h5>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5">
           {/* Monthly Rent */}
           <div className="space-y-2">
-            <Label className="text-sm">Monthly Rent</Label>
+            <Label className="text-xs sm:text-sm">Monthly Rent</Label>
             <div className="relative">
-              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">
+              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground text-sm">
                 {currencySymbol}
               </span>
               <Input
@@ -186,9 +186,9 @@ export const RentVsBuy: React.FC<RentVsBuyProps> = ({
 
           {/* Home Price */}
           <div className="space-y-2">
-            <Label className="text-sm">Home Purchase Price</Label>
+            <Label className="text-xs sm:text-sm">Home Purchase Price</Label>
             <div className="relative">
-              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">
+              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground text-sm">
                 {currencySymbol}
               </span>
               <Input
@@ -202,10 +202,10 @@ export const RentVsBuy: React.FC<RentVsBuyProps> = ({
         </div>
 
         {/* Down Payment Slider */}
-        <div className="space-y-3">
+        <div className="space-y-2 sm:space-y-3">
           <div className="flex justify-between items-center">
-            <Label className="text-sm">Down Payment</Label>
-            <span className="text-sm font-medium text-primary">
+            <Label className="text-xs sm:text-sm">Down Payment</Label>
+            <span className="text-xs sm:text-sm font-medium text-primary">
               {downPaymentPercent}% ({currencySymbol}{Math.round(calculations.downPayment).toLocaleString()})
             </span>
           </div>
@@ -219,10 +219,10 @@ export const RentVsBuy: React.FC<RentVsBuyProps> = ({
         </div>
 
         {/* Years to Compare */}
-        <div className="space-y-3">
+        <div className="space-y-2 sm:space-y-3">
           <div className="flex justify-between items-center">
-            <Label className="text-sm">Years to Compare</Label>
-            <span className="text-sm font-medium">{yearsToCompare} years</span>
+            <Label className="text-xs sm:text-sm">Years to Compare</Label>
+            <span className="text-xs sm:text-sm font-medium">{yearsToCompare} years</span>
           </div>
           <Slider
             value={[yearsToCompare]}
@@ -235,54 +235,53 @@ export const RentVsBuy: React.FC<RentVsBuyProps> = ({
       </div>
 
       {/* Key Insights */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-        <div className="bg-card rounded-xl p-4 border border-border/50">
-          <div className="flex items-center gap-2 mb-1">
-            <Calendar className="h-4 w-4 text-muted-foreground" />
+      <div className="grid grid-cols-2 gap-2 sm:gap-3">
+        <div className="bg-card rounded-xl p-3 sm:p-4 border border-border/50">
+          <div className="flex items-center gap-1 sm:gap-2 mb-1">
+            <Calendar className="h-3 w-3 sm:h-4 sm:w-4 text-muted-foreground" />
             <p className="text-xs text-muted-foreground">Breakeven</p>
           </div>
-          <p className="text-lg font-bold text-foreground">
+          <p className="text-base sm:text-lg font-bold text-foreground">
             Year {calculations.breakevenYear}
           </p>
         </div>
 
-        <div className="bg-card rounded-xl p-4 border border-border/50">
-          <div className="flex items-center gap-2 mb-1">
-            <TrendingUp className="h-4 w-4 text-muted-foreground" />
+        <div className="bg-card rounded-xl p-3 sm:p-4 border border-border/50">
+          <div className="flex items-center gap-1 sm:gap-2 mb-1">
+            <TrendingUp className="h-3 w-3 sm:h-4 sm:w-4 text-muted-foreground" />
             <p className="text-xs text-muted-foreground">Home Value ({yearsToCompare}yr)</p>
           </div>
-          <p className="text-lg font-bold text-foreground">
-            {currencySymbol}{Math.round(calculations.futureHomeValue).toLocaleString()}
+          <p className="text-base sm:text-lg font-bold text-foreground">
+            {currencySymbol}{Math.round(calculations.futureHomeValue / 1000)}k
           </p>
         </div>
 
-        <div className="bg-card rounded-xl p-4 border border-border/50">
-          <div className="flex items-center gap-2 mb-1">
-            <DollarSign className="h-4 w-4 text-muted-foreground" />
+        <div className="bg-card rounded-xl p-3 sm:p-4 border border-border/50">
+          <div className="flex items-center gap-1 sm:gap-2 mb-1">
+            <DollarSign className="h-3 w-3 sm:h-4 sm:w-4 text-muted-foreground" />
             <p className="text-xs text-muted-foreground">Equity Built</p>
           </div>
-          <p className="text-lg font-bold text-green-600">
-            {currencySymbol}{Math.round(calculations.totalEquity).toLocaleString()}
+          <p className="text-base sm:text-lg font-bold text-green-600">
+            {currencySymbol}{Math.round(calculations.totalEquity / 1000)}k
           </p>
         </div>
 
-        <div className="bg-card rounded-xl p-4 border border-border/50">
-          <div className="flex items-center gap-2 mb-1">
-            <ArrowRight className="h-4 w-4 text-muted-foreground" />
+        <div className="bg-card rounded-xl p-3 sm:p-4 border border-border/50">
+          <div className="flex items-center gap-1 sm:gap-2 mb-1">
+            <ArrowRight className="h-3 w-3 sm:h-4 sm:w-4 text-muted-foreground" />
             <p className="text-xs text-muted-foreground">Monthly Diff</p>
           </div>
-          <p className={`text-lg font-bold ${calculations.monthlyDifference > 0 ? 'text-red-500' : 'text-green-600'}`}>
+          <p className={`text-base sm:text-lg font-bold ${calculations.monthlyDifference > 0 ? 'text-red-500' : 'text-green-600'}`}>
             {calculations.monthlyDifference > 0 ? '+' : ''}{currencySymbol}{Math.round(calculations.monthlyDifference).toLocaleString()}
           </p>
         </div>
       </div>
 
       {/* Assumptions */}
-      <div className="bg-muted/20 rounded-xl p-4 border border-border/30">
+      <div className="bg-muted/20 rounded-xl p-3 sm:p-4 border border-border/30">
         <p className="text-xs text-muted-foreground">
-          <strong>Assumptions:</strong> {rentIncrease}% annual rent increase, {homeAppreciation}% home appreciation, 
-          30-year fixed mortgage at {interestRate}%, 1.2% property tax, 0.4% insurance, 1% maintenance. 
-          Does not include tax benefits of homeownership or investment returns on down payment if renting.
+          <strong>Disclaimer:</strong> {rentIncrease}% annual rent increase, {homeAppreciation}% home appreciation, 
+          30-year fixed mortgage at {interestRate}%. These are estimates only. Consult a financial advisor before making decisions.
         </p>
       </div>
     </div>

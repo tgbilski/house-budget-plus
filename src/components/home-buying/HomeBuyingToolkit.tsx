@@ -117,39 +117,46 @@ export const HomeBuyingToolkit: React.FC<HomeBuyingToolkitProps> = ({
   return (
     <div className="rounded-xl border-[4px] border-stroke shadow-cartoon bg-card overflow-hidden">
       {/* Header */}
-      <div className="bg-gradient-to-r from-primary/10 via-primary/5 to-transparent p-6 border-b border-border/50">
+      <div className="bg-gradient-to-r from-primary/10 via-primary/5 to-transparent p-4 sm:p-6 border-b border-border/50">
         <div className="flex items-center gap-3">
-          <div className="p-2 rounded-lg bg-primary/20">
-            <ShoppingBag className="h-6 w-6 text-primary" />
+          <div className="p-2 rounded-lg bg-primary/20 shrink-0">
+            <ShoppingBag className="h-5 w-5 sm:h-6 sm:w-6 text-primary" />
           </div>
-          <div>
-            <div className="flex items-center gap-2">
-              <h3 className="text-xl font-bold text-foreground">Major Purchase Toolkit</h3>
-              <span className="px-2 py-0.5 text-xs font-medium bg-primary/20 text-primary rounded-full">Premium</span>
+          <div className="min-w-0">
+            <div className="flex items-center gap-2 flex-wrap">
+              <h3 className="text-lg sm:text-xl font-bold text-foreground">Major Purchase Toolkit</h3>
+              <span className="px-2 py-0.5 text-xs font-medium bg-primary/20 text-primary rounded-full shrink-0">Premium</span>
             </div>
-            <p className="text-sm text-muted-foreground">Plan your home & car purchases</p>
+            <p className="text-xs sm:text-sm text-muted-foreground">Plan your home & car purchases</p>
           </div>
         </div>
       </div>
 
+      {/* Financial Disclaimer */}
+      <div className="bg-amber-500/10 border-b border-amber-500/20 px-4 sm:px-6 py-3">
+        <p className="text-xs text-amber-700 dark:text-amber-400">
+          <strong>⚠️ Important:</strong> These are estimates for educational purposes only. Do not make financial decisions you're uncomfortable with. Always consult a qualified financial advisor before making major purchases.
+        </p>
+      </div>
+
       {/* Tabs */}
-      <Tabs value={activeTab} onValueChange={setActiveTab} className="p-6">
-        <TabsList className="grid w-full grid-cols-4 mb-6">
-          <TabsTrigger value="affordability" className="gap-2">
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="p-4 sm:p-6">
+        <TabsList className="grid w-full grid-cols-4 mb-4 sm:mb-6 h-auto gap-1">
+          <TabsTrigger value="affordability" className="gap-1 sm:gap-2 px-2 py-2 text-xs sm:text-sm flex-col sm:flex-row h-auto">
             <PieChart className="h-4 w-4" />
-            <span className="hidden sm:inline">Affordability</span>
+            <span className="hidden xs:inline sm:inline">Afford</span>
           </TabsTrigger>
-          <TabsTrigger value="buying-power" className="gap-2">
+          <TabsTrigger value="buying-power" className="gap-1 sm:gap-2 px-2 py-2 text-xs sm:text-sm flex-col sm:flex-row h-auto">
             <Home className="h-4 w-4" />
-            <span className="hidden sm:inline">Home Power</span>
+            <span className="hidden xs:inline sm:inline">Home</span>
           </TabsTrigger>
-          <TabsTrigger value="rent-vs-buy" className="gap-2">
+          <TabsTrigger value="rent-vs-buy" className="gap-1 sm:gap-2 px-2 py-2 text-xs sm:text-sm flex-col sm:flex-row h-auto">
             <Scale className="h-4 w-4" />
-            <span className="hidden sm:inline">Rent vs Buy</span>
+            <span className="hidden xs:inline sm:inline">Rent/Buy</span>
           </TabsTrigger>
-          <TabsTrigger value="car" className="gap-2">
+          <TabsTrigger value="car" className="gap-1 sm:gap-2 px-2 py-2 text-xs sm:text-sm flex-col sm:flex-row h-auto">
             <Car className="h-4 w-4" />
-            <span className="hidden sm:inline">Car</span>
+            <span className="hidden xs:inline sm:inline">Car</span>
           </TabsTrigger>
         </TabsList>
 
