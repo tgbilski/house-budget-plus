@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Home, Lock, ChevronRight, Sparkles, PieChart, Calculator, Scale } from 'lucide-react';
+import { Home, Lock, ChevronRight, Sparkles, PieChart, Calculator, Scale, Car, ShoppingBag } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
 import { useSubscription } from '@/hooks/useSubscription';
@@ -7,6 +7,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { AffordabilityCheck } from './AffordabilityCheck';
 import { BuyingPower } from './BuyingPower';
 import { RentVsBuy } from './RentVsBuy';
+import { CarAffordability } from './CarAffordability';
 import { Link } from 'react-router-dom';
 
 interface HomeBuyingToolkitProps {
@@ -38,11 +39,11 @@ export const HomeBuyingToolkit: React.FC<HomeBuyingToolkitProps> = ({
         <div className="bg-gradient-to-r from-primary/10 via-primary/5 to-transparent p-6 border-b border-border/50">
           <div className="flex items-center gap-3 mb-2">
             <div className="p-2 rounded-lg bg-primary/20">
-              <Home className="h-6 w-6 text-primary" />
+              <ShoppingBag className="h-6 w-6 text-primary" />
             </div>
             <div>
-              <h3 className="text-xl font-bold text-foreground">Home Buying Toolkit</h3>
-              <p className="text-sm text-muted-foreground">Premium calculators for your home buying journey</p>
+              <h3 className="text-xl font-bold text-foreground">Major Purchase Toolkit</h3>
+              <p className="text-sm text-muted-foreground">Premium calculators for homes & cars</p>
             </div>
           </div>
         </div>
@@ -67,26 +68,19 @@ export const HomeBuyingToolkit: React.FC<HomeBuyingToolkitProps> = ({
           )}
 
           {/* Feature Preview */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
             <div className="flex items-start gap-3 p-4 bg-muted/20 rounded-xl border border-border/30">
-              <PieChart className="h-5 w-5 text-primary mt-0.5" />
+              <Home className="h-5 w-5 text-primary mt-0.5" />
               <div>
-                <p className="font-medium text-foreground text-sm">Affordability Check</p>
-                <p className="text-xs text-muted-foreground">See if you're spending too much on housing</p>
+                <p className="font-medium text-foreground text-sm">Home Buying</p>
+                <p className="text-xs text-muted-foreground">Affordability, buying power & rent vs buy</p>
               </div>
             </div>
             <div className="flex items-start gap-3 p-4 bg-muted/20 rounded-xl border border-border/30">
-              <Calculator className="h-5 w-5 text-primary mt-0.5" />
+              <Car className="h-5 w-5 text-primary mt-0.5" />
               <div>
-                <p className="font-medium text-foreground text-sm">Buying Power</p>
-                <p className="text-xs text-muted-foreground">Calculate max home price with scenarios</p>
-              </div>
-            </div>
-            <div className="flex items-start gap-3 p-4 bg-muted/20 rounded-xl border border-border/30">
-              <Scale className="h-5 w-5 text-primary mt-0.5" />
-              <div>
-                <p className="font-medium text-foreground text-sm">Rent vs Buy</p>
-                <p className="text-xs text-muted-foreground">Find your breakeven point</p>
+                <p className="font-medium text-foreground text-sm">Car Buying</p>
+                <p className="text-xs text-muted-foreground">Max price, loan terms & ownership costs</p>
               </div>
             </div>
           </div>
@@ -95,7 +89,7 @@ export const HomeBuyingToolkit: React.FC<HomeBuyingToolkitProps> = ({
           <div className="flex flex-col items-center text-center">
             <Lock className="h-8 w-8 text-muted-foreground mb-3" />
             <p className="text-sm text-muted-foreground mb-4">
-              Unlock the full Home Buying Toolkit with Premium
+              Unlock the full Major Purchase Toolkit with Premium
             </p>
             {user ? (
               <Link to="/settings">
@@ -126,32 +120,36 @@ export const HomeBuyingToolkit: React.FC<HomeBuyingToolkitProps> = ({
       <div className="bg-gradient-to-r from-primary/10 via-primary/5 to-transparent p-6 border-b border-border/50">
         <div className="flex items-center gap-3">
           <div className="p-2 rounded-lg bg-primary/20">
-            <Home className="h-6 w-6 text-primary" />
+            <ShoppingBag className="h-6 w-6 text-primary" />
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <h3 className="text-xl font-bold text-foreground">Home Buying Toolkit</h3>
+              <h3 className="text-xl font-bold text-foreground">Major Purchase Toolkit</h3>
               <span className="px-2 py-0.5 text-xs font-medium bg-primary/20 text-primary rounded-full">Premium</span>
             </div>
-            <p className="text-sm text-muted-foreground">Plan your path to homeownership</p>
+            <p className="text-sm text-muted-foreground">Plan your home & car purchases</p>
           </div>
         </div>
       </div>
 
       {/* Tabs */}
       <Tabs value={activeTab} onValueChange={setActiveTab} className="p-6">
-        <TabsList className="grid w-full grid-cols-3 mb-6">
+        <TabsList className="grid w-full grid-cols-4 mb-6">
           <TabsTrigger value="affordability" className="gap-2">
             <PieChart className="h-4 w-4" />
             <span className="hidden sm:inline">Affordability</span>
           </TabsTrigger>
           <TabsTrigger value="buying-power" className="gap-2">
-            <Calculator className="h-4 w-4" />
-            <span className="hidden sm:inline">Buying Power</span>
+            <Home className="h-4 w-4" />
+            <span className="hidden sm:inline">Home Power</span>
           </TabsTrigger>
           <TabsTrigger value="rent-vs-buy" className="gap-2">
             <Scale className="h-4 w-4" />
             <span className="hidden sm:inline">Rent vs Buy</span>
+          </TabsTrigger>
+          <TabsTrigger value="car" className="gap-2">
+            <Car className="h-4 w-4" />
+            <span className="hidden sm:inline">Car</span>
           </TabsTrigger>
         </TabsList>
 
@@ -176,6 +174,14 @@ export const HomeBuyingToolkit: React.FC<HomeBuyingToolkitProps> = ({
           <RentVsBuy
             monthlyIncome={monthlyIncome}
             currentRent={housingExpense}
+            currencySymbol={currencySymbol}
+          />
+        </TabsContent>
+
+        <TabsContent value="car">
+          <CarAffordability
+            monthlyIncome={monthlyIncome}
+            monthlyExpenses={monthlyExpenses}
             currencySymbol={currencySymbol}
           />
         </TabsContent>
