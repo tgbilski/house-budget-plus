@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Link, useNavigate } from "react-router-dom";
 import { SEO } from "@/components/SEO";
 import { trackButtonClick } from "@/utils/analytics";
-import { User, CheckCircle2, PiggyBank, Target, Gift, Plane, Mic } from "lucide-react";
+import { User, PiggyBank, Target, Gift, Plane, Mic } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
@@ -315,15 +315,6 @@ export default function Home() {
                     </div>
                   </div>
 
-                  <div className="flex items-start gap-4">
-                    <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-green-500/10 flex items-center justify-center">
-                      <CheckCircle2 className="w-6 h-6 text-green-600" />
-                    </div>
-                    <div>
-                      <h4 className="font-semibold text-foreground text-lg">Vendor Comparison</h4>
-                      <p className="text-muted-foreground">Compare contractor quotes to get the best value</p>
-                    </div>
-                  </div>
                 </div>
               </div>
             </div>

@@ -1,6 +1,5 @@
 import { 
   PiggyBank, 
-  ShoppingCart, 
   Plane, 
   Gift, 
   Brain,
@@ -49,7 +48,6 @@ const navigationItems = [
   { title: "Monthly Budget", url: "/budget", icon: HouseDollarIcon },
   { title: "Voice Expenses", url: "/expenses", icon: Mic },
   { title: "Savings", url: "/savings", icon: PiggyBank },
-  { title: "Compare Vendors", url: "/compare-prices", icon: ShoppingCart },
   { title: "Vacation", url: "/vacation", icon: Plane },
   { title: "Gifts", url: "/gifts", icon: Gift },
   { title: "Blog", url: "/blog", icon: BookOpen },
