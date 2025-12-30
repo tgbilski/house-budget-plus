@@ -1,5 +1,6 @@
 import React, { useState, useMemo } from 'react';
-import { Home, Calculator, TrendingUp, DollarSign, Percent } from 'lucide-react';
+import { Home, Calculator, TrendingUp, DollarSign, Percent, ExternalLink, Search } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Slider } from '@/components/ui/slider';
@@ -222,6 +223,48 @@ export const BuyingPower: React.FC<BuyingPowerProps> = ({
           <p className="text-lg font-bold text-foreground">
             {currencySymbol}{Math.round(calculations.closingCostsLow).toLocaleString()} - {currencySymbol}{Math.round(calculations.closingCostsHigh).toLocaleString()}
           </p>
+        </div>
+      </div>
+
+      {/* Find Homes CTA */}
+      <div className="bg-gradient-to-r from-primary/10 via-primary/5 to-transparent rounded-xl p-5 border border-primary/20">
+        <div className="flex flex-col sm:flex-row items-center gap-4">
+          <div className="flex-1 text-center sm:text-left">
+            <h5 className="font-semibold text-foreground mb-1 flex items-center gap-2 justify-center sm:justify-start">
+              <Search className="h-5 w-5 text-primary" />
+              Ready to Browse Homes?
+            </h5>
+            <p className="text-sm text-muted-foreground">
+              Search Zillow for homes up to {currencySymbol}{Math.round(calculations.homePrice).toLocaleString()}
+            </p>
+          </div>
+          <div className="flex gap-2">
+            <a
+              href={`https://www.zillow.com/homes/for_sale/?searchQueryState=${encodeURIComponent(JSON.stringify({
+                filterState: {
+                  price: { max: Math.round(calculations.homePrice) }
+                }
+              }))}`}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <Button className="gap-2 shadow-cartoon border-[3px] border-stroke hover:translate-y-[-2px] hover:shadow-cartoon-hover transition-all">
+                <Home className="h-4 w-4" />
+                Search Zillow
+                <ExternalLink className="h-3 w-3" />
+              </Button>
+            </a>
+            <a
+              href={`https://www.realtor.com/realestateandhomes-search?price_max=${Math.round(calculations.homePrice)}`}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <Button variant="outline" className="gap-2 border-[3px] border-stroke hover:translate-y-[-2px] transition-all">
+                Realtor.com
+                <ExternalLink className="h-3 w-3" />
+              </Button>
+            </a>
+          </div>
         </div>
       </div>
 
