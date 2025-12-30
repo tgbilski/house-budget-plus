@@ -1,4 +1,5 @@
 import React from 'react';
+import { Helmet } from 'react-helmet-async';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 
 interface FAQItem {
@@ -12,7 +13,7 @@ interface FAQProps {
 }
 
 export const FAQ: React.FC<FAQProps> = ({ faqs, title = "Frequently Asked Questions" }) => {
-  // Generate structured data for FAQ
+  // Generate structured data for FAQ - using Helmet for proper SEO crawling
   const structuredData = {
     "@context": "https://schema.org",
     "@type": "FAQPage",
@@ -28,9 +29,11 @@ export const FAQ: React.FC<FAQProps> = ({ faqs, title = "Frequently Asked Questi
 
   return (
     <section className="mt-12 max-w-4xl mx-auto">
-      <script type="application/ld+json">
-        {JSON.stringify(structuredData)}
-      </script>
+      <Helmet>
+        <script type="application/ld+json">
+          {JSON.stringify(structuredData)}
+        </script>
+      </Helmet>
       
       <div className="bg-card border border-border rounded-lg p-6">
         <h2 className="text-2xl font-semibold text-foreground mb-6">{title}</h2>
