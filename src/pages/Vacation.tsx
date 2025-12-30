@@ -1,6 +1,6 @@
 // src/pages/Vacation.tsx
 import React, { useEffect, useState } from 'react';
-import { Plane, Plus, MapPin } from 'lucide-react';
+import { Plane, Plus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
@@ -122,14 +122,7 @@ const Vacation: React.FC = () => {
             onUpdateTitle={updateVacationTitle}
           />
 
-          <div className="flex flex-col sm:flex-row justify-end gap-2">
-            <Button 
-              onClick={() => navigate('/marketplace')} 
-              variant="outline" 
-              className="gap-2"
-            >
-              <MapPin className="h-4 w-4" /> Explore Destinations
-            </Button>
+          <div className="flex justify-end">
             <Button onClick={addOption} className="gap-2 bg-teal hover:bg-teal/90 text-teal-foreground">
               <Plus className="h-4 w-4" /> Add Destination Option
             </Button>
