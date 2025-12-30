@@ -15,7 +15,6 @@ import {
 const searchablePages = [
   { title: 'Monthly Budget Calculator', path: '/budget', keywords: ['budget', 'income', 'expenses', 'calculator'] },
   { title: 'Savings Goals', path: '/savings', keywords: ['savings', 'goals', 'tracker', 'progress'] },
-  { title: 'Compare Vendors', path: '/compare-prices', keywords: ['vendors', 'contractors', 'compare', 'quotes'] },
   { title: 'Vacation Planner', path: '/vacation', keywords: ['vacation', 'travel', 'trip', 'planner'] },
   { title: 'Gift Lists', path: '/gifts', keywords: ['gifts', 'presents', 'occasions', 'shopping'] },
   { title: 'AI Financial Advisor', path: '/ai-insights', keywords: ['ai', 'insights', 'advice', 'assistant'] },

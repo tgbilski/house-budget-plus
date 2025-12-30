@@ -82,38 +82,6 @@ export const seoData: Record<string, SEOData> = {
     }
   },
   
-  compareVendors: {
-    title: "Vendor Quote Comparison Tool - Compare Prices & Services",
-    description: "Compare vendor quotes easily with our free comparison tool. Evaluate prices, services, financing options, and contractor reliability. Make informed decisions for home improvements and services.",
-    keywords: "vendor comparison, quote comparison, contractor quotes, price comparison tool, home improvement quotes, service comparison",
-    canonical: "https://www.housebudgetcalculator.com/compare-prices",
-    ogImage: "https://www.housebudgetcalculator.com/assets/vendor-compare-preview.png",
-    structuredData: {
-      "@context": "https://schema.org",
-      "@type": "HowTo",
-      "name": "How to Compare Vendor Quotes",
-      "description": "Compare contractor quotes and find the best value for your projects",
-      "step": [
-        {
-          "@type": "HowToStep",
-          "name": "Create a Project",
-          "text": "Start by naming your project (e.g., Kitchen Remodel, Roof Repair)"
-        },
-        {
-          "@type": "HowToStep",
-          "name": "Add Vendor Quotes",
-          "text": "Enter quotes from different contractors including price, timeline, and services"
-        },
-        {
-          "@type": "HowToStep",
-          "name": "Compare and Choose",
-          "text": "Review ratings, financing options, and total costs to select the best vendor"
-        }
-      ],
-      "totalTime": "PT10M"
-    }
-  },
-  
   takeoutCalendar: {
     title: "Takeout & Dining Expense Tracker - Monthly Food Budget Calendar",
     description: "Track your takeout and dining expenses with our interactive calendar. Monitor daily food spending, identify patterns, and optimize your dining budget with visual charts and analytics.",
