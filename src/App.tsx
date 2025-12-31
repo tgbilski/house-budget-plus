@@ -223,13 +223,7 @@ const AppLayout = () => {
   // Features page and regular pages with full navigation
   return (
     <SidebarProvider defaultOpen={false}>
-      <div 
-        className="min-h-screen w-full flex flex-col relative"
-        style={{ 
-          backgroundColor: 'hsl(213, 50%, 22%)',
-          backgroundImage: 'repeating-linear-gradient(45deg, transparent, transparent 40px, rgba(255,255,255,0.04) 40px, rgba(255,255,255,0.04) 42px)'
-        }}
-      >
+      <div className="min-h-screen w-full flex flex-col bg-background">
         <Header />
         <div className="flex flex-1">
           {!isMobile && <AppSidebar />}
