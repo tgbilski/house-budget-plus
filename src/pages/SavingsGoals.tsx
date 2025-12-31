@@ -56,7 +56,6 @@ const SavingsGoals: React.FC = () => {
 
   return (
     <div className={cn(
-      "bg-gradient-to-br from-white via-background to-sage/10",
       isMobileApp ? "" : "min-h-screen"
     )}>
       <SEO
