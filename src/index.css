@@ -14,8 +14,8 @@
 
 @layer base {
   :root {
-    /* Warm cream background */
-    --background: 45 30% 98%;
+    /* Neutral gray background */
+    --background: 220 10% 94%;
     --foreground: 220 20% 15%;
 
     /* Soft white cards */
@@ -30,11 +30,11 @@
     --primary-foreground: 0 0% 100%;
     --primary-glow: 213 60% 40%;
 
-    /* Warm cream secondary */
-    --secondary: 45 40% 94%;
+    /* Neutral gray secondary */
+    --secondary: 220 10% 90%;
     --secondary-foreground: 220 20% 15%;
 
-    --muted: 45 20% 92%;
+    --muted: 220 10% 88%;
     --muted-foreground: 220 10% 40%;
 
     /* Soft blue accent */
@@ -62,9 +62,9 @@
     --warning: 42 95% 55%;
     --warning-foreground: 220 20% 15%;
 
-    /* Soft warm borders */
-    --border: 30 20% 88%;
-    --input: 30 20% 88%;
+    /* Neutral gray borders */
+    --border: 220 10% 85%;
+    --input: 220 10% 85%;
     --ring: 213 50% 28%;
 
     /* Cartoon stroke */
@@ -78,7 +78,7 @@
     --gradient-primary: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--primary-glow)));
     --gradient-teal: linear-gradient(135deg, hsl(var(--teal)), hsl(var(--teal-glow)));
     --gradient-subtle: linear-gradient(180deg, hsl(var(--background)), hsl(var(--secondary)));
-    --gradient-warm: linear-gradient(135deg, hsl(45 50% 96%), hsl(35 40% 94%));
+    --gradient-warm: linear-gradient(135deg, hsl(220 10% 96%), hsl(220 10% 92%));
 
     /* Playful shadows */
     --shadow-cartoon: 4px 4px 0px hsl(var(--stroke));
@@ -92,46 +92,47 @@
     --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     --transition-bounce: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
 
-    /* Sidebar colors */
-    --sidebar-background: 45 25% 97%;
-    --sidebar-foreground: 220 20% 15%;
-    --sidebar-primary: 213 50% 28%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 45 30% 94%;
-    --sidebar-accent-foreground: 220 20% 15%;
-    --sidebar-border: 30 20% 88%;
-    --sidebar-ring: 213 50% 28%;
+    /* Sidebar colors - Dark blue with white text/icons */
+    --sidebar-background: 213 50% 22%;
+    --sidebar-foreground: 0 0% 100%;
+    --sidebar-primary: 0 0% 100%;
+    --sidebar-primary-foreground: 213 50% 22%;
+    --sidebar-accent: 213 40% 30%;
+    --sidebar-accent-foreground: 0 0% 100%;
+    --sidebar-border: 213 40% 30%;
+    --sidebar-ring: 0 0% 100%;
   }
 
   .dark {
     --background: 220 20% 8%;
-    --foreground: 45 20% 95%;
+    --foreground: 220 10% 95%;
     --card: 220 20% 12%;
-    --card-foreground: 45 20% 95%;
+    --card-foreground: 220 10% 95%;
     --popover: 220 20% 12%;
-    --popover-foreground: 45 20% 95%;
+    --popover-foreground: 220 10% 95%;
     --primary: 213 50% 40%;
     --primary-foreground: 0 0% 100%;
     --secondary: 220 15% 18%;
-    --secondary-foreground: 45 20% 95%;
+    --secondary-foreground: 220 10% 95%;
     --muted: 220 15% 18%;
-    --muted-foreground: 45 10% 60%;
+    --muted-foreground: 220 10% 60%;
     --accent: 220 15% 22%;
-    --accent-foreground: 45 20% 95%;
+    --accent-foreground: 220 10% 95%;
     --destructive: 0 72% 55%;
     --destructive-foreground: 0 0% 100%;
     --border: 220 15% 22%;
     --input: 220 15% 22%;
     --ring: 213 50% 40%;
-    --stroke: 45 20% 85%;
-    --sidebar-background: 220 20% 6%;
-    --sidebar-foreground: 45 20% 95%;
-    --sidebar-primary: 213 50% 40%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 220 15% 18%;
-    --sidebar-accent-foreground: 45 20% 95%;
-    --sidebar-border: 220 15% 22%;
-    --sidebar-ring: 213 50% 40%;
+    --stroke: 220 10% 85%;
+    /* Sidebar stays dark blue in dark mode too */
+    --sidebar-background: 213 50% 18%;
+    --sidebar-foreground: 0 0% 100%;
+    --sidebar-primary: 0 0% 100%;
+    --sidebar-primary-foreground: 213 50% 18%;
+    --sidebar-accent: 213 40% 25%;
+    --sidebar-accent-foreground: 0 0% 100%;
+    --sidebar-border: 213 40% 25%;
+    --sidebar-ring: 0 0% 100%;
   }
 }
 
