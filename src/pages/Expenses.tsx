@@ -274,7 +274,7 @@ export default function Expenses() {
   // If not logged in, show auth prompt
   if (!user) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-white via-background to-sage/10 flex items-center justify-center p-4">
+      <div className="min-h-screen flex items-center justify-center p-4">
         <Card className="max-w-md w-full border-2 shadow-[var(--shadow-elegant)]">
           <CardContent className="pt-6 text-center space-y-4">
             <div className="w-16 h-16 bg-gradient-to-br from-primary/20 to-primary-glow/20 rounded-full flex items-center justify-center mx-auto">
@@ -298,7 +298,7 @@ export default function Expenses() {
   // Mobile app subscription check
   if (isMobileApp && !subscribed) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-white via-background to-sage/10 flex items-center justify-center p-4">
+      <div className="min-h-screen flex items-center justify-center p-4">
         <Card className="max-w-md w-full border-2 shadow-[var(--shadow-elegant)]">
           <CardContent className="pt-6 text-center space-y-6">
             <div className="w-16 h-16 bg-gradient-to-br from-amber-500/20 to-orange-500/20 rounded-full flex items-center justify-center mx-auto">
@@ -337,7 +337,7 @@ export default function Expenses() {
   // Web app subscription check
   if (!subscribed) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-white via-background to-sage/10">
+      <div className="min-h-screen">
         <SEO
           title="Voice Expense Tracker - House Budget Calculator"
           description="Track your daily expenses effortlessly with voice input and AI-powered categorization"
@@ -480,7 +480,6 @@ export default function Expenses() {
 
   return (
     <div className={cn(
-      "bg-gradient-to-br from-white via-background to-sage/10",
       isMobileApp ? "" : "min-h-screen"
     )}>
       <SEO
