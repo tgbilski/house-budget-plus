@@ -20,7 +20,6 @@ import { supabase } from "@/integrations/supabase/client";
 const AGENTS: Record<string, { name: string; emoji: string; color: string }> = {
   budget: { name: "Budget Agent", emoji: "💰", color: "bg-green-100 text-green-800" },
   savings: { name: "Savings Agent", emoji: "🎯", color: "bg-blue-100 text-blue-800" },
-  vendors: { name: "Vendors Agent", emoji: "🏪", color: "bg-purple-100 text-purple-800" },
   vacation: { name: "Vacation Agent", emoji: "✈️", color: "bg-orange-100 text-orange-800" },
   expenses: { name: "Expenses Agent", emoji: "📊", color: "bg-red-100 text-red-800" },
   gifts: { name: "Gifts Agent", emoji: "🎁", color: "bg-pink-100 text-pink-800" },
@@ -294,7 +293,7 @@ export default function AIInsights() {
                   rows={4}
                   value={question}
                   onChange={(e) => setQuestion(e.target.value)}
-                  placeholder="Ask about your budget, savings goals, expenses, vacation plans, vendor quotes, or gift lists..."
+                  placeholder="Ask about your budget, savings goals, expenses, vacation plans, or gift lists..."
                   disabled={loading}
                   className="bg-background border text-foreground placeholder:text-muted-foreground focus:border-primary focus:ring-2 focus:ring-primary/20 rounded-lg p-4 resize-none"
                 />
