@@ -4,6 +4,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { Plus, PiggyBank, Receipt, DollarSign } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import BudgetCalculator from '@/components/BudgetCalculator';
 
@@ -219,11 +220,6 @@ const MonthlyBudget: React.FC = () => {
                   Your Monthly Budget
                 </h1>
                 
-                {/* AI Promo Banner */}
-                <div className="bg-gray-800 text-white px-4 py-2.5 rounded-lg text-sm md:text-base font-medium">
-                  For the price of a cup of coffee per month, unleash AI on your budget!
-                </div>
-                
                 {/* Quick Stats Summary */}
                 {(totalIncome > 0 || totalExpenses > 0) && (
                   <div className="flex flex-wrap gap-4 pt-2">
@@ -257,6 +253,14 @@ const MonthlyBudget: React.FC = () => {
             </div>
           </div>
         </div>
+
+        {/* AI Promo Banner */}
+        <Link 
+          to="/settings" 
+          className="block bg-sidebar text-sidebar-foreground px-4 py-3 rounded-lg text-sm md:text-base font-medium text-center mb-8 hover:opacity-90 transition-opacity"
+        >
+          For the price of a cup of coffee per month, unleash AI on your budget!
+        </Link>
 
         <WarningBanner />
 
