@@ -20,6 +20,7 @@ export const BuyingPower: React.FC<BuyingPowerProps> = ({
   const [interestRate, setInterestRate] = useState(6.5);
   const [loanTermYears, setLoanTermYears] = useState(30);
   const [monthlyDebts, setMonthlyDebts] = useState(0);
+  const [paymentPercent, setPaymentPercent] = useState(100);
 
   const annualIncome = monthlyIncome * 12;
 
@@ -50,9 +51,12 @@ export const BuyingPower: React.FC<BuyingPowerProps> = ({
     return Math.max(0, loanAmount);
   };
 
+  // Apply payment percentage adjustment
+  const adjustedMonthlyPayment = availableForHousing * (paymentPercent / 100);
+
   // Calculate home prices for different scenarios
   const calculations = useMemo(() => {
-    const maxLoan = calculateMaxLoan(availableForHousing);
+    const maxLoan = calculateMaxLoan(adjustedMonthlyPayment);
     const homePrice = maxLoan / (1 - downPaymentPercent / 100);
     const downPayment = homePrice * (downPaymentPercent / 100);
     
@@ -81,10 +85,11 @@ export const BuyingPower: React.FC<BuyingPowerProps> = ({
       downPayment,
       closingCostsLow,
       closingCostsHigh,
-      monthlyPayment: availableForHousing,
+      monthlyPayment: adjustedMonthlyPayment,
+      maxMonthlyPayment: availableForHousing,
       scenarios,
     };
-  }, [availableForHousing, downPaymentPercent, interestRate, loanTermYears]);
+  }, [adjustedMonthlyPayment, availableForHousing, downPaymentPercent, interestRate, loanTermYears]);
 
   return (
     <div className="space-y-4 sm:space-y-6">
@@ -163,6 +168,28 @@ export const BuyingPower: React.FC<BuyingPowerProps> = ({
               className="pl-8"
               placeholder="0"
             />
+          </div>
+        </div>
+
+        {/* Monthly Payment Limit Slider */}
+        <div className="space-y-2 sm:space-y-3">
+          <div className="flex justify-between items-center">
+            <Label className="text-xs sm:text-sm">Max Monthly Payment</Label>
+            <span className="text-xs sm:text-sm font-medium text-primary">
+              {paymentPercent}% ({currencySymbol}{Math.round(adjustedMonthlyPayment).toLocaleString()})
+            </span>
+          </div>
+          <Slider
+            value={[paymentPercent]}
+            onValueChange={(v) => setPaymentPercent(v[0])}
+            min={50}
+            max={100}
+            step={5}
+            className="w-full"
+          />
+          <div className="flex justify-between text-xs text-muted-foreground">
+            <span>50% ({currencySymbol}{Math.round(availableForHousing * 0.5).toLocaleString()})</span>
+            <span>100% ({currencySymbol}{Math.round(availableForHousing).toLocaleString()})</span>
           </div>
         </div>
       </div>
