@@ -14,13 +14,6 @@ export const AGENTS = {
     tables: ["savings_goals", "savings_entries"],
     keywords: ["savings", "save", "goal", "target", "progress", "emergency fund", "saving"]
   },
-  vendors: {
-    name: "Vendors Agent",
-    emoji: "🏪", 
-    description: "Handles vendor comparisons and quotes questions",
-    tables: ["vendor_projects", "vendor_quotes"],
-    keywords: ["vendor", "quote", "contractor", "comparison", "price", "estimate", "project", "service provider"]
-  },
   vacation: {
     name: "Vacation Agent",
     emoji: "✈️",
@@ -47,7 +40,7 @@ export const AGENTS = {
 // Allowed topics for the website
 export const ALLOWED_TOPICS = [
   "budget", "finance", "money", "savings", "expenses", "income", 
-  "vacation", "travel", "vendors", "quotes", "gifts", "shopping",
+  "vacation", "travel", "gifts", "shopping",
   "financial planning", "household budget", "spending", "cost",
   "investment advice", "debt", "bills", "subscriptions"
 ];
