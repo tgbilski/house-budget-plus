@@ -131,7 +131,7 @@ export const BuyingPower: React.FC<BuyingPowerProps> = ({
             onValueChange={(v) => setPaymentPercent(v[0])}
             min={50}
             max={100}
-            step={5}
+            step={1}
             className="w-full"
           />
           <div className="flex justify-between text-xs text-muted-foreground">
