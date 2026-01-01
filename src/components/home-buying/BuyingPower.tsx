@@ -118,6 +118,28 @@ export const BuyingPower: React.FC<BuyingPowerProps> = ({
           Adjust Your Scenario
         </h5>
 
+        {/* Monthly Payment Limit Slider */}
+        <div className="space-y-2 sm:space-y-3">
+          <div className="flex justify-between items-center">
+            <Label className="text-xs sm:text-sm">Max Monthly Payment</Label>
+            <span className="text-xs sm:text-sm font-medium text-primary">
+              {paymentPercent}% ({currencySymbol}{Math.round(adjustedMonthlyPayment).toLocaleString()})
+            </span>
+          </div>
+          <Slider
+            value={[paymentPercent]}
+            onValueChange={(v) => setPaymentPercent(v[0])}
+            min={50}
+            max={100}
+            step={5}
+            className="w-full"
+          />
+          <div className="flex justify-between text-xs text-muted-foreground">
+            <span>50% ({currencySymbol}{Math.round(availableForHousing * 0.5).toLocaleString()})</span>
+            <span>100% ({currencySymbol}{Math.round(availableForHousing).toLocaleString()})</span>
+          </div>
+        </div>
+
         {/* Down Payment Slider */}
         <div className="space-y-2 sm:space-y-3">
           <div className="flex justify-between items-center">
@@ -168,28 +190,6 @@ export const BuyingPower: React.FC<BuyingPowerProps> = ({
               className="pl-8"
               placeholder="0"
             />
-          </div>
-        </div>
-
-        {/* Monthly Payment Limit Slider */}
-        <div className="space-y-2 sm:space-y-3">
-          <div className="flex justify-between items-center">
-            <Label className="text-xs sm:text-sm">Max Monthly Payment</Label>
-            <span className="text-xs sm:text-sm font-medium text-primary">
-              {paymentPercent}% ({currencySymbol}{Math.round(adjustedMonthlyPayment).toLocaleString()})
-            </span>
-          </div>
-          <Slider
-            value={[paymentPercent]}
-            onValueChange={(v) => setPaymentPercent(v[0])}
-            min={50}
-            max={100}
-            step={5}
-            className="w-full"
-          />
-          <div className="flex justify-between text-xs text-muted-foreground">
-            <span>50% ({currencySymbol}{Math.round(availableForHousing * 0.5).toLocaleString()})</span>
-            <span>100% ({currencySymbol}{Math.round(availableForHousing).toLocaleString()})</span>
           </div>
         </div>
       </div>
