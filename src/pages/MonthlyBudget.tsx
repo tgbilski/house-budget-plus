@@ -219,6 +219,11 @@ const MonthlyBudget: React.FC = () => {
                   Your Monthly Budget
                 </h1>
                 
+                {/* AI Promo Banner */}
+                <div className="bg-gray-800 text-white px-4 py-2.5 rounded-lg text-sm md:text-base font-medium">
+                  For the price of a cup of coffee per month, unleash AI on your budget!
+                </div>
+                
                 {/* Quick Stats Summary */}
                 {(totalIncome > 0 || totalExpenses > 0) && (
                   <div className="flex flex-wrap gap-4 pt-2">
