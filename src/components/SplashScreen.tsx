@@ -29,11 +29,6 @@ export const SplashScreen = ({ isLoading }: SplashScreenProps) => {
             alt="House Budget Calculator" 
             className="w-24 h-24 sm:w-32 sm:h-32 drop-shadow-2xl animate-[pulse_2s_cubic-bezier(0.4,0,0.6,1)_infinite]"
           />
-          {/* Glow effect */}
-          <div 
-            className="absolute inset-0 rounded-full blur-xl opacity-40"
-            style={{ backgroundColor: 'hsl(var(--sage))' }}
-          />
         </div>
         
         {/* App name */}
