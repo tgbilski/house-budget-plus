@@ -95,10 +95,7 @@ const SavingsGoals: React.FC = () => {
                 </div>
               </div>
               
-              {/* Year selector at top right on laptop, centered on mobile */}
-              <div className="flex justify-center lg:justify-end">
-                <YearSelector />
-              </div>
+              {/* Year selector hidden - users can switch years in the grid below */}
             </div>
           </div>
         </div>
