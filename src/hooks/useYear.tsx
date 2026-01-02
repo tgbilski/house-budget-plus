@@ -9,14 +9,10 @@ interface YearContextType {
 const YearContext = createContext<YearContextType | undefined>(undefined);
 
 export const YearProvider = ({ children }: { children: ReactNode }) => {
-  const currentYear = new Date().getFullYear();
   const [selectedYear, setSelectedYear] = useState<number>(2025);
   
-  // Generate available years (current year and next 3 years)
-  const availableYears = Array.from(
-    { length: 4 }, 
-    (_, i) => currentYear + i
-  ).sort((a, b) => a - b); // Sort in ascending order
+  // Static available years starting from 2025
+  const availableYears = [2025, 2026, 2027, 2028];
 
   useEffect(() => {
     // Store selected year in sessionStorage for current session persistence
