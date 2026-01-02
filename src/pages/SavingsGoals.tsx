@@ -1,8 +1,7 @@
 // src/pages/SavingsGoals.tsx
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import { useHouseholdContext } from '@/providers/HouseholdProvider';
-import { useYear } from '@/hooks/useYear';
 import { useSavingsTracker } from '@/hooks/useSavingsTracker';
 import { useBadges } from '@/hooks/useBadges';
 import { isNativeApp } from '@/utils/capacitor';
@@ -15,7 +14,6 @@ import { SEO } from '@/components/SEO';
 import { seoData } from '@/utils/seoData';
 import { Target } from 'lucide-react';
 import { WarningBanner } from '@/components/WarningBanner';
-import { YearSelector } from '@/components/YearSelector';
 import { InternalLinks } from '@/components/InternalLinks';
 import { FAQ } from '@/components/FAQ';
 import heroSavingsImg from '@/assets/hero-savings.png';
@@ -23,7 +21,8 @@ import heroSavingsImg from '@/assets/hero-savings.png';
 const SavingsGoals: React.FC = () => {
   const { user } = useAuth();
   const { currentHousehold } = useHouseholdContext();
-  const { selectedYear, setSelectedYear } = useYear();
+  // Local year state - independent from other pages, defaults to 2025
+  const [selectedYear, setSelectedYear] = useState<number>(2025);
   const { earnBadge } = useBadges();
   const isMobileApp = isNativeApp();
 
