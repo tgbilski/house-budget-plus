@@ -144,21 +144,41 @@ const BudgetCalculator: React.FC<BudgetCalculatorProps> = ({
             amount: expensesData.fixed[expense.id] || 0
           }));
           setExpenses(updatedExpenses);
+        } else {
+          setExpenses(defaultExpenses);
         }
         if (expensesData.custom) {
           setAdditionalExpenses(expensesData.custom);
+        } else {
+          setAdditionalExpenses([]);
         }
         if (expensesData.additionalSubscriptions) {
           setAdditionalSubscriptions(expensesData.additionalSubscriptions);
+        } else {
+          setAdditionalSubscriptions([]);
         }
         if (expensesData.subscriptionServices) {
           setSubscriptionServices(expensesData.subscriptionServices);
+        } else {
+          setSubscriptionServices({});
         }
         if (expensesData.ownerName) {
           setOwnerName(expensesData.ownerName);
-          onNameChange(id, expensesData.ownerName); // Send the name to the parent component
+          onNameChange(id, expensesData.ownerName);
+        } else {
+          setOwnerName('');
+          onNameChange(id, '');
         }
       }
+    } else {
+      // No data found for this year - reset to clean slate
+      setMonthlyIncome(0);
+      setExpenses(defaultExpenses);
+      setAdditionalExpenses([]);
+      setAdditionalSubscriptions([]);
+      setSubscriptionServices({});
+      setOwnerName('');
+      onNameChange(id, '');
     }
   };
 
