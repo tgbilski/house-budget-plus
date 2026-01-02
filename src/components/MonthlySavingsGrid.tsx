@@ -12,7 +12,18 @@ interface Props {
 }
 
 const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-const years = Array.from({ length: 11 }, (_, i) => (new Date().getFullYear() - 5 + i).toString());
+
+// Generate years based on local time: from 2025 up to current year + 1
+const generateYears = () => {
+  const currentYear = new Date().getFullYear();
+  const endYear = Math.max(currentYear + 1, 2026);
+  const years: string[] = [];
+  for (let year = 2025; year <= endYear; year++) {
+    years.push(year.toString());
+  }
+  return years;
+};
+const years = generateYears();
 
 export const MonthlySavingsGrid: React.FC<Props> = ({ year, onYearChange, monthlyData, onUpdateAmount }) => {
   // Local state to manage input values for a smoother UX
