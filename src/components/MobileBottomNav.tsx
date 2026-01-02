@@ -1,13 +1,13 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Mic, Target, Gift, Bot } from 'lucide-react';
+import { Calculator, Mic, Target, Gift } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const navItems = [
+  { icon: Calculator, label: 'Budget', path: '/budget' },
   { icon: Mic, label: 'Expenses', path: '/expenses' },
   { icon: Target, label: 'Savings', path: '/savings' },
   { icon: Gift, label: 'Gifts', path: '/gifts' },
-  { icon: Bot, label: 'AI Chat', path: '/ai-insights' },
 ];
 
 export const MobileBottomNav: React.FC = () => {
