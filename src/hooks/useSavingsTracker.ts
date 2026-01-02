@@ -57,7 +57,8 @@ export function useSavingsTracker({ user, currentHousehold, year }: UseSavingsTr
   }, [user, currentHousehold, year]);
   
   const fetchMonthlyData = useCallback(async () => {
-    if (!currentGoalId || !user) {
+    // Don't fetch if no goal, no user, or if it's a temp goal (doesn't exist in DB yet)
+    if (!currentGoalId || !user || currentGoalId.startsWith('temp-')) {
       setMonthlyData({});
       return;
     }
@@ -78,6 +79,7 @@ export function useSavingsTracker({ user, currentHousehold, year }: UseSavingsTr
       
       setMonthlyData(monthlyMap);
     } catch (error) {
+      console.error("Failed to load monthly savings data:", error);
       toast.error("Failed to load monthly savings data.");
     }
   }, [currentGoalId, user]);
