@@ -199,7 +199,7 @@ const MonthlyBudget: React.FC = () => {
             to="/settings" 
             className="block bg-sidebar text-sidebar-foreground px-4 py-3 rounded-lg text-sm md:text-base font-medium text-center mb-4 hover:opacity-90 transition-opacity border-[4px] border-stroke shadow-cartoon"
           >
-            Click & unlock premium features for cost of a cup of coffee ($4.99)!
+            Click & unlock premium features for the cost of a cup of coffee ($4.99)!
           </Link>
         )}
 
