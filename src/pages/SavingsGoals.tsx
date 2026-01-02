@@ -31,6 +31,7 @@ const SavingsGoals: React.FC = () => {
     currentGoal,
     currentGoalId,
     monthlyData,
+    totalSaved, // Total across ALL years for this goal
     isLoading,
     editingState,
     setEditingState,
@@ -39,7 +40,6 @@ const SavingsGoals: React.FC = () => {
     updateMonthlyAmount,
   } = useSavingsTracker({ user, currentHousehold, year: selectedYear });
   
-  const totalSaved = Object.values(monthlyData).reduce((sum, val) => sum + val, 0);
   const progressPercentage = currentGoal?.target_amount ? Math.min((totalSaved / currentGoal.target_amount) * 100, 100) : 0;
 
   // Award badge when user has savings data

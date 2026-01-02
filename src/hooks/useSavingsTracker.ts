@@ -17,27 +17,35 @@ export interface SavingsGoal {
 interface UseSavingsTrackerProps {
   user: { id: string } | null;
   currentHousehold: { id: string } | null;
-  year: number;
+  year: number; // Used only for filtering which calendar year's entries to show/edit
 }
 
 export function useSavingsTracker({ user, currentHousehold, year }: UseSavingsTrackerProps) {
   const [goals, setGoals] = useState<SavingsGoal[]>([]);
   const [currentGoalId, setCurrentGoalId] = useState<string | null>(null);
-  const [monthlyData, setMonthlyData] = useState<Record<string, number>>({});
+  const [monthlyData, setMonthlyData] = useState<Record<string, number>>({}); // Entries for selected year
+  const [allEntriesTotal, setAllEntriesTotal] = useState<number>(0); // Total across ALL years
   const [isLoading, setIsLoading] = useState(true);
 
   // State to manage the editing of goal titles and targets
   const [editingState, setEditingState] = useState<{ id: string | null; title: string; target: number }>({ id: null, title: '', target: 0 });
 
+  // Fetch goals WITHOUT year filter - goals persist across years
   const fetchGoals = useCallback(async () => {
     setIsLoading(true);
     let baseGoals: SavingsGoal[] = Array.from({ length: 3 }, (_, i) => ({
       id: `temp-${i + 1}-${Date.now()}`, user_id: user?.id || 'guest', household_id: currentHousehold?.id || 'guest',
-      year, title: `Goal ${i + 1}`, goal_number: i + 1, target_amount: 0, current_amount: 0,
+      year: 2025, title: `Goal ${i + 1}`, goal_number: i + 1, target_amount: 0, current_amount: 0,
     }));
     if (user && currentHousehold) {
       try {
-        const { data: dbGoals, error } = await supabase.from('savings_goals').select('*').eq('user_id', user.id).eq('household_id', currentHousehold.id).eq('year', year);
+        // Fetch ALL goals for this user/household (no year filter)
+        const { data: dbGoals, error } = await supabase
+          .from('savings_goals')
+          .select('*')
+          .eq('user_id', user.id)
+          .eq('household_id', currentHousehold.id)
+          .order('goal_number', { ascending: true });
         if (error) throw error;
         if (dbGoals && dbGoals.length > 0) {
           dbGoals.forEach(dbGoal => {
@@ -54,27 +62,38 @@ export function useSavingsTracker({ user, currentHousehold, year }: UseSavingsTr
       setCurrentGoalId(currentId => baseGoals.some(g => g.id === currentId) ? currentId : baseGoals[0].id);
     }
     setIsLoading(false);
-  }, [user, currentHousehold, year]);
+  }, [user, currentHousehold]);
   
+  // Fetch monthly data for the SELECTED YEAR only (for calendar display)
+  // Also fetch total across ALL years for progress tracking
   const fetchMonthlyData = useCallback(async () => {
-    // Don't fetch if no goal, no user, or if it's a temp goal (doesn't exist in DB yet)
     if (!currentGoalId || !user || currentGoalId.startsWith('temp-')) {
       setMonthlyData({});
+      setAllEntriesTotal(0);
       return;
     }
 
     try {
-      const { data, error } = await supabase
+      // Fetch ALL entries for this goal (to calculate total across all years)
+      const { data: allEntries, error: allError } = await supabase
         .from('savings_entries')
         .select('*')
         .eq('goal_id', currentGoalId);
 
-      if (error) throw error;
+      if (allError) throw allError;
 
+      // Calculate total from ALL entries across all years
+      const total = allEntries?.reduce((sum, entry) => sum + (entry.amount || 0), 0) || 0;
+      setAllEntriesTotal(total);
+
+      // Filter entries for the selected year only (for calendar display)
       const monthlyMap: Record<string, number> = {};
-      data?.forEach(entry => {
-        const monthKey = new Date(entry.entry_month).getMonth().toString();
-        monthlyMap[monthKey] = entry.amount;
+      allEntries?.forEach(entry => {
+        const entryDate = new Date(entry.entry_month);
+        if (entryDate.getFullYear() === year) {
+          const monthKey = entryDate.getMonth().toString();
+          monthlyMap[monthKey] = entry.amount;
+        }
       });
       
       setMonthlyData(monthlyMap);
@@ -82,7 +101,7 @@ export function useSavingsTracker({ user, currentHousehold, year }: UseSavingsTr
       console.error("Failed to load monthly savings data:", error);
       toast.error("Failed to load monthly savings data.");
     }
-  }, [currentGoalId, user]);
+  }, [currentGoalId, user, year]);
 
 
   useEffect(() => { fetchGoals(); }, [fetchGoals]);
@@ -104,7 +123,7 @@ export function useSavingsTracker({ user, currentHousehold, year }: UseSavingsTr
       const newGoal = {
         user_id: user.id,
         household_id: currentHousehold?.id || '',
-        year,
+        year: 2025, // Default year for new goals (doesn't affect functionality)
         title,
         goal_number: goal.goal_number,
         target_amount: target,
@@ -141,14 +160,18 @@ export function useSavingsTracker({ user, currentHousehold, year }: UseSavingsTr
     if (!currentGoal || !user) return;
 
     const monthKey = monthIndex.toString();
+    const oldAmount = monthlyData[monthKey] || 0;
+    
+    // Update local state immediately
     setMonthlyData(prev => ({ ...prev, [monthKey]: amount }));
+    setAllEntriesTotal(prev => prev - oldAmount + amount);
 
     // If this is a temp goal, we need to create it first
     if (currentGoal.id.startsWith('temp-')) {
       const newGoal = {
         user_id: user.id,
         household_id: currentHousehold?.id || '',
-        year,
+        year: 2025, // Default year for new goals
         title: currentGoal.title,
         goal_number: currentGoal.goal_number,
         target_amount: currentGoal.target_amount,
@@ -178,11 +201,11 @@ export function useSavingsTracker({ user, currentHousehold, year }: UseSavingsTr
   };
 
   const saveMonthlyEntry = async (goalId: string, monthIndex: number, amount: number) => {
-    // Create first day of the month for the entry
+    // Create first day of the month for the entry (using selected year)
     const entryDate = new Date(year, monthIndex, 1);
 
     try {
-      // Check if entry exists
+      // Check if entry exists for this specific month/year
       const { data: existingEntry, error: fetchError } = await supabase
         .from('savings_entries')
         .select('id')
@@ -219,11 +242,15 @@ export function useSavingsTracker({ user, currentHousehold, year }: UseSavingsTr
 
   const currentGoal = useMemo(() => goals.find(g => g.id === currentGoalId), [goals, currentGoalId]);
 
+  // Use allEntriesTotal for progress (sum across ALL years)
+  const totalSaved = allEntriesTotal;
+
   return {
     goals,
     currentGoal,
     currentGoalId,
     monthlyData,
+    totalSaved, // Total across ALL years
     isLoading,
     editingState,
     setEditingState,
