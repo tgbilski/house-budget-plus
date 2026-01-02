@@ -193,6 +193,16 @@ const MonthlyBudget: React.FC = () => {
       />
       
       <div className="max-w-7xl mx-auto p-4">
+        {/* AI Promo Banner - only show for non-subscribers */}
+        {!subscribed && (
+          <Link 
+            to="/settings" 
+            className="block bg-sidebar text-sidebar-foreground px-4 py-3 rounded-lg text-sm md:text-base font-medium text-center mb-4 hover:opacity-90 transition-opacity border-[4px] border-stroke shadow-cartoon"
+          >
+            Click & unlock premium features for cost of a cup of coffee ($4.99)!
+          </Link>
+        )}
+
         {/* Calculator Mascot */}
         <div className="flex justify-center mb-4">
           <img 
@@ -255,16 +265,6 @@ const MonthlyBudget: React.FC = () => {
             </div>
           </div>
         </div>
-
-        {/* AI Promo Banner - only show for non-subscribers */}
-        {!subscribed && (
-          <Link 
-            to="/settings" 
-            className="block bg-sidebar text-sidebar-foreground px-4 py-3 rounded-lg text-sm md:text-base font-medium text-center mb-8 hover:opacity-90 transition-opacity border-[4px] border-stroke shadow-cartoon"
-          >
-            For the price of a cup of coffee per month, unleash AI on your budget! ($4.99)
-          </Link>
-        )}
 
         <WarningBanner />
 
