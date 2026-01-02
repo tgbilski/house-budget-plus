@@ -95,12 +95,17 @@ const MonthlyBudget: React.FC = () => {
 
   // CHANGE: Updated useEffect to handle both logged-in and logged-out states explicitly.
   useEffect(() => {
+    // When switching years, always start with a clean slate in the UI.
+    // (BudgetCalculator will re-hydrate from DB for the selected year if data exists.)
+    setBudgetData({});
+    setCalculatorNames({});
+    setVisibleCalculators(new Set(['1']));
+
     if (user && currentHousehold) {
       loadCalculators();
     } else {
       // Always show 4 static calculators, but only first one visible by default
       setCalculators([{ id: '1' }, { id: '2' }, { id: '3' }, { id: '4' }]);
-      setVisibleCalculators(new Set(['1']));
       setIsLoading(false);
     }
   }, [user, currentHousehold, selectedYear]);
@@ -301,7 +306,7 @@ const MonthlyBudget: React.FC = () => {
                 .filter(calculator => visibleCalculators.has(calculator.id))
                 .map((calculator, index) => (
                 <div
-                  key={calculator.id}
+                  key={`${selectedYear}-${calculator.id}`}
                   className="animate-fade-in"
                   style={{ animationDelay: `${index * 0.1}s`, animationFillMode: 'both' }}
                 >
