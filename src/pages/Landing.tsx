@@ -35,9 +35,9 @@ export default function Landing() {
   return (
     <>
       <SEO 
-        title="Stop Overspending, Start Saving - Free Budget Calculator"
+        title="Stop Budgeting. Start Optimizing. - Free Budget Calculator"
         description="Calculate your savings potential in 30 seconds. Take control of your finances with smart budgeting tools and calculators."
-        keywords="budget calculator, expense tracker, savings calculator, personal finance, money management"
+        keywords="AI budget calculator, AI expense tracker, AI savings calculator, AI personal finance, AI money management"
       />
       
       <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5">
@@ -52,17 +52,17 @@ export default function Landing() {
 
             {/* Main Headline */}
             <h1 className="text-5xl md:text-7xl font-extrabold leading-tight tracking-tight">
-              Stop Overspending,
+              Stop Budgeting,
               <br />
               <span className="bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
-                Start Saving
+                Start Optimizing
               </span>
             </h1>
 
             {/* Subheadline */}
             <p className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
               See exactly how much you could save this year. 
-              <span className="font-semibold text-foreground"> Free calculator, instant results.</span>
+              <span className="font-semibold text-foreground"> Premium AI-Powered Calculators, instant results.</span>
             </p>
 
             {/* Benefits */}
@@ -71,7 +71,7 @@ export default function Landing() {
                 <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center">
                   <CheckCircle className="h-5 w-5 text-primary" />
                 </div>
-                <span className="font-medium">Free Forever</span>
+                <span className="font-medium">Base Calculators are Free Forever</span>
               </div>
               <div className="flex items-center gap-2.5 text-base md:text-lg">
                 <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center">
