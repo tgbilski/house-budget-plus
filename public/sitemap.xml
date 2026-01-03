@@ -43,6 +43,12 @@
     <priority>0.7</priority>
   </url>
   <url>
+    <loc>https://www.housebudgetcalculator.com/engagement</loc>
+    <lastmod>2025-12-30</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://www.housebudgetcalculator.com/blog</loc>
     <lastmod>2025-12-30</lastmod>
     <changefreq>weekly</changefreq>
@@ -63,6 +69,30 @@
   <url>
     <loc>https://www.housebudgetcalculator.com/blog/holiday-gift-ideas-budget-planning-2025</loc>
     <lastmod>2025-10-07</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.housebudgetcalculator.com/blog/community-marketplace-guide</loc>
+    <lastmod>2025-10-07</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.housebudgetcalculator.com/blog/don-t-just-dive-in-why-weighing-house-remodel-options-is-crucial-for-your-wallet-your-peace-of-mind</loc>
+    <lastmod>2025-10-12</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.housebudgetcalculator.com/blog/budget-savvy-traveler-weighing-your-vacation-options-for-maximum-savings</loc>
+    <lastmod>2025-10-16</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.housebudgetcalculator.com/blog/sleigh-ride-or-stay-inside-should-you-travel-for-christmas-or-stay-home</loc>
+    <lastmod>2025-10-16</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
@@ -97,20 +127,20 @@
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://www.housebudgetcalculator.com/blog/budget-savvy-traveler-weighing-your-vacation-options-for-maximum-savings</loc>
-    <lastmod>2025-10-16</lastmod>
+    <loc>https://www.housebudgetcalculator.com/blog/roof-replacement-vendor-comparison-guide</loc>
+    <lastmod>2025-11-07</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://www.housebudgetcalculator.com/blog/sleigh-ride-or-stay-inside-should-you-travel-for-christmas-or-stay-home</loc>
-    <lastmod>2025-10-16</lastmod>
+    <loc>https://www.housebudgetcalculator.com/blog/emergency-fund-guide-families</loc>
+    <lastmod>2025-11-14</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://www.housebudgetcalculator.com/blog/don-t-just-dive-in-why-weighing-house-remodel-options-is-crucial-for-your-wallet-your-peace-of-mind</loc>
-    <lastmod>2025-10-12</lastmod>
+    <loc>https://www.housebudgetcalculator.com/blog/stop-overpaying-the-smart-way-to-compare-home-improvement-estimates</loc>
+    <lastmod>2025-11-14</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
