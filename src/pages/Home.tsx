@@ -148,10 +148,10 @@ export default function Home() {
           <div className="relative z-10 flex flex-col items-center justify-center text-center px-4 sm:px-6 py-12 sm:py-16 max-w-4xl mx-auto">
             {/* Main Headline */}
             <h1 className="text-3xl sm:text-5xl md:text-7xl lg:text-8xl font-extrabold text-white leading-tight mb-6 sm:mb-8 animate-in fade-in slide-in-from-bottom-4 duration-1000">
-              <span className="sm:whitespace-nowrap">Stop Overspending,</span>
+              <span className="sm:whitespace-nowrap">Stop Budgeting,</span>
               <br />
               <span className="text-sage sm:whitespace-nowrap">
-                Start Saving
+                Start Optimizing
               </span>
             </h1>
 
@@ -192,10 +192,10 @@ export default function Home() {
             {/* Preview Image */}
             <div className="text-center mb-12">
               <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-foreground mb-4">
-                Own Your Budget
+                Unleash AI on Your Budget!
               </h2>
             <p className="text-lg sm:text-xl text-muted-foreground mb-8">
-              Our budget calculators help you make informed financial decisions and track your progress
+              Our AI powered budget calculators help you make informed financial decisions and track your progress
             </p>
               <div className="rounded-lg overflow-hidden shadow-2xl max-w-4xl mx-auto">
                 <img 
