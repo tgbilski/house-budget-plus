@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { HelpCircle, Lock, TrendingUp, AlertTriangle, CheckCircle, Home, Calculator, ChevronDown, ChevronUp } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -27,7 +27,14 @@ export const MortgagePreapprovalQuestion: React.FC<MortgagePreapprovalQuestionPr
   currency,
 }) => {
   const [showAnswer, setShowAnswer] = useState(false);
-  const [isExpanded, setIsExpanded] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(() => {
+    const saved = localStorage.getItem('ai-insight-expanded');
+    return saved === 'true';
+  });
+
+  useEffect(() => {
+    localStorage.setItem('ai-insight-expanded', String(isExpanded));
+  }, [isExpanded]);
   const [selectedTier, setSelectedTier] = useState<'low' | 'mid' | 'high'>('mid');
   const { user } = useAuth();
   const { subscribed } = useSubscription();
