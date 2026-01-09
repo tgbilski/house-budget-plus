@@ -231,7 +231,7 @@ const MonthlyBudget: React.FC = () => {
             <p>{error}</p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-2 md:mt-0">
             {/* Budget Overview Chart - takes 1 column */}
             <div className="lg:col-span-1 space-y-4">
               <BudgetDonutChart
