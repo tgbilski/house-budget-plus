@@ -271,10 +271,10 @@ const MonthlyBudget: React.FC = () => {
               
               {/* Add Calculator Button - shows when there are hidden calculators */}
               {getNextCalculatorNumber() && (
-                <div className="animate-fade-in">
+                <div className="animate-fade-in flex items-start">
                   <button
                     onClick={revealNextCalculator}
-                    className="w-full h-full min-h-[200px] rounded-xl border-[4px] border-dashed border-border/50 bg-muted/20 hover:bg-muted/40 hover:border-primary/50 transition-all duration-200 flex flex-col items-center justify-center gap-3 group"
+                    className="w-full max-w-md min-h-[200px] rounded-xl border-[4px] border-dashed border-border/50 bg-muted/20 hover:bg-muted/40 hover:border-primary/50 transition-all duration-200 flex flex-col items-center justify-center gap-3 group"
                   >
                     <div className="p-3 rounded-full bg-primary/10 group-hover:bg-primary/20 transition-colors">
                       <Plus className="h-8 w-8 text-primary" />
