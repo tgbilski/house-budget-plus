@@ -489,37 +489,40 @@ export default function Expenses() {
         keywords="expense tracker, voice input, budget tracking, AI expense logging"
       />
 
-      <div className="max-w-7xl mx-auto pt-2 px-4 md:px-6 lg:px-8">
+      <div className="w-full px-4 sm:px-6 lg:px-8 pt-2">
         {/* Header - matching Monthly Budget style */}
-        <div className="flex items-center justify-between mb-4">
-          <div className="flex items-center gap-3">
+        <div className="flex items-start justify-between gap-4 mb-4">
+          <div className="flex items-center gap-2 sm:gap-3 min-w-0">
             <img 
               src={calculatorMascot} 
               alt="Budget Calculator Mascot" 
-              className="w-12 h-12 md:w-16 md:h-16 object-contain"
+              className="h-10 w-10 sm:h-12 sm:w-12 md:h-16 md:w-16 flex-shrink-0 object-contain"
             />
-            <h1 className="text-2xl md:text-3xl font-bold text-foreground tracking-wide">
+            <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-foreground tracking-wide truncate">
               DAILY EXPENSES
             </h1>
           </div>
           
           {/* Date Picker */}
-          <Popover>
-            <PopoverTrigger asChild>
-              <Button variant="outline" className={cn("w-[180px] md:w-[240px] justify-start text-left font-normal")}>
-                <CalendarIcon className="mr-2 h-4 w-4" />
-                {format(selectedDate, 'PPP')}
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent className="w-auto p-0" align="end">
-              <Calendar
-                mode="single"
-                selected={selectedDate}
-                onSelect={(date) => date && setSelectedDate(date)}
-                initialFocus
-              />
-            </PopoverContent>
-          </Popover>
+          <div className="flex-shrink-0">
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button variant="outline" className={cn("w-[140px] sm:w-[180px] md:w-[240px] justify-start text-left font-normal text-xs sm:text-sm")}>
+                  <CalendarIcon className="mr-2 h-4 w-4" />
+                  <span className="hidden sm:inline">{format(selectedDate, 'PPP')}</span>
+                  <span className="sm:hidden">{format(selectedDate, 'MM/dd/yy')}</span>
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto p-0" align="end">
+                <Calendar
+                  mode="single"
+                  selected={selectedDate}
+                  onSelect={(date) => date && setSelectedDate(date)}
+                  initialFocus
+                />
+              </PopoverContent>
+            </Popover>
+          </div>
         </div>
 
         {/* Yearly Spending Summary */}
