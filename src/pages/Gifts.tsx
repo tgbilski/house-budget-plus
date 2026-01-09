@@ -102,22 +102,22 @@ export function Gifts() {
         structuredData={seoData.gifts.structuredData}
       />
       
-      <div className="max-w-7xl mx-auto pt-2 px-4">
+      <div className="w-full px-4 sm:px-6 lg:px-8 pt-2">
         {/* Header - matching Monthly Budget style */}
-        <div className="flex items-center justify-between mb-4">
-          <div className="flex items-center gap-3">
+        <div className="flex items-start justify-between gap-4 mb-4">
+          <div className="flex items-center gap-2 sm:gap-3 min-w-0">
             <img 
               src={calculatorMascot} 
               alt="Budget Calculator Mascot" 
-              className="w-12 h-12 md:w-16 md:h-16 object-contain"
+              className="h-10 w-10 sm:h-12 sm:w-12 md:h-16 md:w-16 flex-shrink-0 object-contain"
             />
-            <h1 className="text-2xl md:text-3xl font-bold text-foreground tracking-wide">
+            <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-foreground tracking-wide truncate">
               GIFT LISTS
             </h1>
           </div>
           
-          <div className="bg-card border border-border rounded-xl p-3 shadow-sm">
-            <p className="text-xs text-muted-foreground mb-1 text-center">Budget Year</p>
+          <div className="flex-shrink-0 bg-card border border-border rounded-xl p-2 sm:p-3 shadow-sm">
+            <p className="text-xs text-muted-foreground mb-1 text-center hidden sm:block">Budget Year</p>
             <YearSelector />
           </div>
         </div>
