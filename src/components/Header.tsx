@@ -1,7 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { SidebarTrigger } from '@/components/ui/sidebar';
 import { User } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { useIsMobile } from '@/hooks/use-mobile';
@@ -15,9 +14,8 @@ const Header: React.FC = () => {
     <header className="w-full bg-card border-b-[4px] border-stroke sticky top-0 z-50 shadow-sm">
       <div className="w-full px-4 md:px-6 py-1.5 md:py-2">
         <div className="flex items-center justify-between min-h-[40px] md:min-h-[48px]">
-          {/* Brand with Logo and Mobile Menu */}
+          {/* Brand with Logo */}
           <div className="flex items-center space-x-2">
-            <SidebarTrigger className="md:inline-flex" />
             <Link to="/" className="flex items-center hover:opacity-80 transition-opacity">
               {!isMobile && (
                 <h1 className="text-xl font-semibold text-gray-900">

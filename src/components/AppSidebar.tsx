@@ -5,7 +5,7 @@ import {
   Brain,
   BookOpen,
   Shield,
-  Mic
+  Receipt
 } from "lucide-react";
 import { NavLink, useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
@@ -16,11 +16,9 @@ import {
   SidebarContent,
   SidebarGroup,
   SidebarGroupContent,
-  SidebarGroupLabel,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-  useSidebar,
 } from "@/components/ui/sidebar";
 import { cn } from "@/lib/utils";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -45,19 +43,18 @@ const HouseDollarIcon = ({ className }: { className?: string }) => (
 );
 
 const navigationItems = [
-  { title: "Monthly Budget", url: "/budget", icon: HouseDollarIcon },
-  { title: "Voice Expenses", url: "/expenses", icon: Mic },
-  { title: "Savings", url: "/savings", icon: PiggyBank },
-  { title: "Vacation", url: "/vacation", icon: Plane },
-  { title: "Gifts", url: "/gifts", icon: Gift },
-  { title: "Blog", url: "/blog", icon: BookOpen },
-  { title: "AI Insights", url: "/ai-insights", icon: Brain },
+  { title: "BUDGET", url: "/budget", icon: HouseDollarIcon },
+  { title: "EXPENSES", url: "/expenses", icon: Receipt },
+  { title: "SAVINGS", url: "/savings", icon: PiggyBank },
+  { title: "VACATIONS", url: "/vacation", icon: Plane },
+  { title: "GIFTS", url: "/gifts", icon: Gift },
+  { title: "BLOG", url: "/blog", icon: BookOpen },
+  { title: "AI INSIGHT", url: "/ai-insights", icon: Brain },
 ];
 
 export function AppSidebar() {
   const location = useLocation();
   const currentPath = location.pathname;
-  const { setOpen, setOpenMobile, isMobile: sidebarIsMobile, open } = useSidebar();
   const isMobile = useIsMobile();
   const { user } = useAuth();
   const [isAdmin, setIsAdmin] = useState(false);
@@ -87,7 +84,7 @@ export function AppSidebar() {
   }, [user]);
 
   const adminItems = [
-    { title: "Admin Dashboard", url: "/admin", icon: Shield },
+    { title: "ADMIN", url: "/admin", icon: Shield },
   ];
 
   const allItems = isAdmin 
@@ -96,52 +93,32 @@ export function AppSidebar() {
 
   const isActive = (path: string) => currentPath === path;
 
-  const handleLinkClick = (e: React.MouseEvent) => {
-    if (isMobile) {
-      setOpenMobile(false);
-    }
-  };
-
   return (
     <Sidebar 
-      collapsible={isMobile ? "offcanvas" : "icon"}
+      collapsible={isMobile ? "offcanvas" : "none"}
       className={cn(
-        // On desktop: fixed position, starts below 64px header, full height minus header
-        !isMobile && "fixed left-0 z-30 border-r bg-sidebar transition-all",
-        // On mobile: relative as before
-        isMobile && "relative border-r bg-sidebar",
-        // Width logic
-        !isMobile && (open ? "w-64" : "w-14"),
-        "h-full"
+        "fixed left-0 z-30 border-r bg-sidebar transition-all w-64 h-full",
+        isMobile && "relative"
       )}
-      // Only apply top/height on desktop
       style={!isMobile 
         ? { top: "64px", height: "calc(100vh - 64px)" }
         : undefined
       }
       variant="sidebar"
     >
-      <SidebarContent className={cn(!isMobile && "p-2")}>
+      <SidebarContent className="p-2">
         <SidebarGroup>
-          {isMobile && <SidebarGroupLabel>Navigation</SidebarGroupLabel>}
           <SidebarGroupContent>
-            <SidebarMenu className={cn(!isMobile && !open && "flex flex-col items-center space-y-1")}>
+            <SidebarMenu className="flex flex-col space-y-1">
               {allItems.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton asChild isActive={isActive(item.url)}>
                     <NavLink 
                       to={item.url} 
-                      onClick={handleLinkClick}
-                      className={cn(
-                        "flex items-center gap-3 rounded-lg px-3 py-2 transition-all",
-                        !isMobile && !open && "justify-center px-2"
-                      )}
-                      title={!open && !isMobile ? item.title : undefined}
+                      className="flex items-center gap-3 rounded-lg px-3 py-2 transition-all"
                     >
-                      <div className="flex items-center gap-3">
-                        <item.icon className="h-5 w-5 flex-shrink-0" />
-                        {(open || isMobile) && <span>{item.title}</span>}
-                      </div>
+                      <item.icon className="h-5 w-5 flex-shrink-0" />
+                      <span className="font-medium tracking-wide">{item.title}</span>
                     </NavLink>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
