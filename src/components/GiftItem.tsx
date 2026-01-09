@@ -45,6 +45,7 @@ import { cn } from '@/lib/utils';
 
 interface GiftItemProps {
   item: Partial<GiftItemData>;
+  itemNumber?: number;
   onSave: (updatedItem: Partial<GiftItemData>) => Promise<void>;
   onDelete: (id: string) => void;
   onStatusChange?: (id: string, status: GiftStatus) => Promise<void>;
@@ -62,7 +63,7 @@ const STATUS_CONFIG: Record<GiftStatus, { label: string; icon: React.ElementType
   delivered: { label: 'Delivered', icon: Package, color: 'text-slate-400', bgColor: 'bg-green-100', activeColor: 'text-green-500' }
 };
 
-export function GiftItem({ item, onSave, onDelete, onStatusChange, isNew = false, onCancel }: GiftItemProps) {
+export function GiftItem({ item, itemNumber, onSave, onDelete, onStatusChange, isNew = false, onCancel }: GiftItemProps) {
   const [isEditing, setIsEditing] = useState(isNew);
   const [isExpanded, setIsExpanded] = useState(false);
   const [statusPopoverOpen, setStatusPopoverOpen] = useState(false);
@@ -330,6 +331,13 @@ export function GiftItem({ item, onSave, onDelete, onStatusChange, isNew = false
                 </div>
               </PopoverContent>
             </Popover>
+            
+            {/* Item Number */}
+            {itemNumber && (
+              <span className="text-xs font-medium text-muted-foreground bg-muted rounded-full w-5 h-5 flex items-center justify-center flex-shrink-0">
+                {itemNumber}
+              </span>
+            )}
             
             {/* Name & Category - Allow wrapping on mobile */}
             <div className="flex-1 min-w-0">
