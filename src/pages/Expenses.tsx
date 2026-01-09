@@ -491,29 +491,52 @@ export default function Expenses() {
 
       <div className="w-full px-4 sm:px-6 lg:px-8 pt-2">
         {/* Header - matching Monthly Budget style */}
-        <div className="flex items-start justify-between gap-4 mb-4">
-          <div className="flex items-center gap-2 sm:gap-3 min-w-0">
-            <img 
-              src={calculatorMascot} 
-              alt="Budget Calculator Mascot" 
-              className="h-10 w-10 sm:h-12 sm:w-12 md:h-16 md:w-16 flex-shrink-0 object-contain"
-            />
-            <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-foreground tracking-wide truncate">
-              DAILY EXPENSES
-            </h1>
+        <div className="flex flex-col gap-3 mb-4">
+          <div className="flex items-center justify-between gap-4">
+            <div className="flex items-center gap-2 sm:gap-3 min-w-0">
+              <img 
+                src={calculatorMascot} 
+                alt="Budget Calculator Mascot" 
+                className="h-10 w-10 sm:h-12 sm:w-12 md:h-16 md:w-16 flex-shrink-0 object-contain"
+              />
+              <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-foreground tracking-wide truncate">
+                DAILY EXPENSES
+              </h1>
+            </div>
+            
+            {/* Desktop Date Picker */}
+            <div className="hidden sm:block flex-shrink-0">
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button variant="outline" className={cn("w-[180px] md:w-[240px] justify-start text-left font-normal text-sm")}>
+                    <CalendarIcon className="mr-2 h-4 w-4" />
+                    {format(selectedDate, 'PPP')}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0" align="end">
+                  <Calendar
+                    mode="single"
+                    selected={selectedDate}
+                    onSelect={(date) => date && setSelectedDate(date)}
+                    initialFocus
+                  />
+                </PopoverContent>
+              </Popover>
+            </div>
           </div>
           
-          {/* Date Picker */}
-          <div className="flex-shrink-0">
+          {/* Mobile Date Picker - separate row */}
+          <div className="sm:hidden w-full">
             <Popover>
               <PopoverTrigger asChild>
-                <Button variant="outline" className={cn("w-[140px] sm:w-[180px] md:w-[240px] justify-start text-left font-normal text-xs sm:text-sm")}>
-                  <CalendarIcon className="mr-2 h-4 w-4" />
-                  <span className="hidden sm:inline">{format(selectedDate, 'PPP')}</span>
-                  <span className="sm:hidden">{format(selectedDate, 'MM/dd/yy')}</span>
+                <Button variant="outline" className="w-full justify-between text-left font-normal text-sm">
+                  <span className="flex items-center">
+                    <CalendarIcon className="mr-2 h-4 w-4" />
+                    {format(selectedDate, 'PPP')}
+                  </span>
                 </Button>
               </PopoverTrigger>
-              <PopoverContent className="w-auto p-0" align="end">
+              <PopoverContent className="w-auto p-0" align="start">
                 <Calendar
                   mode="single"
                   selected={selectedDate}
