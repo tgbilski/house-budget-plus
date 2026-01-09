@@ -71,7 +71,14 @@ export const CurrencyContext = createContext<CurrencyContextType>({
   setCurrency: () => {}
 });
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: false,
+      staleTime: 1000 * 60 * 5, // 5 minutes
+    },
+  },
+});
 
 // Main App Routes Component (needs to be inside HouseholdProvider)
 const AppRoutes = () => {
