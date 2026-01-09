@@ -222,7 +222,7 @@ const AppLayout = () => {
 
   // Features page and regular pages with full navigation
   return (
-    <SidebarProvider defaultOpen={false}>
+    <SidebarProvider defaultOpen={true}>
       <div className="min-h-screen w-full flex flex-col bg-background">
         <Header />
         <div className="flex flex-1">
