@@ -139,7 +139,7 @@ const Blog: React.FC = () => {
 
   if (showForm) {
     return (
-      <div className="min-h-screen bg-gray-100 p-4">
+      <div className="min-h-screen bg-background p-4">
         <SEO
           title="Create Blog Post - House Budget Calculator"
           description="Write and publish your financial insights and tips"
@@ -188,7 +188,7 @@ const Blog: React.FC = () => {
             <div className="flex flex-col md:flex-row gap-4 items-center justify-between">
               <div className="flex flex-col sm:flex-row gap-4 items-center flex-1">
                 <div className="relative flex-1 max-w-md">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
                   <Input
                     placeholder="Search posts..."
                     value={searchTerm}
@@ -238,11 +238,11 @@ const Blog: React.FC = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {Array.from({ length: 6 }).map((_, index) => (
                 <Card key={index} className="animate-pulse">
-                  <div className="h-48 bg-gray-200 rounded-t-lg"></div>
+                  <div className="h-48 bg-muted rounded-t-lg"></div>
                   <CardHeader>
-                    <div className="h-4 bg-gray-200 rounded mb-2"></div>
-                    <div className="h-6 bg-gray-200 rounded mb-2"></div>
-                    <div className="h-12 bg-gray-200 rounded"></div>
+                    <div className="h-4 bg-muted rounded mb-2"></div>
+                    <div className="h-6 bg-muted rounded mb-2"></div>
+                    <div className="h-12 bg-muted rounded"></div>
                   </CardHeader>
                 </Card>
               ))}
@@ -251,8 +251,8 @@ const Blog: React.FC = () => {
             <div className="text-center py-16">
               <Card className="max-w-md mx-auto">
                 <CardHeader>
-                  <BookOpen className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                  <CardTitle className="text-gray-600">No Blog Posts Found</CardTitle>
+                  <BookOpen className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+                  <CardTitle className="text-muted-foreground">No Blog Posts Found</CardTitle>
                   <CardDescription>
                     {searchTerm 
                       ? "Try adjusting your search terms to find what you're looking for."
@@ -299,19 +299,19 @@ const Blog: React.FC = () => {
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
                 <div>
                   <div className="text-3xl font-bold text-primary mb-2">{filteredPosts.length}</div>
-                  <div className="text-gray-600">Total Posts</div>
+                  <div className="text-muted-foreground">Total Posts</div>
                 </div>
                 <div>
                   <div className="text-3xl font-bold text-primary mb-2">
                     {Math.round(filteredPosts.reduce((acc, post) => acc + post.read_time, 0) / filteredPosts.length)}
                   </div>
-                  <div className="text-gray-600">Avg. Read Time (min)</div>
+                  <div className="text-muted-foreground">Avg. Read Time (min)</div>
                 </div>
                 <div>
                   <div className="text-3xl font-bold text-primary mb-2">
                     {new Set(filteredPosts.flatMap(post => post.tags || [])).size}
                   </div>
-                  <div className="text-gray-600">Unique Tags</div>
+                  <div className="text-muted-foreground">Unique Tags</div>
                 </div>
               </div>
             </div>

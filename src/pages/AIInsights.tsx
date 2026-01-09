@@ -19,11 +19,11 @@ import calculatorMascot from '@/assets/calculator-mascot.png';
 
 // Agent display info
 const AGENTS: Record<string, { name: string; emoji: string; color: string }> = {
-  budget: { name: "Budget Agent", emoji: "💰", color: "bg-green-100 text-green-800" },
-  savings: { name: "Savings Agent", emoji: "🎯", color: "bg-blue-100 text-blue-800" },
-  vacation: { name: "Vacation Agent", emoji: "✈️", color: "bg-orange-100 text-orange-800" },
-  expenses: { name: "Expenses Agent", emoji: "📊", color: "bg-red-100 text-red-800" },
-  gifts: { name: "Gifts Agent", emoji: "🎁", color: "bg-pink-100 text-pink-800" },
+  budget: { name: "Budget Agent", emoji: "💰", color: "bg-success/20 text-success" },
+  savings: { name: "Savings Agent", emoji: "🎯", color: "bg-primary/20 text-primary" },
+  vacation: { name: "Vacation Agent", emoji: "✈️", color: "bg-warning/20 text-warning" },
+  expenses: { name: "Expenses Agent", emoji: "📊", color: "bg-destructive/20 text-destructive" },
+  gifts: { name: "Gifts Agent", emoji: "🎁", color: "bg-teal/20 text-teal" },
 };
 
 interface StatusStep {
@@ -283,7 +283,7 @@ export default function AIInsights() {
                 </CardTitle>
                 {subscriptionTier && (
                   <Badge className="mx-auto mt-2 bg-primary/10 text-primary text-sm font-medium px-4 py-2 rounded-full flex items-center gap-1 w-fit">
-                    <Crown className="h-4 w-4 text-yellow-500" /> {subscriptionTier} Tier
+                    <Crown className="h-4 w-4 text-warning" /> {subscriptionTier} Tier
                   </Badge>
                 )}
               </CardHeader>
@@ -322,7 +322,7 @@ export default function AIInsights() {
                         )}
                       >
                         {step.completed ? (
-                          <CheckCircle2 className="h-4 w-4 text-green-500" />
+                          <CheckCircle2 className="h-4 w-4 text-success" />
                         ) : (
                           <Loader2 className="h-4 w-4 animate-spin text-primary" />
                         )}
