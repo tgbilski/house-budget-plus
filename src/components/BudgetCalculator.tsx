@@ -402,7 +402,7 @@ const BudgetCalculator: React.FC<BudgetCalculatorProps> = ({
       <CardHeader className="pb-4 pt-4 bg-teal/10 rounded-t-lg">
         <div className="space-y-3">
           {/* Owner name and Monthly Income - stacked on separate rows */}
-          <div className="space-y-3 pr-16">
+          <div className="space-y-3">
             <div>
               <Label className="text-xs text-muted-foreground mb-1.5 block">
                 Calculator {calculatorNumber} Owner
