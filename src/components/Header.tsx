@@ -5,6 +5,8 @@ import { User } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { useIsMobile } from '@/hooks/use-mobile';
 import ProfileDropdown from './ProfileDropdown';
+import { SidebarTrigger } from '@/components/ui/sidebar';
+import calculatorMascot from '@/assets/calculator-mascot.png';
 
 const Header: React.FC = () => {
   const { user } = useAuth();
@@ -15,13 +17,19 @@ const Header: React.FC = () => {
       <div className="w-full px-4 md:px-6 py-1.5 md:py-2">
         <div className="flex items-center justify-between min-h-[40px] md:min-h-[48px]">
           {/* Brand with Logo */}
-          <div className="flex items-center space-x-2">
-            <Link to="/" className="flex items-center hover:opacity-80 transition-opacity">
-              {!isMobile && (
-                <h1 className="text-xl font-semibold text-gray-900">
-                  House Budget Calculator
-                </h1>
-              )}
+          <div className="flex items-center gap-3">
+            {isMobile && (
+              <SidebarTrigger className="h-8 w-8" />
+            )}
+            <Link to="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
+              <img 
+                src={calculatorMascot} 
+                alt="House Budget Calculator" 
+                className="w-8 h-8 md:w-10 md:h-10"
+              />
+              <h1 className="text-lg md:text-xl font-semibold text-foreground">
+                House Budget Calculator
+              </h1>
             </Link>
           </div>
 
