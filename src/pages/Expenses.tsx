@@ -302,8 +302,8 @@ export default function Expenses() {
       <div className="min-h-screen flex items-center justify-center p-4">
         <Card className="max-w-md w-full border-2 shadow-[var(--shadow-elegant)]">
           <CardContent className="pt-6 text-center space-y-6">
-            <div className="w-16 h-16 bg-gradient-to-br from-amber-500/20 to-orange-500/20 rounded-full flex items-center justify-center mx-auto">
-              <AlertCircle className="w-8 h-8 text-amber-600" />
+            <div className="w-16 h-16 bg-gradient-to-br from-warning/20 to-warning/10 rounded-full flex items-center justify-center mx-auto">
+              <AlertCircle className="w-8 h-8 text-warning" />
             </div>
             <h2 className="text-2xl font-bold">Subscribers Only</h2>
             <p className="text-muted-foreground">
@@ -367,7 +367,7 @@ export default function Expenses() {
           {/* Feature Preview Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
             {/* Voice Input Preview */}
-            <Card className="bg-white/80 backdrop-blur-sm border-2 border-border/50 shadow-[var(--shadow-elegant)]">
+            <Card className="bg-card/80 backdrop-blur-sm border-2 border-border/50 shadow-[var(--shadow-elegant)]">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Mic className="h-5 w-5" />
@@ -391,7 +391,7 @@ export default function Expenses() {
             </Card>
 
             {/* Chart Preview */}
-            <Card className="bg-white/80 backdrop-blur-sm border-2 border-border/50 shadow-[var(--shadow-elegant)]">
+            <Card className="bg-card/80 backdrop-blur-sm border-2 border-border/50 shadow-[var(--shadow-elegant)]">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <TrendingUp className="h-5 w-5" />
@@ -412,7 +412,7 @@ export default function Expenses() {
           </div>
 
           {/* Benefits List */}
-          <Card className="bg-white/80 backdrop-blur-sm border-2 border-primary/20 shadow-[var(--shadow-elegant)]">
+          <Card className="bg-card/80 backdrop-blur-sm border-2 border-primary/20 shadow-[var(--shadow-elegant)]">
             <CardHeader>
               <CardTitle>What You'll Get</CardTitle>
             </CardHeader>
@@ -653,7 +653,7 @@ export default function Expenses() {
           </Card>
 
           {/* Monthly Summary & Export */}
-          <Card className="bg-white/80 backdrop-blur-sm border-2 border-border/50 shadow-[var(--shadow-elegant)]">
+          <Card className="bg-card/80 backdrop-blur-sm border-2 border-border/50 shadow-[var(--shadow-elegant)]">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <TrendingUp className="h-5 w-5" />
@@ -672,7 +672,7 @@ export default function Expenses() {
         </div>
 
         {/* Expense Log */}
-        <Card className="mt-6 bg-white/80 backdrop-blur-sm border-2 border-border/50 shadow-[var(--shadow-elegant)]">
+        <Card className="mt-6 bg-card/80 backdrop-blur-sm border-2 border-border/50 shadow-[var(--shadow-elegant)]">
           <CardHeader>
             <CardTitle>Expense Log - {format(selectedDate, 'MMMM d, yyyy')}</CardTitle>
           </CardHeader>
@@ -796,7 +796,7 @@ export default function Expenses() {
 
         {/* Category Breakdown Pie Chart */}
         {categoryData.length > 0 && (
-          <Card className="mt-6 bg-white/80 backdrop-blur-sm border-2 border-border/50 shadow-[var(--shadow-elegant)]">
+          <Card className="mt-6 bg-card/80 backdrop-blur-sm border-2 border-border/50 shadow-[var(--shadow-elegant)]">
             <CardHeader>
               <CardTitle>Spending by Category - {format(selectedDate, 'MMMM yyyy')}</CardTitle>
             </CardHeader>
@@ -829,7 +829,7 @@ export default function Expenses() {
 
         {/* Chart */}
         {chartData.length > 0 && (
-          <Card className="mt-6 bg-white/80 backdrop-blur-sm border-2 border-border/50 shadow-[var(--shadow-elegant)]">
+          <Card className="mt-6 bg-card/80 backdrop-blur-sm border-2 border-border/50 shadow-[var(--shadow-elegant)]">
             <CardHeader>
               <CardTitle>Monthly Spending - {selectedDate.getFullYear()}</CardTitle>
             </CardHeader>

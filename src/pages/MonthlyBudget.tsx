@@ -172,9 +172,9 @@ const MonthlyBudget: React.FC = () => {
   };
 
   const summaryData = [
-    { title: 'Total Income', value: totalIncome, icon: PiggyBank, color: 'text-green-500' },
-    { title: 'Total Expenses', value: totalExpenses, icon: Receipt, color: 'text-red-500' },
-    { title: 'Net Balance', value: netBalance, icon: DollarSign, color: netBalance >= 0 ? 'text-blue-500' : 'text-red-500' },
+    { title: 'Total Income', value: totalIncome, icon: PiggyBank, color: 'text-success' },
+    { title: 'Total Expenses', value: totalExpenses, icon: Receipt, color: 'text-destructive' },
+    { title: 'Net Balance', value: netBalance, icon: DollarSign, color: netBalance >= 0 ? 'text-primary' : 'text-destructive' },
   ];
 
   return (
