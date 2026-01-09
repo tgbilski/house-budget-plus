@@ -217,37 +217,13 @@ export function GiftCard({ initialData, onItemsChange }: GiftCardProps) {
           )}
         </div>
         
-        {/* Reset button - hide for demo lists */}
-        {listData.id && !listData.id.startsWith('demo-') && items.length > 0 && (
-          <AlertDialog>
-            <AlertDialogTrigger asChild>
-              <Button variant="outline" size="sm" className="w-full text-destructive hover:text-destructive">
-                <Trash2 className="h-4 w-4 mr-2" /> Reset List
-              </Button>
-            </AlertDialogTrigger>
-            <AlertDialogContent>
-              <AlertDialogHeader>
-                <AlertDialogTitle>Reset Gift List?</AlertDialogTitle>
-                <AlertDialogDescription>
-                  This will permanently delete all gift ideas from "{listData.list_title}". This action cannot be undone.
-                </AlertDialogDescription>
-              </AlertDialogHeader>
-              <AlertDialogFooter>
-                <AlertDialogCancel>Cancel</AlertDialogCancel>
-                <AlertDialogAction onClick={handleResetList} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
-                  Reset List
-                </AlertDialogAction>
-              </AlertDialogFooter>
-            </AlertDialogContent>
-          </AlertDialog>
-        )}
-        
         {/* Gift Items */}
         <div className="space-y-2">
-          {listData.id && items.map((item) => (
+          {listData.id && items.map((item, index) => (
             <GiftItem
               key={item.id}
               item={item}
+              itemNumber={index + 1}
               onSave={handleSaveItem}
               onDelete={handleDeleteItem}
               onStatusChange={handleStatusChange}
@@ -270,6 +246,7 @@ export function GiftCard({ initialData, onItemsChange }: GiftCardProps) {
                 category: null,
                 purchased_at: null
               }}
+              itemNumber={items.length + 1}
               onSave={handleSaveNewItem}
               onDelete={() => {}}
               isNew={true}
@@ -281,6 +258,31 @@ export function GiftCard({ initialData, onItemsChange }: GiftCardProps) {
             <Button onClick={() => setShowNewItem(true)} variant="outline" className="w-full">
               <Plus className="h-4 w-4 mr-2" /> Add Gift Idea
             </Button>
+          )}
+          
+          {/* Reset button - moved below Add Gift Idea */}
+          {listData.id && !listData.id.startsWith('demo-') && items.length > 0 && (
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button variant="ghost" size="sm" className="w-full text-muted-foreground hover:text-destructive">
+                  <Trash2 className="h-4 w-4 mr-2" /> Reset List
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Reset Gift List?</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    This will permanently delete all gift ideas from "{listData.list_title}". This action cannot be undone.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogAction onClick={handleResetList} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+                    Reset List
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
           )}
         </div>
       </CardContent>
