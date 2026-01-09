@@ -6,7 +6,6 @@ import { useAuth } from '@/hooks/useAuth';
 import { useIsMobile } from '@/hooks/use-mobile';
 import ProfileDropdown from './ProfileDropdown';
 import { SidebarTrigger } from '@/components/ui/sidebar';
-import calculatorMascot from '@/assets/calculator-mascot.png';
 
 const Header: React.FC = () => {
   const { user } = useAuth();
@@ -21,12 +20,7 @@ const Header: React.FC = () => {
             {isMobile && (
               <SidebarTrigger className="h-8 w-8" />
             )}
-            <Link to="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
-              <img 
-                src={calculatorMascot} 
-                alt="House Budget Calculator" 
-                className="w-8 h-8 md:w-10 md:h-10"
-              />
+            <Link to="/" className="flex items-center hover:opacity-80 transition-opacity">
               <h1 className="text-lg md:text-xl font-semibold text-foreground">
                 House Budget Calculator
               </h1>
