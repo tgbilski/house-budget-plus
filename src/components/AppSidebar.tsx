@@ -97,7 +97,7 @@ export function AppSidebar() {
     <Sidebar 
       collapsible={isMobile ? "offcanvas" : "none"}
       className={cn(
-        "fixed left-0 z-30 border-r bg-sidebar transition-all w-64 h-full",
+        "fixed left-0 z-30 border-r bg-sidebar transition-all w-44 h-full",
         isMobile && "relative"
       )}
       style={!isMobile 

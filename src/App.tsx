@@ -21,6 +21,7 @@ import { AppSidebar } from "@/components/AppSidebar";
 import ScrollToTop from "@/components/ScrollToTop";
 import Footer from "@/components/Footer";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { cn } from "@/lib/utils";
 import Home from "@/pages/Home";
 import Landing from "@/pages/Landing";
 // Features page consolidated into MonthlyBudget
@@ -227,7 +228,7 @@ const AppLayout = () => {
         <Header />
         <div className="flex flex-1">
           {!isMobile && <AppSidebar />}
-          <div className="flex-1 flex flex-col min-w-0">
+          <div className={cn("flex-1 flex flex-col min-w-0", !isMobile && "ml-44")}>
             {isMobile && <AppSidebar />}
             <main id="main-content" className="flex-1 p-2 sm:p-4 md:p-6 pb-20 md:pb-6">
               <AppRoutes />
