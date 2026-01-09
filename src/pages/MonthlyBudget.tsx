@@ -43,6 +43,8 @@ const MonthlyBudget: React.FC = () => {
   
   // Track which calculators are visible (1 is always visible, 2-4 can be revealed)
   const [visibleCalculators, setVisibleCalculators] = useState<Set<string>>(new Set(['1']));
+  // Track which calculators have data (to determine if they should stay visible)
+  const [calculatorsWithData, setCalculatorsWithData] = useState<Set<string>>(new Set());
 
   // CHANGE: Added loading and error states for data fetching.
   const [isLoading, setIsLoading] = useState(true);
@@ -115,6 +117,31 @@ const MonthlyBudget: React.FC = () => {
     const nextHidden = allIds.find(id => !visibleCalculators.has(id));
     if (nextHidden) {
       setVisibleCalculators(prev => new Set([...prev, nextHidden]));
+      setCalculatorsWithData(prev => new Set([...prev, nextHidden]));
+    }
+  };
+
+  // Handle empty state changes from calculators
+  const handleEmptyStateChange = (calculatorId: string, isEmpty: boolean) => {
+    // Calculator 1 always stays visible
+    if (calculatorId === '1') return;
+    
+    if (isEmpty) {
+      // Remove from calculatorsWithData
+      setCalculatorsWithData(prev => {
+        const next = new Set(prev);
+        next.delete(calculatorId);
+        return next;
+      });
+      // Hide calculator if it becomes empty
+      setVisibleCalculators(prev => {
+        const next = new Set(prev);
+        next.delete(calculatorId);
+        return next;
+      });
+    } else {
+      // Add to calculatorsWithData
+      setCalculatorsWithData(prev => new Set([...prev, calculatorId]));
     }
   };
 
@@ -249,6 +276,7 @@ const MonthlyBudget: React.FC = () => {
                     onRemove={() => {}} // No-op since we don't allow removal
                     onNameChange={handleNameChange}
                     pageType="monthly_budget"
+                    onEmptyStateChange={handleEmptyStateChange}
                   />
                 </div>
               ))}

@@ -1,6 +1,6 @@
 // src/components/BudgetCalculator.tsx
-import React, { useState, useEffect } from 'react';
-import { Plus, Trash2 } from 'lucide-react';
+import React, { useState, useEffect, useCallback } from 'react';
+import { Plus, Trash2, RotateCcw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -27,6 +27,7 @@ interface BudgetCalculatorProps {
   showRemove: boolean;
   pageType?: string;
   onNameChange: (id: string, name: string) => void;
+  onEmptyStateChange?: (id: string, isEmpty: boolean) => void;
 }
 
 const defaultExpenses: ExpenseItem[] = [
@@ -51,7 +52,8 @@ const BudgetCalculator: React.FC<BudgetCalculatorProps> = ({
   onRemove, 
   showRemove, 
   pageType = 'monthly_budget',
-  onNameChange
+  onNameChange,
+  onEmptyStateChange
 }) => {
   const { user } = useAuth();
   const { currentHousehold } = useHousehold(user?.id);
@@ -63,6 +65,57 @@ const BudgetCalculator: React.FC<BudgetCalculatorProps> = ({
   const [additionalExpenses, setAdditionalExpenses] = useState<ExpenseItem[]>([]);
   const [additionalSubscriptions, setAdditionalSubscriptions] = useState<ExpenseItem[]>([]);
   const [subscriptionServices, setSubscriptionServices] = useState<Record<string, string>>({});
+  const [isResetting, setIsResetting] = useState(false);
+
+  // Check if calculator is empty (all inputs blank)
+  const checkIsEmpty = useCallback(() => {
+    const hasIncome = monthlyIncome > 0;
+    const hasOwnerName = ownerName.trim() !== '';
+    const hasFixedExpenses = expenses.some(e => e.amount > 0);
+    const hasAdditionalExpenses = additionalExpenses.length > 0;
+    const hasAdditionalSubscriptions = additionalSubscriptions.length > 0;
+    
+    return !hasIncome && !hasOwnerName && !hasFixedExpenses && !hasAdditionalExpenses && !hasAdditionalSubscriptions;
+  }, [monthlyIncome, ownerName, expenses, additionalExpenses, additionalSubscriptions]);
+
+  // Notify parent about empty state changes
+  useEffect(() => {
+    if (onEmptyStateChange && !isResetting) {
+      onEmptyStateChange(id, checkIsEmpty());
+    }
+  }, [id, checkIsEmpty, onEmptyStateChange, isResetting]);
+
+  // Reset calculator to defaults
+  const resetCalculator = async () => {
+    setIsResetting(true);
+    setOwnerName('');
+    setMonthlyIncome(0);
+    setExpenses(defaultExpenses);
+    setAdditionalExpenses([]);
+    setAdditionalSubscriptions([]);
+    setSubscriptionServices({});
+    onNameChange(id, '');
+    
+    // Delete data from database if user is logged in
+    if (user && currentHousehold) {
+      await supabase
+        .from('budget_data')
+        .delete()
+        .eq('user_id', user.id)
+        .eq('household_id', currentHousehold.id)
+        .eq('year', selectedYear)
+        .eq('calculator_id', id)
+        .eq('page_type', pageType);
+    }
+    
+    // Notify parent after reset
+    setTimeout(() => {
+      setIsResetting(false);
+      if (onEmptyStateChange) {
+        onEmptyStateChange(id, true);
+      }
+    }, 100);
+  };
 
   // When the component loads, check for saved data and set the owner name.
   useEffect(() => {
@@ -377,9 +430,18 @@ const BudgetCalculator: React.FC<BudgetCalculatorProps> = ({
             </div>
           </div>
           
-          {/* Compact remove button - only show if showRemove is true */}
-          {showRemove && (
-            <div className="flex justify-end">
+          {/* Compact action buttons */}
+          <div className="flex justify-end gap-2">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={resetCalculator}
+              className="text-muted-foreground hover:text-foreground hover:bg-muted h-7 text-xs"
+            >
+              <RotateCcw className="h-3 w-3 mr-1" />
+              Reset
+            </Button>
+            {showRemove && (
               <Button
                 variant="ghost"
                 size="sm"
@@ -389,8 +451,8 @@ const BudgetCalculator: React.FC<BudgetCalculatorProps> = ({
                 <Trash2 className="h-3 w-3 mr-1" />
                 Remove
               </Button>
-            </div>
-          )}
+            )}
+          </div>
         </div>
       </CardHeader>
 
