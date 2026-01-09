@@ -37,11 +37,14 @@ import {
   Package, 
   Star,
   ChevronDown,
-  StickyNote
+  StickyNote,
+  GripVertical
 } from 'lucide-react';
 import { GiftItemData, GiftStatus, GiftPriority, GIFT_CATEGORIES } from '@/hooks/useGiftLists';
 import { supabase } from '@/integrations/supabase/client';
 import { cn } from '@/lib/utils';
+import { useSortable } from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 
 interface GiftItemProps {
   item: Partial<GiftItemData>;
@@ -75,6 +78,16 @@ export function GiftItem({ item, itemNumber, onSave, onDelete, onStatusChange, i
     quantity_purchased: item.quantity_purchased || 0
   });
   const [urlMetadata, setUrlMetadata] = useState<{title: string, image: string} | null>(null);
+
+  // Drag and drop setup
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: item.id || 'new-item', disabled: isNew || isEditing });
 
   // Sync itemData when item prop changes (e.g., after status update)
   useEffect(() => {
@@ -284,14 +297,36 @@ export function GiftItem({ item, itemNumber, onSave, onDelete, onStatusChange, i
     );
   }
 
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+  };
+
   // Display Mode - Clean Row Layout with Clickable Status
   return (
     <Collapsible open={isExpanded} onOpenChange={setIsExpanded}>
-      <div className="border rounded-lg bg-card overflow-hidden">
+      <div 
+        ref={setNodeRef} 
+        style={style}
+        className={cn(
+          "border rounded-lg bg-card overflow-hidden",
+          isDragging && "opacity-50 shadow-lg z-50"
+        )}
+      >
         {/* Main Row - Stacked on mobile, row on desktop */}
         <div className="flex flex-col sm:flex-row sm:items-center p-3 gap-2 sm:gap-3">
           {/* Top row on mobile: Status + Name + Price */}
           <div className="flex items-start sm:items-center gap-2 sm:gap-3 w-full">
+            {/* Drag Handle */}
+            <button
+              {...attributes}
+              {...listeners}
+              className="cursor-grab active:cursor-grabbing touch-none text-muted-foreground hover:text-foreground transition-colors flex-shrink-0"
+              title="Drag to reorder"
+            >
+              <GripVertical className="h-4 w-4" />
+            </button>
+            
             {/* Clickable Status Icon */}
             <Popover open={statusPopoverOpen} onOpenChange={setStatusPopoverOpen}>
               <PopoverTrigger asChild>
