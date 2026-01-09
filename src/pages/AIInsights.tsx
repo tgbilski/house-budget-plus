@@ -11,10 +11,11 @@ import { toast } from "@/hooks/use-toast";
 import { SEO } from "@/components/SEO";
 import { seoData } from "@/utils/seoData";
 import { Link } from "react-router-dom";
-import { Brain, Crown, Loader2, CheckCircle2, Bot, Sparkles } from "lucide-react";
+import { Crown, Loader2, CheckCircle2, Bot, Sparkles } from "lucide-react";
 import { isNativeApp } from '@/utils/capacitor';
 import { cn } from '@/lib/utils';
 import { supabase } from "@/integrations/supabase/client";
+import calculatorMascot from '@/assets/calculator-mascot.png';
 
 // Agent display info
 const AGENTS: Record<string, { name: string; emoji: string; color: string }> = {
@@ -191,27 +192,25 @@ export default function AIInsights() {
         structuredData={seoData.aiInsights.structuredData}
       />
 
-      <div className="max-w-7xl mx-auto p-4">
-        {/* Header */}
-        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-6">
-          <div className="flex flex-col lg:items-start space-y-2">
-            <div className="flex items-center gap-2">
-              <div className="inline-flex items-center justify-center w-10 h-10 bg-teal/20 rounded-full">
-                <Brain className="h-6 w-6 text-teal" />
-              </div>
-              <div>
-                <h1 className="text-2xl font-bold text-foreground">AI Financial Advisor</h1>
-                {subscribed && (
-                  <p className="text-xs text-muted-foreground mt-1">
-                    {aiQueriesRemaining} queries remaining this month
-                  </p>
-                )}
-              </div>
+      <div className="max-w-7xl mx-auto pt-2 px-4">
+        {/* Header - matching Monthly Budget style */}
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center gap-3">
+            <img 
+              src={calculatorMascot} 
+              alt="Budget Calculator Mascot" 
+              className="w-12 h-12 md:w-16 md:h-16 object-contain"
+            />
+            <div>
+              <h1 className="text-2xl md:text-3xl font-bold text-foreground tracking-wide">
+                AI INSIGHT
+              </h1>
+              {subscribed && (
+                <p className="text-xs text-muted-foreground mt-1">
+                  {aiQueriesRemaining} queries remaining this month
+                </p>
+              )}
             </div>
-            <p className="text-muted-foreground text-sm text-center lg:text-left bg-sage/30 px-3 py-1 rounded-md">
-              <Sparkles className="inline h-4 w-4 mr-1" />
-              Powered by specialized AI agents for each feature
-            </p>
           </div>
         </div>
 
