@@ -15,6 +15,7 @@ import { toast } from 'sonner';
 import { AdSense } from '@/components/AdSense';
 import { emergencyFundGuidePost } from '@/utils/blogPosts/emergencyFundGuide';
 import { supabase } from '@/integrations/supabase/client';
+import calculatorMascot from '@/assets/calculator-mascot.png';
 
 const Blog: React.FC = () => {
   const { posts, loading, createPost, updatePost, deletePost } = useBlogPosts();
@@ -167,18 +168,19 @@ const Blog: React.FC = () => {
         structuredData={seoData.blog.structuredData}
       />
       <div className="min-h-screen bg-background">
-        <div className="max-w-7xl mx-auto p-4 space-y-8">
-          {/* Enhanced Header Section */}
-          <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-background via-teal/5 to-sage/10 border border-teal/20 p-8 md:p-12 shadow-lg text-center">
-            <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-teal to-teal/60 rounded-2xl shadow-lg mb-6">
-              <BookOpen className="h-8 w-8 text-white" />
+        <div className="max-w-7xl mx-auto pt-2 px-4 space-y-8">
+          {/* Header - matching Monthly Budget style */}
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-3">
+              <img 
+                src={calculatorMascot} 
+                alt="Budget Calculator Mascot" 
+                className="w-12 h-12 md:w-16 md:h-16 object-contain"
+              />
+              <h1 className="text-2xl md:text-3xl font-bold text-foreground tracking-wide">
+                ARTICLES
+              </h1>
             </div>
-            <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-foreground to-teal bg-clip-text text-transparent mb-4 pb-2 leading-tight">
-              Financial Insights Blog
-            </h1>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Discover expert tips, strategies, and insights to help you master your finances and achieve your financial goals.
-            </p>
           </div>
 
           {/* Controls Section */}
