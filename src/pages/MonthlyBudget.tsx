@@ -232,22 +232,8 @@ const MonthlyBudget: React.FC = () => {
           </div>
         ) : (
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-2 md:mt-0">
-            {/* Budget Overview Chart - takes 1 column */}
-            <div className="lg:col-span-1 space-y-4">
-              <BudgetDonutChart
-                totalIncome={totalIncome}
-                totalExpenses={totalExpenses}
-                currency={currency}
-              />
-              <MortgagePreapprovalQuestion
-                monthlyIncome={totalIncome}
-                monthlyExpenses={totalExpenses}
-                currency={currency}
-              />
-            </div>
-
-            {/* Budget calculators - takes 2 columns */}
-            <div className="lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Budget calculators - takes 2 columns on left */}
+            <div className="lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-6 order-2 lg:order-1">
               {calculators
                 .filter(calculator => visibleCalculators.has(calculator.id))
                 .map((calculator, index) => (
@@ -284,6 +270,20 @@ const MonthlyBudget: React.FC = () => {
                   </button>
                 </div>
               )}
+            </div>
+
+            {/* Budget Overview Chart & AI Insight - takes 1 column on right */}
+            <div className="lg:col-span-1 space-y-4 order-1 lg:order-2">
+              <BudgetDonutChart
+                totalIncome={totalIncome}
+                totalExpenses={totalExpenses}
+                currency={currency}
+              />
+              <MortgagePreapprovalQuestion
+                monthlyIncome={totalIncome}
+                monthlyExpenses={totalExpenses}
+                currency={currency}
+              />
             </div>
           </div>
         )}
