@@ -142,8 +142,7 @@ export const MortgagePreapprovalQuestion: React.FC<MortgagePreapprovalQuestionPr
             </Button>
           </div>
         ) : (
-          <ScrollArea className="max-h-[400px]">
-            <div className="space-y-3 pr-2">
+          <div className="space-y-3">
               {/* Tier Selection */}
               <div>
                 <p className="text-xs text-muted-foreground mb-2">
@@ -217,7 +216,6 @@ export const MortgagePreapprovalQuestion: React.FC<MortgagePreapprovalQuestionPr
                 lender, and market conditions. Consult a mortgage professional.
               </p>
             </div>
-          </ScrollArea>
         )}
       </CardContent>
     </Card>
