@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
-import { HelpCircle, Lock, TrendingUp, AlertTriangle, CheckCircle, Home, Calculator } from 'lucide-react';
+import { HelpCircle, Lock, TrendingUp, AlertTriangle, CheckCircle, Home, Calculator, ChevronDown, ChevronUp } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { ScrollArea } from '@/components/ui/scroll-area';
 import { useAuth } from '@/hooks/useAuth';
 import { useSubscription } from '@/hooks/useSubscription';
 import { useNavigate } from 'react-router-dom';
+import { cn } from '@/lib/utils';
 
 interface MortgagePreapprovalQuestionProps {
   monthlyIncome: number;
@@ -27,6 +27,7 @@ export const MortgagePreapprovalQuestion: React.FC<MortgagePreapprovalQuestionPr
   currency,
 }) => {
   const [showAnswer, setShowAnswer] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(false);
   const [selectedTier, setSelectedTier] = useState<'low' | 'mid' | 'high'>('mid');
   const { user } = useAuth();
   const { subscribed } = useSubscription();
@@ -95,9 +96,9 @@ export const MortgagePreapprovalQuestion: React.FC<MortgagePreapprovalQuestionPr
   const InsightIcon = insight.icon;
 
   const tiers = [
-    { key: 'low' as const, label: 'Conservative', price: lowEstimate, color: 'bg-green-500/10 border-green-500/30 text-green-600' },
-    { key: 'mid' as const, label: 'Moderate', price: midEstimate, color: 'bg-blue-500/10 border-blue-500/30 text-blue-600' },
-    { key: 'high' as const, label: 'Aggressive', price: highEstimate, color: 'bg-orange-500/10 border-orange-500/30 text-orange-600' },
+    { key: 'low' as const, label: 'Conservative', price: lowEstimate, color: 'bg-success/10 border-success/30 text-success' },
+    { key: 'mid' as const, label: 'Moderate', price: midEstimate, color: 'bg-primary/10 border-primary/30 text-primary' },
+    { key: 'high' as const, label: 'Aggressive', price: highEstimate, color: 'bg-warning/10 border-warning/30 text-warning' },
   ];
 
   return (
@@ -143,79 +144,122 @@ export const MortgagePreapprovalQuestion: React.FC<MortgagePreapprovalQuestionPr
           </div>
         ) : (
           <div className="space-y-3">
-              {/* Tier Selection */}
-              <div>
-                <p className="text-xs text-muted-foreground mb-2">
-                  Based on {formatCurrency(yearlyIncome)}/year income (650+ credit)
-                </p>
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-1.5">
-                  {tiers.map((tier) => (
-                    <button
-                      key={tier.key}
-                      onClick={() => setSelectedTier(tier.key)}
-                      className={`p-2 rounded-lg border text-center transition-all ${
-                        selectedTier === tier.key 
-                          ? `${tier.color} border-2 scale-[1.02]` 
-                          : 'bg-background/50 border-border hover:bg-muted/50'
-                      }`}
-                    >
-                      <div className="text-[10px] text-muted-foreground">{tier.label}</div>
-                      <div className={`font-bold text-xs ${selectedTier === tier.key ? '' : 'text-foreground'}`}>
-                        {formatCurrency(tier.price)}
-                      </div>
-                    </button>
-                  ))}
+            {/* Compact Summary - Always visible */}
+            <div className="bg-background/50 rounded-lg p-3 border border-border">
+              <div className="flex items-center justify-between mb-2">
+                <div className="flex items-center gap-2">
+                  <Home className="h-4 w-4 text-primary flex-shrink-0" />
+                  <span className="font-semibold text-sm">Preapproval Estimate</span>
                 </div>
+                <span className="font-bold text-primary text-sm">{formatCurrency(midEstimate)}</span>
               </div>
+              <div className="flex items-center justify-between text-xs text-muted-foreground">
+                <span>Est. Monthly Payment</span>
+                <span className="font-medium text-foreground">{formatCurrency(totalMonthly)}/mo</span>
+              </div>
+            </div>
 
-              {/* Monthly Cost Breakdown */}
-              <div className="bg-background/50 rounded-lg p-3 border border-border">
-                <div className="flex items-center gap-2 mb-2">
-                  <Calculator className="h-4 w-4 text-primary flex-shrink-0" />
-                  <span className="font-semibold text-sm">Monthly Costs</span>
+            {/* Expandable Details */}
+            <div className={cn(
+              "overflow-hidden transition-all duration-300 ease-in-out",
+              isExpanded ? "max-h-[800px] opacity-100" : "max-h-0 opacity-0"
+            )}>
+              <div className="space-y-3 pt-1">
+                {/* Tier Selection */}
+                <div>
+                  <p className="text-xs text-muted-foreground mb-2">
+                    Based on {formatCurrency(yearlyIncome)}/year income (650+ credit)
+                  </p>
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-1.5">
+                    {tiers.map((tier) => (
+                      <button
+                        key={tier.key}
+                        onClick={() => setSelectedTier(tier.key)}
+                        className={`p-2 rounded-lg border text-center transition-all ${
+                          selectedTier === tier.key 
+                            ? `${tier.color} border-2 scale-[1.02]` 
+                            : 'bg-background/50 border-border hover:bg-muted/50'
+                        }`}
+                      >
+                        <div className="text-[10px] text-muted-foreground">{tier.label}</div>
+                        <div className={`font-bold text-xs ${selectedTier === tier.key ? '' : 'text-foreground'}`}>
+                          {formatCurrency(tier.price)}
+                        </div>
+                      </button>
+                    ))}
+                  </div>
                 </div>
-                <p className="text-[10px] text-muted-foreground mb-2">
-                  Assuming 20% down ({formatCurrency(downPayment)}), 7% rate, 30-yr
-                </p>
-                
-                <div className="space-y-1.5">
-                  <div className="flex justify-between text-xs">
-                    <span className="text-muted-foreground">Mortgage (P&I)</span>
-                    <span className="font-medium">{formatCurrency(monthlyMortgage)}</span>
+
+                {/* Monthly Cost Breakdown */}
+                <div className="bg-background/50 rounded-lg p-3 border border-border">
+                  <div className="flex items-center gap-2 mb-2">
+                    <Calculator className="h-4 w-4 text-primary flex-shrink-0" />
+                    <span className="font-semibold text-sm">Monthly Costs</span>
                   </div>
-                  <div className="flex justify-between text-xs">
-                    <span className="text-muted-foreground">Property Tax</span>
-                    <span className="font-medium">{formatCurrency(monthlyPropertyTax)}</span>
-                  </div>
-                  <div className="flex justify-between text-xs">
-                    <span className="text-muted-foreground">Insurance</span>
-                    <span className="font-medium">{formatCurrency(monthlyInsurance)}</span>
-                  </div>
-                  <div className="border-t border-border pt-1.5 mt-1.5">
-                    <div className="flex justify-between text-sm">
-                      <span className="font-semibold">Total Monthly</span>
-                      <span className="font-bold text-primary">{formatCurrency(totalMonthly)}</span>
+                  <p className="text-[10px] text-muted-foreground mb-2">
+                    Assuming 20% down ({formatCurrency(downPayment)}), 7% rate, 30-yr
+                  </p>
+                  
+                  <div className="space-y-1.5">
+                    <div className="flex justify-between text-xs">
+                      <span className="text-muted-foreground">Mortgage (P&I)</span>
+                      <span className="font-medium">{formatCurrency(monthlyMortgage)}</span>
+                    </div>
+                    <div className="flex justify-between text-xs">
+                      <span className="text-muted-foreground">Property Tax</span>
+                      <span className="font-medium">{formatCurrency(monthlyPropertyTax)}</span>
+                    </div>
+                    <div className="flex justify-between text-xs">
+                      <span className="text-muted-foreground">Insurance</span>
+                      <span className="font-medium">{formatCurrency(monthlyInsurance)}</span>
+                    </div>
+                    <div className="border-t border-border pt-1.5 mt-1.5">
+                      <div className="flex justify-between text-sm">
+                        <span className="font-semibold">Total Monthly</span>
+                        <span className="font-bold text-primary">{formatCurrency(totalMonthly)}</span>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
 
-              {/* Insight */}
-              <div className={`flex items-start gap-2 p-2.5 rounded-lg text-xs ${
-                insight.type === 'warning' ? 'bg-destructive/10 text-destructive' :
-                insight.type === 'caution' ? 'bg-yellow-500/10 text-yellow-700 dark:text-yellow-400' :
-                'bg-green-500/10 text-green-700 dark:text-green-400'
-              }`}>
-                <InsightIcon className="h-3.5 w-3.5 mt-0.5 flex-shrink-0" />
-                <p className="leading-relaxed">{insight.message}</p>
-              </div>
+                {/* Insight */}
+                <div className={`flex items-start gap-2 p-2.5 rounded-lg text-xs ${
+                  insight.type === 'warning' ? 'bg-destructive/10 text-destructive' :
+                  insight.type === 'caution' ? 'bg-warning/10 text-warning' :
+                  'bg-success/10 text-success'
+                }`}>
+                  <InsightIcon className="h-3.5 w-3.5 mt-0.5 flex-shrink-0" />
+                  <p className="leading-relaxed">{insight.message}</p>
+                </div>
 
-              {/* Disclaimer */}
-              <p className="text-[10px] text-muted-foreground leading-relaxed">
-                <strong>Note:</strong> Estimates only. Actual costs vary by location, credit score, 
-                lender, and market conditions. Consult a mortgage professional.
-              </p>
+                {/* Disclaimer */}
+                <p className="text-[10px] text-muted-foreground leading-relaxed">
+                  <strong>Note:</strong> Estimates only. Actual costs vary by location, credit score, 
+                  lender, and market conditions. Consult a mortgage professional.
+                </p>
+              </div>
             </div>
+
+            {/* Show More/Less Toggle */}
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setIsExpanded(!isExpanded)}
+              className="w-full text-xs text-muted-foreground hover:text-foreground"
+            >
+              {isExpanded ? (
+                <>
+                  <ChevronUp className="h-4 w-4 mr-1" />
+                  Show Less
+                </>
+              ) : (
+                <>
+                  <ChevronDown className="h-4 w-4 mr-1" />
+                  Show Details
+                </>
+              )}
+            </Button>
+          </div>
         )}
       </CardContent>
     </Card>
