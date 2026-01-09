@@ -20,7 +20,9 @@ export default {
     	extend: {
     		fontFamily: {
     			sans: [
-    				'Work Sans',
+    				'Helvetica Neue',
+    				'Helvetica',
+    				'Arial',
     				'ui-sans-serif',
     				'system-ui',
     				'sans-serif',
@@ -30,6 +32,7 @@ export default {
     				'Noto Color Emoji'
     			],
     			display: [
+    				'Helvetica Neue',
     				'Helvetica',
     				'Arial',
     				'sans-serif'
