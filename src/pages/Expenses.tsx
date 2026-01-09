@@ -23,6 +23,7 @@ import { cn } from '@/lib/utils';
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, PieChart, Pie, Cell, Legend } from 'recharts';
 import { AlertCircle, TrendingDown } from 'lucide-react';
 import { isNativeApp } from '@/utils/capacitor';
+import calculatorMascot from '@/assets/calculator-mascot.png';
 
 export default function Expenses() {
   const { user } = useAuth();
@@ -488,27 +489,24 @@ export default function Expenses() {
         keywords="expense tracker, voice input, budget tracking, AI expense logging"
       />
 
-      <div className="max-w-7xl mx-auto p-4 md:p-6 lg:p-8">
-        {/* Header */}
-        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6 mb-8 p-6 rounded-2xl bg-white/60 backdrop-blur-sm border-2 border-border/50 shadow-[var(--shadow-elegant)] animate-fade-in">
+      <div className="max-w-7xl mx-auto pt-2 px-4 md:px-6 lg:px-8">
+        {/* Header - matching Monthly Budget style */}
+        <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-3">
-            <div className="inline-flex items-center justify-center w-14 h-14 bg-gradient-to-br from-primary/20 to-primary-glow/20 rounded-2xl shadow-md">
-              <Mic className="h-8 w-8 text-primary" />
-            </div>
-            <div>
-              <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-foreground to-primary bg-clip-text text-transparent">
-                Voice Expense Tracker
-              </h1>
-              <p className="text-muted-foreground text-sm mt-1">
-                Just speak - we'll do the rest
-              </p>
-            </div>
+            <img 
+              src={calculatorMascot} 
+              alt="Budget Calculator Mascot" 
+              className="w-12 h-12 md:w-16 md:h-16 object-contain"
+            />
+            <h1 className="text-2xl md:text-3xl font-bold text-foreground tracking-wide">
+              DAILY EXPENSES
+            </h1>
           </div>
-
+          
           {/* Date Picker */}
           <Popover>
             <PopoverTrigger asChild>
-              <Button variant="outline" className={cn("w-[240px] justify-start text-left font-normal")}>
+              <Button variant="outline" className={cn("w-[180px] md:w-[240px] justify-start text-left font-normal")}>
                 <CalendarIcon className="mr-2 h-4 w-4" />
                 {format(selectedDate, 'PPP')}
               </Button>
