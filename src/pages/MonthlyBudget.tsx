@@ -188,7 +188,7 @@ const MonthlyBudget: React.FC = () => {
         ogImage={seoData.monthlyBudget.ogImage}
       />
       
-      <div className="max-w-7xl mx-auto p-4">
+      <div className="max-w-7xl mx-auto px-4 pt-2 pb-4">
         {/* Page Header - Mascot, Title, Year Selector */}
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-3">
