@@ -387,11 +387,22 @@ const BudgetCalculator: React.FC<BudgetCalculatorProps> = ({
 
 
   return (
-    <Card className="w-full max-w-md border-[4px] border-stroke shadow-cartoon bg-card" data-calculator-id={id}>
+    <Card className="w-full max-w-md border-[4px] border-stroke shadow-cartoon bg-card relative" data-calculator-id={id}>
+      {/* Reset button - top right corner */}
+      <Button
+        variant="ghost"
+        size="sm"
+        onClick={resetCalculator}
+        className="absolute top-2 right-2 text-muted-foreground hover:text-foreground hover:bg-muted h-7 text-xs z-10"
+      >
+        <RotateCcw className="h-3 w-3 mr-1" />
+        Reset
+      </Button>
+      
       <CardHeader className="pb-4 pt-4 bg-teal/10 rounded-t-lg">
         <div className="space-y-3">
           {/* Owner name and Monthly Income - stacked on separate rows */}
-          <div className="space-y-3">
+          <div className="space-y-3 pr-16">
             <div>
               <Label className="text-xs text-muted-foreground mb-1.5 block">
                 Calculator {calculatorNumber} Owner
@@ -430,18 +441,9 @@ const BudgetCalculator: React.FC<BudgetCalculatorProps> = ({
             </div>
           </div>
           
-          {/* Compact action buttons */}
-          <div className="flex justify-end gap-2">
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={resetCalculator}
-              className="text-muted-foreground hover:text-foreground hover:bg-muted h-7 text-xs"
-            >
-              <RotateCcw className="h-3 w-3 mr-1" />
-              Reset
-            </Button>
-            {showRemove && (
+          {/* Compact remove button - only show if showRemove is true */}
+          {showRemove && (
+            <div className="flex justify-end">
               <Button
                 variant="ghost"
                 size="sm"
@@ -451,8 +453,8 @@ const BudgetCalculator: React.FC<BudgetCalculatorProps> = ({
                 <Trash2 className="h-3 w-3 mr-1" />
                 Remove
               </Button>
-            )}
-          </div>
+            </div>
+          )}
         </div>
       </CardHeader>
 
