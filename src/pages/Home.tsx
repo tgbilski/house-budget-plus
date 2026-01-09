@@ -178,10 +178,11 @@ export default function Home() {
             </div>
           </div>
 
-          {/* Diagonal Cut */}
-          <div className="absolute bottom-0 left-0 right-0 h-24 bg-white" 
+          {/* Diagonal Cut - using background color to match seamlessly */}
+          <div className="absolute bottom-0 left-0 right-0 h-24" 
             style={{ 
-              clipPath: 'polygon(0 100%, 100% 0, 100% 100%, 0 100%)'
+              clipPath: 'polygon(0 100%, 100% 0, 100% 100%, 0 100%)',
+              backgroundColor: 'white'
             }}
           />
         </div>
