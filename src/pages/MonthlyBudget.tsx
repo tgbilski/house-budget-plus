@@ -207,8 +207,8 @@ const MonthlyBudget: React.FC = () => {
           </div>
         </div>
 
-        {/* AI Promo Banner - only show for non-subscribers */}
-        {!subscribed && (
+        {/* AI Promo Banner - only show for signed-in non-subscribers */}
+        {user && !subscribed && (
           <Link 
             to="/settings" 
             className="block bg-primary text-primary-foreground px-4 py-3 rounded-lg text-sm md:text-base font-medium text-center mb-4 hover:opacity-90 transition-opacity border-[4px] border-stroke shadow-cartoon"
