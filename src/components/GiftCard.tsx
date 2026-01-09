@@ -23,6 +23,21 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  DragEndEvent,
+} from '@dnd-kit/core';
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  verticalListSortingStrategy,
+} from '@dnd-kit/sortable';
 
 interface GiftListData {
   id?: string;
@@ -40,8 +55,21 @@ export function GiftCard({ initialData, onItemsChange }: GiftCardProps) {
   const { toast } = useToast();
   const [listData, setListData] = useState<GiftListData>({ ...initialData });
   const [showNewItem, setShowNewItem] = useState(false);
+  const [orderedItems, setOrderedItems] = useState<GiftItemData[]>([]);
   
   const { items, deleteItem, saveItem, refetchItems, updateItemStatus } = useGiftItems(listData.id);
+
+  // Sensors for drag and drop
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 8,
+      },
+    }),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
 
   useEffect(() => {
     if (initialData) {
@@ -49,6 +77,11 @@ export function GiftCard({ initialData, onItemsChange }: GiftCardProps) {
       setShowNewItem(false);
     }
   }, [initialData]);
+
+  // Sync ordered items when items change from database
+  useEffect(() => {
+    setOrderedItems(items);
+  }, [items]);
 
   const saveBudgetTarget = async (budgetTarget: number) => {
     if (!user || !listData.id) return;
@@ -81,6 +114,18 @@ export function GiftCard({ initialData, onItemsChange }: GiftCardProps) {
   const handleStatusChange = async (itemId: string, status: GiftStatus) => {
     await updateItemStatus(itemId, status);
     onItemsChange?.();
+  };
+
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
+    
+    if (over && active.id !== over.id) {
+      setOrderedItems((items) => {
+        const oldIndex = items.findIndex((item) => item.id === active.id);
+        const newIndex = items.findIndex((item) => item.id === over.id);
+        return arrayMove(items, oldIndex, newIndex);
+      });
+    }
   };
 
   const handleResetList = async () => {
@@ -219,16 +264,29 @@ export function GiftCard({ initialData, onItemsChange }: GiftCardProps) {
         
         {/* Gift Items */}
         <div className="space-y-2">
-          {listData.id && items.map((item, index) => (
-            <GiftItem
-              key={item.id}
-              item={item}
-              itemNumber={index + 1}
-              onSave={handleSaveItem}
-              onDelete={handleDeleteItem}
-              onStatusChange={handleStatusChange}
-            />
-          ))}
+          {listData.id && orderedItems.length > 0 && (
+            <DndContext
+              sensors={sensors}
+              collisionDetection={closestCenter}
+              onDragEnd={handleDragEnd}
+            >
+              <SortableContext
+                items={orderedItems.map(item => item.id)}
+                strategy={verticalListSortingStrategy}
+              >
+                {orderedItems.map((item, index) => (
+                  <GiftItem
+                    key={item.id}
+                    item={item}
+                    itemNumber={index + 1}
+                    onSave={handleSaveItem}
+                    onDelete={handleDeleteItem}
+                    onStatusChange={handleStatusChange}
+                  />
+                ))}
+              </SortableContext>
+            </DndContext>
+          )}
 
           {showNewItem && listData.id && (
             <GiftItem
@@ -246,7 +304,7 @@ export function GiftCard({ initialData, onItemsChange }: GiftCardProps) {
                 category: null,
                 purchased_at: null
               }}
-              itemNumber={items.length + 1}
+              itemNumber={orderedItems.length + 1}
               onSave={handleSaveNewItem}
               onDelete={() => {}}
               isNew={true}
