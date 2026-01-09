@@ -27,7 +27,6 @@ import { WarningBanner } from '@/components/WarningBanner';
 import { MortgagePreapprovalQuestion } from '@/components/MortgagePreapprovalQuestion';
 import { ToolsGrid } from '@/components/ToolsGrid';
 import { HomeBuyingToolkit } from '@/components/home-buying';
-import heroBudgetImg from '@/assets/hero-budget.png';
 import calculatorMascot from '@/assets/calculator-mascot.png';
 
 interface Calculator {
@@ -178,14 +177,6 @@ const MonthlyBudget: React.FC = () => {
     { title: 'Net Balance', value: netBalance, icon: DollarSign, color: netBalance >= 0 ? 'text-blue-500' : 'text-red-500' },
   ];
 
-  // Get user's first name for personalized greeting
-  const getGreeting = () => {
-    const hour = new Date().getHours();
-    if (hour < 12) return 'Good morning';
-    if (hour < 18) return 'Good afternoon';
-    return 'Good evening';
-  };
-
   return (
     <div className="min-h-screen bg-background">
       <SEO
@@ -198,6 +189,24 @@ const MonthlyBudget: React.FC = () => {
       />
       
       <div className="max-w-7xl mx-auto p-4">
+        {/* Page Header - Mascot, Title, Year Selector */}
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center gap-3">
+            <img 
+              src={calculatorMascot} 
+              alt="Budget Calculator Mascot" 
+              className="h-12 md:h-16 w-auto object-contain drop-shadow-[2px_2px_0px_hsl(var(--stroke))]"
+            />
+            <h1 className="text-2xl md:text-3xl font-bold text-foreground tracking-wide">
+              MONTHLY BUDGET
+            </h1>
+          </div>
+          <div className="bg-card border border-border rounded-xl p-3 shadow-sm">
+            <p className="text-xs text-muted-foreground mb-1 text-center">Budget Year</p>
+            <YearSelector />
+          </div>
+        </div>
+
         {/* AI Promo Banner - only show for non-subscribers */}
         {!subscribed && (
           <Link 
@@ -207,69 +216,6 @@ const MonthlyBudget: React.FC = () => {
             Click & unlock premium features for the cost of a cup of coffee ($4.99)!
           </Link>
         )}
-
-        {/* Calculator Mascot */}
-        <div className="flex justify-center mb-4">
-          <img 
-            src={calculatorMascot} 
-            alt="Budget Calculator Mascot" 
-            className="h-24 md:h-32 w-auto object-contain drop-shadow-[4px_4px_0px_hsl(var(--stroke))]"
-          />
-        </div>
-
-        {/* Welcome Hero Section */}
-        <div className="relative overflow-hidden rounded-xl mb-8 border-[4px] border-stroke shadow-cartoon">
-          <img 
-            src={heroBudgetImg} 
-            alt="" 
-            className="absolute inset-0 w-full h-full object-cover"
-            aria-hidden="true"
-          />
-          <div className="absolute inset-0 bg-gradient-to-r from-background/95 via-background/85 to-background/70" />
-          <div className="relative px-6 py-8 md:py-10">
-            <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
-              <div className="flex flex-col space-y-3 max-w-2xl">
-                {/* Personalized Welcome */}
-                <p className="text-lg md:text-xl text-muted-foreground font-medium">
-                  {getGreeting()}{user ? '!' : ', welcome to House Budget Calculator!'}
-                </p>
-                <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-foreground leading-normal pb-1">
-                  Your Monthly Budget
-                </h1>
-                
-                {/* Quick Stats Summary */}
-                {(totalIncome > 0 || totalExpenses > 0) && (
-                  <div className="flex flex-wrap gap-4 pt-2">
-                    <div className="flex items-center gap-2 bg-green-500/10 text-green-600 dark:text-green-400 px-3 py-1.5 rounded-full text-sm font-medium">
-                      <PiggyBank className="h-4 w-4" />
-                      <span>{currency.symbol}{totalIncome.toLocaleString()} income</span>
-                    </div>
-                    <div className="flex items-center gap-2 bg-red-500/10 text-red-600 dark:text-red-400 px-3 py-1.5 rounded-full text-sm font-medium">
-                      <Receipt className="h-4 w-4" />
-                      <span>{currency.symbol}{totalExpenses.toLocaleString()} expenses</span>
-                    </div>
-                    <div className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-sm font-medium ${
-                      netBalance >= 0 
-                        ? 'bg-blue-500/10 text-blue-600 dark:text-blue-400' 
-                        : 'bg-orange-500/10 text-orange-600 dark:text-orange-400'
-                    }`}>
-                      <DollarSign className="h-4 w-4" />
-                      <span>{netBalance >= 0 ? '+' : ''}{currency.symbol}{netBalance.toLocaleString()} net</span>
-                    </div>
-                  </div>
-                )}
-              </div>
-              
-              {/* Year Selector Card */}
-              <div className="flex flex-col items-center lg:items-end gap-3">
-                <div className="bg-card/80 backdrop-blur-sm border border-border/50 rounded-xl p-4 shadow-md">
-                  <p className="text-xs text-muted-foreground mb-2 text-center">Budget Year</p>
-                  <YearSelector />
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
 
         <WarningBanner />
 
