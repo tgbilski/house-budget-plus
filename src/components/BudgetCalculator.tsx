@@ -1,5 +1,5 @@
 // src/components/BudgetCalculator.tsx
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Plus, Trash2, RotateCcw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -65,29 +65,9 @@ const BudgetCalculator: React.FC<BudgetCalculatorProps> = ({
   const [additionalExpenses, setAdditionalExpenses] = useState<ExpenseItem[]>([]);
   const [additionalSubscriptions, setAdditionalSubscriptions] = useState<ExpenseItem[]>([]);
   const [subscriptionServices, setSubscriptionServices] = useState<Record<string, string>>({});
-  const [isResetting, setIsResetting] = useState(false);
 
-  // Check if calculator is empty (all inputs blank)
-  const checkIsEmpty = useCallback(() => {
-    const hasIncome = monthlyIncome > 0;
-    const hasOwnerName = ownerName.trim() !== '';
-    const hasFixedExpenses = expenses.some(e => e.amount > 0);
-    const hasAdditionalExpenses = additionalExpenses.length > 0;
-    const hasAdditionalSubscriptions = additionalSubscriptions.length > 0;
-    
-    return !hasIncome && !hasOwnerName && !hasFixedExpenses && !hasAdditionalExpenses && !hasAdditionalSubscriptions;
-  }, [monthlyIncome, ownerName, expenses, additionalExpenses, additionalSubscriptions]);
-
-  // Notify parent about empty state changes
-  useEffect(() => {
-    if (onEmptyStateChange && !isResetting) {
-      onEmptyStateChange(id, checkIsEmpty());
-    }
-  }, [id, checkIsEmpty, onEmptyStateChange, isResetting]);
-
-  // Reset calculator to defaults
+  // Reset calculator to defaults and notify parent to hide it
   const resetCalculator = async () => {
-    setIsResetting(true);
     setOwnerName('');
     setMonthlyIncome(0);
     setExpenses(defaultExpenses);
@@ -108,13 +88,10 @@ const BudgetCalculator: React.FC<BudgetCalculatorProps> = ({
         .eq('page_type', pageType);
     }
     
-    // Notify parent after reset
-    setTimeout(() => {
-      setIsResetting(false);
-      if (onEmptyStateChange) {
-        onEmptyStateChange(id, true);
-      }
-    }, 100);
+    // Notify parent to hide this calculator (only for calculators 2-4)
+    if (onEmptyStateChange && id !== '1') {
+      onEmptyStateChange(id, true);
+    }
   };
 
   // When the component loads, check for saved data and set the owner name.
