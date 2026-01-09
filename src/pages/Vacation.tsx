@@ -1,6 +1,6 @@
 // src/pages/Vacation.tsx
 import React, { useEffect, useState } from 'react';
-import { Plane, Plus } from 'lucide-react';
+import { Plus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
@@ -17,7 +17,7 @@ import { VacationOptionCard } from '@/components/VacationOptionCard';
 import { InternalLinks } from '@/components/InternalLinks';
 import { FAQ } from '@/components/FAQ';
 import { vacationPlanningFAQs } from '@/utils/faqData';
-import heroVacationImg from '@/assets/hero-vacation.png';
+import calculatorMascot from '@/assets/calculator-mascot.png';
 
 const Vacation: React.FC = () => {
   const { user } = useAuth();
@@ -69,39 +69,23 @@ const Vacation: React.FC = () => {
         structuredData={seoData.vacation.structuredData}
       />
       
-      <div className="max-w-7xl mx-auto p-4">
-        {/* Enhanced header with background image */}
-        <div className="relative overflow-hidden rounded-xl mb-6 border-[4px] border-stroke shadow-cartoon">
-          <img 
-            src={heroVacationImg} 
-            alt="" 
-            className="absolute inset-0 w-full h-full object-cover"
-            aria-hidden="true"
-          />
-          <div className="absolute inset-0 bg-gradient-to-r from-background/95 via-background/80 to-background/60" />
-          <div className="relative p-6">
-            <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
-              <div className="flex flex-col lg:items-start space-y-2">
-                <div className="flex items-center gap-3">
-                  <div className="inline-flex items-center justify-center w-12 h-12 bg-gradient-to-br from-teal to-teal/60 rounded-2xl shadow-lg">
-                    <Plane className="h-6 w-6 text-white" />
-                  </div>
-                  <div>
-                    <h1 className="text-3xl md:text-4xl font-bold text-foreground">
-                      Vacation Planner
-                    </h1>
-                    <p className="text-muted-foreground text-sm mt-1">
-                      Compare options for each of your trips
-                    </p>
-                  </div>
-                </div>
-              </div>
-              
-              {/* Year selector at top right on laptop, centered on mobile */}
-              <div className="flex justify-center lg:justify-end">
-                <YearSelector />
-              </div>
-            </div>
+      <div className="max-w-7xl mx-auto pt-2 px-4">
+        {/* Header - matching Monthly Budget style */}
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center gap-3">
+            <img 
+              src={calculatorMascot} 
+              alt="Budget Calculator Mascot" 
+              className="w-12 h-12 md:w-16 md:h-16 object-contain"
+            />
+            <h1 className="text-2xl md:text-3xl font-bold text-foreground tracking-wide">
+              COMPARE VACATIONS
+            </h1>
+          </div>
+          
+          <div className="bg-card border border-border rounded-xl p-3 shadow-sm">
+            <p className="text-xs text-muted-foreground mb-1 text-center">Budget Year</p>
+            <YearSelector />
           </div>
         </div>
 
