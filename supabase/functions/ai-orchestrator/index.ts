@@ -483,11 +483,11 @@ function buildSystemPrompt(selectedAgents: string[], context: string, year: numb
 7. If budget data exists, USE IT to calculate mortgage affordability even if not explicitly labeled as "income"
 
 **RESPONSE FORMAT:**
-- Use **bold** for headings and key metrics
-- Use bullet points for actionable advice
-- Keep responses focused and actionable
-- Be friendly and encouraging
-- For mortgage questions, always provide a range of estimates based on the data available
+- Keep responses SHORT and concise (under 150 words when possible)
+- Use **bold** for key numbers only
+- Use bullet points sparingly
+- Get straight to the point - no lengthy introductions or conclusions
+- For mortgage questions, give the estimate range upfront, then brief explanation
 
 **USER'S FINANCIAL DATA:**
 ${context}
