@@ -264,9 +264,8 @@ const MonthlyBudget: React.FC = () => {
           </div>
         ) : (
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-2 md:mt-0">
-            {/* Budget calculators - takes 2 columns on left (or 1 for guests) */}
-            <div className={`${user ? 'lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-6' : 'lg:col-span-1'} order-1`}>
-              {/* For guests, only show calculator 1 */}
+            {/* Budget calculators - takes 2 columns on left */}
+            <div className="lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-6 order-1">
               {user ? (
                 <>
                   {calculators
@@ -308,25 +307,31 @@ const MonthlyBudget: React.FC = () => {
                   )}
                 </>
               ) : (
-                <div
-                  key={`${selectedYear}-1`}
-                  className="animate-fade-in"
-                >
-                  <BudgetCalculator
-                    id="1"
-                    calculatorNumber={1}
-                    showRemove={false}
-                    onRemove={() => {}}
-                    onNameChange={handleNameChange}
-                    pageType="monthly_budget"
-                    onEmptyStateChange={handleCalculatorReset}
-                  />
-                </div>
+                <>
+                  {/* Show 2 calculators for guests */}
+                  {['1', '2'].map((id, index) => (
+                    <div
+                      key={`${selectedYear}-${id}`}
+                      className="animate-fade-in"
+                      style={{ animationDelay: `${index * 0.1}s`, animationFillMode: 'both' }}
+                    >
+                      <BudgetCalculator
+                        id={id}
+                        calculatorNumber={parseInt(id)}
+                        showRemove={false}
+                        onRemove={() => {}}
+                        onNameChange={handleNameChange}
+                        pageType="monthly_budget"
+                        onEmptyStateChange={handleCalculatorReset}
+                      />
+                    </div>
+                  ))}
+                </>
               )}
             </div>
 
             {/* Right column - Sign up form for guests, or chart for logged-in users */}
-            <div className={`${user ? 'lg:col-span-1' : 'lg:col-span-2'} space-y-4 order-2`}>
+            <div className="lg:col-span-1 space-y-4 order-2">
               {user ? (
                 <>
                   <BudgetDonutChart
