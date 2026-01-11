@@ -19,6 +19,7 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  useSidebar,
 } from "@/components/ui/sidebar";
 import { cn } from "@/lib/utils";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -56,6 +57,7 @@ export function AppSidebar() {
   const location = useLocation();
   const currentPath = location.pathname;
   const isMobile = useIsMobile();
+  const { setOpenMobile } = useSidebar();
   const { user } = useAuth();
   const [isAdmin, setIsAdmin] = useState(false);
 
@@ -116,6 +118,11 @@ export function AppSidebar() {
                     <NavLink 
                       to={item.url} 
                       className="flex items-center gap-3 rounded-lg px-3 py-2 transition-all"
+                      onClick={() => {
+                        if (isMobile) {
+                          setOpenMobile(false);
+                        }
+                      }}
                     >
                       <item.icon className="h-5 w-5 flex-shrink-0" />
                       <span className="font-medium tracking-wide">{item.title}</span>
