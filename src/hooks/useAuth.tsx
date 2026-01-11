@@ -167,8 +167,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       
       if (error) throw error;
       
-      // Always redirect to sign in page after sign out
-      window.location.href = '/auth';
+      // Redirect to root page after sign out (they'll see sign up message)
+      window.location.href = '/';
 
     } catch (error: any) {
       toast({
@@ -177,7 +177,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         variant: "destructive",
       });
       // Force redirect even if sign out fails
-      window.location.href = '/auth';
+      window.location.href = '/';
     }
   };
 
