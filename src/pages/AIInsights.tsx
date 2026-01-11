@@ -292,6 +292,12 @@ export default function AIInsights() {
                   rows={4}
                   value={question}
                   onChange={(e) => setQuestion(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' && !e.shiftKey && !loading && question.trim()) {
+                      e.preventDefault();
+                      handleAsk();
+                    }
+                  }}
                   placeholder="Ask about your budget, savings goals, expenses, vacation plans, or gift lists..."
                   disabled={loading}
                   className="bg-background border text-foreground placeholder:text-muted-foreground focus:border-primary focus:ring-2 focus:ring-primary/20 rounded-lg p-4 resize-none"
