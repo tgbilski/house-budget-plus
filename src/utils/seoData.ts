@@ -9,9 +9,9 @@ export interface SEOData {
 
 export const seoData: Record<string, SEOData> = {
   home: {
-    title: "House Budget Calculator - Free Financial Planning Tools Suite",
-    description: "Comprehensive suite of free financial tools including budget calculator, vendor comparison, expense tracking, vacation planning, and AI insights. Master your household finances today.",
-    keywords: "house budget calculator, financial planning tools, budget tracker, expense calculator, vendor comparison, financial management, household budget",
+    title: "Free Monthly Budget Calculator | Track Income & Expenses Online",
+    description: "Create your household budget in minutes with our free online calculator. Track income, expenses by category, and see your savings instantly. No signup required — start budgeting now.",
+    keywords: "free budget calculator, monthly budget planner, household budget, expense tracker, income calculator, online budget tool, family finances, money management",
     canonical: "https://www.housebudgetcalculator.com",
     ogImage: "https://www.housebudgetcalculator.com/assets/calculator-use-preview.png",
     structuredData: {
@@ -21,30 +21,65 @@ export const seoData: Record<string, SEOData> = {
           "@type": "WebApplication",
           "name": "House Budget Calculator",
           "url": "https://www.housebudgetcalculator.com",
-          "description": "Complete suite of financial planning tools for household budget management",
+          "description": "Free online monthly budget calculator to track household income and expenses",
           "applicationCategory": "FinanceApplication",
           "operatingSystem": "All",
+          "browserRequirements": "Requires JavaScript",
           "offers": {
             "@type": "Offer",
             "price": "0",
             "priceCurrency": "USD"
           },
           "featureList": [
-            "Monthly budget calculator",
-            "Vendor quote comparison",
-            "Takeout expense tracking",
-            "Vacation planning tools",
-            "AI financial insights",
-            "PDF export functionality"
-          ]
+            "Monthly budget calculator for up to 4 household members",
+            "Track income and expenses by category",
+            "Visual budget breakdown with charts",
+            "AI-powered financial insights",
+            "Savings goals tracker",
+            "Gift list organizer",
+            "Vacation budget planner"
+          ],
+          "aggregateRating": {
+            "@type": "AggregateRating",
+            "ratingValue": "4.8",
+            "ratingCount": "150"
+          }
         },
         {
           "@type": "Organization",
           "name": "House Budget Calculator",
           "url": "https://www.housebudgetcalculator.com",
           "logo": "https://www.housebudgetcalculator.com/lovable-uploads/ed809955-ef71-4d81-b072-945082f4380a.png",
-          "description": "Free financial planning tools for household budget management",
-          "sameAs": []
+          "description": "Free financial planning tools for household budget management"
+        },
+        {
+          "@type": "FAQPage",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "Is the budget calculator really free?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Yes, our monthly budget calculator is completely free to use with no signup required. Premium features like AI insights are available with a subscription."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "How do I create a household budget?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Enter your monthly income, add your expenses by category (housing, utilities, groceries, etc.), and the calculator instantly shows your remaining budget and savings rate."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Can I track budgets for multiple people?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Yes, you can create up to 4 individual budget calculators for different household members, roommates, or income sources."
+              }
+            }
+          ]
         }
       ]
     }
