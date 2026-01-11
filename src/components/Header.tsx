@@ -21,7 +21,7 @@ const Header: React.FC = () => {
               <SidebarTrigger className="h-8 w-8" />
             )}
             <Link to="/" className="flex items-center hover:opacity-80 transition-opacity">
-              <h1 className="text-lg md:text-xl font-semibold text-foreground">
+              <h1 className="hidden sm:block text-lg md:text-xl font-semibold text-foreground">
                 House Budget Calculator
               </h1>
             </Link>
