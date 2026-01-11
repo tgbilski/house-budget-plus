@@ -111,12 +111,10 @@ const AppRoutes = () => {
   
   return (
     <Routes>
-      <Route path="/" element={<Home />} />
-      <Route path="/landing" element={<Landing />} />
+      <Route path="/" element={<MonthlyBudget />} />
       <Route path="/budget" element={<MonthlyBudget />} />
       <Route path="/expenses" element={<Expenses />} />
       <Route path="/savings" element={<SavingsGoals />} />
-      <Route path="/home" element={<Home />} />
       <Route path="/vacation" element={<Vacation />} />
       <Route path="/engagement" element={<Engagement />} />
       <Route path="/auth" element={<Auth />} />
@@ -147,9 +145,6 @@ const AppLayout = () => {
   const isMobile = useIsMobile();
   const isMobileApp = isNativeApp();
   const location = useLocation();
-  const isHomePage = location.pathname === '/';
-  const isLandingPage = location.pathname === '/landing';
-
   // Show splash screen while auth is initializing
   // For logged-in users, we wait a bit longer to let subscription/profile load
   const [initialLoadComplete, setInitialLoadComplete] = useState(false);
@@ -216,9 +211,9 @@ const AppLayout = () => {
   }
 
   // Full web app layout
-  // Home, landing, and auth pages - minimal layout with no header/sidebar
+  // Auth page - minimal layout with no header/sidebar
   const isAuthPage = location.pathname === '/auth';
-  if (isHomePage || isLandingPage || isAuthPage) {
+  if (isAuthPage) {
     return (
       <div className="min-h-screen w-full flex flex-col">
         <main id="main-content" className="flex-1">
@@ -228,7 +223,7 @@ const AppLayout = () => {
     );
   }
 
-  // Features page and regular pages with full navigation
+  // All other pages with full navigation (including root "/")
   return (
     <SidebarProvider defaultOpen={true}>
       <div className="min-h-screen w-full flex flex-col bg-background">
