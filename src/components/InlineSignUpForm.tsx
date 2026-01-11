@@ -18,8 +18,37 @@ const InlineSignUpForm: React.FC<InlineSignUpFormProps> = ({ className = '' }) =
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
+  const [resendLoading, setResendLoading] = useState(false);
   const { signIn, signInWithGoogle } = useAuth();
   const { toast } = useToast();
+
+  const handleResendVerification = async () => {
+    setResendLoading(true);
+    try {
+      const { error } = await supabase.auth.resend({
+        type: 'signup',
+        email,
+        options: {
+          emailRedirectTo: `${window.location.origin}/budget`
+        }
+      });
+      
+      if (error) {
+        toast({
+          title: "Error",
+          description: error.message,
+          variant: "destructive"
+        });
+      } else {
+        toast({
+          title: "Email sent!",
+          description: "Check your inbox for the verification link."
+        });
+      }
+    } finally {
+      setResendLoading(false);
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -68,9 +97,22 @@ const InlineSignUpForm: React.FC<InlineSignUpFormProps> = ({ className = '' }) =
           </div>
           <CardTitle className="text-xl text-foreground">Check Your Email!</CardTitle>
           <CardDescription className="text-muted-foreground">
-            We've sent you a verification link. Click it to start saving your budget data.
+            We've sent a verification link to <strong>{email}</strong>. Click it to start saving your budget data.
           </CardDescription>
         </CardHeader>
+        <CardContent className="pt-0">
+          <p className="text-sm text-muted-foreground text-center mb-3">
+            Didn't receive the email? Check your spam folder or resend it.
+          </p>
+          <Button 
+            variant="outline" 
+            className="w-full" 
+            onClick={handleResendVerification}
+            disabled={resendLoading}
+          >
+            {resendLoading ? 'Sending...' : 'Resend Verification Email'}
+          </Button>
+        </CardContent>
       </Card>
     );
   }
