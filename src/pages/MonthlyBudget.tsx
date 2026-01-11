@@ -232,14 +232,25 @@ const MonthlyBudget: React.FC = () => {
           </div>
         </div>
 
-        {/* AI Promo Banner - only show for signed-in non-subscribers */}
+        {/* Premium Promo Banner - only show for signed-in non-subscribers */}
         {user && !subscribed && (
-          <Link 
-            to="/settings" 
-            className="block bg-primary text-primary-foreground px-4 py-3 rounded-lg text-sm md:text-base font-medium text-center mb-4 hover:opacity-90 transition-opacity border-[4px] border-stroke shadow-cartoon"
-          >
-            Click & unlock premium features for the cost of a cup of coffee ($4.99)!
-          </Link>
+          <div className="mb-6 p-4 rounded-xl bg-card border-[3px] border-stroke shadow-cartoon">
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+              <div className="text-center sm:text-left">
+                <p className="text-foreground font-medium">
+                  Want to unlock premium features?
+                </p>
+                <p className="text-sm text-muted-foreground mt-1">
+                  Get AI insights, voice tracking & more for just $4.99/month.
+                </p>
+              </div>
+              <Link to="/settings">
+                <Button className="gap-2 whitespace-nowrap">
+                  Upgrade Now
+                </Button>
+              </Link>
+            </div>
+          </div>
         )}
 
         <WarningBanner />
