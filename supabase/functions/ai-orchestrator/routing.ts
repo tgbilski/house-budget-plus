@@ -42,7 +42,10 @@ export const ALLOWED_TOPICS = [
   "budget", "finance", "money", "savings", "expenses", "income", 
   "vacation", "travel", "gifts", "shopping",
   "financial planning", "household budget", "spending", "cost",
-  "investment advice", "debt", "bills", "subscriptions"
+  "investment advice", "debt", "bills", "subscriptions",
+  "mortgage", "loan", "preapproval", "pre-approval", "banking",
+  "home buying", "house", "credit", "interest rate", "down payment",
+  "refinance", "afford", "car loan", "auto loan", "lease"
 ];
 
 // Off-topic indicators that should be rejected
