@@ -1,7 +1,3 @@
-// CHANGE: It's recommended to move the currencies array to a separate file like `src/data/currencies.ts` and import it.
-// import { currencies } from '@/data/currencies';
-// For this example, I will leave it here but commented out, as I cannot create a new file.
-
 import React, { useState, useEffect } from 'react';
 import { Plus, PiggyBank, Receipt, DollarSign } from 'lucide-react';
 import { Link } from 'react-router-dom';
@@ -21,12 +17,12 @@ import { seoData } from '@/utils/seoData';
 import { YearSelector } from '@/components/YearSelector';
 import { budgetCalculatorFAQs } from '@/utils/faqData';
 import { FAQ } from '@/components/FAQ';
-import { InternalLinks } from '@/components/InternalLinks';
 import { BudgetDonutChart } from '@/components/BudgetDonutChart';
 import { WarningBanner } from '@/components/WarningBanner';
 import { MortgagePreapprovalQuestion } from '@/components/MortgagePreapprovalQuestion';
 import { ToolsGrid } from '@/components/ToolsGrid';
 import { HomeBuyingToolkit } from '@/components/home-buying';
+import InlineSignUpForm from '@/components/InlineSignUpForm';
 import calculatorMascot from '@/assets/calculator-mascot.png';
 
 interface Calculator {
@@ -268,19 +264,57 @@ const MonthlyBudget: React.FC = () => {
           </div>
         ) : (
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-2 md:mt-0">
-            {/* Budget calculators - takes 2 columns on left */}
-            <div className="lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-6 order-1">
-              {calculators
-                .filter(calculator => visibleCalculators.has(calculator.id))
-                .map((calculator, index) => (
+            {/* Budget calculators - takes 2 columns on left (or 1 for guests) */}
+            <div className={`${user ? 'lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-6' : 'lg:col-span-1'} order-1`}>
+              {/* For guests, only show calculator 1 */}
+              {user ? (
+                <>
+                  {calculators
+                    .filter(calculator => visibleCalculators.has(calculator.id))
+                    .map((calculator, index) => (
+                    <div
+                      key={`${selectedYear}-${calculator.id}`}
+                      className="animate-fade-in"
+                      style={{ animationDelay: `${index * 0.1}s`, animationFillMode: 'both' }}
+                    >
+                      <BudgetCalculator
+                        id={calculator.id}
+                        calculatorNumber={parseInt(calculator.id)}
+                        showRemove={false}
+                        onRemove={() => {}}
+                        onNameChange={handleNameChange}
+                        pageType="monthly_budget"
+                        onEmptyStateChange={handleCalculatorReset}
+                      />
+                    </div>
+                  ))}
+                  
+                  {/* Add Calculator Button - shows when there are hidden calculators */}
+                  {getNextCalculatorNumber() && (
+                    <div className="animate-fade-in flex items-start">
+                      <button
+                        onClick={revealNextCalculator}
+                        className="w-full max-w-md min-h-[200px] rounded-xl border-[4px] border-dashed border-border/50 bg-muted/20 hover:bg-muted/40 hover:border-primary/50 transition-all duration-200 flex flex-col items-center justify-center gap-3 group"
+                      >
+                        <div className="p-3 rounded-full bg-primary/10 group-hover:bg-primary/20 transition-colors">
+                          <Plus className="h-8 w-8 text-primary" />
+                        </div>
+                        <div className="text-center">
+                          <p className="font-semibold text-foreground">Add Calculator {getNextCalculatorNumber()}</p>
+                          <p className="text-sm text-muted-foreground">Track another income source or scenario</p>
+                        </div>
+                      </button>
+                    </div>
+                  )}
+                </>
+              ) : (
                 <div
-                  key={`${selectedYear}-${calculator.id}`}
+                  key={`${selectedYear}-1`}
                   className="animate-fade-in"
-                  style={{ animationDelay: `${index * 0.1}s`, animationFillMode: 'both' }}
                 >
                   <BudgetCalculator
-                    id={calculator.id}
-                    calculatorNumber={parseInt(calculator.id)}
+                    id="1"
+                    calculatorNumber={1}
                     showRemove={false}
                     onRemove={() => {}}
                     onNameChange={handleNameChange}
@@ -288,39 +322,27 @@ const MonthlyBudget: React.FC = () => {
                     onEmptyStateChange={handleCalculatorReset}
                   />
                 </div>
-              ))}
-              
-              {/* Add Calculator Button - shows when there are hidden calculators */}
-              {getNextCalculatorNumber() && (
-                <div className="animate-fade-in flex items-start">
-                  <button
-                    onClick={revealNextCalculator}
-                    className="w-full max-w-md min-h-[200px] rounded-xl border-[4px] border-dashed border-border/50 bg-muted/20 hover:bg-muted/40 hover:border-primary/50 transition-all duration-200 flex flex-col items-center justify-center gap-3 group"
-                  >
-                    <div className="p-3 rounded-full bg-primary/10 group-hover:bg-primary/20 transition-colors">
-                      <Plus className="h-8 w-8 text-primary" />
-                    </div>
-                    <div className="text-center">
-                      <p className="font-semibold text-foreground">Add Calculator {getNextCalculatorNumber()}</p>
-                      <p className="text-sm text-muted-foreground">Track another income source or scenario</p>
-                    </div>
-                  </button>
-                </div>
               )}
             </div>
 
-            {/* Budget Overview Chart & AI Insight - takes 1 column on right */}
-            <div className="lg:col-span-1 space-y-4 order-2">
-              <BudgetDonutChart
-                totalIncome={totalIncome}
-                totalExpenses={totalExpenses}
-                currency={currency}
-              />
-              <MortgagePreapprovalQuestion
-                monthlyIncome={totalIncome}
-                monthlyExpenses={totalExpenses}
-                currency={currency}
-              />
+            {/* Right column - Sign up form for guests, or chart for logged-in users */}
+            <div className={`${user ? 'lg:col-span-1' : 'lg:col-span-2'} space-y-4 order-2`}>
+              {user ? (
+                <>
+                  <BudgetDonutChart
+                    totalIncome={totalIncome}
+                    totalExpenses={totalExpenses}
+                    currency={currency}
+                  />
+                  <MortgagePreapprovalQuestion
+                    monthlyIncome={totalIncome}
+                    monthlyExpenses={totalExpenses}
+                    currency={currency}
+                  />
+                </>
+              ) : (
+                <InlineSignUpForm />
+              )}
             </div>
           </div>
         )}
