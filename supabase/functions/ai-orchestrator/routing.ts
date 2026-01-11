@@ -3,9 +3,9 @@ export const AGENTS = {
   budget: {
     name: "Budget Agent",
     emoji: "💰",
-    description: "Handles monthly budget, income, and expense tracking questions",
+    description: "Handles monthly budget, income, expense tracking, and loan/mortgage affordability questions",
     tables: ["budget_data"],
-    keywords: ["budget", "income", "expense", "spending", "money", "bills", "monthly", "cost", "afford"]
+    keywords: ["budget", "income", "expense", "spending", "money", "bills", "monthly", "cost", "afford", "mortgage", "loan", "preapproval", "pre-approval", "home buying", "house", "down payment", "refinance", "car loan", "auto loan", "lease", "payment"]
   },
   savings: {
     name: "Savings Agent", 
