@@ -22,8 +22,6 @@ import ScrollToTop from "@/components/ScrollToTop";
 import Footer from "@/components/Footer";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { cn } from "@/lib/utils";
-import Home from "@/pages/Home";
-import Landing from "@/pages/Landing";
 // Features page consolidated into MonthlyBudget
 import MobileLanding from "@/pages/MobileLanding";
 import Expenses from "@/pages/Expenses";
