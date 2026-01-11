@@ -93,7 +93,13 @@ export function AppSidebar() {
     ? [...navigationItems, ...adminItems]
     : navigationItems;
 
-  const isActive = (path: string) => currentPath === path;
+  const isActive = (path: string) => {
+    // Root "/" and "/budget" should both highlight BUDGET
+    if (path === "/budget") {
+      return currentPath === "/budget" || currentPath === "/";
+    }
+    return currentPath === path;
+  };
 
   return (
     <Sidebar 
