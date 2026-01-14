@@ -134,22 +134,31 @@ const BudgetCalculator: React.FC<BudgetCalculatorProps> = ({
     if (budgetQueryData === undefined) return; // Still loading
     
     if (budgetQueryData) {
-      setMonthlyIncome(budgetQueryData.income || 0);
+      const income = budgetQueryData.income || 0;
+      setMonthlyIncome(income);
       const expensesData = budgetQueryData.expenses as any;
+      
+      let hydratedExpenses = defaultExpenses;
+      let hydratedAdditionalExpenses: ExpenseItem[] = [];
+      let hydratedAdditionalSubscriptions: ExpenseItem[] = [];
+      let hydratedHousingExpense = 0;
       
       if (expensesData) {
         if (expensesData.fixed) {
-          const updatedExpenses = defaultExpenses.map(expense => ({
+          hydratedExpenses = defaultExpenses.map(expense => ({
             ...expense,
             amount: expensesData.fixed[expense.id] || 0
           }));
-          setExpenses(updatedExpenses);
+          setExpenses(hydratedExpenses);
+          hydratedHousingExpense = expensesData.fixed['mortgage'] || 0;
         }
         if (expensesData.custom) {
-          setAdditionalExpenses(expensesData.custom);
+          hydratedAdditionalExpenses = expensesData.custom;
+          setAdditionalExpenses(hydratedAdditionalExpenses);
         }
         if (expensesData.additionalSubscriptions) {
-          setAdditionalSubscriptions(expensesData.additionalSubscriptions);
+          hydratedAdditionalSubscriptions = expensesData.additionalSubscriptions;
+          setAdditionalSubscriptions(hydratedAdditionalSubscriptions);
         }
         if (expensesData.subscriptionServices) {
           setSubscriptionServices(expensesData.subscriptionServices);
@@ -159,9 +168,26 @@ const BudgetCalculator: React.FC<BudgetCalculatorProps> = ({
           onNameChange(id, expensesData.ownerName);
         }
       }
+      
+      // Immediately dispatch budget update with hydrated values
+      const fixedTotal = hydratedExpenses.reduce((sum, e) => sum + e.amount, 0);
+      const additionalTotal = hydratedAdditionalExpenses.reduce((sum, e) => sum + e.amount, 0);
+      const subsTotal = hydratedAdditionalSubscriptions.reduce((sum, e) => sum + e.amount, 0);
+      const totalExp = fixedTotal + additionalTotal + subsTotal;
+      
+      window.dispatchEvent(new CustomEvent('budgetUpdate', {
+        detail: {
+          calculatorId: id,
+          income: income,
+          totalExpenses: totalExp,
+          netResult: income - totalExp,
+          housingExpense: hydratedHousingExpense
+        }
+      }));
+      
       hasInitialized.current = true;
     } else if (!hasInitialized.current || budgetQueryData === null) {
-      // No data found - reset to clean slate
+      // No data found - reset to clean slate and dispatch zero values
       setMonthlyIncome(0);
       setExpenses(defaultExpenses);
       setAdditionalExpenses([]);
@@ -169,6 +195,17 @@ const BudgetCalculator: React.FC<BudgetCalculatorProps> = ({
       setSubscriptionServices({});
       setOwnerName('');
       onNameChange(id, '');
+      
+      window.dispatchEvent(new CustomEvent('budgetUpdate', {
+        detail: {
+          calculatorId: id,
+          income: 0,
+          totalExpenses: 0,
+          netResult: 0,
+          housingExpense: 0
+        }
+      }));
+      
       hasInitialized.current = true;
     }
   }, [budgetQueryData, id, onNameChange]);
