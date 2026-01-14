@@ -1,5 +1,5 @@
 // src/components/BudgetCalculator.tsx
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Plus, Trash2, RotateCcw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -9,6 +9,7 @@ import { useCurrency } from '@/hooks/useCurrency';
 import { useAuth } from '@/hooks/useAuth';
 import { useYear } from '@/hooks/useYear';
 import { useHousehold } from '@/hooks/useHousehold';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 
 import { supabase } from '@/integrations/supabase/client';
 import { StreamingServiceSelector } from './StreamingServiceSelector';
@@ -93,13 +94,89 @@ const BudgetCalculator: React.FC<BudgetCalculatorProps> = ({
       onEmptyStateChange(id, true);
     }
   };
+  const queryClient = useQueryClient();
+  const hasInitialized = useRef(false);
 
-  // When the component loads, check for saved data and set the owner name.
+  // React Query for loading budget data - cached and won't refetch on window focus
+  const { data: budgetQueryData } = useQuery({
+    queryKey: ['budget-data', user?.id, currentHousehold?.id, selectedYear, id, pageType],
+    queryFn: async () => {
+      if (!user || !currentHousehold) return null;
+      
+      const { data, error } = await supabase
+        .from('budget_data')
+        .select('*')
+        .eq('user_id', user.id)
+        .eq('household_id', currentHousehold.id)
+        .eq('year', selectedYear)
+        .eq('calculator_id', id)
+        .eq('page_type', pageType)
+        .order('created_at', { ascending: false })
+        .limit(1);
+
+      if (error) {
+        console.error('Error loading budget data:', error);
+        return null;
+      }
+      
+      return data && data.length > 0 ? data[0] : null;
+    },
+    enabled: !!user && !!currentHousehold,
+    staleTime: 5 * 60 * 1000, // 5 minutes
+    gcTime: 10 * 60 * 1000, // 10 minutes
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
+    refetchOnReconnect: false,
+  });
+
+  // Hydrate state from query data when it loads (only once per data change)
   useEffect(() => {
-    if (user && currentHousehold && selectedYear) {
-      loadData();
+    if (budgetQueryData === undefined) return; // Still loading
+    
+    if (budgetQueryData) {
+      setMonthlyIncome(budgetQueryData.income || 0);
+      const expensesData = budgetQueryData.expenses as any;
+      
+      if (expensesData) {
+        if (expensesData.fixed) {
+          const updatedExpenses = defaultExpenses.map(expense => ({
+            ...expense,
+            amount: expensesData.fixed[expense.id] || 0
+          }));
+          setExpenses(updatedExpenses);
+        }
+        if (expensesData.custom) {
+          setAdditionalExpenses(expensesData.custom);
+        }
+        if (expensesData.additionalSubscriptions) {
+          setAdditionalSubscriptions(expensesData.additionalSubscriptions);
+        }
+        if (expensesData.subscriptionServices) {
+          setSubscriptionServices(expensesData.subscriptionServices);
+        }
+        if (expensesData.ownerName) {
+          setOwnerName(expensesData.ownerName);
+          onNameChange(id, expensesData.ownerName);
+        }
+      }
+      hasInitialized.current = true;
+    } else if (!hasInitialized.current || budgetQueryData === null) {
+      // No data found - reset to clean slate
+      setMonthlyIncome(0);
+      setExpenses(defaultExpenses);
+      setAdditionalExpenses([]);
+      setAdditionalSubscriptions([]);
+      setSubscriptionServices({});
+      setOwnerName('');
+      onNameChange(id, '');
+      hasInitialized.current = true;
     }
-  }, [user, currentHousehold, selectedYear, id, pageType]);
+  }, [budgetQueryData, id, onNameChange]);
+
+  // Reset initialization flag when key dependencies change (e.g., year)
+  useEffect(() => {
+    hasInitialized.current = false;
+  }, [selectedYear, user?.id, currentHousehold?.id]);
 
   // Set up event listener for AI autofill
   useEffect(() => {
@@ -142,75 +219,6 @@ const BudgetCalculator: React.FC<BudgetCalculatorProps> = ({
       window.removeEventListener('budgetAutofill', handleBudgetAutofill as EventListener);
     };
   }, [expenses, id]);
-
-  const loadData = async () => {
-    if (!user) return;
-
-    const { data, error } = await supabase
-      .from('budget_data')
-      .select('*')
-      .eq('user_id', user.id)
-      .eq('household_id', currentHousehold?.id)
-      .eq('year', selectedYear)
-      .eq('calculator_id', id)
-      .eq('page_type', pageType)
-      .order('created_at', { ascending: false })
-      .limit(1);
-
-    if (error) {
-      console.error('Error loading budget data:', error);
-      return;
-    }
-
-    if (data && data.length > 0) {
-      const budgetData = data[0];
-      setMonthlyIncome(budgetData.income || 0);
-      const expensesData = budgetData.expenses as any;
-      
-      if (expensesData) {
-        if (expensesData.fixed) {
-          const updatedExpenses = defaultExpenses.map(expense => ({
-            ...expense,
-            amount: expensesData.fixed[expense.id] || 0
-          }));
-          setExpenses(updatedExpenses);
-        } else {
-          setExpenses(defaultExpenses);
-        }
-        if (expensesData.custom) {
-          setAdditionalExpenses(expensesData.custom);
-        } else {
-          setAdditionalExpenses([]);
-        }
-        if (expensesData.additionalSubscriptions) {
-          setAdditionalSubscriptions(expensesData.additionalSubscriptions);
-        } else {
-          setAdditionalSubscriptions([]);
-        }
-        if (expensesData.subscriptionServices) {
-          setSubscriptionServices(expensesData.subscriptionServices);
-        } else {
-          setSubscriptionServices({});
-        }
-        if (expensesData.ownerName) {
-          setOwnerName(expensesData.ownerName);
-          onNameChange(id, expensesData.ownerName);
-        } else {
-          setOwnerName('');
-          onNameChange(id, '');
-        }
-      }
-    } else {
-      // No data found for this year - reset to clean slate
-      setMonthlyIncome(0);
-      setExpenses(defaultExpenses);
-      setAdditionalExpenses([]);
-      setAdditionalSubscriptions([]);
-      setSubscriptionServices({});
-      setOwnerName('');
-      onNameChange(id, '');
-    }
-  };
 
   const saveData = async () => {
     if (!user) return;
