@@ -118,7 +118,7 @@ const InlineSignUpForm: React.FC<InlineSignUpFormProps> = ({ className = '' }) =
   }
 
   return (
-    <Card className={`border-[3px] border-stroke shadow-cartoon ${className}`}>
+    <Card className={`border-[3px] border-primary shadow-cartoon ring-4 ring-primary/20 ${className}`}>
       <CardHeader className="pb-2">
         <div className="flex items-center gap-2">
           <UserPlus className="h-5 w-5 text-primary" />
