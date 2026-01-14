@@ -3,6 +3,7 @@ import { Plus, PiggyBank, Receipt, DollarSign } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import BudgetCalculator from '@/components/BudgetCalculator';
+import { useQuery } from '@tanstack/react-query';
 
 import { useCurrency } from '@/hooks/useCurrency';
 import { useAuth } from '@/hooks/useAuth';
@@ -40,9 +41,6 @@ const MonthlyBudget: React.FC = () => {
   // Track which calculators are visible (1 is always visible, 2-4 can be revealed)
   const [visibleCalculators, setVisibleCalculators] = useState<Set<string>>(new Set(['1']));
 
-  // CHANGE: Added loading and error states for data fetching.
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
 
   const { currency } = useCurrency();
   const { user } = useAuth();
@@ -88,22 +86,54 @@ const MonthlyBudget: React.FC = () => {
     return () => window.removeEventListener('earnBadge', handleEarnBadge);
   }, [earnBadge]);
 
-  // CHANGE: Updated useEffect to handle both logged-in and logged-out states explicitly.
+  // React Query for loading calculator visibility - cached and won't refetch on window focus
+  const { data: calculatorVisibility, isLoading, error: queryError } = useQuery({
+    queryKey: ['budget-calculators', user?.id, currentHousehold?.id, selectedYear],
+    queryFn: async () => {
+      if (!user || !currentHousehold) return null;
+      
+      const { data, error: dbError } = await supabase
+        .from('budget_data')
+        .select('calculator_id')
+        .eq('user_id', user.id)
+        .eq('household_id', currentHousehold.id)
+        .eq('year', selectedYear)
+        .eq('page_type', 'monthly_budget');
+
+      if (dbError) throw dbError;
+      return data;
+    },
+    enabled: !!user && !!currentHousehold,
+    staleTime: 5 * 60 * 1000, // 5 minutes
+    gcTime: 10 * 60 * 1000, // 10 minutes (formerly cacheTime)
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
+    refetchOnReconnect: false,
+  });
+
+  // Update visible calculators when query data changes
   useEffect(() => {
-    // When switching years, always start with a clean slate in the UI.
-    // (BudgetCalculator will re-hydrate from DB for the selected year if data exists.)
+    // Reset UI state when year changes
     setBudgetData({});
     setCalculatorNames({});
-    setVisibleCalculators(new Set(['1']));
-
-    if (user && currentHousehold) {
-      loadCalculators();
-    } else {
-      // Always show 4 static calculators, but only first one visible by default
-      setCalculators([{ id: '1' }, { id: '2' }, { id: '3' }, { id: '4' }]);
-      setIsLoading(false);
+    
+    // Always set all 4 calculators
+    setCalculators([{ id: '1' }, { id: '2' }, { id: '3' }, { id: '4' }]);
+    
+    if (!user || !currentHousehold) {
+      setVisibleCalculators(new Set(['1']));
+      return;
     }
-  }, [user, currentHousehold, selectedYear]);
+
+    if (calculatorVisibility && calculatorVisibility.length > 0) {
+      const uniqueCalculators = [...new Set(calculatorVisibility.map(item => item.calculator_id))];
+      setVisibleCalculators(new Set(['1', ...uniqueCalculators]));
+    } else {
+      setVisibleCalculators(new Set(['1']));
+    }
+  }, [calculatorVisibility, selectedYear, user, currentHousehold]);
+
+  const error = queryError ? "Failed to load your budget data. Please refresh the page to try again." : null;
 
   // Function to reveal the next calculator
   const revealNextCalculator = () => {
@@ -134,43 +164,6 @@ const MonthlyBudget: React.FC = () => {
     const allIds = ['1', '2', '3', '4'];
     const nextHidden = allIds.find(id => !visibleCalculators.has(id));
     return nextHidden ? parseInt(nextHidden) : null;
-  };
-
-  // CHANGE: Rewrote loadCalculators to include try/catch/finally and loading/error state management.
-  const loadCalculators = async () => {
-    if (!user || !currentHousehold) return;
-
-    setIsLoading(true);
-    setError(null);
-    try {
-      const { data, error: dbError } = await supabase
-        .from('budget_data')
-        .select('calculator_id')
-        .eq('user_id', user.id)
-        .eq('household_id', currentHousehold.id)
-        .eq('year', selectedYear)
-        .eq('page_type', 'monthly_budget');
-
-      if (dbError) throw dbError;
-
-      // Always set all 4 calculators
-      setCalculators([{ id: '1' }, { id: '2' }, { id: '3' }, { id: '4' }]);
-
-      if (data && data.length > 0) {
-        // Show calculators that have data, plus always show calculator 1
-        const uniqueCalculators = [...new Set(data.map(item => item.calculator_id))];
-        const visibleSet = new Set(['1', ...uniqueCalculators]);
-        setVisibleCalculators(visibleSet);
-      } else {
-        // Only show calculator 1 by default
-        setVisibleCalculators(new Set(['1']));
-      }
-    } catch (err) {
-      console.error("Error loading calculators:", err);
-      setError("Failed to load your budget data. Please refresh the page to try again.");
-    } finally {
-      setIsLoading(false);
-    }
   };
 
   // Remove the addCalculator function as calculators are now static
