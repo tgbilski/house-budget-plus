@@ -120,7 +120,15 @@ export function AppSidebar() {
             <SidebarMenu className="flex flex-col space-y-1">
               {allItems.map((item) => (
                 <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild isActive={isActive(item.url)}>
+                  <SidebarMenuButton 
+                    asChild 
+                    isActive={isActive(item.url)}
+                    // Fix double-tap: Disable tooltip and remove hover on mobile
+                    tooltip={null}
+                    className={cn(
+                      isMobile && "hover:bg-transparent hover:text-sidebar-foreground active:bg-sidebar-accent active:text-sidebar-accent-foreground"
+                    )}
+                  >
                     <NavLink 
                       to={item.url} 
                       className="flex items-center gap-3 rounded-lg px-3 py-2 transition-all"
