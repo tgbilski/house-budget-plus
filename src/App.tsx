@@ -40,7 +40,7 @@ import Admin from "@/pages/Admin";
 import BlogImageUpdater from "@/pages/BlogImageUpdater";
 import UpdateSitemap from "@/pages/UpdateSitemap";
 import GenerateBlogImages from "@/pages/GenerateBlogImages";
-import { Gifts } from "@/pages/Gifts";
+import Gifts from "@/pages/Gifts";
 // Marketplace removed
 import AboutUs from "@/pages/AboutUs";
 import ContactUs from "@/pages/ContactUs";

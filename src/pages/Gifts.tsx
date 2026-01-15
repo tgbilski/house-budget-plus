@@ -1,219 +1,76 @@
-// src/pages/Gifts.tsx (Final Version)
-import React, { useEffect, useMemo } from 'react';
-import { useGiftLists, useGiftItems } from '@/hooks/useGiftLists';
-import { useAuth } from '@/hooks/useAuth';
-import { useBadges } from '@/hooks/useBadges';
-import { useCurrency } from '@/hooks/useCurrency';
+import React from 'react';
 import { SEO } from '@/components/SEO';
-import { seoData } from '@/utils/seoData';
-import { WarningBanner } from '@/components/WarningBanner';
-import { GiftListSelector } from '@/components/GiftListSelector';
-import { GiftCardDisplay } from '@/components/GiftCardDisplay';
-import { GiftBudgetSummary } from '@/components/GiftBudgetSummary';
-
-import { YearSelector } from '@/components/YearSelector';
-import { EventCalendar } from '@/components/EventCalendar';
-import { EventAlertDialog } from '@/components/EventAlertDialog';
-
-import { InternalLinks } from '@/components/InternalLinks';
+import { GiftsTable } from '@/components/GiftsTable';
 import { FAQ } from '@/components/FAQ';
-import { differenceInDays, startOfDay, parseISO } from 'date-fns';
+import { InternalLinks } from '@/components/InternalLinks';
+import { useAuth } from '@/hooks/useAuth';
+import InlineSignUpForm from '@/components/InlineSignUpForm';
 import calculatorMascot from '@/assets/calculator-mascot.png';
 
-export function Gifts() {
+const Gifts: React.FC = () => {
   const { user } = useAuth();
-  const { earnBadge } = useBadges();
-  const { currency } = useCurrency();
-  
-  
-  // 1. The page's only job is to call our main hook to get the data.
-  const {
-    loading,
-    giftLists,
-    selectedList,
-    editingListId,
-    editingTitle,
-    setEditingTitle,
-    selectList,
-    startEditing,
-    saveTitle,
-    cancelEditing,
-    loadGiftLists,
-    updateEventDate,
-    dismissOneWeekAlert
-  } = useGiftLists();
-
-  // Get gift items for the selected list to calculate totals
-  const { items, refetchItems } = useGiftItems(selectedList?.id);
-
-  // Award badge when user has gift lists
-  useEffect(() => {
-    if (user && giftLists.length > 0) {
-      earnBadge('gifts');
-    }
-  }, [user, giftLists.length, earnBadge]);
-
-  // Calculate budget summary from actual gift items
-  const totalBudget = items.reduce((sum, item) => sum + (item.price || 0), 0);
-  const itemCount = items.length;
-
-  // Check if we should show the one-week alert
-  const shouldShowAlert = useMemo(() => {
-    if (!selectedList?.event_date || selectedList.one_week_alert_dismissed) return false;
-    const eventDate = parseISO(selectedList.event_date);
-    const today = startOfDay(new Date());
-    const daysUntil = differenceInDays(startOfDay(eventDate), today);
-    return daysUntil === 7;
-  }, [selectedList?.event_date, selectedList?.one_week_alert_dismissed]);
-
-  const handleEventDateSelect = (date: Date | undefined) => {
-    if (selectedList) {
-      updateEventDate(selectedList.id, date || null);
-    }
-  };
-
-  const handleDismissAlert = () => {
-    if (selectedList) {
-      dismissOneWeekAlert(selectedList.id);
-    }
-  };
-
-  const eventDate = selectedList?.event_date ? parseISO(selectedList.event_date) : undefined;
-
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="flex flex-col items-center gap-4">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
-          <p className="text-lg text-muted-foreground">Loading your gift lists...</p>
-        </div>
-      </div>
-    );
-  }
 
   return (
-    <div className="min-h-screen bg-background">
-      <SEO 
-        title={seoData.gifts.title}
-        description={seoData.gifts.description}
-        keywords={seoData.gifts.keywords}
-        canonical={seoData.gifts.canonical}
-        ogImage={seoData.gifts.ogImage}
-        structuredData={seoData.gifts.structuredData}
+    <>
+      <SEO
+        title="Gift Lists - Track Gift Ideas & Budget | House Budget Calculator"
+        description="Organize your gift ideas by occasion and recipient. Track prices, links, and purchased status all in one place."
+        keywords="gift tracker, gift ideas, gift budget, holiday gifts, birthday gifts, gift planning"
+        canonical="https://house-budget-plus.lovable.app/gifts"
       />
-      
-      <div className="w-full px-4 sm:px-6 lg:px-8 pt-2">
-        {/* Header - matching Monthly Budget style */}
-        <div className="flex flex-col gap-3 mb-4">
-          <div className="flex items-center justify-between gap-4">
-            <div className="flex items-center gap-2 sm:gap-3 min-w-0">
-              <img 
-                src={calculatorMascot} 
-                alt="Budget Calculator Mascot" 
-                className="h-10 w-10 sm:h-12 sm:w-12 md:h-16 md:w-16 flex-shrink-0 object-contain"
-              />
-              <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-foreground tracking-wide truncate">
-                GIFT LISTS
-              </h1>
-            </div>
-            {/* Desktop year selector */}
-            <div className="hidden sm:block flex-shrink-0 bg-card border border-border rounded-xl p-2 sm:p-3 shadow-sm">
-              <p className="text-xs text-muted-foreground mb-1 text-center">Budget Year</p>
-              <YearSelector />
-            </div>
-          </div>
-          {/* Mobile year selector - separate row */}
-          <div className="sm:hidden bg-card border border-border rounded-xl p-2 shadow-sm w-full">
-            <div className="flex items-center justify-between">
-              <p className="text-xs text-muted-foreground">Budget Year</p>
-              <YearSelector />
-            </div>
-          </div>
+
+      <div className="w-full max-w-6xl mx-auto px-4 py-6 space-y-6">
+        {/* Header */}
+        <div className="flex items-center gap-3">
+          <img
+            src={calculatorMascot}
+            alt="Calculator mascot"
+            className="w-10 h-10 object-contain"
+          />
+          <h1 className="text-2xl sm:text-3xl font-bold uppercase tracking-tight">
+            Gift Lists
+          </h1>
         </div>
 
-        <WarningBanner />
-
-        <div className="space-y-6">
-          {/* Budget Summary */}
-          <GiftBudgetSummary
-            totalBudget={totalBudget}
-            itemCount={itemCount}
-            currencySymbol={currency.symbol}
-          />
-
-          {/* 2. It renders the selector and passes down the data and functions it needs. */}
-          <GiftListSelector
-            giftLists={giftLists}
-            selectedList={selectedList}
-            editingListId={editingListId}
-            editingTitle={editingTitle}
-            onSelectList={selectList}
-            onStartEditing={startEditing}
-            onSaveTitle={saveTitle}
-            onCancelEditing={cancelEditing}
-            onSetEditingTitle={setEditingTitle}
-          />
-
-
-          {/* 3. Main content with gift cards and calendar on desktop */}
-          <div className="flex flex-col lg:flex-row gap-6">
-            <div className="flex-1">
-              <GiftCardDisplay
-                selectedList={selectedList}
-                onSave={loadGiftLists}
-                onItemsChange={refetchItems}
-              />
-            </div>
-            
-            {/* Calendar sidebar - desktop only */}
-            <div className="hidden lg:block w-80 shrink-0">
-              <div className="sticky top-4">
-                <EventCalendar
-                  eventDate={eventDate}
-                  onDateSelect={handleEventDateSelect}
-                  listTitle={selectedList?.list_title || 'Event'}
-                  disabled={!user || selectedList?.id.startsWith('demo-')}
-                />
-              </div>
-            </div>
+        {/* Main Content */}
+        {user ? (
+          <GiftsTable />
+        ) : (
+          <div className="space-y-6">
+            <InlineSignUpForm />
+            <p className="text-center text-muted-foreground">
+              Sign up to start tracking your gift ideas!
+            </p>
           </div>
+        )}
 
-          {/* One-week alert dialog */}
-          {selectedList && shouldShowAlert && eventDate && (
-            <EventAlertDialog
-              open={shouldShowAlert}
-              onDismiss={handleDismissAlert}
-              listTitle={selectedList.list_title}
-              eventDate={eventDate}
-            />
-          )}
+        {/* FAQ and Internal Links */}
+        <FAQ 
+          faqs={[
+            {
+              question: "How do I add a gift idea?",
+              answer: "Select an occasion from the dropdown, enter the recipient's name, and click the + button. You can also add the gift idea, price, and a link to where you can purchase it."
+            },
+            {
+              question: "Can I track which gifts I've already purchased?",
+              answer: "Yes! Check the 'Done' checkbox next to any gift to mark it as purchased. This helps you keep track of what's left to buy."
+            },
+            {
+              question: "What occasions are available?",
+              answer: "We include popular US holidays and occasions like Christmas, Birthdays, Valentine's Day, Mother's Day, Father's Day, Graduation, and more - all sorted alphabetically for easy access."
+            },
+            {
+              question: "Can I share my gift list with others?",
+              answer: "If you're part of a household, all household members can see and edit the gift list. This makes coordinating gifts for family events much easier."
+            }
+          ]}
+          title="Gift List FAQs"
+        />
 
-          <FAQ 
-            faqs={[
-              {
-                question: "How do I create a new gift list?",
-                answer: "Click on the gift list dropdown at the top of the page. The system automatically creates lists for you - just select the occasion you want to plan for."
-              },
-              {
-                question: "Can I set a budget for my gift list?",
-                answer: "Yes! Each gift item can have a price estimate. Add your gifts and their estimated costs to track your total gift spending for the occasion."
-              },
-              {
-                question: "How do I track which gifts I've already purchased?",
-                answer: "You can mark gifts as purchased by checking them off your list. This helps you keep track of what's left to buy."
-              },
-              {
-                question: "Can I share my gift lists with others?",
-                answer: "Currently, gift lists are private to your account. This feature helps you plan surprise gifts without others seeing your ideas."
-              }
-            ]}
-            title="Gift List FAQs"
-          />
-
-          <InternalLinks currentPage="/gifts" category="planning" />
-        </div>
+        <InternalLinks currentPage="/gifts" category="planning" />
       </div>
-    </div>
+    </>
   );
-}
+};
 
+export default Gifts;
