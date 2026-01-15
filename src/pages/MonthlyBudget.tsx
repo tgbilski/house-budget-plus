@@ -113,10 +113,6 @@ const MonthlyBudget: React.FC = () => {
 
   // Update visible calculators when query data changes
   useEffect(() => {
-    // Reset UI state when year changes
-    setBudgetData({});
-    setCalculatorNames({});
-    
     // Always set all 4 calculators
     setCalculators([{ id: '1' }, { id: '2' }, { id: '3' }, { id: '4' }]);
     
@@ -131,7 +127,14 @@ const MonthlyBudget: React.FC = () => {
     } else {
       setVisibleCalculators(new Set(['1']));
     }
-  }, [calculatorVisibility, selectedYear, user, currentHousehold]);
+  }, [calculatorVisibility, user, currentHousehold]);
+  
+  // Reset budget data when year changes - this clears old year's data
+  // Calculators will re-dispatch their events once they hydrate from new year's data
+  useEffect(() => {
+    setBudgetData({});
+    setCalculatorNames({});
+  }, [selectedYear]);
 
   const error = queryError ? "Failed to load your budget data. Please refresh the page to try again." : null;
 

@@ -25,8 +25,6 @@ const Vacation: React.FC = () => {
   const { currency } = useCurrency();
   const { earnBadge } = useBadges();
   const navigate = useNavigate();
-  const [startDate, setStartDate] = useState<Date>();
-  const [endDate, setEndDate] = useState<Date>();
 
   const {
     vacations,
@@ -101,16 +99,12 @@ const Vacation: React.FC = () => {
         <WarningBanner />
 
         <div className="space-y-6">
-          {/* Combined Summary Card with carousel, dates, and stats */}
+          {/* Combined Summary Card with carousel and stats */}
           <VacationSummaryCard
             vacations={vacations}
             currentVacationId={currentVacationId}
             options={options}
             currencySymbol={currency.symbol}
-            startDate={startDate}
-            endDate={endDate}
-            onStartDateChange={setStartDate}
-            onEndDateChange={setEndDate}
             onSelectVacation={setCurrentVacationId}
             onUpdateTitle={updateVacationTitle}
           />
