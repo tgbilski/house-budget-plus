@@ -3,12 +3,9 @@ import React, { useState } from 'react';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { Calendar } from '@/components/ui/calendar';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { format } from 'date-fns';
 import { 
-  ChevronLeft, ChevronRight, Edit2, Check, X, Plane, 
-  Calendar as CalendarIcon, TrendingUp, DollarSign 
+  ChevronLeft, ChevronRight, Edit2, Check, Plane, 
+  TrendingUp, DollarSign 
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import type { VacationProject, VacationOption } from '@/hooks/useVacationPlanner';
@@ -18,10 +15,6 @@ interface Props {
   currentVacationId: string | null;
   options: VacationOption[];
   currencySymbol: string;
-  startDate?: Date;
-  endDate?: Date;
-  onStartDateChange: (date?: Date) => void;
-  onEndDateChange: (date?: Date) => void;
   onSelectVacation: (id: string) => void;
   onUpdateTitle: (vacationId: string, newTitle: string) => void;
 }
@@ -45,10 +38,6 @@ export const VacationSummaryCard: React.FC<Props> = ({
   currentVacationId, 
   options,
   currencySymbol,
-  startDate,
-  endDate,
-  onStartDateChange,
-  onEndDateChange,
   onSelectVacation,
   onUpdateTitle 
 }) => {
@@ -181,54 +170,6 @@ export const VacationSummaryCard: React.FC<Props> = ({
           )}
         </div>
 
-        {/* Trip Dates */}
-        {!isEditing && (
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-2 mt-4">
-            <Popover>
-              <PopoverTrigger asChild>
-                <Button
-                  variant="outline"
-                  className={cn(
-                    'w-full sm:w-[160px] justify-start text-left font-normal h-9 text-sm',
-                    !startDate && 'text-muted-foreground'
-                  )}
-                >
-                  <CalendarIcon className="mr-2 h-4 w-4" />
-                  {startDate ? format(startDate, 'MMM d, yyyy') : 'Start date'}
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-auto p-0" align="center">
-                <Calendar mode="single" selected={startDate} onSelect={onStartDateChange} initialFocus />
-              </PopoverContent>
-            </Popover>
-            
-            <span className="text-muted-foreground text-sm">to</span>
-            
-            <Popover>
-              <PopoverTrigger asChild>
-                <Button
-                  variant="outline"
-                  className={cn(
-                    'w-full sm:w-[160px] justify-start text-left font-normal h-9 text-sm',
-                    !endDate && 'text-muted-foreground'
-                  )}
-                >
-                  <CalendarIcon className="mr-2 h-4 w-4" />
-                  {endDate ? format(endDate, 'MMM d, yyyy') : 'End date'}
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-auto p-0" align="center">
-                <Calendar 
-                  mode="single" 
-                  selected={endDate} 
-                  onSelect={onEndDateChange} 
-                  disabled={(date) => startDate ? date < startDate : false}
-                  initialFocus 
-                />
-              </PopoverContent>
-            </Popover>
-          </div>
-        )}
       </CardHeader>
       
       <CardContent className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2">

@@ -155,12 +155,29 @@ export function useSavingsTracker({ user, currentHousehold, year }: UseSavingsTr
     }
   };
 
-  const updateMonthlyAmount = async (monthIndex: number, amount: number) => {
+  const updateMonthlyAmount = async (monthIndex: number, amount: number | null) => {
     const currentGoal = goals.find(g => g.id === currentGoalId);
     if (!currentGoal || !user) return;
 
     const monthKey = monthIndex.toString();
     const oldAmount = monthlyData[monthKey] || 0;
+    
+    // If amount is null or 0, delete the entry
+    if (amount === null || amount === 0) {
+      // Update local state - remove the entry
+      setMonthlyData(prev => {
+        const newData = { ...prev };
+        delete newData[monthKey];
+        return newData;
+      });
+      setAllEntriesTotal(prev => prev - oldAmount);
+      
+      // Delete from database if not a temp goal
+      if (!currentGoal.id.startsWith('temp-')) {
+        await deleteMonthlyEntry(currentGoal.id, monthIndex);
+      }
+      return;
+    }
     
     // Update local state immediately
     setMonthlyData(prev => ({ ...prev, [monthKey]: amount }));
@@ -197,6 +214,23 @@ export function useSavingsTracker({ user, currentHousehold, year }: UseSavingsTr
     } else {
       // Save to existing goal
       await saveMonthlyEntry(currentGoal.id, monthIndex, amount);
+    }
+  };
+  
+  const deleteMonthlyEntry = async (goalId: string, monthIndex: number) => {
+    const entryDate = new Date(year, monthIndex, 1);
+    
+    try {
+      const { error } = await supabase
+        .from('savings_entries')
+        .delete()
+        .eq('goal_id', goalId)
+        .eq('entry_month', entryDate.toISOString().split('T')[0]);
+      
+      if (error) throw error;
+    } catch (error) {
+      console.error("Failed to delete monthly entry:", error);
+      fetchMonthlyData();
     }
   };
 

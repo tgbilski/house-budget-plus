@@ -8,7 +8,7 @@ interface Props {
   year: string;
   onYearChange: (newYear: string) => void;
   monthlyData: Record<string, number>;
-  onUpdateAmount: (monthIndex: number, amount: number) => void;
+  onUpdateAmount: (monthIndex: number, amount: number | null) => void;
 }
 
 const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
@@ -46,9 +46,27 @@ export const MonthlySavingsGrid: React.FC<Props> = ({ year, onYearChange, monthl
 
   const handleBlur = (monthIndex: number) => {
     const monthKey = monthIndex.toString();
-    const value = parseFloat(localInputs[monthKey]) || 0;
+    const inputValue = localInputs[monthKey]?.trim();
+    const currentDbValue = monthlyData[monthKey];
+    
+    // If input is empty or 0, delete the entry
+    if (!inputValue || inputValue === '' || parseFloat(inputValue) === 0) {
+      // Only delete if there was a value before
+      if (currentDbValue && currentDbValue > 0) {
+        onUpdateAmount(monthIndex, null); // null signals deletion
+      }
+      // Clear local input
+      setLocalInputs(prev => {
+        const newInputs = { ...prev };
+        delete newInputs[monthKey];
+        return newInputs;
+      });
+      return;
+    }
+    
+    const value = parseFloat(inputValue);
     // Only call the update function if the value has actually changed
-    if (value !== (monthlyData[monthKey] || 0)) {
+    if (value !== (currentDbValue || 0)) {
       onUpdateAmount(monthIndex, value);
     }
   };
