@@ -367,6 +367,62 @@ export type Database = {
           },
         ]
       }
+      gifts: {
+        Row: {
+          created_at: string
+          gift_idea: string | null
+          household_id: string | null
+          id: string
+          link: string | null
+          notes: string | null
+          occasion: string
+          price: number | null
+          purchased: boolean | null
+          recipient: string
+          updated_at: string
+          user_id: string
+          year: number
+        }
+        Insert: {
+          created_at?: string
+          gift_idea?: string | null
+          household_id?: string | null
+          id?: string
+          link?: string | null
+          notes?: string | null
+          occasion: string
+          price?: number | null
+          purchased?: boolean | null
+          recipient: string
+          updated_at?: string
+          user_id: string
+          year?: number
+        }
+        Update: {
+          created_at?: string
+          gift_idea?: string | null
+          household_id?: string | null
+          id?: string
+          link?: string | null
+          notes?: string | null
+          occasion?: string
+          price?: number | null
+          purchased?: boolean | null
+          recipient?: string
+          updated_at?: string
+          user_id?: string
+          year?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "gifts_household_id_fkey"
+            columns: ["household_id"]
+            isOneToOne: false
+            referencedRelation: "households"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       household_invites: {
         Row: {
           created_at: string
