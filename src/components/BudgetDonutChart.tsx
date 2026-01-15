@@ -14,12 +14,16 @@ interface BudgetDonutChartProps {
 }
 
 export const BudgetDonutChart = ({ totalIncome, totalExpenses, currency }: BudgetDonutChartProps) => {
-  const netBalance = totalIncome - totalExpenses;
-  const hasData = totalIncome > 0 || totalExpenses > 0;
+  // Ensure values are numbers (safety check for local storage data)
+  const incomeVal = Number(totalIncome) || 0;
+  const expenseVal = Number(totalExpenses) || 0;
+
+  const netBalance = incomeVal - expenseVal;
+  const hasData = incomeVal > 0 || expenseVal > 0;
 
   const data = [
-    { name: 'Income', value: totalIncome, color: '#10b981' }, // green-500
-    { name: 'Expenses', value: totalExpenses, color: '#ef4444' }, // red-500
+    { name: 'Income', value: incomeVal, color: '#10b981' }, // green-500
+    { name: 'Expenses', value: expenseVal, color: '#ef4444' }, // red-500
   ];
 
   const CustomTooltip = ({ active, payload }: any) => {
@@ -74,6 +78,8 @@ export const BudgetDonutChart = ({ totalIncome, totalExpenses, currency }: Budge
                   outerRadius={60}
                   paddingAngle={5}
                   dataKey="value"
+                  // FIX: Disable animation to ensure chart renders immediately with data
+                  isAnimationActive={false}
                   label={renderCustomLabel}
                   labelLine={false}
                 >
@@ -94,7 +100,7 @@ export const BudgetDonutChart = ({ totalIncome, totalExpenses, currency }: Budge
                 <span className="text-sm font-medium text-muted-foreground">Income</span>
               </div>
               <span className="text-sm font-bold text-green-600 dark:text-green-400">
-                {currency.symbol}{totalIncome.toLocaleString()}
+                {currency.symbol}{incomeVal.toLocaleString()}
               </span>
             </div>
 
@@ -104,7 +110,7 @@ export const BudgetDonutChart = ({ totalIncome, totalExpenses, currency }: Budge
                 <span className="text-sm font-medium text-muted-foreground">Expenses</span>
               </div>
               <span className="text-sm font-bold text-red-600 dark:text-red-400">
-                {currency.symbol}{totalExpenses.toLocaleString()}
+                {currency.symbol}{expenseVal.toLocaleString()}
               </span>
             </div>
 
