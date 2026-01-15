@@ -28,7 +28,7 @@ export const MobileBottomNav: React.FC = () => {
                 'flex flex-col items-center justify-center flex-1 h-full space-y-1 transition-colors',
                 isActive
                   ? 'text-primary'
-                  : 'text-muted-foreground hover:text-foreground'
+                 : 'text-muted-foreground active:text-foreground'
               )}
             >
               <Icon className={cn('h-5 w-5', isActive && 'fill-current')} />
