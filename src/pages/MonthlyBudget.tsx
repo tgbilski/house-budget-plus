@@ -53,6 +53,7 @@ const MonthlyBudget: React.FC = () => {
   const totalExpenses = Object.values(budgetData).reduce((sum, data) => sum + (data.expenses || 0), 0);
   const totalHousingExpense = Object.values(budgetData).reduce((sum, data) => sum + (data.housingExpense || 0), 0);
   const netBalance = totalIncome - totalExpenses;
+  const yearlyHouseholdIncome = totalIncome * 12;
   
   console.log('MonthlyBudget - budgetData:', budgetData);
   console.log('MonthlyBudget - Total Income:', totalIncome, 'Total Expenses:', totalExpenses, 'Net Balance:', netBalance);
@@ -330,6 +331,20 @@ const MonthlyBudget: React.FC = () => {
             <div className="lg:col-span-1 space-y-4 order-2">
               {user ? (
                 <>
+                  {/* Yearly Household Income Summary */}
+                  {totalIncome > 0 && (
+                    <div className="bg-card border-[3px] border-stroke rounded-xl p-4 shadow-cartoon">
+                      <p className="text-xs text-muted-foreground uppercase tracking-wide mb-1">
+                        {selectedYear} Yearly Household Income
+                      </p>
+                      <p className="text-2xl sm:text-3xl font-bold text-success">
+                        {currency.symbol}{yearlyHouseholdIncome.toLocaleString()}
+                      </p>
+                      <p className="text-xs text-muted-foreground mt-1">
+                        Based on {currency.symbol}{totalIncome.toLocaleString()}/month
+                      </p>
+                    </div>
+                  )}
                   <BudgetDonutChart
                     totalIncome={totalIncome}
                     totalExpenses={totalExpenses}
