@@ -9,16 +9,15 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        default: "bg-primary text-primary-foreground [@media(hover:hover)]:hover:bg-primary/90",
+        default: "bg-primary text-primary-foreground hover:bg-primary/90",
         destructive:
-          "bg-destructive text-destructive-foreground [@media(hover:hover)]:hover:bg-destructive/90",
+          "bg-destructive text-destructive-foreground hover:bg-destructive/90",
         outline:
-          "bg-background [@media(hover:hover)]:hover:bg-accent [@media(hover:hover)]:hover:text-accent-foreground",
+          "bg-background hover:bg-accent hover:text-accent-foreground",
         secondary:
-          "bg-secondary text-secondary-foreground [@media(hover:hover)]:hover:bg-secondary/80",
-        ghost:
-          "border-transparent shadow-none [@media(hover:hover)]:hover:bg-accent [@media(hover:hover)]:hover:text-accent-foreground [@media(hover:hover)]:hover:translate-x-0 [@media(hover:hover)]:hover:translate-y-0 [@media(hover:hover)]:hover:shadow-none",
-        link: "border-transparent shadow-none text-primary underline-offset-4 [@media(hover:hover)]:hover:underline [@media(hover:hover)]:hover:translate-x-0 [@media(hover:hover)]:hover:translate-y-0 [@media(hover:hover)]:hover:shadow-none",
+          "bg-secondary text-secondary-foreground hover:bg-secondary/80",
+        ghost: "border-transparent shadow-none hover:bg-accent hover:text-accent-foreground hover:translate-x-0 hover:translate-y-0 hover:shadow-none",
+        link: "border-transparent shadow-none text-primary underline-offset-4 hover:underline hover:translate-x-0 hover:translate-y-0 hover:shadow-none",
       },
       size: {
         default: "h-11 px-5 py-2",
