@@ -25,22 +25,22 @@ import { ToolsGrid } from '@/components/ToolsGrid';
 import { HomeBuyingToolkit } from '@/components/home-buying';
 import InlineSignUpForm from '@/components/InlineSignUpForm';
 import calculatorMascot from '@/assets/calculator-mascot.png';
+// ADDED: Import the hook to detect mobile
+import { useIsMobile } from '@/hooks/use-mobile';
 
 interface Calculator {
   id: string;
 }
 
-// const currencies = [ ... ]; // This array should be moved to a separate file.
-
 const MonthlyBudget: React.FC = () => {
-  // CHANGE: Initial state for calculators is now an empty array.
   const [calculators, setCalculators] = useState<Calculator[]>([]);
   const [budgetData, setBudgetData] = useState<Record<string, { income: number; expenses: number; housingExpense: number }>>({});
   const [calculatorNames, setCalculatorNames] = useState<Record<string, string>>({});
   
-  // Track which calculators are visible (1 is always visible, 2-4 can be revealed)
   const [visibleCalculators, setVisibleCalculators] = useState<Set<string>>(new Set(['1']));
 
+  // ADDED: Hook call
+  const isMobile = useIsMobile();
 
   const { currency } = useCurrency();
   const { user } = useAuth();
@@ -55,10 +55,6 @@ const MonthlyBudget: React.FC = () => {
   const netBalance = totalIncome - totalExpenses;
   const yearlyHouseholdIncome = totalIncome * 12;
   
-  console.log('MonthlyBudget - budgetData:', budgetData);
-  console.log('MonthlyBudget - Total Income:', totalIncome, 'Total Expenses:', totalExpenses, 'Net Balance:', netBalance);
-
-  // CHANGE: Implemented type-safe event listener.
   useEffect(() => {
     const handleBudgetUpdate = (event: Event) => {
       if (event instanceof CustomEvent) {
@@ -74,7 +70,6 @@ const MonthlyBudget: React.FC = () => {
     return () => window.removeEventListener('budgetUpdate', handleBudgetUpdate);
   }, []);
 
-  // CHANGE: Implemented type-safe event listener.
   useEffect(() => {
     const handleEarnBadge = (event: Event) => {
       if (event instanceof CustomEvent) {
@@ -87,7 +82,6 @@ const MonthlyBudget: React.FC = () => {
     return () => window.removeEventListener('earnBadge', handleEarnBadge);
   }, [earnBadge]);
 
-  // React Query for loading calculator visibility - cached and won't refetch on window focus
   const { data: calculatorVisibility, isLoading, error: queryError } = useQuery({
     queryKey: ['budget-calculators', user?.id, currentHousehold?.id, selectedYear],
     queryFn: async () => {
@@ -105,16 +99,14 @@ const MonthlyBudget: React.FC = () => {
       return data;
     },
     enabled: !!user && !!currentHousehold,
-    staleTime: 5 * 60 * 1000, // 5 minutes
-    gcTime: 10 * 60 * 1000, // 10 minutes (formerly cacheTime)
+    staleTime: 5 * 60 * 1000, 
+    gcTime: 10 * 60 * 1000, 
     refetchOnWindowFocus: false,
     refetchOnMount: false,
     refetchOnReconnect: false,
   });
 
-  // Update visible calculators when query data changes
   useEffect(() => {
-    // Always set all 4 calculators
     setCalculators([{ id: '1' }, { id: '2' }, { id: '3' }, { id: '4' }]);
     
     if (!user || !currentHousehold) {
@@ -130,8 +122,6 @@ const MonthlyBudget: React.FC = () => {
     }
   }, [calculatorVisibility, user, currentHousehold]);
   
-  // Reset budget data when year changes - this clears old year's data
-  // Calculators will re-dispatch their events once they hydrate from new year's data
   useEffect(() => {
     setBudgetData({});
     setCalculatorNames({});
@@ -139,7 +129,6 @@ const MonthlyBudget: React.FC = () => {
 
   const error = queryError ? "Failed to load your budget data. Please refresh the page to try again." : null;
 
-  // Function to reveal the next calculator
   const revealNextCalculator = () => {
     const allIds = ['1', '2', '3', '4'];
     const nextHidden = allIds.find(id => !visibleCalculators.has(id));
@@ -148,13 +137,10 @@ const MonthlyBudget: React.FC = () => {
     }
   };
 
-  // Handle reset - hide the calculator when user clicks reset
   const handleCalculatorReset = (calculatorId: string, isEmpty: boolean) => {
-    // Calculator 1 always stays visible
     if (calculatorId === '1') return;
     
     if (isEmpty) {
-      // Hide calculator when reset
       setVisibleCalculators(prev => {
         const next = new Set(prev);
         next.delete(calculatorId);
@@ -163,27 +149,15 @@ const MonthlyBudget: React.FC = () => {
     }
   };
 
-  // Get the next calculator number that can be revealed
   const getNextCalculatorNumber = () => {
     const allIds = ['1', '2', '3', '4'];
     const nextHidden = allIds.find(id => !visibleCalculators.has(id));
     return nextHidden ? parseInt(nextHidden) : null;
   };
 
-  // Remove the addCalculator function as calculators are now static
-
-  // Remove the removeCalculator function as calculators are now static
-
-  // Calculator names handler
   const handleNameChange = (id: string, name: string) => {
     setCalculatorNames(prev => ({ ...prev, [id]: name }));
   };
-
-  const summaryData = [
-    { title: 'Total Income', value: totalIncome, icon: PiggyBank, color: 'text-success' },
-    { title: 'Total Expenses', value: totalExpenses, icon: Receipt, color: 'text-destructive' },
-    { title: 'Net Balance', value: netBalance, icon: DollarSign, color: netBalance >= 0 ? 'text-primary' : 'text-destructive' },
-  ];
 
   return (
     <div className="min-h-screen bg-background">
@@ -197,7 +171,7 @@ const MonthlyBudget: React.FC = () => {
       />
       
       <div className="w-full px-4 sm:px-6 lg:px-8 pt-2 pb-4">
-        {/* Page Header - Mascot, Title, Year Selector */}
+        {/* Page Header */}
         <div className="flex flex-col gap-3 mb-4">
           <div className="flex items-center justify-between gap-4">
             <div className="flex items-center gap-2 sm:gap-3 min-w-0">
@@ -210,13 +184,11 @@ const MonthlyBudget: React.FC = () => {
                 MONTHLY BUDGET
               </h1>
             </div>
-            {/* Desktop year selector */}
             <div className="hidden sm:block flex-shrink-0 bg-card border border-border rounded-xl p-2 sm:p-3 shadow-sm">
               <p className="text-xs text-muted-foreground mb-1 text-center">Budget Year</p>
               <YearSelector />
             </div>
           </div>
-          {/* Mobile year selector - separate row */}
           <div className="sm:hidden bg-card border border-border rounded-xl p-2 shadow-sm w-full">
             <div className="flex items-center justify-between">
               <p className="text-xs text-muted-foreground">Budget Year</p>
@@ -225,7 +197,7 @@ const MonthlyBudget: React.FC = () => {
           </div>
         </div>
 
-        {/* Premium Promo Banner - only show for signed-in non-subscribers */}
+        {/* Premium Promo Banner */}
         {user && !subscribed && (
           <div className="mb-6 p-4 rounded-xl bg-card border-[3px] border-stroke shadow-cartoon">
             <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
@@ -248,8 +220,7 @@ const MonthlyBudget: React.FC = () => {
 
         <WarningBanner />
 
-        {/* Budget calculators section with overview chart */}
-        {/* CHANGE: Added conditional rendering for loading and error states */}
+        {/* Budget calculators section */}
         {isLoading ? (
           <div className="flex flex-col items-center justify-center p-12">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mb-4"></div>
@@ -285,7 +256,6 @@ const MonthlyBudget: React.FC = () => {
                     </div>
                   ))}
                   
-                  {/* Add Calculator Button - shows when there are hidden calculators */}
                   {getNextCalculatorNumber() && (
                     <div className="animate-fade-in flex items-start">
                       <button
@@ -305,7 +275,6 @@ const MonthlyBudget: React.FC = () => {
                 </>
               ) : (
                 <>
-                  {/* Show 2 calculators for guests */}
                   {['1', '2'].map((id, index) => (
                     <div
                       key={`${selectedYear}-${id}`}
@@ -327,11 +296,10 @@ const MonthlyBudget: React.FC = () => {
               )}
             </div>
 
-            {/* Right column - Sign up form for guests, or chart for logged-in users */}
+            {/* Right column */}
             <div className="lg:col-span-1 space-y-4 order-2">
               {user ? (
                 <>
-                  {/* Yearly Household Income Summary */}
                   {totalIncome > 0 && (
                     <div className="bg-card border-[3px] border-stroke rounded-xl p-4 shadow-cartoon">
                       <p className="text-xs text-muted-foreground uppercase tracking-wide mb-1">
@@ -345,11 +313,14 @@ const MonthlyBudget: React.FC = () => {
                       </p>
                     </div>
                   )}
-                  <BudgetDonutChart
-                    totalIncome={totalIncome}
-                    totalExpenses={totalExpenses}
-                    currency={currency}
-                  />
+                  {/* FIX: Completely unmount the chart on mobile to prevent double-tap bug caused by library listeners */}
+                  {!isMobile && (
+                    <BudgetDonutChart
+                      totalIncome={totalIncome}
+                      totalExpenses={totalExpenses}
+                      currency={currency}
+                    />
+                  )}
                   <MortgagePreapprovalQuestion
                     monthlyIncome={totalIncome}
                     monthlyExpenses={totalExpenses}
@@ -363,7 +334,6 @@ const MonthlyBudget: React.FC = () => {
           </div>
         )}
 
-        {/* Home Buying Toolkit - Premium Feature */}
         <div className="mt-8">
           <HomeBuyingToolkit
             monthlyIncome={totalIncome}
