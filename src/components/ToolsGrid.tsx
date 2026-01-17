@@ -65,8 +65,8 @@ export function ToolsGrid({ excludeHref }: ToolsGridProps) {
       
       <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
         {filteredTools.map((tool) => (
-          <Link key={tool.title} to={tool.href} className="block group">
-            <Card className="h-full overflow-hidden bg-card hover:translate-y-[-2px] hover:shadow-cartoon-hover transition-all duration-200">
+          <Link key={tool.title} to={tool.href} className="block group touch-manipulation">
+            <Card className="h-full overflow-hidden bg-card transition-all duration-200 [@media(hover:hover)]:hover:translate-y-[-2px] [@media(hover:hover)]:hover:shadow-cartoon-hover">
               <div className="relative h-32 overflow-hidden">
                 <img
                   src={tool.image}
@@ -81,7 +81,7 @@ export function ToolsGrid({ excludeHref }: ToolsGridProps) {
                 )}
               </div>
               <CardHeader className="p-3 bg-muted/50">
-                <CardTitle className="text-base group-hover:text-primary transition-colors">
+                <CardTitle className="text-base transition-colors [@media(hover:hover)]:group-hover:text-primary">
                   {tool.title}
                 </CardTitle>
                 <CardDescription className="text-xs line-clamp-2">
