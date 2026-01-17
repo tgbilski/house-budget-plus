@@ -123,11 +123,7 @@ export function AppSidebar() {
                   <SidebarMenuButton 
                     asChild 
                     isActive={isActive(item.url)}
-                    // Fix double-tap: Disable tooltip and remove hover on mobile
                     tooltip={null}
-                    className={cn(
-                      isMobile && "hover:bg-transparent hover:text-sidebar-foreground active:bg-sidebar-accent active:text-sidebar-accent-foreground"
-                    )}
                   >
                     <NavLink 
                       to={item.url} 
