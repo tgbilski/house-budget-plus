@@ -237,11 +237,11 @@ const MonthlyBudget: React.FC = () => {
                   Get AI insights, voice tracking & more for just $4.99/month.
                 </p>
               </div>
-              <Link to="/settings">
-                <Button className="gap-2 whitespace-nowrap">
+              <Button asChild className="gap-2 whitespace-nowrap">
+                <Link to="/settings">
                   Upgrade Now
-                </Button>
-              </Link>
+                </Link>
+              </Button>
             </div>
           </div>
         )}
