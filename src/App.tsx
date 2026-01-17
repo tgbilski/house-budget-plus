@@ -248,9 +248,10 @@ const App = () => {
   return (
     <HelmetProvider>
       <QueryClientProvider client={queryClient}>
-        <TooltipProvider>
+        {/* CHANGE: Added delayDuration to prevent double-tap issues on mobile buttons with tooltips */}
+        <TooltipProvider delayDuration={300}>
           <Toaster />
-          <Sonner />
+          <Toaster as Sonner />
           <ErrorBoundary>
             <AuthProvider>
               <SubscriptionProvider>
