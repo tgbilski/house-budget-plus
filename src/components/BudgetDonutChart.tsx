@@ -1,5 +1,6 @@
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
 import { TrendingUp, TrendingDown, Minus } from 'lucide-react';
+import { useIsMobile } from '@/hooks/use-mobile'; // Added import
 
 interface Currency {
   code: string;
@@ -14,6 +15,8 @@ interface BudgetDonutChartProps {
 }
 
 export const BudgetDonutChart = ({ totalIncome, totalExpenses, currency }: BudgetDonutChartProps) => {
+  const isMobile = useIsMobile(); // Check for mobile device
+
   // Ensure values are numbers (safety check for local storage data)
   const incomeVal = Number(totalIncome) || 0;
   const expenseVal = Number(totalExpenses) || 0;
@@ -87,7 +90,8 @@ export const BudgetDonutChart = ({ totalIncome, totalExpenses, currency }: Budge
                     <Cell key={`cell-${index}`} fill={entry.color} />
                   ))}
                 </Pie>
-                <Tooltip content={<CustomTooltip />} />
+                {/* FIX: Only show tooltip on non-mobile devices to prevent double-tap bug */}
+                {!isMobile && <Tooltip content={<CustomTooltip />} />}
               </PieChart>
             </ResponsiveContainer>
           </div>
