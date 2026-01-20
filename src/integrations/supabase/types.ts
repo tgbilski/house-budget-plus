@@ -979,6 +979,13 @@ export type Database = {
             referencedRelation: "marketplace_listings"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "user_reports_listing_id_fkey"
+            columns: ["listing_id"]
+            isOneToOne: false
+            referencedRelation: "marketplace_listings_public"
+            referencedColumns: ["id"]
+          },
         ]
       }
       user_roles: {
@@ -1272,7 +1279,92 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      household_member_profiles: {
+        Row: {
+          created_at: string | null
+          current_household_id: string | null
+          first_name: string | null
+          last_name: string | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          current_household_id?: string | null
+          first_name?: string | null
+          last_name?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          current_household_id?: string | null
+          first_name?: string | null
+          last_name?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "profiles_current_household_id_fkey"
+            columns: ["current_household_id"]
+            isOneToOne: false
+            referencedRelation: "households"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      marketplace_listings_public: {
+        Row: {
+          category: string | null
+          created_at: string | null
+          description: string | null
+          id: string | null
+          image_urls: string[] | null
+          location_city: string | null
+          location_country: string | null
+          location_latitude: number | null
+          location_longitude: number | null
+          location_state: string | null
+          price: number | null
+          status: string | null
+          tags: string[] | null
+          title: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          category?: string | null
+          created_at?: string | null
+          description?: string | null
+          id?: string | null
+          image_urls?: string[] | null
+          location_city?: string | null
+          location_country?: string | null
+          location_latitude?: number | null
+          location_longitude?: number | null
+          location_state?: string | null
+          price?: number | null
+          status?: string | null
+          tags?: string[] | null
+          title?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          category?: string | null
+          created_at?: string | null
+          description?: string | null
+          id?: string | null
+          image_urls?: string[] | null
+          location_city?: string | null
+          location_country?: string | null
+          location_latitude?: number | null
+          location_longitude?: number | null
+          location_state?: string | null
+          price?: number | null
+          status?: string | null
+          tags?: string[] | null
+          title?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       accept_household_invite: {
