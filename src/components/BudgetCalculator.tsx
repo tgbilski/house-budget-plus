@@ -129,9 +129,16 @@ const BudgetCalculator: React.FC<BudgetCalculatorProps> = ({
     refetchOnReconnect: false,
   });
 
-  // Hydrate state from query data when it loads (only once per data change)
+  // Hydrate state from query data ONLY on initial load - never overwrite user edits
   useEffect(() => {
-    if (budgetQueryData === undefined) return; // Still loading
+    // Skip if already initialized for this data context
+    if (hasInitialized.current) return;
+    
+    // Skip if still loading (undefined means query hasn't resolved yet)
+    if (budgetQueryData === undefined) return;
+    
+    // Mark as initialized FIRST to prevent any re-runs
+    hasInitialized.current = true;
     
     if (budgetQueryData) {
       const income = budgetQueryData.income || 0;
@@ -184,10 +191,8 @@ const BudgetCalculator: React.FC<BudgetCalculatorProps> = ({
           housingExpense: hydratedHousingExpense
         }
       }));
-      
-      hasInitialized.current = true;
-    } else if (!hasInitialized.current || budgetQueryData === null) {
-      // No data found - reset to clean slate and dispatch zero values
+    } else {
+      // No data found - initialize with defaults and dispatch zero values
       setMonthlyIncome(0);
       setExpenses(defaultExpenses);
       setAdditionalExpenses([]);
@@ -205,8 +210,6 @@ const BudgetCalculator: React.FC<BudgetCalculatorProps> = ({
           housingExpense: 0
         }
       }));
-      
-      hasInitialized.current = true;
     }
   }, [budgetQueryData, id, onNameChange]);
 
