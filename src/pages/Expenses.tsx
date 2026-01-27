@@ -26,6 +26,7 @@ import { AlertCircle, TrendingDown } from 'lucide-react';
 import { isNativeApp } from '@/utils/capacitor';
 import calculatorMascot from '@/assets/calculator-mascot.png';
 import { BadgeDisplay } from '@/components/BadgeDisplay';
+import { PageSEOContent, pageSEOData } from '@/components/PageSEOContent';
 
 export default function Expenses() {
   const { user } = useAuth();
@@ -925,6 +926,13 @@ export default function Expenses() {
 
         {/* Badge Display */}
         <BadgeDisplay />
+        
+        <PageSEOContent
+          title={pageSEOData.expenses.title}
+          description={pageSEOData.expenses.description}
+          features={pageSEOData.expenses.features}
+          keywords={pageSEOData.expenses.keywords}
+        />
       </div>
     </div>
   );

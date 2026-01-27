@@ -16,6 +16,7 @@ import { WarningBanner } from '@/components/WarningBanner';
 import { InternalLinks } from '@/components/InternalLinks';
 import { FAQ } from '@/components/FAQ';
 import { BadgeDisplay } from '@/components/BadgeDisplay';
+import { PageSEOContent, pageSEOData } from '@/components/PageSEOContent';
 import calculatorMascot from '@/assets/calculator-mascot.png';
 
 const SavingsGoals: React.FC = () => {
@@ -138,6 +139,15 @@ const SavingsGoals: React.FC = () => {
 
               <div className="animate-slide-up" style={{ animationDelay: '0.4s' }}>
                 <InternalLinks currentPage="/savings" category="planning" />
+              </div>
+              
+              <div className="animate-slide-up" style={{ animationDelay: '0.5s' }}>
+                <PageSEOContent
+                  title={pageSEOData.savingsGoals.title}
+                  description={pageSEOData.savingsGoals.description}
+                  features={pageSEOData.savingsGoals.features}
+                  keywords={pageSEOData.savingsGoals.keywords}
+                />
               </div>
             </>
           )}

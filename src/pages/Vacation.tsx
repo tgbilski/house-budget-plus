@@ -17,6 +17,7 @@ import { InternalLinks } from '@/components/InternalLinks';
 import { FAQ } from '@/components/FAQ';
 import { BadgeDisplay } from '@/components/BadgeDisplay';
 import { vacationPlanningFAQs } from '@/utils/faqData';
+import { PageSEOContent, pageSEOData } from '@/components/PageSEOContent';
 import calculatorMascot from '@/assets/calculator-mascot.png';
 
 const Vacation: React.FC = () => {
@@ -139,6 +140,13 @@ const Vacation: React.FC = () => {
           <FAQ faqs={vacationPlanningFAQs} title="Vacation Planning FAQs" />
 
           <InternalLinks currentPage="/vacation" category="planning" />
+          
+          <PageSEOContent
+            title={pageSEOData.vacation.title}
+            description={pageSEOData.vacation.description}
+            features={pageSEOData.vacation.features}
+            keywords={pageSEOData.vacation.keywords}
+          />
         </div>
       </div>
     </div>
