@@ -15,92 +15,93 @@
 
 @layer base {
   :root {
-    /* Neutral gray background */
-    --background: 220 10% 94%;
-    --foreground: 220 20% 15%;
+    /* 90s Jazz Cup Design - Clean white background */
+    --background: 0 0% 98%;
+    --foreground: 260 30% 15%;
 
-    /* Soft white cards */
+    /* Crisp white cards */
     --card: 0 0% 100%;
-    --card-foreground: 220 20% 15%;
+    --card-foreground: 260 30% 15%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 220 20% 15%;
+    --popover-foreground: 260 30% 15%;
 
-    /* Friendly blue primary - darker shade */
-    --primary: 213 50% 22%;
+    /* Jazz Teal - Primary */
+    --primary: 175 65% 40%;
     --primary-foreground: 0 0% 100%;
-    --primary-glow: 213 60% 35%;
+    --primary-glow: 175 70% 50%;
 
-    /* Neutral gray secondary */
-    --secondary: 220 10% 90%;
-    --secondary-foreground: 220 20% 15%;
+    /* Jazz Purple - Secondary */
+    --secondary: 280 45% 55%;
+    --secondary-foreground: 0 0% 100%;
 
-    --muted: 220 10% 88%;
-    --muted-foreground: 220 10% 40%;
+    --muted: 200 20% 92%;
+    --muted-foreground: 260 20% 40%;
 
-    /* Soft blue accent */
-    --accent: 200 40% 94%;
-    --accent-foreground: 220 20% 15%;
+    /* Light teal accent */
+    --accent: 175 50% 92%;
+    --accent-foreground: 175 65% 30%;
 
-    /* Friendly red destructive */
+    /* Destructive stays red */
     --destructive: 0 72% 55%;
     --destructive-foreground: 0 0% 100%;
 
-    /* Cheerful green success */
-    --success: 145 65% 42%;
+    /* Jazz teal success */
+    --success: 175 65% 40%;
     --success-foreground: 0 0% 100%;
 
-    /* Friendly teal #7cb5a2 */
-    --teal: 161 32% 60%;
+    /* Jazz Teal */
+    --teal: 175 65% 45%;
     --teal-foreground: 0 0% 100%;
-    --teal-glow: 161 42% 70%;
+    --teal-glow: 175 70% 55%;
 
-    /* Soft sage #d3e8c1 */
-    --sage: 95 40% 82%;
-    --sage-foreground: 220 20% 15%;
+    /* Jazz Purple as sage replacement */
+    --sage: 280 40% 88%;
+    --sage-foreground: 280 45% 25%;
 
-    /* Warm yellow warning */
-    --warning: 42 95% 55%;
-    --warning-foreground: 220 20% 15%;
+    /* Warm coral warning (90s accent) */
+    --warning: 15 85% 60%;
+    --warning-foreground: 0 0% 100%;
 
-    /* Neutral gray borders */
-    --border: 220 10% 85%;
-    --input: 220 10% 85%;
-    --ring: 213 50% 28%;
+    /* Light teal-tinted borders */
+    --border: 175 20% 85%;
+    --input: 175 20% 88%;
+    --ring: 175 65% 45%;
 
-    /* Cartoon stroke */
-    --stroke: 220 20% 10%;
+    /* Cartoon stroke - deep purple */
+    --stroke: 280 50% 20%;
     --stroke-width: 4px;
 
     /* Extra rounded for cartoony feel */
     --radius: 1rem;
 
-    /* Gradients */
+    /* Jazz Gradients */
     --gradient-primary: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--primary-glow)));
     --gradient-teal: linear-gradient(135deg, hsl(var(--teal)), hsl(var(--teal-glow)));
-    --gradient-subtle: linear-gradient(180deg, hsl(var(--background)), hsl(var(--secondary)));
-    --gradient-warm: linear-gradient(135deg, hsl(220 10% 96%), hsl(220 10% 92%));
+    --gradient-jazz: linear-gradient(135deg, hsl(175 65% 45%), hsl(280 45% 55%));
+    --gradient-subtle: linear-gradient(180deg, hsl(var(--background)), hsl(175 30% 95%));
+    --gradient-warm: linear-gradient(135deg, hsl(175 20% 96%), hsl(280 20% 95%));
 
-    /* Playful shadows */
+    /* Jazz-inspired shadows */
     --shadow-cartoon: 4px 4px 0px hsl(var(--stroke));
     --shadow-cartoon-sm: 2px 2px 0px hsl(var(--stroke));
     --shadow-cartoon-hover: 6px 6px 0px hsl(var(--stroke));
-    --shadow-elegant: 0 10px 30px -10px hsl(var(--primary) / 0.2);
-    --shadow-glow: 0 0 40px hsl(var(--primary-glow) / 0.3);
-    --shadow-teal: 0 8px 24px -8px hsl(var(--teal) / 0.3);
+    --shadow-elegant: 0 10px 30px -10px hsl(var(--primary) / 0.25);
+    --shadow-glow: 0 0 40px hsl(var(--primary-glow) / 0.35);
+    --shadow-teal: 0 8px 24px -8px hsl(var(--teal) / 0.35);
 
     /* Animations */
     --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     --transition-bounce: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
 
-    /* Sidebar colors - Match primary blue */
-    --sidebar-background: 213 50% 22%;
+    /* Sidebar - Jazz teal */
+    --sidebar-background: 175 65% 35%;
     --sidebar-foreground: 0 0% 100%;
     --sidebar-primary: 0 0% 100%;
-    --sidebar-primary-foreground: 213 50% 22%;
-    --sidebar-accent: 213 40% 30%;
+    --sidebar-primary-foreground: 175 65% 35%;
+    --sidebar-accent: 175 55% 42%;
     --sidebar-accent-foreground: 0 0% 100%;
-    --sidebar-border: 213 40% 30%;
+    --sidebar-border: 175 50% 40%;
     --sidebar-ring: 0 0% 100%;
     --font-sans: "Helvetica Neue", Helvetica, Arial, ui-sans-serif, system-ui, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji;
     --shadow-sm: 0px 1px 0px 0px hsla(0, 0%, 0%, 0.1);
@@ -110,34 +111,35 @@
   }
 
   .dark {
-    --background: 220 20% 8%;
-    --foreground: 220 10% 95%;
-    --card: 220 20% 12%;
-    --card-foreground: 220 10% 95%;
-    --popover: 220 20% 12%;
-    --popover-foreground: 220 10% 95%;
-    --primary: 213 50% 40%;
+    /* Jazz Dark Mode - Deep purple base */
+    --background: 280 30% 8%;
+    --foreground: 175 20% 95%;
+    --card: 280 25% 12%;
+    --card-foreground: 175 20% 95%;
+    --popover: 280 25% 12%;
+    --popover-foreground: 175 20% 95%;
+    --primary: 175 65% 50%;
     --primary-foreground: 0 0% 100%;
-    --secondary: 220 15% 18%;
-    --secondary-foreground: 220 10% 95%;
-    --muted: 220 15% 18%;
-    --muted-foreground: 220 10% 60%;
-    --accent: 220 15% 22%;
-    --accent-foreground: 220 10% 95%;
+    --secondary: 280 45% 45%;
+    --secondary-foreground: 0 0% 100%;
+    --muted: 280 20% 18%;
+    --muted-foreground: 175 20% 60%;
+    --accent: 175 40% 20%;
+    --accent-foreground: 175 60% 80%;
     --destructive: 0 72% 55%;
     --destructive-foreground: 0 0% 100%;
-    --border: 220 15% 22%;
-    --input: 220 15% 22%;
-    --ring: 213 50% 40%;
-    --stroke: 220 10% 85%;
-    /* Sidebar stays dark blue in dark mode too */
-    --sidebar-background: 213 50% 18%;
+    --border: 280 20% 22%;
+    --input: 280 20% 22%;
+    --ring: 175 65% 50%;
+    --stroke: 175 30% 70%;
+    /* Sidebar - deep teal in dark mode */
+    --sidebar-background: 175 50% 18%;
     --sidebar-foreground: 0 0% 100%;
     --sidebar-primary: 0 0% 100%;
-    --sidebar-primary-foreground: 213 50% 18%;
-    --sidebar-accent: 213 40% 25%;
+    --sidebar-primary-foreground: 175 50% 18%;
+    --sidebar-accent: 175 45% 25%;
     --sidebar-accent-foreground: 0 0% 100%;
-    --sidebar-border: 213 40% 25%;
+    --sidebar-border: 175 40% 25%;
     --sidebar-ring: 0 0% 100%;
     --font-sans: "Helvetica Neue", Helvetica, Arial, ui-sans-serif, system-ui, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji;
     --radius: 0.375rem;
