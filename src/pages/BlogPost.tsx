@@ -67,6 +67,47 @@ const BlogPost: React.FC = () => {
 
   const imageUrl = post.featured_image_url || '/placeholder.svg';
 
+  // Generate Article schema with BlogPosting type
+  const articleSchema = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "articleType": "BlogPosting",
+    "headline": post.title,
+    "description": post.excerpt || post.content.substring(0, 160),
+    "image": imageUrl,
+    "datePublished": post.published_at || post.created_at,
+    "dateModified": post.updated_at || post.created_at,
+    "author": {
+      "@type": "Organization",
+      "name": "House Budget Calculator",
+      "url": "https://www.housebudgetcalculator.com"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "House Budget Calculator",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://www.housebudgetcalculator.com/lovable-uploads/ed809955-ef71-4d81-b072-945082f4380a.png"
+      }
+    },
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": `https://www.housebudgetcalculator.com/blog/${slug}`
+    },
+    "keywords": post.tags?.join(', ') || 'budgeting, financial planning',
+    "wordCount": post.content.split(' ').length,
+    "timeRequired": `PT${post.read_time || 5}M`,
+    "inLanguage": "en-US",
+    "isAccessibleForFree": true
+  };
+
+  // Custom breadcrumbs for blog posts
+  const blogBreadcrumbs = [
+    { name: 'Home', url: 'https://www.housebudgetcalculator.com' },
+    { name: 'Blog', url: 'https://www.housebudgetcalculator.com/blog' },
+    { name: post.title, url: `https://www.housebudgetcalculator.com/blog/${slug}` }
+  ];
+
   return (
     <>
       <SEO
@@ -75,34 +116,8 @@ const BlogPost: React.FC = () => {
         keywords={post.tags?.join(', ') || 'house budget, budgeting, financial planning'}
         canonical={`https://www.housebudgetcalculator.com/blog/${slug}`}
         ogImage={imageUrl}
-        structuredData={{
-          "@context": "https://schema.org",
-          "@type": "BlogPosting",
-          "headline": post.title,
-          "description": post.excerpt || post.content.substring(0, 160),
-          "image": imageUrl,
-          "datePublished": post.published_at || post.created_at,
-          "dateModified": post.updated_at || post.created_at,
-          "author": {
-            "@type": "Organization",
-            "name": "House Budget Calculator"
-          },
-          "publisher": {
-            "@type": "Organization",
-            "name": "House Budget Calculator",
-            "logo": {
-              "@type": "ImageObject",
-              "url": "https://www.housebudgetcalculator.com/lovable-uploads/ed809955-ef71-4d81-b072-945082f4380a.png"
-            }
-          },
-          "mainEntityOfPage": {
-            "@type": "WebPage",
-            "@id": `https://www.housebudgetcalculator.com/blog/${slug}`
-          },
-          "keywords": post.tags?.join(', ') || 'budgeting, financial planning',
-          "wordCount": post.content.split(' ').length,
-          "timeRequired": `PT${post.read_time}M`
-        }}
+        structuredData={articleSchema}
+        breadcrumbs={blogBreadcrumbs}
       />
       <div className="min-h-screen bg-gray-100">
         <div className="max-w-4xl mx-auto p-4 py-8">
