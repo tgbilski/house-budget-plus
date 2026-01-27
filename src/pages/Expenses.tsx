@@ -394,7 +394,7 @@ export default function Expenses() {
           {/* Feature Preview Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
             {/* Voice Input Preview */}
-            <Card className="bg-card/80 backdrop-blur-sm border-2 border-border/50 shadow-[var(--shadow-elegant)]">
+            <Card className="bg-card border-2 border-border/50 shadow-cartoon">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Mic className="h-5 w-5" />
@@ -418,7 +418,7 @@ export default function Expenses() {
             </Card>
 
             {/* Chart Preview */}
-            <Card className="bg-card/80 backdrop-blur-sm border-2 border-border/50 shadow-[var(--shadow-elegant)]">
+            <Card className="bg-card border-2 border-border/50 shadow-cartoon">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <TrendingUp className="h-5 w-5" />
@@ -439,7 +439,7 @@ export default function Expenses() {
           </div>
 
           {/* Benefits List */}
-          <Card className="bg-card/80 backdrop-blur-sm border-2 border-primary/20 shadow-[var(--shadow-elegant)]">
+          <Card className="bg-card border-2 border-primary/20 shadow-cartoon">
             <CardHeader>
               <CardTitle>What You'll Get</CardTitle>
             </CardHeader>
@@ -627,7 +627,7 @@ export default function Expenses() {
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Voice Input Card */}
-          <Card className="bg-gradient-to-br from-sage/20 to-sage/10 backdrop-blur-sm border-2 border-sage/30 shadow-[var(--shadow-elegant)]">
+          <Card className="bg-card border-2 border-sage/30 shadow-cartoon">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Mic className="h-5 w-5" />
@@ -706,7 +706,7 @@ export default function Expenses() {
           </Card>
 
           {/* Monthly Summary & Export */}
-          <Card className="bg-card/80 backdrop-blur-sm border-2 border-border/50 shadow-[var(--shadow-elegant)]">
+          <Card className="bg-card border-2 border-border/50 shadow-cartoon">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <TrendingUp className="h-5 w-5" />
@@ -725,7 +725,7 @@ export default function Expenses() {
         </div>
 
         {/* Expense Log */}
-        <Card className="mt-6 bg-card/80 backdrop-blur-sm border-2 border-border/50 shadow-[var(--shadow-elegant)]">
+        <Card className="mt-6 bg-card border-2 border-border/50 shadow-cartoon">
           <CardHeader>
             <CardTitle>Expense Log - {format(selectedDate, 'MMMM d, yyyy')}</CardTitle>
           </CardHeader>
@@ -849,7 +849,7 @@ export default function Expenses() {
 
         {/* Category Breakdown Pie Chart */}
         {categoryData.length > 0 && (
-          <Card className="mt-6 bg-card/80 backdrop-blur-sm border-2 border-border/50 shadow-[var(--shadow-elegant)]">
+          <Card className="mt-6 bg-card border-2 border-border/50 shadow-cartoon">
             <CardHeader>
               <CardTitle>Spending by Category - {format(selectedDate, 'MMMM yyyy')}</CardTitle>
             </CardHeader>
@@ -882,7 +882,7 @@ export default function Expenses() {
 
         {/* Chart */}
         {chartData.length > 0 && (
-          <Card className="mt-6 bg-card/80 backdrop-blur-sm border-2 border-border/50 shadow-[var(--shadow-elegant)]">
+          <Card className="mt-6 bg-card border-2 border-border/50 shadow-cartoon">
             <CardHeader>
               <CardTitle>Monthly Spending - {selectedDate.getFullYear()}</CardTitle>
             </CardHeader>

@@ -86,7 +86,7 @@ export const MobileLanding: React.FC = () => {
         </div>
 
         {/* Authentication Section */}
-        <Card className="border-2 border-primary/20 shadow-xl bg-white/80 backdrop-blur-sm">
+        <Card className="border-2 border-primary/20 shadow-xl bg-card">
           <CardContent className="p-6 space-y-4">
             <div className="text-center space-y-2">
               <h2 className="text-xl font-semibold text-foreground">
@@ -155,7 +155,7 @@ export const MobileLanding: React.FC = () => {
         </Card>
 
         {/* Non-Subscriber Section */}
-        <Card className="border-2 border-border/40 shadow-lg bg-white/60 backdrop-blur-sm">
+        <Card className="border-2 border-border/40 shadow-lg bg-card">
           <CardContent className="p-6 space-y-4">
             <div className="text-center space-y-2">
               <h2 className="text-xl font-semibold text-foreground">

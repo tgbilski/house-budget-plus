@@ -232,7 +232,7 @@ const AppLayout = () => {
           {!isMobile && <AppSidebar />}
           <div className={cn("flex-1 flex flex-col min-w-0", !isMobile && "ml-44")}>
             {isMobile && <AppSidebar />}
-            <main id="main-content" className="flex-1 p-2 sm:p-4 md:p-6 pb-20 md:pb-6">
+            <main id="main-content" className="flex-1 p-2 sm:p-4 md:p-6 pb-20 md:pb-6 relative z-10">
               <AppRoutes />
             </main>
             <Footer />
