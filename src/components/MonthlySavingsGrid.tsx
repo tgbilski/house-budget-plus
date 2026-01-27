@@ -78,7 +78,7 @@ export const MonthlySavingsGrid: React.FC<Props> = ({ year, onYearChange, monthl
           Monthly Savings Entries
         </CardTitle>
         <Select value={year} onValueChange={onYearChange}>
-          <SelectTrigger className="w-32 bg-white/60 border-2 hover:border-teal/40 transition-all">
+          <SelectTrigger className="w-32 bg-card border-2 hover:border-teal/40 transition-all">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
@@ -115,7 +115,7 @@ export const MonthlySavingsGrid: React.FC<Props> = ({ year, onYearChange, monthl
                     value={localInputs[monthKey] || ''}
                     onChange={(e) => handleInputChange(index, e.target.value)}
                     onBlur={() => handleBlur(index)}
-                    className={`pl-8 font-semibold bg-white/80 border-2 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md focus:border-teal focus:shadow-[var(--shadow-teal)] ${
+                    className={`pl-8 font-semibold bg-card border-2 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md focus:border-teal focus:shadow-[var(--shadow-teal)] ${
                       hasSavings 
                         ? 'border-success/60 bg-success/5' 
                         : isCurrentMonth 
