@@ -20,6 +20,7 @@ import Header from "@/components/Header";
 import { AppSidebar } from "@/components/AppSidebar";
 import ScrollToTop from "@/components/ScrollToTop";
 import Footer from "@/components/Footer";
+import { JazzBackground } from "@/components/JazzBackground";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { cn } from "@/lib/utils";
 // Features page consolidated into MonthlyBudget
@@ -224,7 +225,8 @@ const AppLayout = () => {
   // All other pages with full navigation (including root "/")
   return (
     <SidebarProvider defaultOpen={!isMobile}>
-      <div className="min-h-screen w-full flex flex-col bg-background">
+      <div className="min-h-screen w-full flex flex-col bg-background relative">
+        <JazzBackground />
         <Header />
         <div className="flex flex-1">
           {!isMobile && <AppSidebar />}
