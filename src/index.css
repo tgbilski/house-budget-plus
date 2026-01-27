@@ -26,13 +26,13 @@
     --popover: 0 0% 100%;
     --popover-foreground: 260 30% 15%;
 
-    /* Jazz Teal - Primary */
-    --primary: 175 65% 40%;
+    /* Jazz Purple - Primary */
+    --primary: 280 55% 50%;
     --primary-foreground: 0 0% 100%;
-    --primary-glow: 175 70% 50%;
+    --primary-glow: 280 60% 60%;
 
-    /* Jazz Purple - Secondary */
-    --secondary: 280 45% 55%;
+    /* Jazz Teal - Secondary */
+    --secondary: 175 65% 45%;
     --secondary-foreground: 0 0% 100%;
 
     --muted: 200 20% 92%;
@@ -63,10 +63,10 @@
     --warning: 15 85% 60%;
     --warning-foreground: 0 0% 100%;
 
-    /* Light teal-tinted borders */
-    --border: 175 20% 85%;
-    --input: 175 20% 88%;
-    --ring: 175 65% 45%;
+    /* Light purple-tinted borders */
+    --border: 280 20% 85%;
+    --input: 280 20% 88%;
+    --ring: 280 55% 50%;
 
     /* Cartoon stroke - deep purple */
     --stroke: 280 50% 20%;
@@ -94,14 +94,14 @@
     --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     --transition-bounce: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
 
-    /* Sidebar - Jazz teal */
-    --sidebar-background: 175 65% 35%;
+    /* Sidebar - Jazz purple */
+    --sidebar-background: 280 55% 45%;
     --sidebar-foreground: 0 0% 100%;
     --sidebar-primary: 0 0% 100%;
-    --sidebar-primary-foreground: 175 65% 35%;
-    --sidebar-accent: 175 55% 42%;
+    --sidebar-primary-foreground: 280 55% 45%;
+    --sidebar-accent: 280 50% 52%;
     --sidebar-accent-foreground: 0 0% 100%;
-    --sidebar-border: 175 50% 40%;
+    --sidebar-border: 280 45% 50%;
     --sidebar-ring: 0 0% 100%;
     --font-sans: "Helvetica Neue", Helvetica, Arial, ui-sans-serif, system-ui, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji;
     --shadow-sm: 0px 1px 0px 0px hsla(0, 0%, 0%, 0.1);
