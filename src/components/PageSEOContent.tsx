@@ -24,7 +24,7 @@ export const PageSEOContent: React.FC<PageSEOContentProps> = ({
   return (
     <section className="mt-12 pt-8 border-t border-border space-y-6">
       {/* Free Features Section */}
-      <Card className="bg-muted/30 border-border/50">
+      <Card className="bg-muted border-border/50">
         <CardContent className="pt-6">
           <h2 className="text-xl font-semibold text-foreground mb-3">
             {title}
@@ -64,7 +64,7 @@ export const PageSEOContent: React.FC<PageSEOContentProps> = ({
 
       {/* Premium Features Section */}
       {premiumTitle && premiumFeatures.length > 0 && (
-        <Card className="bg-gradient-to-br from-primary/5 to-primary-glow/5 border-primary/20">
+        <Card className="bg-card border-primary/20">
           <CardContent className="pt-6">
             <div className="flex items-center gap-2 mb-3">
               <Sparkles className="h-5 w-5 text-primary" />
