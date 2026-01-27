@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Plus, PiggyBank, Receipt, DollarSign } from 'lucide-react';
+import { Plus } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import BudgetCalculator from '@/components/BudgetCalculator';
@@ -24,6 +24,7 @@ import { MortgagePreapprovalQuestion } from '@/components/MortgagePreapprovalQue
 import { ToolsGrid } from '@/components/ToolsGrid';
 import { HomeBuyingToolkit } from '@/components/home-buying';
 import InlineSignUpForm from '@/components/InlineSignUpForm';
+import { BadgeDisplay } from '@/components/BadgeDisplay';
 import calculatorMascot from '@/assets/calculator-mascot.png';
 // ADDED: Import the hook to detect mobile
 import { useIsMobile } from '@/hooks/use-mobile';
@@ -344,6 +345,8 @@ const MonthlyBudget: React.FC = () => {
         </div>
 
         <ToolsGrid excludeHref="/budget" />
+        
+        {user && <BadgeDisplay />}
         
         <FAQ faqs={budgetCalculatorFAQs} />
       </div>

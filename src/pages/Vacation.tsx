@@ -1,8 +1,7 @@
 // src/pages/Vacation.tsx
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { Plus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import { useBadges } from '@/hooks/useBadges';
 import { useYear } from '@/hooks/useYear';
@@ -16,6 +15,7 @@ import { useVacationPlanner } from '@/hooks/useVacationPlanner';
 import { VacationOptionCard } from '@/components/VacationOptionCard';
 import { InternalLinks } from '@/components/InternalLinks';
 import { FAQ } from '@/components/FAQ';
+import { BadgeDisplay } from '@/components/BadgeDisplay';
 import { vacationPlanningFAQs } from '@/utils/faqData';
 import calculatorMascot from '@/assets/calculator-mascot.png';
 
@@ -24,7 +24,6 @@ const Vacation: React.FC = () => {
   const { selectedYear } = useYear();
   const { currency } = useCurrency();
   const { earnBadge } = useBadges();
-  const navigate = useNavigate();
 
   const {
     vacations,
@@ -135,6 +134,8 @@ const Vacation: React.FC = () => {
             ))}
           </div>
 
+          {user && <BadgeDisplay />}
+          
           <FAQ faqs={vacationPlanningFAQs} title="Vacation Planning FAQs" />
 
           <InternalLinks currentPage="/vacation" category="planning" />
