@@ -6,6 +6,7 @@ import { useBadges } from '@/hooks/useBadges';
 import { InternalLinks } from '@/components/InternalLinks';
 import { SocialShare } from '@/components/SocialShare';
 import { FAQ } from '@/components/FAQ';
+import { BadgeDisplay } from '@/components/BadgeDisplay';
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -326,6 +327,8 @@ const FinancialResources: React.FC = () => {
           </div>
         </section>
 
+        {user && <BadgeDisplay />}
+        
         <FAQ faqs={resourcesFAQs} title="Financial Education FAQ" />
         <InternalLinks currentPage="/resources" />
       </div>

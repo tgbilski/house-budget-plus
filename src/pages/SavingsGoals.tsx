@@ -15,6 +15,7 @@ import { seoData } from '@/utils/seoData';
 import { WarningBanner } from '@/components/WarningBanner';
 import { InternalLinks } from '@/components/InternalLinks';
 import { FAQ } from '@/components/FAQ';
+import { BadgeDisplay } from '@/components/BadgeDisplay';
 import calculatorMascot from '@/assets/calculator-mascot.png';
 
 const SavingsGoals: React.FC = () => {
@@ -105,6 +106,12 @@ const SavingsGoals: React.FC = () => {
 
           {!isMobileApp && (
             <>
+              {user && (
+                <div className="animate-slide-up" style={{ animationDelay: '0.25s' }}>
+                  <BadgeDisplay />
+                </div>
+              )}
+              
               <div className="animate-slide-up" style={{ animationDelay: '0.3s' }}>
                 <FAQ 
                   faqs={[

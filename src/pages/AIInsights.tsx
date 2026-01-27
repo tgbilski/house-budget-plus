@@ -15,6 +15,7 @@ import { Crown, Loader2, CheckCircle2, Bot, Sparkles } from "lucide-react";
 import { isNativeApp } from '@/utils/capacitor';
 import { cn } from '@/lib/utils';
 import { supabase } from "@/integrations/supabase/client";
+import { BadgeDisplay } from '@/components/BadgeDisplay';
 import calculatorMascot from '@/assets/calculator-mascot.png';
 
 // Agent display info
@@ -366,6 +367,8 @@ export default function AIInsights() {
               </CardContent>
             </Card>
           )}
+          
+          {user && <BadgeDisplay />}
         </div>
       </div>
     </div>

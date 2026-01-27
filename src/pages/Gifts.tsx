@@ -1,14 +1,24 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { SEO } from '@/components/SEO';
 import { GiftsTable } from '@/components/GiftsTable';
 import { FAQ } from '@/components/FAQ';
 import { InternalLinks } from '@/components/InternalLinks';
 import { useAuth } from '@/hooks/useAuth';
+import { useBadges } from '@/hooks/useBadges';
+import { BadgeDisplay } from '@/components/BadgeDisplay';
 import InlineSignUpForm from '@/components/InlineSignUpForm';
 import calculatorMascot from '@/assets/calculator-mascot.png';
 
 const Gifts: React.FC = () => {
   const { user } = useAuth();
+  const { earnBadge } = useBadges();
+
+  // Award badge when user visits the gifts page while logged in
+  useEffect(() => {
+    if (user) {
+      earnBadge('gifts');
+    }
+  }, [user, earnBadge]);
 
   return (
     <>
@@ -44,7 +54,9 @@ const Gifts: React.FC = () => {
           </div>
         )}
 
-        {/* FAQ and Internal Links */}
+        {/* Badge Display and FAQ */}
+        {user && <BadgeDisplay />}
+        
         <FAQ 
           faqs={[
             {
