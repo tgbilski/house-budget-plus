@@ -162,7 +162,7 @@ const MonthlyBudget: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen">
       <SEO
         title={seoData.monthlyBudget.title}
         description={seoData.monthlyBudget.description}
