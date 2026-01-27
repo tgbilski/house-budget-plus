@@ -9,9 +9,9 @@ export interface SEOData {
 
 export const seoData: Record<string, SEOData> = {
   home: {
-    title: "Free Monthly Budget Calculator | Track Income & Expenses Online",
-    description: "Create your household budget in minutes with our free online calculator. Track income, expenses by category, and see your savings instantly. No signup required — start budgeting now.",
-    keywords: "free budget calculator, monthly budget planner, household budget, expense tracker, income calculator, online budget tool, family finances, money management",
+    title: "Free Budget Calculator | Adulting Your Money Made Simple",
+    description: "Finally figure out where your paycheck disappears to. Free budget calculator for first apartments, roommate splitting, side hustles & more. No bank account needed — just start adulting your finances.",
+    keywords: "adulting budget, first apartment budget calculator, millennial budget planner, gen z money tracker, roommate expense splitter, side hustle income tracker, paycheck budget, budget without spreadsheet, simple budget app, budget for beginners",
     canonical: "https://www.housebudgetcalculator.com",
     ogImage: "https://www.housebudgetcalculator.com/assets/calculator-use-preview.png",
     structuredData: {
@@ -21,7 +21,7 @@ export const seoData: Record<string, SEOData> = {
           "@type": "WebApplication",
           "name": "House Budget Calculator",
           "url": "https://www.housebudgetcalculator.com",
-          "description": "Free online monthly budget calculator to track household income and expenses",
+          "description": "Free budget calculator for millennials and Gen Z — track your paycheck, split expenses with roommates, and manage side hustle income",
           "applicationCategory": "FinanceApplication",
           "operatingSystem": "All",
           "browserRequirements": "Requires JavaScript",
@@ -31,12 +31,13 @@ export const seoData: Record<string, SEOData> = {
             "priceCurrency": "USD"
           },
           "featureList": [
-            "Monthly budget calculator for up to 4 household members",
-            "Track income and expenses by category",
-            "Visual budget breakdown with charts",
-            "AI-powered financial insights",
+            "First apartment budget calculator",
+            "Roommate expense splitting",
+            "Side hustle income tracking",
+            "Visual budget breakdown charts",
+            "No bank account linking required",
             "Savings goals tracker",
-            "Gift list organizer",
+            "Gift list organizer for holidays",
             "Vacation budget planner"
           ],
           "aggregateRating": {
@@ -50,7 +51,7 @@ export const seoData: Record<string, SEOData> = {
           "name": "House Budget Calculator",
           "url": "https://www.housebudgetcalculator.com",
           "logo": "https://www.housebudgetcalculator.com/lovable-uploads/ed809955-ef71-4d81-b072-945082f4380a.png",
-          "description": "Free financial planning tools for household budget management"
+          "description": "Free budget tools for millennials and Gen Z to adult their finances"
         },
         {
           "@type": "FAQPage",
@@ -60,23 +61,31 @@ export const seoData: Record<string, SEOData> = {
               "name": "Is the budget calculator really free?",
               "acceptedAnswer": {
                 "@type": "Answer",
-                "text": "Yes, our monthly budget calculator is completely free to use with no signup required. Premium features like AI insights are available with a subscription."
+                "text": "Yes, our budget calculator is completely free with no signup required. Perfect for first-time budgeters, roommates, and anyone with a side hustle. Premium AI features are available for $4.99/month."
               }
             },
             {
               "@type": "Question",
-              "name": "How do I create a household budget?",
+              "name": "Do I need to connect my bank account?",
               "acceptedAnswer": {
                 "@type": "Answer",
-                "text": "Enter your monthly income, add your expenses by category (housing, utilities, groceries, etc.), and the calculator instantly shows your remaining budget and savings rate."
+                "text": "No bank account linking required! Just enter your income and expenses manually. We keep it simple — no complicated setup or scary permissions."
               }
             },
             {
               "@type": "Question",
-              "name": "Can I track budgets for multiple people?",
+              "name": "Can I split expenses with roommates?",
               "acceptedAnswer": {
                 "@type": "Answer",
-                "text": "Yes, you can create up to 4 individual budget calculators for different household members, roommates, or income sources."
+                "text": "Yes! Premium users can share budgets with roommates or partners for easy expense splitting. Perfect for first apartments and couples merging finances."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "How do I budget with variable income from gig work?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Our expense tracker works great for freelancers and gig workers. Track income from multiple sources and see your actual spending patterns without rigid budget templates."
               }
             }
           ]
@@ -86,48 +95,48 @@ export const seoData: Record<string, SEOData> = {
   },
 
   monthlyBudget: {
-    title: "Free Monthly Budget Calculator - Track Income & Expenses Online",
-    description: "Plan your household finances with our free monthly budget calculator. Track income, expenses, and calculate net budget for individuals, families, and roommates. Save money and build better financial habits.",
-    keywords: "budget calculator, monthly budget, expense tracker, household finances, financial planning, money management, income calculator",
+    title: "Free Budget Calculator | Adulting Your Money Made Simple",
+    description: "Finally figure out where your paycheck disappears to. Free budget calculator for first apartments, roommate splitting, side hustles & student loan payoff. No bank account needed — start adulting your finances.",
+    keywords: "adulting budget, first apartment budget calculator, millennial budget planner, gen z money tracker, roommate expense splitter, paycheck budget, budget without spreadsheet, budget for beginners, simple budget no bank",
     canonical: "https://www.housebudgetcalculator.com/budget",
     ogImage: "https://www.housebudgetcalculator.com/assets/calculator-use-preview.png",
     structuredData: {
       "@context": "https://schema.org",
       "@type": "HowTo",
-      "name": "How to Create a Monthly Budget",
-      "description": "Track your household income and expenses with our free budget calculator",
+      "name": "How to Adult Your Monthly Budget",
+      "description": "Track your paycheck and expenses with our free budget calculator — no spreadsheets required",
       "step": [
         {
           "@type": "HowToStep",
           "name": "Enter Your Income",
-          "text": "Input all sources of monthly income including salary, freelance work, and other earnings"
+          "text": "Input your paycheck, side hustle earnings, freelance gigs, and any other income sources"
         },
         {
           "@type": "HowToStep",
           "name": "List Your Expenses",
-          "text": "Add all monthly expenses across categories like housing, utilities, groceries, and entertainment"
+          "text": "Add rent, utilities, subscriptions, groceries, and all those little purchases that add up"
         },
         {
           "@type": "HowToStep",
-          "name": "Calculate Net Budget",
-          "text": "Review your net balance and adjust spending to meet your financial goals"
+          "name": "See Where Your Money Goes",
+          "text": "Get a visual breakdown of your spending and figure out how to save more"
         }
       ],
-      "totalTime": "PT15M"
+      "totalTime": "PT10M"
     }
   },
   
-  takeoutCalendar: {
-    title: "Takeout & Dining Expense Tracker - Monthly Food Budget Calendar",
-    description: "Track your takeout and dining expenses with our interactive calendar. Monitor daily food spending, identify patterns, and optimize your dining budget with visual charts and analytics.",
-    keywords: "takeout tracker, dining expenses, food budget, restaurant spending, daily expense tracker, dining budget calculator",
-    canonical: "https://www.housebudgetcalculator.com/savings",
-    ogImage: "https://www.housebudgetcalculator.com/assets/savings-goal-preview.png",
+  expenses: {
+    title: "Expense Tracker | Track Spending Without Linking Your Bank",
+    description: "Know exactly where your money went without connecting your bank or using spreadsheets. Perfect for freelancers, gig workers, and anyone with variable income who needs flexible expense tracking.",
+    keywords: "expense tracker no bank, freelancer expense tracker, gig worker budget, variable income tracker, simple spending tracker, side hustle income tracker, millennial expense app, expense log app",
+    canonical: "https://www.housebudgetcalculator.com/expenses",
+    ogImage: "https://www.housebudgetcalculator.com/assets/expenses-page-preview-new.png",
     structuredData: {
       "@context": "https://schema.org",
       "@type": "WebApplication",
-      "name": "Takeout Expense Calendar",
-      "description": "Track daily takeout and dining expenses",
+      "name": "Expense Tracker",
+      "description": "Track daily expenses without bank linking — perfect for freelancers and gig workers",
       "applicationCategory": "FinanceApplication",
       "operatingSystem": "All",
       "offers": {
@@ -139,9 +148,9 @@ export const seoData: Record<string, SEOData> = {
   },
   
   vacation: {
-    title: "Vacation Planning & Budget Comparison Tool - Travel Cost Calculator",
-    description: "Plan your perfect vacation with our comparison tool. Compare destinations, travel costs, accommodations, and experiences. Evaluate options and make informed travel decisions within budget.",
-    keywords: "vacation planner, travel budget calculator, vacation comparison, travel cost estimator, trip planning tool, destination comparison",
+    title: "Vacation Budget Planner | Compare Trip Costs Before You Book",
+    description: "Compare vacation options side-by-side so you can actually afford that trip. Budget backpacking adventures, group trips, or your first real vacation as an adult. See the true cost before you book.",
+    keywords: "budget backpacking trip planner, cheap vacation calculator, trip cost comparison, group trip budget, girls trip planner, first vacation budget, travel on a budget, millennial travel planner, vacation cost estimator",
     canonical: "https://www.housebudgetcalculator.com/vacation",
     ogImage: "https://www.housebudgetcalculator.com/assets/vacation-page-preview.png",
     structuredData: {
@@ -153,27 +162,27 @@ export const seoData: Record<string, SEOData> = {
         {
           "@type": "HowToStep",
           "name": "Create Vacation Plan",
-          "text": "Name your trip and set your travel dates"
+          "text": "Name your trip — backpacking Europe, girls trip, or wherever you're dreaming about"
         },
         {
           "@type": "HowToStep",
           "name": "Add Destination Options",
-          "text": "Compare multiple destinations with costs for transportation, lodging, and activities"
+          "text": "Compare multiple destinations with costs for flights, hotels, and activities"
         },
         {
           "@type": "HowToStep",
           "name": "Choose Best Option",
-          "text": "Review total costs and select the destination that fits your budget and preferences"
+          "text": "See total costs side-by-side and pick what fits your budget"
         }
       ],
-      "totalTime": "PT20M"
+      "totalTime": "PT15M"
     }
   },
   
   gifts: {
-    title: "Gift Lists & Budget Tracker - Organize Gifts for Every Occasion",
-    description: "Plan and organize gift lists for holidays, birthdays, and special occasions. Track your gift budget, manage ideas, and never miss an important celebration. Free gift planning tool.",
-    keywords: "gift list, gift planner, holiday gifts, birthday gifts, gift budget tracker, gift ideas organizer, occasion planning",
+    title: "Gift List Organizer | Gift Giving Without Going Broke",
+    description: "Keep track of gift ideas year-round so you're not panic-buying at the last minute. Manage holiday lists, birthday presents, and special occasions without blowing your budget.",
+    keywords: "gift list organizer, holiday budget tracker, birthday gift planner, cheap gift ideas, gift giving on a budget, present tracker app, millennial gift planner, affordable gift list, gift tracker",
     canonical: "https://www.housebudgetcalculator.com/gifts",
     ogImage: "https://www.housebudgetcalculator.com/assets/gift-page-preview.png",
     structuredData: {
@@ -185,60 +194,60 @@ export const seoData: Record<string, SEOData> = {
         {
           "@type": "HowToStep",
           "name": "Create Gift Lists",
-          "text": "Set up separate lists for different occasions like holidays, birthdays, anniversaries"
+          "text": "Set up separate lists for holidays, birthdays, and special occasions"
         },
         {
           "@type": "HowToStep",
           "name": "Add Gift Ideas",
-          "text": "Record gift ideas with estimated prices and recipient details"
+          "text": "Save ideas with prices and links throughout the year"
         },
         {
           "@type": "HowToStep",
           "name": "Track Your Budget",
-          "text": "Monitor total spending and stay within your gift budget for each occasion"
+          "text": "Monitor total spending and never overspend on gifts again"
         }
       ],
-      "totalTime": "PT15M"
+      "totalTime": "PT10M"
     }
   },
 
   aiInsights: {
-    title: "AI Financial Advisor - Get Personalized Budget Insights",
-    description: "Get AI-powered financial advice tailored to your budget. Analyze spending patterns, receive expert insights, and optimize your finances with our intelligent financial advisor.",
-    keywords: "AI financial advisor, budget insights, personal finance AI, money management AI, financial optimization, smart budgeting assistant",
+    title: "AI Budget Advisor | Get Money Tips That Actually Make Sense",
+    description: "Get AI-powered financial advice that understands your lifestyle — not your parents' finances. Personalized insights to help you save more and stress less about money.",
+    keywords: "AI financial advisor, budget insights, personal finance AI, money management AI, millennial money advice, smart budgeting assistant, AI savings tips",
     canonical: "https://www.housebudgetcalculator.com/ai-insights",
     ogImage: "https://www.housebudgetcalculator.com/assets/ai-page-preview.png",
     structuredData: {
       "@context": "https://schema.org",
       "@type": "SoftwareApplication",
-      "name": "AI Financial Advisor",
+      "name": "AI Budget Advisor",
       "applicationCategory": "FinanceApplication",
-      "description": "AI-powered financial insights and personalized budget advice",
+      "description": "AI-powered money advice tailored to your spending habits and lifestyle",
       "offers": {
         "@type": "Offer",
-        "price": "9.99",
+        "price": "4.99",
         "priceCurrency": "USD",
         "priceSpecification": {
           "@type": "UnitPriceSpecification",
-          "price": "9.99",
+          "price": "4.99",
           "priceCurrency": "USD",
           "billingDuration": "P1M"
         }
       },
       "featureList": [
-        "Personalized financial advice",
-        "Budget analysis and optimization",
-        "Spending pattern insights",
-        "Savings recommendations",
+        "Personalized savings recommendations",
+        "Spending pattern analysis",
+        "Voice expense tracking",
+        "Budget optimization tips",
         "AI-powered chatbot assistant"
       ]
     }
   },
 
   marketplace: {
-    title: "Community Marketplace - Find Local Vendors, Vacation Rentals & Handmade Gifts",
-    description: "Discover trusted local vendors, unique vacation rentals, and handmade gifts from our community. Browse listings, compare options, and connect with sellers for your next project or purchase.",
-    keywords: "community marketplace, local vendors, vacation rentals, handmade gifts, contractor directory, artisan marketplace, local services",
+    title: "Community Marketplace | Find Local Vendors & Handmade Gifts",
+    description: "Discover trusted local vendors, unique vacation rentals, and handmade gifts from our community. Support small businesses and find unique options for your next project or purchase.",
+    keywords: "community marketplace, local vendors, handmade gifts, artisan marketplace, local services, small business directory, unique gifts, local contractors",
     canonical: "https://www.housebudgetcalculator.com/marketplace",
     ogImage: "https://www.housebudgetcalculator.com/assets/marketplace-page-preview.png",
     structuredData: {
@@ -267,48 +276,48 @@ export const seoData: Record<string, SEOData> = {
   },
 
   savingsGoals: {
-    title: "Savings Goals Tracker - Track Monthly Savings Progress",
-    description: "Set financial goals and track your monthly savings progress. Visual progress tracking, goal milestones, and monthly contribution monitoring to help you reach your financial targets.",
-    keywords: "savings tracker, savings goals, financial goals, monthly savings, goal tracker, financial planning, savings progress",
+    title: "Savings Goal Tracker | Save for What Actually Matters",
+    description: "Stop feeling guilty about every purchase and start saving for things you actually want — apartment deposits, engagement rings, travel, or a quit-your-job fund. Visual progress tracking keeps you motivated.",
+    keywords: "save for apartment deposit, first emergency fund, save for engagement ring, travel savings tracker, millennial savings goals, gen z savings app, quit job fund, adulting savings, savings goal tracker",
     canonical: "https://www.housebudgetcalculator.com/savings",
     ogImage: "https://www.housebudgetcalculator.com/assets/savings-goal-preview.png",
     structuredData: {
       "@context": "https://schema.org",
       "@type": "HowTo",
-      "name": "How to Track Savings Goals",
-      "description": "Set and track your financial savings goals monthly",
+      "name": "How to Track Your Savings Goals",
+      "description": "Set and track your savings goals for apartment deposits, travel, emergencies, and more",
       "step": [
         {
           "@type": "HowToStep",
           "name": "Set Your Goal",
-          "text": "Create a savings goal with a target amount and deadline"
+          "text": "Create a savings goal — apartment deposit, vacation, emergency fund, or anything you're working toward"
         },
         {
           "@type": "HowToStep",
           "name": "Track Monthly Progress",
-          "text": "Enter your monthly savings contributions throughout the year"
+          "text": "Log your monthly contributions and watch your progress grow"
         },
         {
           "@type": "HowToStep",
-          "name": "Monitor Achievement",
-          "text": "View your progress percentage and adjust contributions to meet your target"
+          "name": "Stay Motivated",
+          "text": "Visual charts show how close you are to achieving your goal"
         }
       ],
-      "totalTime": "PT10M"
+      "totalTime": "PT5M"
     }
   },
 
   blog: {
-    title: "Financial Blog - Money Management Tips & Budget Advice",
-    description: "Expert articles on budgeting, saving money, and financial planning. Learn practical tips, strategies, and insights to improve your financial health and achieve your money goals.",
-    keywords: "financial blog, budgeting tips, money management, savings advice, financial planning, personal finance articles",
+    title: "Money Blog | Budgeting Tips for Real Life",
+    description: "Practical money tips that actually make sense for millennials and Gen Z. Learn to budget your first apartment, manage side hustle income, save for what matters, and adult your finances.",
+    keywords: "millennial money tips, gen z budget advice, first apartment budget, side hustle finances, adulting money blog, budget tips for beginners, saving money advice",
     canonical: "https://www.housebudgetcalculator.com/blog",
     ogImage: "https://www.housebudgetcalculator.com/assets/calculator-use-preview.png",
     structuredData: {
       "@context": "https://schema.org",
       "@type": "Blog",
-      "name": "House Budget Calculator Financial Blog",
-      "description": "Expert financial tips and budgeting advice"
+      "name": "House Budget Calculator Money Blog",
+      "description": "Practical budgeting tips for millennials and Gen Z"
     }
   }
 };
