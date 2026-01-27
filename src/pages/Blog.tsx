@@ -184,7 +184,7 @@ const Blog: React.FC = () => {
           </div>
 
           {/* Controls Section */}
-          <div className="bg-card/50 backdrop-blur-sm border border-border/50 rounded-2xl shadow-lg p-6 hover:shadow-xl transition-shadow">
+          <div className="bg-card border border-border/50 rounded-2xl shadow-lg p-6 hover:shadow-xl transition-shadow">
             <div className="flex flex-col md:flex-row gap-4 items-center justify-between">
               <div className="flex flex-col sm:flex-row gap-4 items-center flex-1">
                 <div className="relative flex-1 max-w-md">
@@ -295,7 +295,7 @@ const Blog: React.FC = () => {
 
           {/* Blog Stats */}
           {filteredPosts.length > 0 && (
-            <div className="bg-card/50 backdrop-blur-sm border border-border/50 rounded-2xl shadow-lg p-6 hover:shadow-xl transition-shadow">
+            <div className="bg-card border border-border/50 rounded-2xl shadow-lg p-6 hover:shadow-xl transition-shadow">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
                 <div>
                   <div className="text-3xl font-bold text-primary mb-2">{filteredPosts.length}</div>

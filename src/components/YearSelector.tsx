@@ -17,7 +17,7 @@ export const YearSelector: React.FC<YearSelectorProps> = ({ className = '' }) =>
         value={selectedYear.toString()} 
         onValueChange={(value) => setSelectedYear(parseInt(value))}
       >
-        <SelectTrigger className="w-32 h-12 text-lg font-bold border-2 hover:border-primary/50 transition-colors bg-background/80 backdrop-blur-sm">
+        <SelectTrigger className="w-32 h-12 text-lg font-bold border-2 hover:border-primary/50 transition-colors bg-card">
           <SelectValue placeholder="Year" />
         </SelectTrigger>
         <SelectContent className="z-50 bg-background border-2 shadow-lg">

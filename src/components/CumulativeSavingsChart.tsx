@@ -208,19 +208,19 @@ export const CumulativeSavingsChart: React.FC<CumulativeSavingsChartProps> = ({
         {!isEditing && (
           <>
             <div className="grid grid-cols-3 gap-3 mt-4">
-              <div className="bg-white/60 backdrop-blur-sm rounded-xl p-3 border border-border/30 text-center">
+              <div className="bg-card rounded-xl p-3 border border-border/30 text-center">
                 <div className="text-xs text-muted-foreground mb-1">Target</div>
                 <div className="text-lg font-bold text-foreground">
                   ${targetAmount.toLocaleString()}
                 </div>
               </div>
-              <div className="bg-white/60 backdrop-blur-sm rounded-xl p-3 border border-border/30 text-center">
+              <div className="bg-card rounded-xl p-3 border border-border/30 text-center">
                 <div className="text-xs text-muted-foreground mb-1">Saved</div>
                 <div className="text-lg font-bold text-teal">
                   ${totalSaved.toLocaleString()}
                 </div>
               </div>
-              <div className="bg-white/60 backdrop-blur-sm rounded-xl p-3 border border-border/30 text-center">
+              <div className="bg-card rounded-xl p-3 border border-border/30 text-center">
                 <div className="text-xs text-muted-foreground mb-1">
                   {isComplete ? "Exceeded" : "Remaining"}
                 </div>

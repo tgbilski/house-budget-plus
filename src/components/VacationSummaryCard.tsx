@@ -22,7 +22,7 @@ interface Props {
 const StatBox: React.FC<{ icon: React.ElementType; title: string; value: string; colorClass: string }> = ({ 
   icon: Icon, title, value, colorClass 
 }) => (
-  <div className={cn("flex items-center gap-3 min-w-0 bg-white/60 backdrop-blur-sm rounded-xl p-3 border border-border/30", colorClass)}>
+  <div className={cn("flex items-center gap-3 min-w-0 bg-card rounded-xl p-3 border border-border/30", colorClass)}>
     <div className={cn("p-2 rounded-lg shrink-0", colorClass.replace('border-', 'bg-').replace('/30', '/20'))}>
       <Icon className={cn("h-4 w-4", colorClass.replace('border-', 'text-').replace('/30', ''))} />
     </div>

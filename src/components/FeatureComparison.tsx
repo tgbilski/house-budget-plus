@@ -32,7 +32,7 @@ export const FeatureComparison: React.FC = () => {
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Free Plan */}
-          <Card className="border-2 border-border bg-white/80 backdrop-blur-sm">
+          <Card className="border-2 border-border bg-card">
             <CardHeader className="text-center pb-8 pt-8">
               <div className="flex justify-center mb-4">
                 <div className="w-16 h-16 bg-gradient-to-br from-secondary to-secondary/60 rounded-2xl flex items-center justify-center">
@@ -74,7 +74,7 @@ export const FeatureComparison: React.FC = () => {
           </Card>
 
           {/* Premium Plan */}
-          <Card className="border-2 border-primary bg-gradient-to-br from-white to-primary/5 backdrop-blur-sm shadow-xl relative overflow-hidden">
+          <Card className="border-2 border-primary bg-card shadow-xl relative overflow-hidden">
             <div className="absolute top-0 right-0 bg-gradient-to-l from-primary to-primary/80 text-white px-4 py-1 text-sm font-semibold rounded-bl-lg">
               Recommended
             </div>
