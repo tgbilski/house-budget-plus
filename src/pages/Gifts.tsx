@@ -7,6 +7,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { useBadges } from '@/hooks/useBadges';
 import { BadgeDisplay } from '@/components/BadgeDisplay';
 import InlineSignUpForm from '@/components/InlineSignUpForm';
+import { PageSEOContent, pageSEOData } from '@/components/PageSEOContent';
 import calculatorMascot from '@/assets/calculator-mascot.png';
 
 const Gifts: React.FC = () => {
@@ -80,6 +81,13 @@ const Gifts: React.FC = () => {
         />
 
         <InternalLinks currentPage="/gifts" category="planning" />
+        
+        <PageSEOContent
+          title={pageSEOData.gifts.title}
+          description={pageSEOData.gifts.description}
+          features={pageSEOData.gifts.features}
+          keywords={pageSEOData.gifts.keywords}
+        />
       </div>
     </>
   );

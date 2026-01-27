@@ -19,6 +19,7 @@ import { YearSelector } from '@/components/YearSelector';
 import { budgetCalculatorFAQs } from '@/utils/faqData';
 import { FAQ } from '@/components/FAQ';
 import { BudgetDonutChart } from '@/components/BudgetDonutChart';
+import { PageSEOContent, pageSEOData } from '@/components/PageSEOContent';
 import { WarningBanner } from '@/components/WarningBanner';
 import { MortgagePreapprovalQuestion } from '@/components/MortgagePreapprovalQuestion';
 import { ToolsGrid } from '@/components/ToolsGrid';
@@ -349,6 +350,13 @@ const MonthlyBudget: React.FC = () => {
         {user && <BadgeDisplay />}
         
         <FAQ faqs={budgetCalculatorFAQs} />
+        
+        <PageSEOContent
+          title={pageSEOData.monthlyBudget.title}
+          description={pageSEOData.monthlyBudget.description}
+          features={pageSEOData.monthlyBudget.features}
+          keywords={pageSEOData.monthlyBudget.keywords}
+        />
       </div>
     </div>
   );
