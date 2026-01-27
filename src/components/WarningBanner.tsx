@@ -14,7 +14,7 @@ export const WarningBanner: React.FC = () => {
       <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
         <div className="text-center sm:text-left">
           <p className="text-foreground font-medium">
-            Want to save your progress?
+            Bruh. Save your progress.
           </p>
           <p className="text-sm text-muted-foreground mt-1">
             Sign up for free to keep your data and access it from any device.
