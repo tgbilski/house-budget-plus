@@ -1,11 +1,15 @@
 import React from 'react';
 import { Card, CardContent } from '@/components/ui/card';
+import { Sparkles } from 'lucide-react';
 
 interface PageSEOContentProps {
   title: string;
   description: string;
   features?: string[];
   keywords?: string[];
+  premiumTitle?: string;
+  premiumDescription?: string;
+  premiumFeatures?: string[];
 }
 
 export const PageSEOContent: React.FC<PageSEOContentProps> = ({
@@ -13,9 +17,13 @@ export const PageSEOContent: React.FC<PageSEOContentProps> = ({
   description,
   features = [],
   keywords = [],
+  premiumTitle,
+  premiumDescription,
+  premiumFeatures = [],
 }) => {
   return (
-    <section className="mt-12 pt-8 border-t border-border">
+    <section className="mt-12 pt-8 border-t border-border space-y-6">
+      {/* Free Features Section */}
       <Card className="bg-muted/30 border-border/50">
         <CardContent className="pt-6">
           <h2 className="text-xl font-semibold text-foreground mb-3">
@@ -53,6 +61,38 @@ export const PageSEOContent: React.FC<PageSEOContentProps> = ({
           )}
         </CardContent>
       </Card>
+
+      {/* Premium Features Section */}
+      {premiumTitle && premiumFeatures.length > 0 && (
+        <Card className="bg-gradient-to-br from-primary/5 to-primary-glow/5 border-primary/20">
+          <CardContent className="pt-6">
+            <div className="flex items-center gap-2 mb-3">
+              <Sparkles className="h-5 w-5 text-primary" />
+              <h2 className="text-xl font-semibold text-foreground">
+                {premiumTitle}
+              </h2>
+            </div>
+            {premiumDescription && (
+              <p className="text-muted-foreground leading-relaxed mb-4">
+                {premiumDescription}
+              </p>
+            )}
+            
+            <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+              {premiumFeatures.map((feature, index) => (
+                <li key={index} className="flex items-start gap-2 text-sm text-muted-foreground">
+                  <span className="text-primary mt-0.5">★</span>
+                  {feature}
+                </li>
+              ))}
+            </ul>
+            
+            <p className="text-xs text-muted-foreground mt-4 pt-3 border-t border-border/50">
+              Premium features available for just $4.99/month — the cost of a cup of coffee.
+            </p>
+          </CardContent>
+        </Card>
+      )}
     </section>
   );
 };
@@ -67,10 +107,17 @@ export const pageSEOData = {
       "Categorize monthly expenses",
       "Visual budget breakdown charts",
       "Calculate housing affordability",
-      "Set and monitor savings goals",
-      "Export budget reports"
+      "Set and monitor savings goals"
     ],
-    keywords: ["household budget calculator", "free budget planner", "monthly expense tracker", "family budget tool", "income vs expenses"]
+    keywords: ["household budget calculator", "free budget planner", "monthly expense tracker", "family budget tool", "income vs expenses"],
+    premiumTitle: "Premium Budget Features",
+    premiumDescription: "Unlock powerful AI-driven insights and collaboration tools to supercharge your budgeting.",
+    premiumFeatures: [
+      "AI-powered financial insights",
+      "Share budgets with household members",
+      "Major purchase affordability toolkit",
+      "Personalized savings recommendations"
+    ]
   },
   savingsGoals: {
     title: "Savings Goal Tracker",
@@ -80,23 +127,37 @@ export const pageSEOData = {
       "Monthly contribution tracking",
       "Visual progress charts",
       "Set target dates",
-      "Cumulative savings view",
-      "Year-over-year comparisons"
+      "Cumulative savings view"
     ],
-    keywords: ["savings tracker", "goal setting", "emergency fund calculator", "down payment savings", "financial goals"]
+    keywords: ["savings tracker", "goal setting", "emergency fund calculator", "down payment savings", "financial goals"],
+    premiumTitle: "Premium Savings Features",
+    premiumDescription: "Get AI-powered guidance to reach your savings goals faster.",
+    premiumFeatures: [
+      "AI savings recommendations",
+      "Household goal sharing",
+      "Smart contribution suggestions",
+      "Progress insights and tips"
+    ]
   },
   expenses: {
-    title: "Voice-Powered Expense Tracker",
-    description: "Log expenses effortlessly with our AI-powered voice expense tracker. Simply speak your purchase details and our intelligent system automatically categorizes and records your spending. Perfect for busy families who want to track daily expenses without the hassle of manual entry.",
+    title: "Daily Expense Tracker",
+    description: "Stay on top of your daily spending with our comprehensive expense tracker. Categorize purchases, view spending trends, and identify where your money goes each month. Perfect for busy families who want visibility into their daily expenses.",
     features: [
+      "Track daily purchases",
+      "Automatic categorization",
+      "Monthly spending summaries",
+      "Category breakdowns",
+      "Year-over-year trends"
+    ],
+    keywords: ["daily expense tracker", "spending tracker", "budget tracking app", "expense categorization", "money management"],
+    premiumTitle: "Premium Expense Tracking",
+    premiumDescription: "Log expenses hands-free with AI-powered voice tracking.",
+    premiumFeatures: [
       "Voice-to-expense conversion",
       "AI-powered categorization",
-      "Daily spending summaries",
-      "Monthly expense charts",
-      "Category breakdowns",
-      "Budget alerts"
-    ],
-    keywords: ["voice expense tracker", "AI expense logging", "daily expense tracker", "spending categorization", "budget tracking app"]
+      "Smart spending insights",
+      "Budget alerts and warnings"
+    ]
   },
   vacation: {
     title: "Vacation Budget Planner",
@@ -106,10 +167,17 @@ export const pageSEOData = {
       "Track travel costs",
       "Lodging budget calculator",
       "Side-by-side comparisons",
-      "Total trip cost estimates",
-      "Multiple vacation projects"
+      "Total trip cost estimates"
     ],
-    keywords: ["vacation budget calculator", "travel planner", "trip cost estimator", "family vacation budget", "travel expenses"]
+    keywords: ["vacation budget calculator", "travel planner", "trip cost estimator", "family vacation budget", "travel expenses"],
+    premiumTitle: "Premium Vacation Planning",
+    premiumDescription: "Get AI recommendations for your vacation planning.",
+    premiumFeatures: [
+      "AI vacation insights",
+      "Share plans with household",
+      "Budget optimization tips",
+      "Cost-saving recommendations"
+    ]
   },
   gifts: {
     title: "Gift List Organizer",
@@ -119,9 +187,16 @@ export const pageSEOData = {
       "Track recipient preferences",
       "Budget per gift list",
       "Mark items as purchased",
-      "Save product links",
-      "Household gift sharing"
+      "Save product links"
     ],
-    keywords: ["gift list tracker", "holiday gift planner", "birthday gift organizer", "gift budget tracker", "shopping list manager"]
+    keywords: ["gift list tracker", "holiday gift planner", "birthday gift organizer", "gift budget tracker", "shopping list manager"],
+    premiumTitle: "Premium Gift Planning",
+    premiumDescription: "Collaborate with your household on gift lists and get AI suggestions.",
+    premiumFeatures: [
+      "Household gift sharing",
+      "AI gift suggestions",
+      "Budget recommendations",
+      "Occasion reminders"
+    ]
   }
 };

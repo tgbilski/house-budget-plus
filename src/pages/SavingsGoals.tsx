@@ -147,6 +147,9 @@ const SavingsGoals: React.FC = () => {
                   description={pageSEOData.savingsGoals.description}
                   features={pageSEOData.savingsGoals.features}
                   keywords={pageSEOData.savingsGoals.keywords}
+                  premiumTitle={pageSEOData.savingsGoals.premiumTitle}
+                  premiumDescription={pageSEOData.savingsGoals.premiumDescription}
+                  premiumFeatures={pageSEOData.savingsGoals.premiumFeatures}
                 />
               </div>
             </>

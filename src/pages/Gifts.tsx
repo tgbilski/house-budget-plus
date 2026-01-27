@@ -87,6 +87,9 @@ const Gifts: React.FC = () => {
           description={pageSEOData.gifts.description}
           features={pageSEOData.gifts.features}
           keywords={pageSEOData.gifts.keywords}
+          premiumTitle={pageSEOData.gifts.premiumTitle}
+          premiumDescription={pageSEOData.gifts.premiumDescription}
+          premiumFeatures={pageSEOData.gifts.premiumFeatures}
         />
       </div>
     </>
