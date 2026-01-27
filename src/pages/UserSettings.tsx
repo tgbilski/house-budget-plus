@@ -54,8 +54,8 @@ export default function UserSettings() {
       await refetchProfile();
       setIsEditingName(false);
       toast({
-        title: "Success",
-        description: "Your name has been updated successfully.",
+        title: "Saved! ✓",
+        description: "Looking good with that new name.",
       });
     } catch (error) {
       console.error('Error updating profile:', error);

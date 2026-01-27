@@ -25,11 +25,11 @@ export default function SubscriptionSuccess() {
           <div className="mx-auto mb-4 w-16 h-16 bg-green-100 rounded-full flex items-center justify-center">
             <CheckCircle className="h-8 w-8 text-green-600" />
           </div>
-          <CardTitle className="text-2xl">Welcome to Premium!</CardTitle>
+          <CardTitle className="text-2xl">You just leveled up! 🚀</CardTitle>
         </CardHeader>
         <CardContent className="text-center space-y-4">
           <p className="text-muted-foreground">
-            Your subscription has been activated successfully. You now have access to:
+            Premium unlocked. You now have access to the good stuff:
           </p>
           
           <div className="space-y-3 text-left">
@@ -52,7 +52,7 @@ export default function SubscriptionSuccess() {
               onClick={() => navigate('/takeout')} 
               className="w-full"
             >
-              Start Using Premium Features
+              Let's Go
             </Button>
             <Button 
               variant="outline" 

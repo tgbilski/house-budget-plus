@@ -123,13 +123,13 @@ const InlineSignUpForm: React.FC<InlineSignUpFormProps> = ({ className = '' }) =
         <div className="flex items-center gap-2">
           <UserPlus className="h-5 w-5 text-primary" />
           <CardTitle className="text-lg text-foreground">
-            {isSignUp ? 'Save Your Progress' : 'Welcome Back'}
+            {isSignUp ? "Don't Lose Your Stuff" : "You're back!"}
           </CardTitle>
         </div>
         <CardDescription className="text-muted-foreground text-sm">
           {isSignUp 
-            ? 'Join thousands managing their finances smarter'
-            : 'Sign in to access your saved budgets'
+            ? 'Join the adulting squad 💪'
+            : 'Your budgets are waiting for you'
           }
         </CardDescription>
         {isSignUp && (
@@ -177,7 +177,7 @@ const InlineSignUpForm: React.FC<InlineSignUpFormProps> = ({ className = '' }) =
             />
           </div>
           <Button type="submit" className="w-full" disabled={loading}>
-            {loading ? 'Please wait...' : (isSignUp ? 'Create Free Account' : 'Sign In')}
+            {loading ? 'One sec...' : (isSignUp ? "Let's Go 🚀" : 'Sign In')}
           </Button>
           
           <div className="relative">

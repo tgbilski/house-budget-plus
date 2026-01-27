@@ -91,10 +91,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       trackSignUpConversion();
       
       toast({
-        title: "Success!",
+        title: "Nailed it! 🎉",
         description: needsEmailConfirmation 
-          ? "Please check your email to verify your account before signing in."
-          : "Account created successfully. You are now signed in.",
+          ? "Check your email to verify — then you're in!"
+          : "You're all set. Welcome to the squad.",
       });
     }
 
