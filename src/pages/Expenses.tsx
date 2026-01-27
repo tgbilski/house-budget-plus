@@ -13,6 +13,7 @@ import { useSubscription } from '@/hooks/useSubscription';
 import { useExpenses } from '@/hooks/useExpenses';
 import { useCurrency } from '@/hooks/useCurrency';
 import { useHouseholdContext } from '@/providers/HouseholdProvider';
+import { useBadges } from '@/hooks/useBadges';
 import { Mic, MicOff, Calendar as CalendarIcon, Trash2, TrendingUp, Edit2 } from 'lucide-react';
 import { format } from 'date-fns';
 import { supabase } from '@/integrations/supabase/client';
@@ -24,6 +25,7 @@ import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianG
 import { AlertCircle, TrendingDown } from 'lucide-react';
 import { isNativeApp } from '@/utils/capacitor';
 import calculatorMascot from '@/assets/calculator-mascot.png';
+import { BadgeDisplay } from '@/components/BadgeDisplay';
 
 export default function Expenses() {
   const { user } = useAuth();
@@ -32,6 +34,7 @@ export default function Expenses() {
   const { currency } = useCurrency();
   const { currentHousehold } = useHouseholdContext();
   const { toast } = useToast();
+  const { earnBadge, hasBadge } = useBadges();
   const [selectedDate, setSelectedDate] = useState(new Date());
   const { expenses, loading, addExpense, deleteExpense, updateExpense } = useExpenses(selectedDate);
   
@@ -69,6 +72,29 @@ export default function Expenses() {
     
     fetchYearlyExpenses();
   }, [user, currentHousehold, selectedDate.getFullYear(), expenses]);
+
+  // Award expense tracking badges based on total expense count
+  useEffect(() => {
+    if (!user || yearlyExpenses.length === 0) return;
+    
+    const count = yearlyExpenses.length;
+    
+    if (count >= 1 && !hasBadge('expense_first')) {
+      earnBadge('expense_first');
+    }
+    if (count >= 3 && !hasBadge('expense_3')) {
+      earnBadge('expense_3');
+    }
+    if (count >= 10 && !hasBadge('expense_10')) {
+      earnBadge('expense_10');
+    }
+    if (count >= 20 && !hasBadge('expense_20')) {
+      earnBadge('expense_20');
+    }
+    if (count >= 50 && !hasBadge('expense_50')) {
+      earnBadge('expense_50');
+    }
+  }, [user, yearlyExpenses.length, earnBadge, hasBadge]);
 
   // Calculate chart data - monthly aggregation using yearly data
   const chartData = React.useMemo(() => {
@@ -896,6 +922,9 @@ export default function Expenses() {
             </CardContent>
           </Card>
         )}
+
+        {/* Badge Display */}
+        <BadgeDisplay />
       </div>
     </div>
   );

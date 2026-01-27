@@ -12,7 +12,12 @@ export type BadgeType =
   | 'gifts'
   | 'monthly_budget'
   | 'savings_tracker'
-  | 'vacation';
+  | 'vacation'
+  | 'expense_first'
+  | 'expense_3'
+  | 'expense_10'
+  | 'expense_20'
+  | 'expense_50';
 
 export interface Badge {
   id: string;
@@ -77,6 +82,41 @@ export const BADGE_INFO: Record<BadgeType, BadgeInfo> = {
     description: 'Planned vacation expenses and budget',
     icon: '✈️',
     color: 'from-teal-500 to-blue-500'
+  },
+  expense_first: {
+    type: 'expense_first',
+    name: 'First Tracker',
+    description: 'Logged your first expense',
+    icon: '📝',
+    color: 'from-emerald-500 to-teal-500'
+  },
+  expense_3: {
+    type: 'expense_3',
+    name: 'Getting Started',
+    description: 'Tracked 3 expenses',
+    icon: '📊',
+    color: 'from-teal-500 to-cyan-500'
+  },
+  expense_10: {
+    type: 'expense_10',
+    name: 'Expense Tracker',
+    description: 'Tracked 10 expenses',
+    icon: '📈',
+    color: 'from-cyan-500 to-blue-500'
+  },
+  expense_20: {
+    type: 'expense_20',
+    name: 'Dedicated Tracker',
+    description: 'Tracked 20 expenses',
+    icon: '🏆',
+    color: 'from-blue-500 to-indigo-500'
+  },
+  expense_50: {
+    type: 'expense_50',
+    name: 'Expense Master',
+    description: 'Tracked 50 expenses - true dedication!',
+    icon: '👑',
+    color: 'from-indigo-500 to-purple-500'
   }
 };
 
