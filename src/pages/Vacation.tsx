@@ -146,6 +146,9 @@ const Vacation: React.FC = () => {
             description={pageSEOData.vacation.description}
             features={pageSEOData.vacation.features}
             keywords={pageSEOData.vacation.keywords}
+            premiumTitle={pageSEOData.vacation.premiumTitle}
+            premiumDescription={pageSEOData.vacation.premiumDescription}
+            premiumFeatures={pageSEOData.vacation.premiumFeatures}
           />
         </div>
       </div>

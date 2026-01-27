@@ -356,6 +356,9 @@ const MonthlyBudget: React.FC = () => {
           description={pageSEOData.monthlyBudget.description}
           features={pageSEOData.monthlyBudget.features}
           keywords={pageSEOData.monthlyBudget.keywords}
+          premiumTitle={pageSEOData.monthlyBudget.premiumTitle}
+          premiumDescription={pageSEOData.monthlyBudget.premiumDescription}
+          premiumFeatures={pageSEOData.monthlyBudget.premiumFeatures}
         />
       </div>
     </div>
