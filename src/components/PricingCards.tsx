@@ -52,7 +52,7 @@ export function PricingCards() {
             ))}
           </ul>
           <div className="pt-4 text-center text-sm text-muted-foreground group-hover:text-primary transition-colors font-medium">
-            Click to get started →
+            Let's do this →
           </div>
         </CardContent>
       </Card>
@@ -93,7 +93,7 @@ export function PricingCards() {
             ))}
           </ul>
           <div className="pt-4 text-center text-sm text-muted-foreground group-hover:text-primary transition-colors font-medium">
-            Click to get started →
+            Let's do this →
           </div>
         </CardContent>
       </Card>

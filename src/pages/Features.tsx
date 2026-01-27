@@ -105,10 +105,10 @@ export default function Features() {
             {user && (
               <div className="space-y-2 pt-6">
                 <h2 className="text-2xl md:text-3xl font-semibold text-white">
-                  Welcome back!
+                  You're back! 👋
                 </h2>
                 <p className="text-lg text-white/70">
-                  Choose a tool below to get started
+                  Pick your tool and let's get to it
                 </p>
               </div>
             )}
@@ -156,7 +156,7 @@ export default function Features() {
                 size="lg"
                 className="h-14 px-12 text-xl font-bold bg-sage text-sage-foreground hover:bg-sage/90 shadow-2xl transition-all"
               >
-                Sign Up & Save Data
+                Join the Squad
               </Button>
             </Link>
           </section>

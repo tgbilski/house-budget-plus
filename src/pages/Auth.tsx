@@ -166,10 +166,10 @@ const Auth: React.FC = () => {
         {verificationSent ? (
           <CardHeader className="text-center">
             <CardTitle className="text-3xl text-foreground mb-4">
-              This is exciting!
+              LFG! 🔥
             </CardTitle>
             <CardDescription className="text-foreground/80 text-lg">
-              Please verify your email to get started. Check your inbox for the verification link.
+              Just verify your email and you're in. Check your inbox for the link.
             </CardDescription>
           </CardHeader>
         ) : (

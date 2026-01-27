@@ -54,15 +54,15 @@ export default function Engagement() {
           <Card className="max-w-2xl mx-auto">
             <CardContent className="text-center py-12">
               <Trophy className="h-16 w-16 text-muted-foreground mx-auto mb-6" />
-              <h2 className="text-2xl font-semibold mb-4">Start Your Financial Journey</h2>
+              <h2 className="text-2xl font-semibold mb-4">Start Adulting Your Money</h2>
               <p className="text-muted-foreground mb-6">
-                Sign up to access daily check-ins, challenges, and personalized insights that will help you build better financial habits.
+                Sign up to unlock daily check-ins, challenges, and AI insights that actually make sense.
               </p>
               <a 
                 href="/auth" 
                 className="inline-flex items-center px-6 py-3 bg-primary text-primary-foreground font-medium rounded-lg hover:bg-primary/90 transition-colors"
               >
-                Get Started Today
+                Let's Go
               </a>
             </CardContent>
           </Card>

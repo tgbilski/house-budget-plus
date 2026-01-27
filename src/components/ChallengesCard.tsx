@@ -137,8 +137,8 @@ export const ChallengesCard: React.FC = () => {
       if (error) throw error;
 
       toast({
-        title: "Challenge created!",
-        description: "You've started a new financial challenge. Good luck!",
+        title: "Challenge accepted! 🎯",
+        description: "You got this. Let's see what you're made of.",
       });
 
       setFormData({
@@ -174,8 +174,8 @@ export const ChallengesCard: React.FC = () => {
       if (error) throw error;
 
       toast({
-        title: status === 'completed' ? "Challenge completed!" : "Challenge updated",
-        description: status === 'completed' ? "Congratulations on reaching your goal!" : `Challenge marked as ${status}`,
+        title: status === 'completed' ? "You crushed it! 💪" : "Challenge updated",
+        description: status === 'completed' ? "That's how it's done." : `Challenge marked as ${status}`,
       });
 
       fetchChallenges();

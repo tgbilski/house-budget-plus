@@ -102,7 +102,7 @@ export const HomeBuyingToolkit: React.FC<HomeBuyingToolkitProps> = ({
             ) : (
               <Link to="/auth">
                 <Button className="gap-2 shadow-cartoon border-[3px] border-stroke hover:translate-y-[-2px] hover:shadow-cartoon-hover transition-all">
-                  Sign Up to Unlock
+                  Unlock the Good Stuff
                   <ChevronRight className="h-4 w-4" />
                 </Button>
               </Link>
