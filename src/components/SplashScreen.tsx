@@ -10,13 +10,17 @@ export const SplashScreen = ({ isLoading }: SplashScreenProps) => {
   return (
     <div 
       className="fixed inset-0 z-[9999] flex flex-col items-center justify-center transition-opacity duration-500"
-      style={{ backgroundColor: 'hsl(213, 50%, 22%)' }}
+      style={{ backgroundColor: 'hsl(175, 65%, 35%)' }}
     >
-      {/* Subtle pattern overlay */}
+      {/* Jazz swoosh pattern overlay */}
       <div 
-        className="absolute inset-0 opacity-30"
+        className="absolute inset-0 opacity-40"
         style={{
-          backgroundImage: 'repeating-linear-gradient(45deg, transparent, transparent 40px, rgba(255,255,255,0.02) 40px, rgba(255,255,255,0.02) 42px)'
+          backgroundImage: `
+            radial-gradient(ellipse 80% 50% at 20% 80%, hsl(280, 55%, 50%) 0%, transparent 50%),
+            radial-gradient(ellipse 60% 40% at 80% 20%, hsl(280, 55%, 55%) 0%, transparent 40%),
+            repeating-linear-gradient(45deg, transparent, transparent 40px, rgba(255,255,255,0.03) 40px, rgba(255,255,255,0.03) 42px)
+          `
         }}
       />
       
@@ -36,20 +40,20 @@ export const SplashScreen = ({ isLoading }: SplashScreenProps) => {
           House Budget Calculator
         </h1>
         
-        {/* Loading indicator */}
+        {/* Loading indicator - purple dots */}
         <div className="flex items-center gap-2 mt-4">
           <div className="flex gap-1">
             <span 
-              className="w-2 h-2 rounded-full bg-sage animate-bounce"
-              style={{ animationDelay: '0ms' }}
+              className="w-2 h-2 rounded-full animate-bounce"
+              style={{ backgroundColor: 'hsl(280, 55%, 60%)', animationDelay: '0ms' }}
             />
             <span 
-              className="w-2 h-2 rounded-full bg-sage animate-bounce"
-              style={{ animationDelay: '150ms' }}
+              className="w-2 h-2 rounded-full animate-bounce"
+              style={{ backgroundColor: 'hsl(280, 55%, 60%)', animationDelay: '150ms' }}
             />
             <span 
-              className="w-2 h-2 rounded-full bg-sage animate-bounce"
-              style={{ animationDelay: '300ms' }}
+              className="w-2 h-2 rounded-full animate-bounce"
+              style={{ backgroundColor: 'hsl(280, 55%, 60%)', animationDelay: '300ms' }}
             />
           </div>
         </div>
