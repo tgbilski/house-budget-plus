@@ -181,7 +181,6 @@ export default function AIInsights() {
 
   return (
     <div className={cn(
-      "bg-background",
       isMobileApp ? "" : "min-h-screen"
     )}>
       <SEO
