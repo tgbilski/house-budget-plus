@@ -24,15 +24,14 @@ serve(async (req) => {
     console.log('Function started - v3 TEST');
 
     let plan = 'monthly';
-    let priceId = 'price_1SDYVPChqC8M6G2byOdkawq1'; // Monthly price - $4.99/month
+    let priceId = 'price_1Sug07ChqC8M6G2bPpWUShxJ'; // Monthly price - $2.99/month
     
-    // SIMPLE TEST: Always use annual for debugging
     const body = await req.json() as { plan?: 'monthly' | 'annual' };
     console.log('📦 Request body received:', JSON.stringify(body));
     
     if (body && body.plan === 'annual') {
       plan = 'annual';
-      priceId = 'price_1SDYVbChqC8M6G2b1gKWAp9X'; // Annual price ID - $39.99/year
+      priceId = 'price_1Sug0kChqC8M6G2bClIy1VY6'; // Annual price ID - $24.99/year
       console.log('🚀 ANNUAL PLAN DETECTED - Using annual price');
     } else {
       console.log('📅 Monthly plan or no plan - Using monthly price');
