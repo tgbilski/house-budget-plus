@@ -12,7 +12,7 @@ import { useEffect } from "react";
 import { trackPageView } from "@/utils/analytics";
 import { HelmetProvider } from 'react-helmet-async';
 import { AuthProvider, useAuth } from "@/hooks/useAuth";
-import { SubscriptionProvider } from "@/hooks/useSubscription";
+import { SubscriptionProvider, useSubscription } from "@/hooks/useSubscription";
 import { YearProvider } from "@/hooks/useYear";
 import { HouseholdProvider } from "@/providers/HouseholdProvider";
 import { SidebarProvider } from "@/components/ui/sidebar";
@@ -142,6 +142,7 @@ const AppRoutes = () => {
 // Layout component that uses hooks
 const AppLayout = () => {
   const { loading: authLoading } = useAuth();
+  const { checkoutLoading } = useSubscription();
   const { isPageReady, resetPageReady } = usePageReady();
   const isMobile = useIsMobile();
   const isMobileApp = isNativeApp();
@@ -173,7 +174,8 @@ const AppLayout = () => {
     }
   }, [authComplete, isPageReady, maxTimeoutReached]);
 
-  const showSplash = !authComplete || (!isPageReady && !maxTimeoutReached);
+  // Show splash during initial load, page transitions, or checkout
+  const showSplash = !authComplete || (!isPageReady && !maxTimeoutReached) || checkoutLoading;
 
   if (showSplash) {
     return <SplashScreen isLoading={true} />;
