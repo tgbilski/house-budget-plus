@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
+// Removed unused Header and Footer imports
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -10,7 +9,9 @@ import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useAdminStatus } from "@/hooks/useAdminStatus";
 import { useAuth } from "@/hooks/useAuth";
-import { Loader2, CheckCircle, XCircle, AlertTriangle, Shield, PenSquare, TrendingUp, Users, Home, Store, CreditCard } from "lucide-react";
+import { Loader2, CheckCircle, XCircle, AlertTriangle, PenSquare, TrendingUp, Users, Home, CreditCard, MessageSquare } from "lucide-react";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { format } from "date-fns";
 import { BlogPostForm } from "@/components/BlogPostForm";
 import { BlogPost } from "@/hooks/useBlogPosts";
 import { SEO } from "@/components/SEO";
@@ -34,16 +35,26 @@ interface Listing {
   created_at: string;
 }
 
+interface Review {
+  id: string;
+  message: string;
+  category: string;
+  page_source: string;
+  user_id: string | null;
+  created_at: string;
+}
+
 export default function Admin() {
   const [flaggedListings, setFlaggedListings] = useState<Listing[]>([]);
   const [pendingListings, setPendingListings] = useState<Listing[]>([]);
+  const [reviews, setReviews] = useState<Review[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [reviewsLoading, setReviewsLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [publishingGiftPost, setPublishingGiftPost] = useState(false);
   const [metrics, setMetrics] = useState({
     users: 0,
     subscribers: 0,
-    listings: 0,
     households: 0,
   });
   const [userGrowth, setUserGrowth] = useState<{ date: string; users: number }[]>([]);
@@ -63,16 +74,39 @@ export default function Admin() {
     if (isAdmin) {
       loadListings();
       loadMetrics();
+      loadReviews();
     }
   }, [isAdmin]);
+
+  const loadReviews = async () => {
+    setReviewsLoading(true);
+    try {
+      const { data, error } = await supabase
+        .from('reviews')
+        .select('*')
+        .order('created_at', { ascending: false })
+        .limit(100);
+
+      if (error) throw error;
+      setReviews(data || []);
+    } catch (error) {
+      console.error("Error loading reviews:", error);
+      toast({
+        title: "Error",
+        description: "Failed to load feedback",
+        variant: "destructive",
+      });
+    } finally {
+      setReviewsLoading(false);
+    }
+  };
 
   const loadMetrics = async () => {
     setMetricsLoading(true);
     try {
-      const [usersRes, subscribersRes, listingsRes, householdsRes, profilesRes] = await Promise.all([
+      const [usersRes, subscribersRes, householdsRes, profilesRes] = await Promise.all([
         supabase.from('profiles').select('id', { count: 'exact', head: true }),
         supabase.from('subscribers').select('id', { count: 'exact', head: true }).eq('subscribed', true),
-        supabase.from('marketplace_listings').select('id', { count: 'exact', head: true }),
         supabase.from('households').select('id', { count: 'exact', head: true }),
         supabase.from('profiles').select('created_at').order('created_at', { ascending: true })
       ]);
@@ -80,7 +114,6 @@ export default function Admin() {
       setMetrics({
         users: usersRes.count || 0,
         subscribers: subscribersRes.count || 0,
-        listings: listingsRes.count || 0,
         households: householdsRes.count || 0,
       });
 
@@ -393,8 +426,9 @@ export default function Admin() {
       <main className="flex-1 container mx-auto px-4 py-8">
 
         <Tabs defaultValue="metrics" className="w-full">
-          <TabsList className="mb-6 w-full grid grid-cols-3 lg:w-auto lg:inline-flex">
+          <TabsList className="mb-6 w-full grid grid-cols-4 lg:w-auto lg:inline-flex">
             <TabsTrigger value="metrics" className="text-xs sm:text-sm">Metrics</TabsTrigger>
+            <TabsTrigger value="feedback" className="text-xs sm:text-sm">Feedback</TabsTrigger>
             <TabsTrigger value="listings" className="text-xs sm:text-sm">Listings</TabsTrigger>
             <TabsTrigger value="blog" className="text-xs sm:text-sm">Blog</TabsTrigger>
           </TabsList>
@@ -512,6 +546,69 @@ export default function Admin() {
             </Tabs>
           </TabsContent>
 
+          <TabsContent value="feedback" className="space-y-6">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <MessageSquare className="h-5 w-5" />
+                  User Feedback ({reviews.length})
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                {reviewsLoading ? (
+                  <div className="flex justify-center items-center py-12">
+                    <Loader2 className="h-8 w-8 animate-spin text-primary" />
+                  </div>
+                ) : reviews.length === 0 ? (
+                  <p className="text-muted-foreground text-center py-8">No feedback submitted yet</p>
+                ) : (
+                  <div className="overflow-x-auto">
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead>Date</TableHead>
+                          <TableHead>Category</TableHead>
+                          <TableHead>Page</TableHead>
+                          <TableHead className="min-w-[300px]">Message</TableHead>
+                          <TableHead>User</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {reviews.map((review) => (
+                          <TableRow key={review.id}>
+                            <TableCell className="whitespace-nowrap">
+                              {format(new Date(review.created_at), 'MMM d, yyyy')}
+                            </TableCell>
+                            <TableCell>
+                              <Badge variant="outline" className="capitalize">
+                                {review.category === 'suggestion' && '💡 '}
+                                {review.category === 'bug' && '🐛 '}
+                                {review.category === 'praise' && '🎉 '}
+                                {review.category === 'question' && '❓ '}
+                                {review.category}
+                              </Badge>
+                            </TableCell>
+                            <TableCell className="capitalize">{review.page_source}</TableCell>
+                            <TableCell className="max-w-md">
+                              <p className="line-clamp-3">{review.message}</p>
+                            </TableCell>
+                            <TableCell>
+                              {review.user_id ? (
+                                <Badge variant="secondary">Logged in</Badge>
+                              ) : (
+                                <Badge variant="outline">Guest</Badge>
+                              )}
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </TabsContent>
+
           <TabsContent value="metrics" className="space-y-6">
             {metricsLoading ? (
               <div className="flex justify-center items-center py-12">
@@ -519,7 +616,7 @@ export default function Admin() {
               </div>
             ) : (
               <>
-                <div className="grid gap-4 sm:gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
+                <div className="grid gap-4 sm:gap-6 grid-cols-1 sm:grid-cols-3">
                   <Card>
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                       <CardTitle className="text-sm font-medium">Total Users</CardTitle>
@@ -537,16 +634,6 @@ export default function Admin() {
                     </CardHeader>
                     <CardContent>
                       <div className="text-2xl font-bold">{metrics.subscribers}</div>
-                    </CardContent>
-                  </Card>
-
-                  <Card>
-                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                      <CardTitle className="text-sm font-medium">Total Listings</CardTitle>
-                      <Store className="h-4 w-4 text-muted-foreground" />
-                    </CardHeader>
-                    <CardContent>
-                      <div className="text-2xl font-bold">{metrics.listings}</div>
                     </CardContent>
                   </Card>
 
