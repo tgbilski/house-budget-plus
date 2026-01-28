@@ -33,11 +33,11 @@ export function PricingCards() {
             Monthly Plan
           </CardTitle>
           <div className="text-5xl font-black mt-4 text-foreground">
-            $4.99
+            $2.99
             <span className="text-base font-normal text-muted-foreground">/month</span>
           </div>
-          <div className="text-sm text-transparent font-medium select-none">
-            .
+          <div className="text-sm text-green-600 font-medium">
+            Less than a coffee ☕
           </div>
         </CardHeader>
         <CardContent className="space-y-4">
@@ -74,11 +74,11 @@ export function PricingCards() {
             Annual Plan
           </CardTitle>
           <div className="text-5xl font-black mt-4 text-foreground">
-            $39.99
+            $24.99
             <span className="text-base font-normal text-muted-foreground">/year</span>
           </div>
           <div className="text-sm text-green-600 font-bold bg-green-100 inline-block px-3 py-1 rounded-full mt-2">
-            Save $19.89 (33% off)
+            Save $10.89 (30% off)
           </div>
         </CardHeader>
         <CardContent className="space-y-4">
