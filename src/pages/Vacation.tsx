@@ -6,6 +6,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { useBadges } from '@/hooks/useBadges';
 import { useYear } from '@/hooks/useYear';
 import { useCurrency } from '@/hooks/useCurrency';
+import { usePageReady } from '@/hooks/usePageReady';
 import { YearSelector } from '@/components/YearSelector';
 import { SEO } from '@/components/SEO';
 import { WarningBanner } from '@/components/WarningBanner';
@@ -25,6 +26,7 @@ const Vacation: React.FC = () => {
   const { selectedYear } = useYear();
   const { currency } = useCurrency();
   const { earnBadge } = useBadges();
+  const { setPageReady } = usePageReady();
 
   const {
     vacations,
@@ -44,6 +46,15 @@ const Vacation: React.FC = () => {
       earnBadge('vacation');
     }
   }, [user, options.length, earnBadge]);
+
+  // Signal page is ready once data loads
+  useEffect(() => {
+    if (!isLoading) {
+      requestAnimationFrame(() => {
+        setPageReady();
+      });
+    }
+  }, [isLoading, setPageReady]);
 
   if (isLoading) {
     return (

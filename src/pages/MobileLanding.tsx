@@ -7,12 +7,16 @@ import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { isNativeApp } from '@/utils/capacitor';
+import { useMarkPageReady } from '@/hooks/usePageReady';
 
 export const MobileLanding: React.FC = () => {
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  
+  // Mark page as ready on mount
+  useMarkPageReady();
 
   useEffect(() => {
     // Check if user is already logged in

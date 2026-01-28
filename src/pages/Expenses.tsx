@@ -14,6 +14,7 @@ import { useExpenses } from '@/hooks/useExpenses';
 import { useCurrency } from '@/hooks/useCurrency';
 import { useHouseholdContext } from '@/providers/HouseholdProvider';
 import { useBadges } from '@/hooks/useBadges';
+import { usePageReady } from '@/hooks/usePageReady';
 import { Mic, MicOff, Calendar as CalendarIcon, Trash2, TrendingUp, Edit2 } from 'lucide-react';
 import { format } from 'date-fns';
 import { supabase } from '@/integrations/supabase/client';
@@ -36,8 +37,18 @@ export default function Expenses() {
   const { currentHousehold } = useHouseholdContext();
   const { toast } = useToast();
   const { earnBadge, hasBadge } = useBadges();
+  const { setPageReady } = usePageReady();
   const [selectedDate, setSelectedDate] = useState(new Date());
   const { expenses, loading, addExpense, deleteExpense, updateExpense } = useExpenses(selectedDate);
+  
+  // Signal page is ready once expenses load
+  useEffect(() => {
+    if (!loading) {
+      requestAnimationFrame(() => {
+        setPageReady();
+      });
+    }
+  }, [loading, setPageReady]);
   
   const [isRecording, setIsRecording] = useState(false);
   const [transcription, setTranscription] = useState('');

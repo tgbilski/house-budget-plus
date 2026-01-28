@@ -5,6 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useAuth } from '@/hooks/useAuth';
+import { useMarkPageReady } from '@/hooks/usePageReady';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { isNativeApp } from '@/utils/capacitor';
@@ -27,6 +28,9 @@ const Auth: React.FC = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const isMobileApp = isNativeApp();
+  
+  // Mark page as ready on mount
+  useMarkPageReady();
 
   // Check for password reset token and redirect if already authenticated
   useEffect(() => {
