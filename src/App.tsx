@@ -16,6 +16,7 @@ import { SubscriptionProvider } from "@/hooks/useSubscription";
 import { YearProvider } from "@/hooks/useYear";
 import { HouseholdProvider } from "@/providers/HouseholdProvider";
 import { SidebarProvider } from "@/components/ui/sidebar";
+import { PageReadyProvider, usePageReady } from "@/hooks/usePageReady";
 import Header from "@/components/Header";
 import { AppSidebar } from "@/components/AppSidebar";
 import ScrollToTop from "@/components/ScrollToTop";
@@ -140,30 +141,41 @@ const AppRoutes = () => {
 
 // Layout component that uses hooks
 const AppLayout = () => {
-  const { loading: authLoading, user } = useAuth();
+  const { loading: authLoading } = useAuth();
+  const { isPageReady, resetPageReady } = usePageReady();
   const isMobile = useIsMobile();
   const isMobileApp = isNativeApp();
   const location = useLocation();
-  // Show splash screen while auth is initializing
-  // For logged-in users, we wait a bit longer to let subscription/profile load
-  const [initialLoadComplete, setInitialLoadComplete] = useState(false);
+  const [authComplete, setAuthComplete] = useState(false);
+  const [maxTimeoutReached, setMaxTimeoutReached] = useState(false);
   
+  // Reset page ready state and timeout on route change
+  useEffect(() => {
+    resetPageReady();
+    setMaxTimeoutReached(false);
+  }, [location.pathname, resetPageReady]);
+  
+  // Mark auth as complete once loading finishes
   useEffect(() => {
     if (!authLoading) {
-      // If no user, show content immediately
-      if (!user) {
-        setInitialLoadComplete(true);
-      } else {
-        // For logged-in users, give a brief delay for subscription/profile to load
-        const timer = setTimeout(() => {
-          setInitialLoadComplete(true);
-        }, 500);
-        return () => clearTimeout(timer);
-      }
+      setAuthComplete(true);
     }
-  }, [authLoading, user]);
+  }, [authLoading]);
 
-  if (authLoading || !initialLoadComplete) {
+  // Show splash screen until both auth is complete AND page content signals ready
+  // Include a max timeout of 3 seconds as fallback
+  useEffect(() => {
+    if (authComplete && !isPageReady && !maxTimeoutReached) {
+      const timer = setTimeout(() => {
+        setMaxTimeoutReached(true);
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [authComplete, isPageReady, maxTimeoutReached]);
+
+  const showSplash = !authComplete || (!isPageReady && !maxTimeoutReached);
+
+  if (showSplash) {
     return <SplashScreen isLoading={true} />;
   }
 
@@ -259,11 +271,13 @@ const App = () => {
                 <YearProvider>
                   <HouseholdProvider>
                     <CurrencyContext.Provider value={{ currency, setCurrency }}>
-                      <BrowserRouter>
-                        <SkipToMain />
-                        <ScrollToTop />
-                        <AppLayout />
-                      </BrowserRouter>
+                      <PageReadyProvider>
+                        <BrowserRouter>
+                          <SkipToMain />
+                          <ScrollToTop />
+                          <AppLayout />
+                        </BrowserRouter>
+                      </PageReadyProvider>
                     </CurrencyContext.Provider>
                   </HouseholdProvider>
                 </YearProvider>

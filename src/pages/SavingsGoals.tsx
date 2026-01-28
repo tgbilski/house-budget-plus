@@ -4,6 +4,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { useHouseholdContext } from '@/providers/HouseholdProvider';
 import { useSavingsTracker } from '@/hooks/useSavingsTracker';
 import { useBadges } from '@/hooks/useBadges';
+import { usePageReady } from '@/hooks/usePageReady';
 import { isNativeApp } from '@/utils/capacitor';
 import { cn } from '@/lib/utils';
 
@@ -25,6 +26,7 @@ const SavingsGoals: React.FC = () => {
   // Local year state - independent from other pages, defaults to 2025
   const [selectedYear, setSelectedYear] = useState<number>(2025);
   const { earnBadge } = useBadges();
+  const { setPageReady } = usePageReady();
   const isMobileApp = isNativeApp();
 
   const {
@@ -49,6 +51,15 @@ const SavingsGoals: React.FC = () => {
       earnBadge('savings_tracker');
     }
   }, [user, goals.length, totalSaved, earnBadge]);
+
+  // Signal page is ready once data loads
+  useEffect(() => {
+    if (!isLoading) {
+      requestAnimationFrame(() => {
+        setPageReady();
+      });
+    }
+  }, [isLoading, setPageReady]);
 
   if (isLoading) {
     return <div className="p-8 text-center">Loading your savings goals...</div>;

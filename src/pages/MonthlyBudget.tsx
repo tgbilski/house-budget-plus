@@ -11,6 +11,7 @@ import { useYear } from '@/hooks/useYear';
 import { useBadges } from '@/hooks/useBadges';
 import { useHousehold } from '@/hooks/useHousehold';
 import { useSubscription } from '@/hooks/useSubscription';
+import { usePageReady } from '@/hooks/usePageReady';
 import { supabase } from '@/integrations/supabase/client';
 
 import { SEO } from '@/components/SEO';
@@ -51,6 +52,7 @@ const MonthlyBudget: React.FC = () => {
   const { earnBadge } = useBadges();
   const { currentHousehold } = useHousehold(user?.id);
   const { subscribed } = useSubscription();
+  const { setPageReady } = usePageReady();
 
   const totalIncome = Object.values(budgetData).reduce((sum, data) => sum + (data.income || 0), 0);
   const totalExpenses = Object.values(budgetData).reduce((sum, data) => sum + (data.expenses || 0), 0);
@@ -124,6 +126,16 @@ const MonthlyBudget: React.FC = () => {
       setVisibleCalculators(new Set(['1']));
     }
   }, [calculatorVisibility, user, currentHousehold]);
+  
+  // Signal page is ready once initial data load completes
+  useEffect(() => {
+    if (!isLoading) {
+      // Use requestAnimationFrame to ensure DOM is painted
+      requestAnimationFrame(() => {
+        setPageReady();
+      });
+    }
+  }, [isLoading, setPageReady]);
   
   useEffect(() => {
     setBudgetData({});

@@ -5,6 +5,7 @@ import { FAQ } from '@/components/FAQ';
 import { InternalLinks } from '@/components/InternalLinks';
 import { useAuth } from '@/hooks/useAuth';
 import { useBadges } from '@/hooks/useBadges';
+import { useMarkPageReady } from '@/hooks/usePageReady';
 import { BadgeDisplay } from '@/components/BadgeDisplay';
 import InlineSignUpForm from '@/components/InlineSignUpForm';
 import { PageSEOContent, pageSEOData } from '@/components/PageSEOContent';
@@ -13,6 +14,9 @@ import calculatorMascot from '@/assets/calculator-mascot.png';
 const Gifts: React.FC = () => {
   const { user } = useAuth();
   const { earnBadge } = useBadges();
+  
+  // Mark page as ready on mount (no data fetching in this component)
+  useMarkPageReady();
 
   // Award badge when user visits the gifts page while logged in
   useEffect(() => {
