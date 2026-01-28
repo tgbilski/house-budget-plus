@@ -66,6 +66,28 @@ const BudgetCalculator: React.FC<BudgetCalculatorProps> = ({
   const [additionalExpenses, setAdditionalExpenses] = useState<ExpenseItem[]>([]);
   const [additionalSubscriptions, setAdditionalSubscriptions] = useState<ExpenseItem[]>([]);
   const [subscriptionServices, setSubscriptionServices] = useState<Record<string, string>>({});
+  const [badgeAwarded, setBadgeAwarded] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  // Check if user has entered any data
+  const checkHasData = () => {
+    return ownerName.trim() !== '' || 
+           monthlyIncome > 0 || 
+           expenses.some(e => e.amount > 0) || 
+           additionalExpenses.length > 0 || 
+           additionalSubscriptions.length > 0;
+  };
+
+  // Handle blur from the calculator container
+  const handleContainerBlur = (e: React.FocusEvent) => {
+    // Check if the new focus target is outside this container
+    if (containerRef.current && !containerRef.current.contains(e.relatedTarget as Node)) {
+      if (checkHasData() && !badgeAwarded && pageType === 'monthly_budget') {
+        window.dispatchEvent(new CustomEvent('earnBadge', { detail: { badgeType: 'monthly_budget' } }));
+        setBadgeAwarded(true);
+      }
+    }
+  };
 
   // Reset calculator to defaults and notify parent to hide it
   const resetCalculator = async () => {
@@ -75,6 +97,7 @@ const BudgetCalculator: React.FC<BudgetCalculatorProps> = ({
     setAdditionalExpenses([]);
     setAdditionalSubscriptions([]);
     setSubscriptionServices({});
+    setBadgeAwarded(false);
     onNameChange(id, '');
     
     // Delete data from database if user is logged in
@@ -294,10 +317,6 @@ const BudgetCalculator: React.FC<BudgetCalculatorProps> = ({
 
     if (error) {
       console.error('Error saving budget data:', error);
-    } else {
-      if (pageType === 'monthly_budget' && (monthlyIncome > 0 || Object.keys(fixedExpensesData).length > 0 || additionalExpenses.length > 0 || additionalSubscriptions.length > 0)) {
-        window.dispatchEvent(new CustomEvent('earnBadge', { detail: { badgeType: 'monthly_budget' } }));
-      }
     }
   };
 
@@ -412,7 +431,12 @@ const BudgetCalculator: React.FC<BudgetCalculatorProps> = ({
 
 
   return (
-    <Card className="w-full max-w-md border-[4px] border-stroke shadow-cartoon bg-card relative" data-calculator-id={id}>
+    <Card 
+      ref={containerRef}
+      onBlur={handleContainerBlur}
+      className="w-full max-w-md border-[4px] border-stroke shadow-cartoon bg-card relative" 
+      data-calculator-id={id}
+    >
       {/* Reset button - top right corner */}
       <Button
         variant="ghost"
