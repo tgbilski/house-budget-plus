@@ -11,6 +11,7 @@ interface SubscriptionContextType {
   aiQueriesRemaining: number;
   aiQueriesResetDate: string | null;
   loading: boolean;
+  checkoutLoading: boolean;
   checkSubscription: () => Promise<void>;
   createCheckout: (plan?: 'monthly' | 'annual') => Promise<void>;
   openCustomerPortal: () => Promise<void>;
@@ -26,6 +27,7 @@ export function SubscriptionProvider({ children }: { children: ReactNode }) {
   const [aiQueriesRemaining, setAiQueriesRemaining] = useState(10);
   const [aiQueriesResetDate, setAiQueriesResetDate] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  const [checkoutLoading, setCheckoutLoading] = useState(false);
   const { user, session } = useAuth();
   const { toast } = useToast();
 
@@ -74,6 +76,7 @@ export function SubscriptionProvider({ children }: { children: ReactNode }) {
     }
 
     try {
+      setCheckoutLoading(true);
       const { data, error } = await supabase.functions.invoke('create-checkout', {
         body: { plan },
         headers: {
@@ -81,12 +84,19 @@ export function SubscriptionProvider({ children }: { children: ReactNode }) {
         },
       });
 
-      if (error) throw error;
+      if (error) {
+        setCheckoutLoading(false);
+        throw error;
+      }
 
       if (data.url) {
+        // Keep loading state true as we redirect
         window.location.href = data.url;
+      } else {
+        setCheckoutLoading(false);
       }
     } catch (error) {
+      setCheckoutLoading(false);
       console.error('Error creating checkout:', error);
       toast({
         title: "Error",
@@ -176,6 +186,7 @@ export function SubscriptionProvider({ children }: { children: ReactNode }) {
         aiQueriesRemaining,
         aiQueriesResetDate,
         loading,
+        checkoutLoading,
         checkSubscription,
         createCheckout,
         openCustomerPortal,
