@@ -719,6 +719,33 @@ export type Database = {
           },
         ]
       }
+      reviews: {
+        Row: {
+          category: string
+          created_at: string
+          id: string
+          message: string
+          page_source: string | null
+          user_id: string | null
+        }
+        Insert: {
+          category?: string
+          created_at?: string
+          id?: string
+          message: string
+          page_source?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          id?: string
+          message?: string
+          page_source?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       savings_entries: {
         Row: {
           amount: number

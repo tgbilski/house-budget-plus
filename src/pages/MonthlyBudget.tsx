@@ -25,6 +25,7 @@ import { MortgagePreapprovalQuestion } from '@/components/MortgagePreapprovalQue
 import { ToolsGrid } from '@/components/ToolsGrid';
 import { HomeBuyingToolkit } from '@/components/home-buying';
 import InlineSignUpForm from '@/components/InlineSignUpForm';
+import FeedbackForm from '@/components/FeedbackForm';
 import { BadgeDisplay } from '@/components/BadgeDisplay';
 import calculatorMascot from '@/assets/calculator-mascot.png';
 // ADDED: Import the hook to detect mobile
@@ -343,6 +344,10 @@ const MonthlyBudget: React.FC = () => {
             housingExpense={totalHousingExpense}
             currencySymbol={currency.symbol}
           />
+        </div>
+
+        <div className="mt-8 max-w-xl">
+          <FeedbackForm pageSource="budget" />
         </div>
 
         <ToolsGrid excludeHref="/budget" />
