@@ -110,7 +110,26 @@ const BudgetCalculator: React.FC<BudgetCalculatorProps> = ({
         .eq('year', selectedYear)
         .eq('calculator_id', id)
         .eq('page_type', pageType);
+      
+      // Invalidate the React Query cache so deleted data doesn't come back
+      queryClient.removeQueries({ 
+        queryKey: ['budget-data', user.id, currentHousehold.id, selectedYear, id, pageType] 
+      });
     }
+    
+    // Reset initialization flag so if user adds data again, it won't be overwritten
+    hasInitialized.current = true;
+    
+    // Dispatch zero values to update the chart immediately
+    window.dispatchEvent(new CustomEvent('budgetUpdate', {
+      detail: {
+        calculatorId: id,
+        income: 0,
+        totalExpenses: 0,
+        netResult: 0,
+        housingExpense: 0
+      }
+    }));
     
     // Notify parent to hide this calculator (only for calculators 2-4)
     if (onEmptyStateChange && id !== '1') {
