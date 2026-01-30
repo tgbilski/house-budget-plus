@@ -11,6 +11,13 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import {
+  Drawer,
+  DrawerContent,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from "@/components/ui/drawer";
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -24,6 +31,7 @@ import { useAuth } from "../hooks/useAuth";
 import { useSubscription } from "../hooks/useSubscription";
 import { useHouseholdInvites } from "../hooks/useHouseholdInvites";
 import { useHouseholdMembers } from "../hooks/useHouseholdMembers";
+import { useIsMobile } from "@/hooks/use-mobile";
 import { supabase } from "@/integrations/supabase/client";
 import {
   AlertDialog,
@@ -46,6 +54,7 @@ import {
   Loader2,
   Trash2,
 } from "lucide-react";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface HouseholdSwitcherProps {
   className?: string;
@@ -55,6 +64,7 @@ interface HouseholdSwitcherProps {
 
 export function HouseholdSwitcher({ className, open, onOpenChange }: HouseholdSwitcherProps) {
   const { user } = useAuth();
+  const isMobile = useIsMobile();
 
   const {
     currentHousehold,
@@ -189,90 +199,104 @@ export function HouseholdSwitcher({ className, open, onOpenChange }: HouseholdSw
     }
   };
 
-  return (
-    <Dialog open={open !== undefined ? open : isOpen} onOpenChange={onOpenChange || setIsOpen}>
-      {!open && (
-        <DialogTrigger asChild>
-          <Button variant="ghost" size="sm" className={className}>
-            <div className="flex items-center">
-              <Home className="h-4 w-4 mr-2" />
-              <span>
-                {householdLoading
-                  ? "Loading..."
-                  : currentHousehold?.name || "No Household"}
-              </span>
-              {isOriginator && <Crown className="h-3 w-3 ml-1 text-amber-500" />}
-            </div>
-          </Button>
-        </DialogTrigger>
+  const handleClose = () => {
+    if (onOpenChange) {
+      onOpenChange(false);
+    } else {
+      setIsOpen(false);
+    }
+  };
+
+  const handleSwitchHousehold = async (id: string) => {
+    await switchHousehold(id);
+    handleClose();
+    window.location.reload();
+  };
+
+  const triggerButton = (
+    <Button variant="ghost" size="sm" className={className}>
+      <div className="flex items-center">
+        <Home className="h-4 w-4 mr-2" />
+        <span>
+          {householdLoading
+            ? "Loading..."
+            : currentHousehold?.name || "No Household"}
+        </span>
+        {isOriginator && <Crown className="h-3 w-3 ml-1 text-amber-500" />}
+      </div>
+    </Button>
+  );
+
+  const content = (
+    <>
+      {anyLoading && (
+        <div className="flex items-center justify-center py-4">
+          <Loader2 className="animate-spin mr-2" /> Loading...
+        </div>
       )}
-      <DialogContent className="max-w-md" onOpenAutoFocus={e => e.preventDefault()}>
-        <DialogHeader>
-          <DialogTitle>Household Management</DialogTitle>
-        </DialogHeader>
 
-        {anyLoading && (
-          <div className="flex items-center justify-center py-4">
-            <Loader2 className="animate-spin mr-2" /> Loading...
-          </div>
-        )}
-
-        {!anyLoading && (
-          <div className="space-y-6">
-            {/* Always show Current Household card */}
-            <div>
-              <h3 className="font-medium mb-2">Current Household</h3>
-              <Card className="border-primary/20">
-                <CardContent className="p-3 flex items-center justify-between">
-                  <div>
+      {!anyLoading && (
+        <div className="space-y-5">
+          {/* Current Household */}
+          <div>
+            <h3 className="font-medium mb-2 text-sm">Current Household</h3>
+            <Card className="border-primary/20">
+              <CardContent className="p-3">
+                <div className="flex items-start justify-between gap-2">
+                  <div className="flex-1 min-w-0">
                     {!renaming ? (
-                      <div className="flex items-center">
-                        <span className="font-medium">
+                      <div className="flex items-center flex-wrap gap-1">
+                        <span className="font-medium text-sm break-words">
                           {currentHousehold?.name || "No Household selected"}
                         </span>
                         {isOriginator && currentHousehold && (
-                          <Crown className="h-4 w-4 text-amber-500 ml-2" />
+                          <Crown className="h-4 w-4 text-amber-500 shrink-0" />
                         )}
                       </div>
                     ) : (
-                      <div className="flex gap-2 items-center">
+                      <div className="flex flex-col sm:flex-row gap-2">
                         <Input
                           value={editableName}
                           onChange={e => setEditableName(e.target.value)}
-                          className="w-auto"
+                          className="text-sm"
                           disabled={isRenaming || !currentHousehold}
                         />
-                        <Button
-                          variant="secondary"
-                          size="icon"
-                          onClick={handleRename}
-                          disabled={isRenaming || !currentHousehold}
-                        >
-                          {isRenaming ? <Loader2 className="h-4 w-4 animate-spin" /> : <Check className="h-4 w-4" />}
-                        </Button>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          onClick={() => setRenaming(false)}
-                          disabled={isRenaming}
-                        >
-                          <X className="h-4 w-4" />
-                        </Button>
+                        <div className="flex gap-1">
+                          <Button
+                            variant="secondary"
+                            size="icon"
+                            onClick={handleRename}
+                            disabled={isRenaming || !currentHousehold}
+                            className="h-9 w-9 shrink-0"
+                          >
+                            {isRenaming ? <Loader2 className="h-4 w-4 animate-spin" /> : <Check className="h-4 w-4" />}
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => setRenaming(false)}
+                            disabled={isRenaming}
+                            className="h-9 w-9 shrink-0"
+                          >
+                            <X className="h-4 w-4" />
+                          </Button>
+                        </div>
                       </div>
                     )}
-                    <p className="text-xs text-muted-foreground">
+                    <p className="text-xs text-muted-foreground mt-1">
                       {(householdMembers?.length ?? 0)} member
                       {(householdMembers?.length ?? 0) !== 1 ? "s" : ""}
                       {isOriginator && currentHousehold && " • You are the owner"}
                     </p>
                   </div>
                   {isOriginator && currentHousehold && !renaming && (
-                    <div className="flex gap-1">
+                    <div className="flex gap-1 shrink-0">
                       <Button
                         size="icon"
                         variant="ghost"
                         onClick={startRenaming}
                         aria-label="Rename household"
+                        className="h-8 w-8"
                       >
                         <Pencil className="h-4 w-4" />
                       </Button>
@@ -281,24 +305,24 @@ export function HouseholdSwitcher({ className, open, onOpenChange }: HouseholdSw
                           <Button
                             size="icon"
                             variant="ghost"
-                            className="text-destructive hover:text-destructive"
+                            className="text-destructive hover:text-destructive h-8 w-8"
                             aria-label="Delete household"
                           >
                             <Trash2 className="h-4 w-4" />
                           </Button>
                         </AlertDialogTrigger>
-                        <AlertDialogContent>
+                        <AlertDialogContent className="max-w-[90vw] sm:max-w-lg">
                           <AlertDialogHeader>
                             <AlertDialogTitle>Delete Household</AlertDialogTitle>
                             <AlertDialogDescription>
                               Are you sure you want to delete "{currentHousehold.name}"? This will remove all members and cannot be undone. Your data associated with this household will also be deleted.
                             </AlertDialogDescription>
                           </AlertDialogHeader>
-                          <AlertDialogFooter>
-                            <AlertDialogCancel>Cancel</AlertDialogCancel>
+                          <AlertDialogFooter className="flex-col sm:flex-row gap-2">
+                            <AlertDialogCancel className="w-full sm:w-auto">Cancel</AlertDialogCancel>
                             <AlertDialogAction
                               onClick={handleDeleteHousehold}
-                              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                              className="bg-destructive text-destructive-foreground hover:bg-destructive/90 w-full sm:w-auto"
                               disabled={isDeleting}
                             >
                               {isDeleting ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
@@ -309,197 +333,238 @@ export function HouseholdSwitcher({ className, open, onOpenChange }: HouseholdSw
                       </AlertDialog>
                     </div>
                   )}
-                </CardContent>
-              </Card>
-            </div>
-
-            {/* Switch Household */}
-            {userHouseholds.length > 1 && (
-              <div>
-                <h3 className="font-medium mb-2">Switch Household</h3>
-                <Select
-                  value={currentHousehold?.id || ""}
-                  onValueChange={async (id) => {
-                    await switchHousehold(id);
-                    if (onOpenChange) onOpenChange(false);
-                    else setIsOpen(false);
-                    // Reload to refresh all data for the new household
-                    window.location.reload();
-                  }}
-                  disabled={userHouseholds.length === 0}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select household" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {userHouseholds.map(h => (
-                      <SelectItem key={h.id} value={h.id} className="flex items-center">
-                        <span>{h.name}</span>
-                        {h.originator_id === user?.id && (
-                          <Crown className="h-3 w-3 text-amber-500 ml-auto" />
-                        )}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-            )}
-
-            {/* Invite Members */}
-            {isOriginator && currentHousehold && subscribed && (
-              <div>
-                <h3 className="font-medium mb-2">Invite Member</h3>
-                <p className="text-xs text-muted-foreground mb-2">
-                  Sharing household: <span className="font-semibold">{currentHousehold.name}</span>
-                </p>
-                <div className="space-y-2">
-                  <div className="flex gap-2">
-                    <Input
-                      placeholder="Email address"
-                      value={inviteEmail}
-                      onChange={e => {
-                        setInviteEmail(e.target.value);
-                        setInviteError("");
-                      }}
-                      disabled={isInviting}
-                      type="email"
-                    />
-                    <Button
-                      onClick={handleInvite}
-                      disabled={!inviteEmail.trim() || isInviting}
-                    >
-                      {isInviting ? <Loader2 className="h-4 w-4 animate-spin" /> : "Share"}
-                    </Button>
-                  </div>
-                  <p className="text-xs text-muted-foreground">
-                    Invited users are added immediately as members of this active household and can view and edit shared data.
-                  </p>
-                  {inviteError && (
-                    <p className="text-sm text-destructive">{inviteError}</p>
-                  )}
                 </div>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Switch Household */}
+          {userHouseholds.length > 1 && (
+            <div>
+              <h3 className="font-medium mb-2 text-sm">Switch Household</h3>
+              <Select
+                value={currentHousehold?.id || ""}
+                onValueChange={handleSwitchHousehold}
+                disabled={userHouseholds.length === 0}
+              >
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Select household" />
+                </SelectTrigger>
+                <SelectContent>
+                  {userHouseholds.map(h => (
+                    <SelectItem key={h.id} value={h.id} className="flex items-center">
+                      <span>{h.name}</span>
+                      {h.originator_id === user?.id && (
+                        <Crown className="h-3 w-3 text-amber-500 ml-auto" />
+                      )}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          )}
+
+          {/* Invite Members */}
+          {isOriginator && currentHousehold && subscribed && (
+            <div>
+              <h3 className="font-medium mb-2 text-sm">Invite Member</h3>
+              <p className="text-xs text-muted-foreground mb-2">
+                Sharing: <span className="font-semibold">{currentHousehold.name}</span>
+              </p>
+              <div className="space-y-2">
+                <div className="flex flex-col sm:flex-row gap-2">
+                  <Input
+                    placeholder="Email address"
+                    value={inviteEmail}
+                    onChange={e => {
+                      setInviteEmail(e.target.value);
+                      setInviteError("");
+                    }}
+                    disabled={isInviting}
+                    type="email"
+                    className="flex-1"
+                  />
+                  <Button
+                    onClick={handleInvite}
+                    disabled={!inviteEmail.trim() || isInviting}
+                    className="w-full sm:w-auto"
+                  >
+                    {isInviting ? <Loader2 className="h-4 w-4 animate-spin" /> : "Share"}
+                  </Button>
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  Invited users are added immediately and can view and edit shared data.
+                </p>
+                {inviteError && (
+                  <p className="text-sm text-destructive">{inviteError}</p>
+                )}
               </div>
-            )}
+            </div>
+          )}
 
-            {/* Household Members List */}
-            {currentHousehold && (
-              <div>
-                <h3 className="font-medium mb-2">Household Members</h3>
-                <Card className="border-muted">
-                  <CardContent className="p-3 space-y-2">
-                    {householdMembers.length === 0 && (
-                      <p className="text-sm text-muted-foreground">No members yet.</p>
-                    )}
-                    {householdMembers.map((member) => {
-                      const isCurrentUser = member.user_id === user?.id;
-                      const displayName = member.profiles?.first_name || member.profiles?.last_name
-                        ? `${member.profiles?.first_name ?? ""} ${member.profiles?.last_name ?? ""}`.trim()
-                        : member.profiles?.email || "Member";
+          {/* Household Members List */}
+          {currentHousehold && (
+            <div>
+              <h3 className="font-medium mb-2 text-sm">Household Members</h3>
+              <Card className="border-muted">
+                <CardContent className="p-3 space-y-2">
+                  {householdMembers.length === 0 && (
+                    <p className="text-sm text-muted-foreground">No members yet.</p>
+                  )}
+                  {householdMembers.map((member) => {
+                    const isCurrentUser = member.user_id === user?.id;
+                    const displayName = member.profiles?.first_name || member.profiles?.last_name
+                      ? `${member.profiles?.first_name ?? ""} ${member.profiles?.last_name ?? ""}`.trim()
+                      : member.profiles?.email || "Member";
 
-                      return (
-                        <div
-                          key={member.id}
-                          className="flex items-center justify-between gap-2 rounded-md bg-muted/40 px-2 py-1.5"
-                        >
-                          <div className="flex flex-col">
-                            <span className="text-sm font-medium">
-                              {isCurrentUser ? `${displayName} (You)` : displayName}
-                            </span>
-                            <span className="text-xs text-muted-foreground capitalize">
-                              {member.role || "member"}
-                            </span>
-                          </div>
-                          {isOriginator && !isCurrentUser && (
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              className="h-7 px-2 text-xs text-destructive border-destructive/40 hover:bg-destructive/5"
-                              onClick={() => handleRemoveMember(member.user_id)}
-                              disabled={anyLoading}
-                            >
-                              Remove
-                            </Button>
-                          )}
+                    return (
+                      <div
+                        key={member.id}
+                        className="flex items-center justify-between gap-2 rounded-md bg-muted/40 px-2 py-2"
+                      >
+                        <div className="flex flex-col min-w-0 flex-1">
+                          <span className="text-sm font-medium truncate">
+                            {isCurrentUser ? `${displayName} (You)` : displayName}
+                          </span>
+                          <span className="text-xs text-muted-foreground capitalize">
+                            {member.role || "member"}
+                          </span>
                         </div>
-                      );
-                    })}
-                  </CardContent>
-                </Card>
-              </div>
-            )}
-
-            {/* Pending Invites - Show prominently with alert styling */}
-            {pendingInvites.length > 0 && (
-              <div>
-                <h3 className="font-medium mb-2 text-primary">New Household Invitations!</h3>
-                <div className="space-y-2">
-                  {pendingInvites.map(invite => (
-                    <Card key={invite.id} className="border-primary bg-primary/5">
-                      <CardContent className="p-4">
-                        <p className="text-sm font-semibold mb-1">
-                          You've been invited to join:
-                        </p>
-                        <p className="text-base font-bold mb-3">
-                          "{(invite as any).households?.name || 'a household'}"
-                        </p>
-                        <div className="flex gap-2">
-                          <Button
-                            size="sm"
-                            onClick={() => acceptInvite(invite.id)}
-                            disabled={invitesLoading}
-                            className="flex-1"
-                          >
-                            {invitesLoading ? <Loader2 className="h-3 w-3 animate-spin mr-1" /> : <Check className="h-3 w-3 mr-1" />}
-                            Accept
-                          </Button>
+                        {isOriginator && !isCurrentUser && (
                           <Button
                             variant="outline"
                             size="sm"
-                            onClick={() => declineInvite(invite.id)}
-                            disabled={invitesLoading}
-                            className="flex-1"
+                            className="h-7 px-2 text-xs text-destructive border-destructive/40 hover:bg-destructive/5 shrink-0"
+                            onClick={() => handleRemoveMember(member.user_id)}
+                            disabled={anyLoading}
                           >
-                            <X className="h-3 w-3 mr-1" />
-                            Decline
+                            Remove
                           </Button>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  ))}
-                </div>
+                        )}
+                      </div>
+                    );
+                  })}
+                </CardContent>
+              </Card>
+            </div>
+          )}
+
+          {/* Pending Invites */}
+          {pendingInvites.length > 0 && (
+            <div>
+              <h3 className="font-medium mb-2 text-sm text-primary">New Invitations!</h3>
+              <div className="space-y-2">
+                {pendingInvites.map(invite => (
+                  <Card key={invite.id} className="border-primary bg-primary/5">
+                    <CardContent className="p-3">
+                      <p className="text-xs font-semibold mb-1">
+                        You've been invited to join:
+                      </p>
+                      <p className="text-sm font-bold mb-3">
+                        "{(invite as any).households?.name || 'a household'}"
+                      </p>
+                      <div className="flex gap-2">
+                        <Button
+                          size="sm"
+                          onClick={() => acceptInvite(invite.id)}
+                          disabled={invitesLoading}
+                          className="flex-1 h-9"
+                        >
+                          {invitesLoading ? <Loader2 className="h-3 w-3 animate-spin mr-1" /> : <Check className="h-3 w-3 mr-1" />}
+                          Accept
+                        </Button>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => declineInvite(invite.id)}
+                          disabled={invitesLoading}
+                          className="flex-1 h-9"
+                        >
+                          <X className="h-3 w-3 mr-1" />
+                          Decline
+                        </Button>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Create New Household */}
+          <div>
+            <h3 className="font-medium mb-2 text-sm">Create New Household</h3>
+            {!subscribed && userHouseholds.length >= 1 ? (
+              <Card className="border-amber-200 bg-amber-50 dark:border-amber-900 dark:bg-amber-950/50">
+                <CardContent className="p-3">
+                  <p className="text-sm text-amber-800 dark:text-amber-200">
+                    Premium subscription required to create additional households.
+                  </p>
+                </CardContent>
+              </Card>
+            ) : (
+              <div className="flex flex-col sm:flex-row gap-2">
+                <Input
+                  placeholder="New household name"
+                  value={newHouseholdName}
+                  onChange={e => setNewHouseholdName(e.target.value)}
+                  disabled={isCreating}
+                  className="flex-1"
+                />
+                <Button
+                  onClick={handleCreateHousehold}
+                  disabled={!newHouseholdName.trim() || isCreating}
+                  className="w-full sm:w-auto"
+                >
+                  {isCreating ? <Loader2 className="h-4 w-4 animate-spin" /> : <Plus className="h-4 w-4 mr-1" />}
+                  Create
+                </Button>
               </div>
             )}
-
-            {/* Create New Household */}
-            <div>
-              <h3 className="font-medium mb-2">Create New Household</h3>
-              {!subscribed && userHouseholds.length >= 1 ? (
-                <Card className="border-amber-200 bg-amber-50">
-                  <CardContent className="p-3">
-                    <p className="text-sm text-amber-800">
-                      Premium subscription required to create additional households.
-                    </p>
-                  </CardContent>
-                </Card>
-              ) : (
-                <div className="flex gap-2">
-                  <Input
-                    placeholder="New household name"
-                    value={newHouseholdName}
-                    onChange={e => setNewHouseholdName(e.target.value)}
-                    disabled={isCreating}
-                  />
-                  <Button
-                    onClick={handleCreateHousehold}
-                    disabled={!newHouseholdName.trim() || isCreating}
-                  >
-                    {isCreating ? <Loader2 className="h-4 w-4 animate-spin" /> : <Plus className="h-4 w-4" />}
-                  </Button>
-                </div>
-              )}
-            </div>
           </div>
+        </div>
+      )}
+    </>
+  );
+
+  const isControlled = open !== undefined;
+  const isDialogOpen = isControlled ? open : isOpen;
+  const setDialogOpen = onOpenChange || setIsOpen;
+
+  // Use Drawer on mobile for better touch experience
+  if (isMobile) {
+    return (
+      <Drawer open={isDialogOpen} onOpenChange={setDialogOpen}>
+        {!isControlled && (
+          <DrawerTrigger asChild>
+            {triggerButton}
+          </DrawerTrigger>
         )}
+        <DrawerContent className="max-h-[85vh]">
+          <DrawerHeader className="text-left pb-2">
+            <DrawerTitle>Household Management</DrawerTitle>
+          </DrawerHeader>
+          <ScrollArea className="px-4 pb-6 overflow-y-auto max-h-[calc(85vh-80px)]">
+            {content}
+          </ScrollArea>
+        </DrawerContent>
+      </Drawer>
+    );
+  }
+
+  // Use Dialog on desktop
+  return (
+    <Dialog open={isDialogOpen} onOpenChange={setDialogOpen}>
+      {!isControlled && (
+        <DialogTrigger asChild>
+          {triggerButton}
+        </DialogTrigger>
+      )}
+      <DialogContent className="max-w-md max-h-[85vh] overflow-y-auto" onOpenAutoFocus={e => e.preventDefault()}>
+        <DialogHeader>
+          <DialogTitle>Household Management</DialogTitle>
+        </DialogHeader>
+        {content}
       </DialogContent>
     </Dialog>
   );
