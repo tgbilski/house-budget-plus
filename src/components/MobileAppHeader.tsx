@@ -8,7 +8,7 @@ export const MobileAppHeader = () => {
   const { signOut } = useAuth();
 
   return (
-    <header className="sticky top-0 z-40 bg-background border-b border-border pt-[60px]">
+    <header className="bg-card border-b border-border">
       <div className="flex items-center justify-between px-4 py-3">
         <HouseholdSwitcher />
         <div className="flex items-center gap-2">
@@ -17,7 +17,7 @@ export const MobileAppHeader = () => {
             variant="ghost" 
             size="icon"
             onClick={signOut}
-            className="h-9 w-9"
+            className="h-9 w-9 touch-manipulation"
           >
             <LogOut className="h-4 w-4" />
           </Button>
