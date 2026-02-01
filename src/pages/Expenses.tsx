@@ -36,7 +36,7 @@ export default function Expenses() {
   const { currency } = useCurrency();
   const { currentHousehold } = useHouseholdContext();
   const { toast } = useToast();
-  const { earnBadge, hasBadge } = useBadges();
+  const { earnBadge, hasBadge, loading: badgesLoading } = useBadges();
   const { setPageReady } = usePageReady();
   const [selectedDate, setSelectedDate] = useState(new Date());
   const { expenses, loading, addExpense, deleteExpense, updateExpense } = useExpenses(selectedDate);
@@ -85,9 +85,9 @@ export default function Expenses() {
     fetchYearlyExpenses();
   }, [user, currentHousehold, selectedDate.getFullYear(), expenses]);
 
-  // Award expense tracking badges based on total expense count
+  // Award expense tracking badges based on total expense count (after badges load)
   useEffect(() => {
-    if (!user || yearlyExpenses.length === 0) return;
+    if (!user || badgesLoading || yearlyExpenses.length === 0) return;
     
     const count = yearlyExpenses.length;
     
@@ -106,7 +106,7 @@ export default function Expenses() {
     if (count >= 50 && !hasBadge('expense_50')) {
       earnBadge('expense_50');
     }
-  }, [user, yearlyExpenses.length, earnBadge, hasBadge]);
+  }, [user, badgesLoading, yearlyExpenses.length, earnBadge, hasBadge]);
 
   // Calculate chart data - monthly aggregation using yearly data
   const chartData = React.useMemo(() => {

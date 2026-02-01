@@ -153,11 +153,11 @@ const seoData = {
 
 const FinancialResources: React.FC = () => {
   const { user } = useAuth();
-  const { earnBadge } = useBadges();
+  const { earnBadge, loading: badgesLoading } = useBadges();
   const categories = [...new Set(articles.map(article => article.category))];
 
   useEffect(() => {
-    if (user) {
+    if (user && !badgesLoading) {
       // Award badge after user spends some time reading (3 seconds)
       const timer = setTimeout(() => {
         earnBadge('financial_resources');
@@ -165,7 +165,7 @@ const FinancialResources: React.FC = () => {
       
       return () => clearTimeout(timer);
     }
-  }, [user, earnBadge]);
+  }, [user, badgesLoading, earnBadge]);
 
   return (
     <div className="min-h-screen">

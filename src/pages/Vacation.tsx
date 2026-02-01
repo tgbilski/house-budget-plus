@@ -25,7 +25,7 @@ const Vacation: React.FC = () => {
   const { user } = useAuth();
   const { selectedYear } = useYear();
   const { currency } = useCurrency();
-  const { earnBadge } = useBadges();
+  const { earnBadge, loading: badgesLoading } = useBadges();
   const { setPageReady } = usePageReady();
 
   const {
@@ -40,12 +40,12 @@ const Vacation: React.FC = () => {
     updateVacationTitle,
   } = useVacationPlanner({ user, year: selectedYear });
 
-  // Award badge when user has vacation options
+  // Award badge when user has vacation options (after badges load)
   useEffect(() => {
-    if (user && options.length > 0) {
+    if (user && !badgesLoading && options.length > 0) {
       earnBadge('vacation');
     }
-  }, [user, options.length, earnBadge]);
+  }, [user, badgesLoading, options.length, earnBadge]);
 
   // Signal page is ready once data loads
   useEffect(() => {

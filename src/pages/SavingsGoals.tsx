@@ -25,7 +25,7 @@ const SavingsGoals: React.FC = () => {
   const { currentHousehold } = useHouseholdContext();
   // Local year state - independent from other pages, defaults to 2025
   const [selectedYear, setSelectedYear] = useState<number>(2025);
-  const { earnBadge } = useBadges();
+  const { earnBadge, loading: badgesLoading } = useBadges();
   const { setPageReady } = usePageReady();
   const isMobileApp = isNativeApp();
 
@@ -45,12 +45,12 @@ const SavingsGoals: React.FC = () => {
   
   const progressPercentage = currentGoal?.target_amount ? Math.min((totalSaved / currentGoal.target_amount) * 100, 100) : 0;
 
-  // Award badge when user has savings data
+  // Award badge when user has savings data (after badges load)
   useEffect(() => {
-    if (user && (goals.length > 0 || totalSaved > 0)) {
+    if (user && !badgesLoading && (goals.length > 0 || totalSaved > 0)) {
       earnBadge('savings_tracker');
     }
-  }, [user, goals.length, totalSaved, earnBadge]);
+  }, [user, badgesLoading, goals.length, totalSaved, earnBadge]);
 
   // Signal page is ready once data loads
   useEffect(() => {

@@ -14,12 +14,14 @@ import { Calendar, Target, Brain, Trophy, TrendingUp } from 'lucide-react';
 
 export default function Engagement() {
   const { user } = useAuth();
-  const { earnBadge } = useBadges();
+  const { earnBadge, loading: badgesLoading } = useBadges();
 
   React.useEffect(() => {
-    // Earn engagement badge when visiting this page
-    earnBadge('ai_insights');
-  }, [earnBadge]);
+    // Earn engagement badge when visiting this page (after badges load)
+    if (!badgesLoading) {
+      earnBadge('ai_insights');
+    }
+  }, [badgesLoading, earnBadge]);
 
   const breadcrumbItems = [
     { label: 'Home', href: '/' },
