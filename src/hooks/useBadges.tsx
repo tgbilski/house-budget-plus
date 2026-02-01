@@ -153,12 +153,29 @@ export const useBadges = () => {
 
   const earnBadge = async (badgeType: BadgeType) => {
     if (!user) return;
+    
+    // Don't try to earn badges while still loading existing badges
+    if (loading) return;
 
-    // Check if badge already earned
+    // Check if badge already earned (in local state)
     const hasEarned = badges.some(badge => badge.badge_type === badgeType);
     if (hasEarned) return;
 
     try {
+      // First check if badge exists in DB (handles race conditions)
+      const { data: existing } = await supabase
+        .from('user_badges')
+        .select('id')
+        .eq('user_id', user.id)
+        .eq('badge_type', badgeType)
+        .eq('year', selectedYear)
+        .maybeSingle();
+      
+      if (existing) {
+        // Badge already exists, just update local state if needed
+        return;
+      }
+
       const { data, error } = await supabase
         .from('user_badges')
         .insert({
@@ -172,14 +189,20 @@ export const useBadges = () => {
 
       if (error) throw error;
 
-      setBadges(prev => [data, ...prev]);
-      
-      const badgeInfo = BADGE_INFO[badgeType];
-      toast.success(`🎉 Badge Earned: ${badgeInfo.name}!`, {
-        description: badgeInfo.description
-      });
+      if (data) {
+        setBadges(prev => [data, ...prev]);
+        
+        const badgeInfo = BADGE_INFO[badgeType];
+        toast.success(`🎉 Badge Earned: ${badgeInfo.name}!`, {
+          description: badgeInfo.description
+        });
+      }
     } catch (error) {
-      console.error('Error earning badge:', error);
+      // Silently ignore duplicate key errors (23505 is PostgreSQL unique violation)
+      const pgError = error as { code?: string };
+      if (pgError?.code !== '23505') {
+        console.error('Error earning badge:', error);
+      }
     }
   };
 

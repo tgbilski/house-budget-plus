@@ -13,17 +13,17 @@ import calculatorMascot from '@/assets/calculator-mascot.png';
 
 const Gifts: React.FC = () => {
   const { user } = useAuth();
-  const { earnBadge } = useBadges();
+  const { earnBadge, loading: badgesLoading } = useBadges();
   
   // Mark page as ready on mount (no data fetching in this component)
   useMarkPageReady();
 
-  // Award badge when user visits the gifts page while logged in
+  // Award badge when user visits the gifts page while logged in (after badges load)
   useEffect(() => {
-    if (user) {
+    if (user && !badgesLoading) {
       earnBadge('gifts');
     }
-  }, [user, earnBadge]);
+  }, [user, badgesLoading, earnBadge]);
 
   return (
     <>

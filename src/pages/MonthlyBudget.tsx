@@ -49,7 +49,7 @@ const MonthlyBudget: React.FC = () => {
   const { currency } = useCurrency();
   const { user } = useAuth();
   const { selectedYear } = useYear();
-  const { earnBadge } = useBadges();
+  const { earnBadge, loading: badgesLoading } = useBadges();
   const { currentHousehold } = useHousehold(user?.id);
   const { subscribed } = useSubscription();
   const { setPageReady } = usePageReady();
@@ -77,6 +77,9 @@ const MonthlyBudget: React.FC = () => {
 
   useEffect(() => {
     const handleEarnBadge = (event: Event) => {
+      // Don't process badge events while badges are still loading
+      if (badgesLoading) return;
+      
       if (event instanceof CustomEvent) {
         const { badgeType } = event.detail;
         earnBadge(badgeType);
@@ -85,7 +88,7 @@ const MonthlyBudget: React.FC = () => {
 
     window.addEventListener('earnBadge', handleEarnBadge);
     return () => window.removeEventListener('earnBadge', handleEarnBadge);
-  }, [earnBadge]);
+  }, [earnBadge, badgesLoading]);
 
   const { data: calculatorVisibility, isLoading, error: queryError } = useQuery({
     queryKey: ['budget-calculators', user?.id, currentHousehold?.id, selectedYear],
