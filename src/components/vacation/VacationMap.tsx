@@ -2,10 +2,9 @@
  import mapboxgl from 'mapbox-gl';
  import 'mapbox-gl/dist/mapbox-gl.css';
  import { Card } from '@/components/ui/card';
+ import { supabase } from '@/integrations/supabase/client';
  import type { VacationOption } from '@/hooks/useVacationPlanner';
  
- // Mapbox public token - this is safe to use in frontend
- mapboxgl.accessToken = 'pk.eyJ1IjoiaG91c2VidWRnZXRwbHVzIiwiYSI6ImNtOTNweGsxMjBkZ2QybHI1cTBxaWNuM3EifQ.ZqLGjhfq_h0sBjsb5Xp1Dw';
  
  interface VacationMapProps {
    options: VacationOption[];
@@ -17,24 +16,51 @@
    const map = useRef<mapboxgl.Map | null>(null);
    const markersRef = useRef<mapboxgl.Marker[]>([]);
    const [mapLoaded, setMapLoaded] = useState(false);
+   const [mapError, setMapError] = useState<string | null>(null);
  
    // Initialize map
    useEffect(() => {
      if (!mapContainer.current || map.current) return;
  
-     map.current = new mapboxgl.Map({
-       container: mapContainer.current,
-       style: 'mapbox://styles/mapbox/light-v11',
-       center: [0, 20],
-       zoom: 1.5,
-       projection: 'mercator'
-     });
+     const initMap = async () => {
+       try {
+         // Fetch token from edge function
+         const { data, error } = await supabase.functions.invoke('geocode-places', {
+           body: { getToken: true }
+         });
+         
+         if (error || !data?.token) {
+           setMapError('Map configuration unavailable');
+           return;
+         }
+         
+         mapboxgl.accessToken = data.token;
+         
+         map.current = new mapboxgl.Map({
+           container: mapContainer.current!,
+           style: 'mapbox://styles/mapbox/streets-v12', // Vector streets style
+           center: [0, 20],
+           zoom: 1.5,
+           projection: 'mercator'
+         });
  
-     map.current.addControl(new mapboxgl.NavigationControl(), 'top-right');
+         map.current.addControl(new mapboxgl.NavigationControl(), 'top-right');
  
-     map.current.on('load', () => {
-       setMapLoaded(true);
-     });
+         map.current.on('load', () => {
+           setMapLoaded(true);
+         });
+         
+         map.current.on('error', (e) => {
+           console.error('Map error:', e);
+           setMapError('Failed to load map');
+         });
+       } catch (err) {
+         console.error('Map init error:', err);
+         setMapError('Failed to initialize map');
+       }
+     };
+     
+     initMap();
  
      return () => {
        map.current?.remove();
@@ -143,7 +169,7 @@
          />
          
          {/* Empty state overlay */}
-         {options.every(opt => !opt.destination_lat) && (
+           {!mapError && options.every(opt => !opt.destination_lat) && (
            <div className="absolute inset-0 flex items-center justify-center bg-card/50 backdrop-blur-[2px]">
              <div className="text-center p-4">
                <p className="text-muted-foreground text-sm">
@@ -152,6 +178,17 @@
              </div>
            </div>
          )}
+           
+           {/* Error state */}
+           {mapError && (
+             <div className="absolute inset-0 flex items-center justify-center bg-muted">
+               <div className="text-center p-4">
+                 <p className="text-muted-foreground text-sm">
+                   🗺️ {mapError}
+                 </p>
+               </div>
+             </div>
+           )}
        </div>
      </Card>
    );
