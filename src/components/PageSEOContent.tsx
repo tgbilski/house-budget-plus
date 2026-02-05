@@ -100,16 +100,16 @@ export const PageSEOContent: React.FC<PageSEOContentProps> = ({
 // Pre-defined SEO content for each page
 export const pageSEOData = {
   monthlyBudget: {
-    title: "Adulting Your Money: Free Budget Calculator",
-    description: "Finally figure out where your paycheck disappears to. This free budget calculator is built for millennials and Gen Z who want to adult their finances without the boring spreadsheets. Whether you're budgeting your first apartment, splitting rent with roommates, or trying to save while paying off student loans — we make it simple.",
+    title: "Free Monthly Budget Calculator for Households",
+    description: "See exactly where your money goes with our free monthly budget calculator. Perfect for households, first apartments, and roommate expense splitting. No spreadsheets, no bank linking — just simple budgeting that works.",
     features: [
-      "Track income from your 9-5 and side hustles",
+      "Calculate your monthly household budget in minutes",
       "See exactly where your money goes each month",
       "Visual breakdowns that actually make sense",
-      "Calculate if you can really afford that apartment",
+      "Multiple calculators for different income sources",
       "No bank account linking required"
     ],
-    keywords: ["adulting budget", "first apartment budget calculator", "millennial budget planner", "budget for beginners", "simple budget no spreadsheet", "paycheck budget tracker", "gen z money tracker", "budget without bank account"],
+    keywords: ["monthly budget calculator free", "home budget calculator", "household budget calculator", "free budget planner", "paycheck budget tracker", "simple budget calculator", "budget without bank account", "roommate budget splitter"],
     premiumTitle: "Level Up Your Budget Game",
     premiumDescription: "Get AI-powered money advice that actually understands your lifestyle — not your parents' finances.",
     premiumFeatures: [
@@ -121,7 +121,7 @@ export const pageSEOData = {
   },
   savingsGoals: {
     title: "Save for What Actually Matters",
-    description: "Stop feeling guilty about every latte and start saving for things you actually want — your first apartment deposit, a backpacking trip, an engagement ring, or just an emergency fund so you can quit that toxic job. Our visual savings tracker keeps you motivated without the finance bro energy.",
+    description: "Track your progress toward any savings goal — apartment deposits, vacations, emergency funds, or anything else you're working toward. Visual charts keep you motivated and on track.",
     features: [
       "Track up to 3 savings goals at once",
       "See your progress month by month",
@@ -129,7 +129,7 @@ export const pageSEOData = {
       "Visual charts that feel rewarding",
       "Perfect for first-time savers"
     ],
-    keywords: ["save for apartment deposit", "first emergency fund", "save for engagement ring", "travel savings tracker", "millennial savings goals", "gen z savings app", "quit job fund", "adulting savings"],
+    keywords: ["savings goal tracker", "saving for a vacation calculator", "savings calculator free", "emergency fund tracker", "savings progress tracker", "visual savings goal", "monthly savings planner"],
     premiumTitle: "Supercharge Your Savings",
     premiumDescription: "AI-powered nudges to help you hit your goals faster — like a supportive friend who's actually good with money.",
     premiumFeatures: [
@@ -160,16 +160,16 @@ export const pageSEOData = {
     ]
   },
   vacation: {
-    title: "Plan Your Trip Without Blowing Your Budget",
-    description: "Compare vacation options side-by-side so you can actually afford that trip instead of just dreaming about it. Whether you're planning a budget backpacking adventure, a girls trip, or your first real vacation as an adult — see the true cost before you book.",
+    title: "Vacation Budget Calculator — Know Your Trip Costs",
+    description: "Compare vacation options side-by-side and know exactly what your trip will cost before you book. Add flights, hotels, car rentals, and activities to see the true total for each destination.",
     features: [
       "Compare multiple trip options",
       "Track flights, hotels & activities",
       "Side-by-side cost comparison",
-      "Calculate total trip costs upfront",
+      "Calculate true vacation costs",
       "Perfect for group trip planning"
     ],
-    keywords: ["budget backpacking trip planner", "cheap vacation calculator", "trip cost comparison", "group trip budget", "girls trip planner", "first vacation budget", "travel on a budget", "millennial travel planner"],
+    keywords: ["vacation savings calculator", "vacation budget planner", "trip cost calculator", "vacation cost estimator", "travel budget calculator", "holiday budget planner", "vacation expense tracker"],
     premiumTitle: "Smart Vacation Planning",
     premiumDescription: "Get AI recommendations to maximize your vacation while minimizing costs.",
     premiumFeatures: [
