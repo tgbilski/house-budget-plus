@@ -11,7 +11,7 @@ export const seoData: Record<string, SEOData> = {
   home: {
     title: "Free Monthly Budget Calculator | Home Budget Made Simple",
     description: "Free monthly budget calculator — see exactly where your paycheck goes in 5 minutes. No bank linking, no spreadsheets. Track household income, split rent with roommates, and finally adult your finances.",
-    keywords: "monthly budget calculator free, home budget calculator, household budget calculator, free budget calculator, adulting budget, first apartment budget, millennial budget planner, paycheck budget tracker, roommate expense splitter, simple budget app",
+    keywords: "monthly budget calculator free, home budget calculator, household budget calculator, free budgeting calculator, calculate monthly living expenses, house expenses calculator, living budget calculator, living expenses budget calculator, simple budget app",
     canonical: "https://www.housebudgetcalculator.com",
     ogImage: "https://www.housebudgetcalculator.com/assets/calculator-use-preview.png",
     structuredData: {
@@ -97,7 +97,7 @@ export const seoData: Record<string, SEOData> = {
   monthlyBudget: {
     title: "Free Monthly Budget Calculator | Track Your Paycheck in Minutes",
     description: "Free monthly budget calculator — input your income, add expenses, and instantly see where your money goes. No bank account linking. Perfect for households, roommates, and first-time budgeters.",
-    keywords: "monthly budget calculator free, home budget calculator, household budget calculator, free budget planner, paycheck budget calculator, first apartment budget, roommate budget splitter, simple budget calculator online, budget tracker no bank account",
+    keywords: "monthly budget calculator free, home budget calculator, household budget calculator, free budgeting calculator, calculate monthly living expenses, living expenses budget calculator, house expenses calculator, living budget calculator, paycheck budget calculator",
     canonical: "https://www.housebudgetcalculator.com/budget",
     ogImage: "https://www.housebudgetcalculator.com/assets/calculator-use-preview.png",
     structuredData: {

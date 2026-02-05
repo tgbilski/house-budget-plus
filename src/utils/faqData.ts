@@ -1,11 +1,11 @@
 export const budgetCalculatorFAQs = [
   {
-    question: "How do I use the monthly budget calculator?",
-    answer: "Simply enter your monthly income in the income section, then add all your monthly expenses in the designated categories. The calculator will automatically show your net budget (income minus expenses). You can add multiple household members and create custom expense categories as needed."
+    question: "How do I use this free home budget calculator?",
+    answer: "Simply enter your monthly household income, then add all your monthly living expenses in the designated categories. Our free budgeting calculator automatically shows your net budget (income minus expenses). You can add multiple household members and create custom expense categories as needed."
   },
   {
-    question: "What expenses should I include in my monthly budget?",
-    answer: "Include all recurring monthly expenses such as rent/mortgage, utilities, groceries, insurance, transportation, subscriptions, entertainment, and any debt payments. Don't forget smaller recurring expenses like streaming services, gym memberships, or phone bills."
+    question: "How do I calculate monthly living expenses?",
+    answer: "To calculate monthly living expenses, list all recurring costs: rent/mortgage, utilities, groceries, insurance, transportation, subscriptions, entertainment, and debt payments. Include smaller expenses like streaming services, gym memberships, and phone bills. Our living expenses budget calculator adds everything up automatically."
   },
   {
     question: "Can I save my budget calculations?",
@@ -26,6 +26,14 @@ export const budgetCalculatorFAQs = [
   {
     question: "How often should I update my budget?",
     answer: "Review and update your budget monthly. Track your actual spending and compare it to your budget estimates. Adjust categories as needed and update for any changes in income or expenses."
+  },
+  {
+    question: "Is this really a free budgeting calculator?",
+    answer: "Yes! Our home budget calculator is completely free with no signup required. You can calculate your monthly living expenses, track house expenses, and create a full household budget without paying anything. Premium AI features are available for $4.99/month, but the core budget calculator is always free."
+  },
+  {
+    question: "What's the difference between a home budget calculator and a living budget calculator?",
+    answer: "They're essentially the same thing! A home budget calculator, house expenses calculator, and living budget calculator all help you track household income and expenses. Our free monthly budget calculator covers all your living expenses — rent, utilities, groceries, transportation, and everything else that makes up your monthly costs."
   }
 ];
 
