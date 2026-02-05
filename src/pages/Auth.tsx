@@ -11,6 +11,7 @@ import { useToast } from '@/hooks/use-toast';
 import { isNativeApp } from '@/utils/capacitor';
 import { ArrowLeft } from 'lucide-react';
 import mascotIcon from '@/assets/calculator-mascot.png';
+import appPreviewImage from '/lovable-uploads/og-image-social.png';
 
 const Auth: React.FC = () => {
   const [searchParams] = useSearchParams();
@@ -150,7 +151,7 @@ const Auth: React.FC = () => {
   };
 
   return (
-    <div className={`min-h-screen ${isSignUp ? 'bg-sage' : 'bg-muted'} flex items-center justify-center p-4 relative`}>
+    <div className={`min-h-screen ${isSignUp ? 'bg-sage' : 'bg-muted'} flex items-center justify-center p-4 relative overflow-auto`}>
       <Button
         variant="ghost"
         size="icon"
@@ -166,7 +167,22 @@ const Auth: React.FC = () => {
         className="absolute top-4 right-4 w-16 h-16 object-contain"
       />
       
-      <Card className="w-full max-w-md bg-transparent border-0 shadow-none">
+      <div className="w-full max-w-4xl flex flex-col lg:flex-row items-center gap-8 py-8">
+        {/* App Preview Image */}
+        <div className="hidden lg:block flex-1 max-w-lg">
+          <div className="rounded-xl overflow-hidden shadow-2xl border-4 border-foreground/10">
+            <img 
+              src={appPreviewImage}
+              alt="House Budget Calculator - Track income, expenses and savings goals"
+              className="w-full h-auto"
+            />
+          </div>
+          <p className="text-center mt-4 text-foreground/70 text-sm">
+            Track your household budget with our easy-to-use calculator
+          </p>
+        </div>
+        
+        <Card className="w-full max-w-md bg-transparent border-0 shadow-none">
         {verificationSent ? (
           <CardHeader className="text-center">
             <CardTitle className="text-3xl text-foreground mb-4">
@@ -179,6 +195,15 @@ const Auth: React.FC = () => {
         ) : (
           <>
             <CardHeader className="text-center">
+              {/* Mobile-only preview image */}
+              <div className="lg:hidden mb-6 rounded-xl overflow-hidden shadow-lg border-2 border-foreground/10">
+                <img 
+                  src={appPreviewImage}
+                  alt="House Budget Calculator preview"
+                  className="w-full h-auto"
+                />
+              </div>
+              
               <CardTitle className="text-2xl text-foreground">
                 {isResettingPassword ? 'Set New Password' : (isForgotPassword ? 'Reset Password' : (isSignUp ? 'Sign Up' : 'Sign In'))}
               </CardTitle>
@@ -341,6 +366,7 @@ const Auth: React.FC = () => {
           </>
         )}
       </Card>
+      </div>
     </div>
   );
 };
