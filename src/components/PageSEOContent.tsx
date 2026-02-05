@@ -109,7 +109,7 @@ export const pageSEOData = {
       "Multiple calculators for different income sources",
       "No bank account linking required"
     ],
-    keywords: ["monthly budget calculator free", "home budget calculator", "household budget calculator", "free budget planner", "paycheck budget tracker", "simple budget calculator", "budget without bank account", "roommate budget splitter"],
+    keywords: ["monthly budget calculator free", "home budget calculator", "household budget calculator", "free budgeting calculator", "calculate monthly living expenses", "house expenses calculator", "living budget calculator", "living expenses budget calculator"],
     premiumTitle: "Level Up Your Budget Game",
     premiumDescription: "Get AI-powered money advice that actually understands your lifestyle — not your parents' finances.",
     premiumFeatures: [
