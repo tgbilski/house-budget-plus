@@ -361,7 +361,7 @@ const MonthlyBudget: React.FC = () => {
           />
         </div>
 
-        <div className="mt-8 max-w-xl">
+        <div className="mt-8">
           <FeedbackForm pageSource="budget" />
         </div>
 
