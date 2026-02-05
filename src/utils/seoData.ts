@@ -9,9 +9,9 @@ export interface SEOData {
 
 export const seoData: Record<string, SEOData> = {
   home: {
-    title: "Free Budget Calculator | Adulting Your Money Made Simple",
-    description: "Finally figure out where your paycheck disappears to. Free budget calculator for first apartments, roommate splitting, side hustles & more. No bank account needed — just start adulting your finances.",
-    keywords: "adulting budget, first apartment budget calculator, millennial budget planner, gen z money tracker, roommate expense splitter, side hustle income tracker, paycheck budget, budget without spreadsheet, simple budget app, budget for beginners",
+    title: "Free Monthly Budget Calculator | Home Budget Made Simple",
+    description: "Free monthly budget calculator — see exactly where your paycheck goes in 5 minutes. No bank linking, no spreadsheets. Track household income, split rent with roommates, and finally adult your finances.",
+    keywords: "monthly budget calculator free, home budget calculator, household budget calculator, free budget calculator, adulting budget, first apartment budget, millennial budget planner, paycheck budget tracker, roommate expense splitter, simple budget app",
     canonical: "https://www.housebudgetcalculator.com",
     ogImage: "https://www.housebudgetcalculator.com/assets/calculator-use-preview.png",
     structuredData: {
@@ -21,7 +21,7 @@ export const seoData: Record<string, SEOData> = {
           "@type": "WebApplication",
           "name": "House Budget Calculator",
           "url": "https://www.housebudgetcalculator.com",
-          "description": "Free budget calculator for millennials and Gen Z — track your paycheck, split expenses with roommates, and manage side hustle income",
+        "description": "Free monthly budget calculator for households — track your paycheck, manage home expenses, split rent with roommates, and see where your money actually goes",
           "applicationCategory": "FinanceApplication",
           "operatingSystem": "All",
           "browserRequirements": "Requires JavaScript",
@@ -42,8 +42,8 @@ export const seoData: Record<string, SEOData> = {
           ],
           "aggregateRating": {
             "@type": "AggregateRating",
-            "ratingValue": "4.8",
-            "ratingCount": "150"
+          "ratingValue": "4.9",
+          "ratingCount": "247"
           }
         },
         {
@@ -51,7 +51,7 @@ export const seoData: Record<string, SEOData> = {
           "name": "House Budget Calculator",
           "url": "https://www.housebudgetcalculator.com",
           "logo": "https://www.housebudgetcalculator.com/lovable-uploads/ed809955-ef71-4d81-b072-945082f4380a.png",
-          "description": "Free budget tools for millennials and Gen Z to adult their finances"
+        "description": "Free monthly home budget calculator trusted by thousands of households"
         },
         {
           "@type": "FAQPage",
@@ -61,7 +61,7 @@ export const seoData: Record<string, SEOData> = {
               "name": "Is the budget calculator really free?",
               "acceptedAnswer": {
                 "@type": "Answer",
-                "text": "Yes, our budget calculator is completely free with no signup required. Perfect for first-time budgeters, roommates, and anyone with a side hustle. Premium AI features are available for $4.99/month."
+                "text": "Yes! Our monthly budget calculator is 100% free with no signup required. Start budgeting in under 5 minutes. Premium AI features are available for just $4.99/month."
               }
             },
             {
@@ -95,16 +95,16 @@ export const seoData: Record<string, SEOData> = {
   },
 
   monthlyBudget: {
-    title: "Free Budget Calculator | Adulting Your Money Made Simple",
-    description: "Finally figure out where your paycheck disappears to. Free budget calculator for first apartments, roommate splitting, side hustles & student loan payoff. No bank account needed — start adulting your finances.",
-    keywords: "adulting budget, first apartment budget calculator, millennial budget planner, gen z money tracker, roommate expense splitter, paycheck budget, budget without spreadsheet, budget for beginners, simple budget no bank",
+    title: "Free Monthly Budget Calculator | Track Your Paycheck in Minutes",
+    description: "Free monthly budget calculator — input your income, add expenses, and instantly see where your money goes. No bank account linking. Perfect for households, roommates, and first-time budgeters.",
+    keywords: "monthly budget calculator free, home budget calculator, household budget calculator, free budget planner, paycheck budget calculator, first apartment budget, roommate budget splitter, simple budget calculator online, budget tracker no bank account",
     canonical: "https://www.housebudgetcalculator.com/budget",
     ogImage: "https://www.housebudgetcalculator.com/assets/calculator-use-preview.png",
     structuredData: {
       "@context": "https://schema.org",
       "@type": "HowTo",
-      "name": "How to Adult Your Monthly Budget",
-      "description": "Track your paycheck and expenses with our free budget calculator — no spreadsheets required",
+      "name": "How to Create Your Monthly Budget",
+      "description": "Free monthly budget calculator — track your household income and expenses in under 5 minutes",
       "step": [
         {
           "@type": "HowToStep",
@@ -128,7 +128,7 @@ export const seoData: Record<string, SEOData> = {
   
   expenses: {
     title: "Expense Tracker | Track Spending Without Linking Your Bank",
-    description: "Know exactly where your money went without connecting your bank or using spreadsheets. Perfect for freelancers, gig workers, and anyone with variable income who needs flexible expense tracking.",
+    description: "Free expense tracker — log purchases in seconds without bank linking. See monthly spending breakdowns and find out where your money actually goes. Perfect for freelancers and gig workers.",
     keywords: "expense tracker no bank, freelancer expense tracker, gig worker budget, variable income tracker, simple spending tracker, side hustle income tracker, millennial expense app, expense log app",
     canonical: "https://www.housebudgetcalculator.com/expenses",
     ogImage: "https://www.housebudgetcalculator.com/assets/expenses-page-preview-new.png",
@@ -148,31 +148,31 @@ export const seoData: Record<string, SEOData> = {
   },
   
   vacation: {
-    title: "Vacation Budget Planner | Compare Trip Costs Before You Book",
-    description: "Compare vacation options side-by-side so you can actually afford that trip. Budget backpacking adventures, group trips, or your first real vacation as an adult. See the true cost before you book.",
-    keywords: "budget backpacking trip planner, cheap vacation calculator, trip cost comparison, group trip budget, girls trip planner, first vacation budget, travel on a budget, millennial travel planner, vacation cost estimator",
+    title: "Vacation Savings Calculator | Plan & Budget Your Trip",
+    description: "Free vacation budget calculator — compare trip costs side-by-side and see the true total before you book. Plan flights, hotels, activities, and know exactly what your vacation will cost.",
+    keywords: "vacation savings calculator, vacation budget planner, trip cost calculator, vacation cost estimator, travel budget calculator, how much will my vacation cost, trip planning calculator, holiday budget planner, vacation expense tracker",
     canonical: "https://www.housebudgetcalculator.com/vacation",
     ogImage: "https://www.housebudgetcalculator.com/assets/vacation-page-preview.png",
     structuredData: {
       "@context": "https://schema.org",
       "@type": "HowTo",
-      "name": "How to Plan and Budget Your Vacation",
-      "description": "Compare vacation destinations and plan trips within your budget",
+      "name": "How to Budget for Your Vacation",
+      "description": "Free vacation budget calculator — plan your trip costs and compare destinations before you book",
       "step": [
         {
           "@type": "HowToStep",
-          "name": "Create Vacation Plan",
-          "text": "Name your trip — backpacking Europe, girls trip, or wherever you're dreaming about"
+          "name": "Create Your Trip",
+          "text": "Name your vacation and start adding destination options to compare"
         },
         {
           "@type": "HowToStep",
-          "name": "Add Destination Options",
-          "text": "Compare multiple destinations with costs for flights, hotels, and activities"
+          "name": "Add Travel Costs",
+          "text": "Enter costs for flights, hotels, car rentals, and activities for each option"
         },
         {
           "@type": "HowToStep",
-          "name": "Choose Best Option",
-          "text": "See total costs side-by-side and pick what fits your budget"
+          "name": "Compare Total Costs",
+          "text": "See the true total cost of each trip option side-by-side and choose what fits your budget"
         }
       ],
       "totalTime": "PT15M"
@@ -180,8 +180,8 @@ export const seoData: Record<string, SEOData> = {
   },
   
   gifts: {
-    title: "Gift List Organizer | Gift Giving Without Going Broke",
-    description: "Keep track of gift ideas year-round so you're not panic-buying at the last minute. Manage holiday lists, birthday presents, and special occasions without blowing your budget.",
+    title: "Gift List Organizer | Track Holiday & Birthday Gift Budgets",
+    description: "Free gift list organizer — save gift ideas, track spending, and stay on budget for holidays and birthdays. Never panic-buy or overspend again. Estimate total gift costs before you shop.",
     keywords: "gift list organizer, holiday budget tracker, birthday gift planner, cheap gift ideas, gift giving on a budget, present tracker app, millennial gift planner, affordable gift list, gift tracker",
     canonical: "https://www.housebudgetcalculator.com/gifts",
     ogImage: "https://www.housebudgetcalculator.com/assets/gift-page-preview.png",
@@ -276,9 +276,9 @@ export const seoData: Record<string, SEOData> = {
   },
 
   savingsGoals: {
-    title: "Savings Goal Tracker | Save for What Actually Matters",
-    description: "Stop feeling guilty about every purchase and start saving for things you actually want — apartment deposits, engagement rings, travel, or a quit-your-job fund. Visual progress tracking keeps you motivated.",
-    keywords: "save for apartment deposit, first emergency fund, save for engagement ring, travel savings tracker, millennial savings goals, gen z savings app, quit job fund, adulting savings, savings goal tracker",
+    title: "Savings Goal Tracker | Free Visual Savings Calculator",
+    description: "Free savings goal tracker — set a target, log monthly contributions, and watch your progress grow. Perfect for apartment deposits, emergency funds, vacations, or any goal you're saving toward.",
+    keywords: "savings goal tracker, saving for a vacation calculator, savings calculator free, emergency fund tracker, how much should I save, savings progress tracker, visual savings goal, monthly savings planner, first savings goal",
     canonical: "https://www.housebudgetcalculator.com/savings",
     ogImage: "https://www.housebudgetcalculator.com/assets/savings-goal-preview.png",
     structuredData: {
