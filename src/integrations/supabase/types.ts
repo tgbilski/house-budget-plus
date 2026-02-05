@@ -1100,6 +1100,7 @@ export type Database = {
           lodging_cost: number | null
           memorable: boolean | null
           notes: string | null
+          overall_rating: number | null
           project_id: string
           travel_mode: string | null
           travel_mode_cost: number | null
@@ -1121,6 +1122,7 @@ export type Database = {
           lodging_cost?: number | null
           memorable?: boolean | null
           notes?: string | null
+          overall_rating?: number | null
           project_id: string
           travel_mode?: string | null
           travel_mode_cost?: number | null
@@ -1142,6 +1144,7 @@ export type Database = {
           lodging_cost?: number | null
           memorable?: boolean | null
           notes?: string | null
+          overall_rating?: number | null
           project_id?: string
           travel_mode?: string | null
           travel_mode_cost?: number | null

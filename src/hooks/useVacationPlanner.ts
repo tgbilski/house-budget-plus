@@ -20,6 +20,7 @@ export interface VacationOption {
   car_rental_cost: number;
   notes: string;
   vacation_number: number;
+  overall_rating: number | null;
 }
 
 interface UseVacationPlannerProps {
@@ -99,7 +100,8 @@ export function useVacationPlanner({ user, year }: UseVacationPlannerProps) {
         lodging_cost: 0,
         car_rental_cost: 0,
         notes: '',
-        vacation_number: currentVacation.vacation_number
+        vacation_number: currentVacation.vacation_number,
+        overall_rating: null
       }]);
       return;
     }
@@ -114,7 +116,8 @@ export function useVacationPlanner({ user, year }: UseVacationPlannerProps) {
         lodging_cost: 0,
         car_rental_cost: 0,
         notes: '',
-        vacation_number: currentVacation.vacation_number
+        vacation_number: currentVacation.vacation_number,
+        overall_rating: null
       }]);
       return;
     }
@@ -136,7 +139,8 @@ export function useVacationPlanner({ user, year }: UseVacationPlannerProps) {
           lodging_cost: option.lodging_cost || 0,
           car_rental_cost: option.car_rental_cost || 0,
           notes: option.notes || '',
-          vacation_number: option.vacation_number
+          vacation_number: option.vacation_number,
+          overall_rating: option.overall_rating ?? null
         })));
       } else {
         // Create a temporary option for empty vacation projects
@@ -148,7 +152,8 @@ export function useVacationPlanner({ user, year }: UseVacationPlannerProps) {
           lodging_cost: 0,
           car_rental_cost: 0,
           notes: '',
-          vacation_number: currentVacation.vacation_number
+          vacation_number: currentVacation.vacation_number,
+          overall_rating: null
         }]);
       }
     } catch (error) {
@@ -171,7 +176,8 @@ export function useVacationPlanner({ user, year }: UseVacationPlannerProps) {
       lodging_cost: 0,
       car_rental_cost: 0,
       notes: '',
-      vacation_number: currentVacation.vacation_number
+      vacation_number: currentVacation.vacation_number,
+      overall_rating: null
     };
     setOptions(prev => [...prev, newOption]);
   };
