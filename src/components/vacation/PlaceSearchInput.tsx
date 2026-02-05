@@ -187,7 +187,11 @@
              <button
                key={result.id}
                type="button"
-               onClick={() => handleSelect(result)}
+               onMouseDown={(e) => {
+                 e.preventDefault();
+                 e.stopPropagation();
+                 handleSelect(result);
+               }}
                className={cn(
                  "w-full px-3 py-2.5 text-left flex items-start gap-2.5 hover:bg-accent transition-colors",
                  index === selectedIndex && "bg-accent"
