@@ -83,7 +83,7 @@ export const VacationOptionCard: React.FC<VacationOptionCardProps> = ({ option, 
       
       {/* Option number badge */}
       <div className="absolute top-3 left-3 z-10">
-         <div className="w-8 h-8 rounded-full bg-gradient-jazz flex items-center justify-center text-primary-foreground font-bold text-sm border-2 border-background">
+         <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-primary-foreground font-bold text-sm border-2 border-background shadow-md">
           {optionNumber}
         </div>
       </div>
