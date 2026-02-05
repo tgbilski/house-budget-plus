@@ -83,7 +83,7 @@ export const VacationOptionCard: React.FC<VacationOptionCardProps> = ({ option, 
       
       {/* Option number badge */}
       <div className="absolute top-3 left-3 z-10">
-         <div className="w-8 h-8 rounded-full bg-gradient-jazz flex items-center justify-center text-accent font-bold text-sm border-2 border-background">
+         <div className="w-8 h-8 rounded-full bg-gradient-jazz flex items-center justify-center text-primary-foreground font-bold text-sm border-2 border-background">
           {optionNumber}
         </div>
       </div>
@@ -99,14 +99,14 @@ export const VacationOptionCard: React.FC<VacationOptionCardProps> = ({ option, 
       </Button>
       
        {/* Prominent Total Cost at Top */}
-       <div className="mx-4 mt-4 mb-2 ml-14 mr-10">
+       <div className="mx-4 mt-4 mb-2 ml-12 mr-10">
          <div className="p-4 text-center">
            <div className="text-xs text-muted-foreground font-medium uppercase tracking-wide">Estimated Total</div>
-           <div className="text-2xl sm:text-3xl font-bold text-accent">{currencySymbol}{totalCost.toLocaleString()}</div>
+           <div className="text-2xl sm:text-3xl font-bold text-primary">{currencySymbol}{totalCost.toLocaleString()}</div>
          </div>
        </div>
        
-       <CardHeader className="pb-3 pr-10 pt-2 pl-14">
+       <CardHeader className="pb-3 pt-2 px-4">
          {/* Helper text */}
          <p className="text-xs text-muted-foreground mb-2 flex items-center gap-1">
            <Sparkles className="h-3 w-3" />
