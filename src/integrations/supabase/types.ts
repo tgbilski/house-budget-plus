@@ -1092,6 +1092,8 @@ export type Database = {
           contact: string | null
           created_at: string
           destination: string | null
+          destination_lat: number | null
+          destination_lng: number | null
           destination_safe: boolean | null
           everyone_enjoy: boolean | null
           exciting_option: boolean | null
@@ -1114,6 +1116,8 @@ export type Database = {
           contact?: string | null
           created_at?: string
           destination?: string | null
+          destination_lat?: number | null
+          destination_lng?: number | null
           destination_safe?: boolean | null
           everyone_enjoy?: boolean | null
           exciting_option?: boolean | null
@@ -1136,6 +1140,8 @@ export type Database = {
           contact?: string | null
           created_at?: string
           destination?: string | null
+          destination_lat?: number | null
+          destination_lng?: number | null
           destination_safe?: boolean | null
           everyone_enjoy?: boolean | null
           exciting_option?: boolean | null

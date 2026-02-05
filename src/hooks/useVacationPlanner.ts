@@ -21,6 +21,8 @@ export interface VacationOption {
   notes: string;
   vacation_number: number;
   overall_rating: number | null;
+  destination_lat: number | null;
+  destination_lng: number | null;
 }
 
 interface UseVacationPlannerProps {
@@ -101,7 +103,9 @@ export function useVacationPlanner({ user, year }: UseVacationPlannerProps) {
         car_rental_cost: 0,
         notes: '',
         vacation_number: currentVacation.vacation_number,
-        overall_rating: null
+        overall_rating: null,
+        destination_lat: null,
+        destination_lng: null
       }]);
       return;
     }
@@ -117,7 +121,9 @@ export function useVacationPlanner({ user, year }: UseVacationPlannerProps) {
         car_rental_cost: 0,
         notes: '',
         vacation_number: currentVacation.vacation_number,
-        overall_rating: null
+        overall_rating: null,
+        destination_lat: null,
+        destination_lng: null
       }]);
       return;
     }
@@ -140,7 +146,9 @@ export function useVacationPlanner({ user, year }: UseVacationPlannerProps) {
           car_rental_cost: option.car_rental_cost || 0,
           notes: option.notes || '',
           vacation_number: option.vacation_number,
-          overall_rating: option.overall_rating ?? null
+          overall_rating: option.overall_rating ?? null,
+          destination_lat: option.destination_lat ?? null,
+          destination_lng: option.destination_lng ?? null
         })));
       } else {
         // Create a temporary option for empty vacation projects
@@ -153,7 +161,9 @@ export function useVacationPlanner({ user, year }: UseVacationPlannerProps) {
           car_rental_cost: 0,
           notes: '',
           vacation_number: currentVacation.vacation_number,
-          overall_rating: null
+          overall_rating: null,
+          destination_lat: null,
+          destination_lng: null
         }]);
       }
     } catch (error) {
@@ -177,7 +187,9 @@ export function useVacationPlanner({ user, year }: UseVacationPlannerProps) {
       car_rental_cost: 0,
       notes: '',
       vacation_number: currentVacation.vacation_number,
-      overall_rating: null
+      overall_rating: null,
+      destination_lat: null,
+      destination_lng: null
     };
     setOptions(prev => [...prev, newOption]);
   };
