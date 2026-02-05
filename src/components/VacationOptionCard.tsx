@@ -2,13 +2,14 @@
 import React, { useState, useEffect } from 'react';
 import { X, Plane, Car, ChevronDown, ChevronUp, StickyNote, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
+import { Input } from '@/components/ui/input'; 
 import { Label } from '@/components/ui/label';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { Badge } from '@/components/ui/badge';
+import { PlaceSearchInput } from '@/components/vacation/PlaceSearchInput';
 import type { VacationOption } from '@/hooks/useVacationPlanner';
 
 interface VacationOptionCardProps {
@@ -16,6 +17,7 @@ interface VacationOptionCardProps {
   onUpdate: (optionId: string, updates: Partial<VacationOption>) => void;
   onReset: (optionId: string) => void;
   currencySymbol: string;
+  optionNumber: number;
 }
 
 const RATING_OPTIONS = [
@@ -27,7 +29,7 @@ const RATING_OPTIONS = [
 ];
 
 // FIX: The function name is now VacationOptionCard
-export const VacationOptionCard: React.FC<VacationOptionCardProps> = ({ option, onUpdate, onReset, currencySymbol }) => {
+export const VacationOptionCard: React.FC<VacationOptionCardProps> = ({ option, onUpdate, onReset, currencySymbol, optionNumber }) => {
   const [localOption, setLocalOption] = useState<VacationOption>(option);
   const [notesOpen, setNotesOpen] = useState(false);
 
@@ -51,6 +53,17 @@ export const VacationOptionCard: React.FC<VacationOptionCardProps> = ({ option, 
     }
   };
 
+  const handlePlaceSelect = (place: { name: string; lat: number; lng: number }) => {
+    handleLocalChange('destination', place.name);
+    handleLocalChange('destination_lat', place.lat || null);
+    handleLocalChange('destination_lng', place.lng || null);
+    onUpdate(option.id, { 
+      destination: place.name,
+      destination_lat: place.lat || null,
+      destination_lng: place.lng || null
+    });
+  };
+
   const totalCost = (localOption.travel_mode_cost || 0) + (localOption.lodging_cost || 0) + (localOption.car_rental_cost || 0);
 
   const currentRating = RATING_OPTIONS.find(r => r.value === localOption.overall_rating);
@@ -68,6 +81,13 @@ export const VacationOptionCard: React.FC<VacationOptionCardProps> = ({ option, 
       {/* Fun gradient header accent */}
       <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-jazz" />
       
+      {/* Option number badge */}
+      <div className="absolute top-3 left-3 z-10">
+        <div className="w-8 h-8 rounded-full bg-gradient-jazz flex items-center justify-center text-white font-bold text-sm shadow-md border-2 border-white">
+          {optionNumber}
+        </div>
+      </div>
+      
       {/* Delete button */}
       <Button
         variant="ghost"
@@ -78,7 +98,7 @@ export const VacationOptionCard: React.FC<VacationOptionCardProps> = ({ option, 
         <X className="h-4 w-4" />
       </Button>
       
-      <CardHeader className="pb-3 pr-10 pt-5">
+      <CardHeader className="pb-3 pr-10 pt-5 pl-14">
         {/* Helper text */}
         <p className="text-xs text-muted-foreground mb-2 flex items-center gap-1">
           <Sparkles className="h-3 w-3" />
@@ -88,12 +108,11 @@ export const VacationOptionCard: React.FC<VacationOptionCardProps> = ({ option, 
         <div className="flex flex-col gap-3">
           <div className="w-full">
             <Label className="text-sm mb-1.5 block font-semibold">Where to? 🌴</Label>
-            <Input
+            <PlaceSearchInput
               value={localOption.destination}
-              onChange={(e) => handleLocalChange('destination', e.target.value)}
-              onBlur={() => handleBlur('destination')}
-              placeholder="Paris, Cancun, Tokyo..."
-              className="text-base sm:text-lg font-semibold h-10"
+              onChange={(val) => handleLocalChange('destination', val)}
+              onSelect={handlePlaceSelect}
+              placeholder="Search destinations..."
             />
           </div>
           

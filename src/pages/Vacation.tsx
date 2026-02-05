@@ -14,6 +14,7 @@ import { VacationSummaryCard } from '@/components/VacationSummaryCard';
 import { seoData } from '@/utils/seoData';
 import { useVacationPlanner } from '@/hooks/useVacationPlanner';
 import { VacationOptionCard } from '@/components/VacationOptionCard';
+import { VacationMap } from '@/components/vacation/VacationMap';
 import { InternalLinks } from '@/components/InternalLinks';
 import { FAQ } from '@/components/FAQ';
 import { BadgeDisplay } from '@/components/BadgeDisplay';
@@ -120,6 +121,9 @@ const Vacation: React.FC = () => {
             onUpdateTitle={updateVacationTitle}
           />
 
+          {/* Interactive Map */}
+          <VacationMap options={options} />
+
           <div className="flex justify-end">
             <Button onClick={addOption} className="gap-2 bg-teal hover:bg-teal/90 text-teal-foreground">
               <Plus className="h-4 w-4" /> Add Destination Option
@@ -141,6 +145,7 @@ const Vacation: React.FC = () => {
                   }}
                   onReset={removeOption}
                   currencySymbol={currency.symbol}
+                  optionNumber={index + 1}
                 />
               </div>
             ))}
