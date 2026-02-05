@@ -100,7 +100,7 @@ export const VacationOptionCard: React.FC<VacationOptionCardProps> = ({ option, 
       
        {/* Prominent Total Cost at Top */}
        <div className="mx-4 mt-4 mb-2 ml-14 mr-10">
-         <div className="bg-muted rounded-xl p-4 text-center border border-border">
+         <div className="p-4 text-center">
            <div className="text-xs text-muted-foreground font-medium uppercase tracking-wide">Estimated Total</div>
            <div className="text-2xl sm:text-3xl font-bold text-accent">{currencySymbol}{totalCost.toLocaleString()}</div>
          </div>
