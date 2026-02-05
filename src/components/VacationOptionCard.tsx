@@ -98,89 +98,101 @@ export const VacationOptionCard: React.FC<VacationOptionCardProps> = ({ option, 
         <X className="h-4 w-4" />
       </Button>
       
-      <CardHeader className="pb-3 pr-10 pt-5 pl-14">
-        {/* Helper text */}
-        <p className="text-xs text-muted-foreground mb-2 flex items-center gap-1">
-          <Sparkles className="h-3 w-3" />
-          Enter rough estimates to compare options
-        </p>
-        
-        <div className="flex flex-col gap-3">
-          <div className="w-full">
-            <Label className="text-sm mb-1.5 block font-semibold">Where to? 🌴</Label>
-            <PlaceSearchInput
-              value={localOption.destination}
-              onChange={(val) => handleLocalChange('destination', val)}
-              onSelect={handlePlaceSelect}
-              placeholder="Search destinations..."
-            />
-          </div>
-          
-          {/* Quick search links */}
-          {localOption.destination && (
-            <div className="flex gap-2 flex-wrap">
-              <a 
-                href={searchFlightsUrl || '#'} 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-1.5 text-xs px-2.5 py-1.5 rounded-full bg-primary/10 text-primary hover:bg-primary/20 transition-colors font-medium"
-              >
-                <Plane className="h-3 w-3" />
-                Search Flights
-              </a>
-              <a 
-                href={searchCarsUrl || '#'} 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-1.5 text-xs px-2.5 py-1.5 rounded-full bg-teal/10 text-teal hover:bg-teal/20 transition-colors font-medium"
-              >
-                <Car className="h-3 w-3" />
-                Search Rentals
-              </a>
-            </div>
-          )}
-          
-          <div className="w-full bg-gradient-to-br from-primary/5 to-teal/5 rounded-xl p-3 border border-primary/20">
-            <div className="text-xs sm:text-sm text-muted-foreground mb-1">Estimated Total Cost</div>
-            <div className="text-xl sm:text-2xl font-bold text-primary">{currencySymbol}{totalCost.toLocaleString()}</div>
-          </div>
-        </div>
-      </CardHeader>
+       {/* Prominent Total Cost at Top */}
+       <div className="mx-4 mt-4 mb-2 ml-14 mr-10">
+         <div className="bg-gradient-jazz rounded-xl p-4 text-center shadow-md">
+           <div className="text-xs text-white/80 font-medium uppercase tracking-wide">Estimated Total</div>
+           <div className="text-2xl sm:text-3xl font-bold text-white">{currencySymbol}{totalCost.toLocaleString()}</div>
+         </div>
+       </div>
+       
+       <CardHeader className="pb-3 pr-10 pt-2 pl-14">
+         {/* Helper text */}
+         <p className="text-xs text-muted-foreground mb-2 flex items-center gap-1">
+           <Sparkles className="h-3 w-3" />
+           Enter rough estimates to compare options
+         </p>
+         
+         <div className="flex flex-col gap-3">
+           <div className="w-full">
+             <Label className="text-sm mb-1.5 block font-semibold">Where to? 🌴</Label>
+             <PlaceSearchInput
+               value={localOption.destination}
+               onChange={(val) => handleLocalChange('destination', val)}
+               onSelect={handlePlaceSelect}
+               placeholder="Search destinations..."
+             />
+           </div>
+           
+           {/* Quick search links */}
+           {localOption.destination && (
+             <div className="flex gap-2 flex-wrap">
+               <a 
+                 href={searchFlightsUrl || '#'} 
+                 target="_blank" 
+                 rel="noopener noreferrer"
+                 className="inline-flex items-center gap-1.5 text-xs px-2.5 py-1.5 rounded-full bg-primary/10 text-primary hover:bg-primary/20 transition-colors font-medium"
+               >
+                 <Plane className="h-3 w-3" />
+                 Search Flights
+               </a>
+               <a 
+                 href={searchCarsUrl || '#'} 
+                 target="_blank" 
+                 rel="noopener noreferrer"
+                 className="inline-flex items-center gap-1.5 text-xs px-2.5 py-1.5 rounded-full bg-teal/10 text-teal hover:bg-teal/20 transition-colors font-medium"
+               >
+                 <Car className="h-3 w-3" />
+                 Search Rentals
+               </a>
+             </div>
+           )}
+         </div>
+       </CardHeader>
       <CardContent className="space-y-4 flex-1 flex flex-col pt-0">
         {/* Cost inputs */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+         <div className="grid grid-cols-3 gap-2 sm:gap-3">
           <div className="space-y-1.5">
-            <Label className="text-xs font-medium">✈️ Travel</Label>
-            <Input 
-              type="number" 
-              value={localOption.travel_mode_cost || ''} 
-              onChange={(e) => handleLocalChange('travel_mode_cost', parseFloat(e.target.value) || 0)} 
-              onBlur={() => handleBlur('travel_mode_cost')} 
-              placeholder="0" 
-              className="h-8 text-sm" 
-            />
+             <Label className="text-xs font-medium">✈️ Travel</Label>
+             <div className="relative">
+               <span className="absolute left-2 top-1/2 -translate-y-1/2 text-muted-foreground text-sm">{currencySymbol}</span>
+               <Input 
+                 type="number" 
+                 value={localOption.travel_mode_cost || ''} 
+                 onChange={(e) => handleLocalChange('travel_mode_cost', parseFloat(e.target.value) || 0)} 
+                 onBlur={() => handleBlur('travel_mode_cost')} 
+                 placeholder="0" 
+                 className="h-8 text-sm pl-5" 
+               />
+             </div>
           </div>
           <div className="space-y-1.5">
-            <Label className="text-xs font-medium">🏨 Lodging</Label>
-            <Input 
-              type="number" 
-              value={localOption.lodging_cost || ''} 
-              onChange={(e) => handleLocalChange('lodging_cost', parseFloat(e.target.value) || 0)} 
-              onBlur={() => handleBlur('lodging_cost')} 
-              placeholder="0" 
-              className="h-8 text-sm" 
-            />
+             <Label className="text-xs font-medium">🏨 Lodging</Label>
+             <div className="relative">
+               <span className="absolute left-2 top-1/2 -translate-y-1/2 text-muted-foreground text-sm">{currencySymbol}</span>
+               <Input 
+                 type="number" 
+                 value={localOption.lodging_cost || ''} 
+                 onChange={(e) => handleLocalChange('lodging_cost', parseFloat(e.target.value) || 0)} 
+                 onBlur={() => handleBlur('lodging_cost')} 
+                 placeholder="0" 
+                 className="h-8 text-sm pl-5" 
+               />
+             </div>
           </div>
           <div className="space-y-1.5">
-            <Label className="text-xs font-medium">🚗 Car Rental</Label>
-            <Input 
-              type="number" 
-              value={localOption.car_rental_cost || ''} 
-              onChange={(e) => handleLocalChange('car_rental_cost', parseFloat(e.target.value) || 0)} 
-              onBlur={() => handleBlur('car_rental_cost')} 
-              placeholder="0" 
-              className="h-8 text-sm" 
-            />
+             <Label className="text-xs font-medium">🚗 Car</Label>
+             <div className="relative">
+               <span className="absolute left-2 top-1/2 -translate-y-1/2 text-muted-foreground text-sm">{currencySymbol}</span>
+               <Input 
+                 type="number" 
+                 value={localOption.car_rental_cost || ''} 
+                 onChange={(e) => handleLocalChange('car_rental_cost', parseFloat(e.target.value) || 0)} 
+                 onBlur={() => handleBlur('car_rental_cost')} 
+                 placeholder="0" 
+                 className="h-8 text-sm pl-5" 
+               />
+             </div>
           </div>
         </div>
         

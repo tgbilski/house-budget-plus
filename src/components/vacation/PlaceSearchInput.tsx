@@ -2,6 +2,7 @@
  import { MapPin, Search, Loader2, X } from 'lucide-react';
  import { Input } from '@/components/ui/input';
  import { cn } from '@/lib/utils';
+ import { supabase } from '@/integrations/supabase/client';
  
  interface PlaceResult {
    id: string;
@@ -18,7 +19,7 @@
    className?: string;
  }
  
- const MAPBOX_TOKEN = 'pk.eyJ1IjoiaG91c2VidWRnZXRwbHVzIiwiYSI6ImNtOTNweGsxMjBkZ2QybHI1cTBxaWNuM3EifQ.ZqLGjhfq_h0sBjsb5Xp1Dw';
+ // Use edge function for geocoding to keep token secure
  
  export const PlaceSearchInput: React.FC<PlaceSearchInputProps> = ({
    value,
@@ -49,13 +50,16 @@
  
      setIsLoading(true);
      try {
-       const response = await fetch(
-         `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(searchQuery)}.json?` +
-         `access_token=${MAPBOX_TOKEN}&types=place,locality,region,country&limit=5`
-       );
-       const data = await response.json();
-       
-       if (data.features) {
+       const { data, error } = await supabase.functions.invoke('geocode-places', {
+         body: { query: searchQuery }
+       });
+ 
+       if (error) {
+         console.error('Geocoding error:', error);
+         return;
+       }
+ 
+       if (data?.features) {
          setResults(data.features.map((f: any) => ({
            id: f.id,
            place_name: f.place_name,
