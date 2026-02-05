@@ -1,4 +1,4 @@
- import React, { useState, useRef, useEffect, useCallback } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
  import { MapPin, Search, Loader2, X } from 'lucide-react';
  import { Input } from '@/components/ui/input';
  import { cn } from '@/lib/utils';
@@ -28,19 +28,14 @@
    placeholder = "Search destinations...",
    className
  }) => {
-   const [query, setQuery] = useState(value);
    const [results, setResults] = useState<PlaceResult[]>([]);
    const [isOpen, setIsOpen] = useState(false);
    const [isLoading, setIsLoading] = useState(false);
    const [selectedIndex, setSelectedIndex] = useState(-1);
    const inputRef = useRef<HTMLInputElement>(null);
    const dropdownRef = useRef<HTMLDivElement>(null);
+  const rootRef = useRef<HTMLDivElement>(null);
    const debounceRef = useRef<NodeJS.Timeout>();
- 
-   // Update local query when value prop changes
-   useEffect(() => {
-     setQuery(value);
-   }, [value]);
  
    const searchPlaces = useCallback(async (searchQuery: string) => {
      if (!searchQuery || searchQuery.length < 2) {
@@ -77,7 +72,6 @@
  
    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
      const newValue = e.target.value;
-     setQuery(newValue);
      onChange(newValue);
      setSelectedIndex(-1);
  
@@ -91,8 +85,9 @@
    };
  
    const handleSelect = (result: PlaceResult) => {
-     setQuery(result.text);
-     onChange(result.text);
+    // Keep the input controlled by parent state.
+    // Use the visible suggestion label (text) for the input.
+    onChange(result.text);
      onSelect({
        name: result.text,
        lng: result.center[0],
@@ -127,7 +122,6 @@
    };
  
    const handleClear = () => {
-     setQuery('');
      onChange('');
      onSelect({ name: '', lat: 0, lng: 0 });
      setResults([]);
@@ -136,27 +130,23 @@
  
    // Close dropdown on click outside
    useEffect(() => {
-     const handleClickOutside = (e: MouseEvent) => {
-       if (
-         dropdownRef.current && 
-         !dropdownRef.current.contains(e.target as Node) &&
-         !inputRef.current?.contains(e.target as Node)
-       ) {
-         setIsOpen(false);
-       }
-     };
- 
-     document.addEventListener('mousedown', handleClickOutside);
-     return () => document.removeEventListener('mousedown', handleClickOutside);
+    const handlePointerDownOutside = (e: PointerEvent) => {
+      // If the pointer down is inside this component, ignore.
+      if (rootRef.current?.contains(e.target as Node)) return;
+      setIsOpen(false);
+    };
+
+    document.addEventListener('pointerdown', handlePointerDownOutside);
+    return () => document.removeEventListener('pointerdown', handlePointerDownOutside);
    }, []);
  
    return (
-     <div className={cn("relative", className)}>
+    <div ref={rootRef} className={cn("relative", className)}>
        <div className="relative">
          <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
          <Input
            ref={inputRef}
-           value={query}
+          value={value}
            onChange={handleInputChange}
            onKeyDown={handleKeyDown}
            onFocus={() => results.length > 0 && setIsOpen(true)}
@@ -166,7 +156,7 @@
          {isLoading && (
            <Loader2 className="absolute right-2.5 top-1/2 -translate-y-1/2 h-4 w-4 animate-spin text-muted-foreground" />
          )}
-         {!isLoading && query && (
+        {!isLoading && value && (
            <button
              type="button"
              onClick={handleClear}
@@ -187,11 +177,12 @@
              <button
                key={result.id}
                type="button"
-               onMouseDown={(e) => {
-                 e.preventDefault();
-                 e.stopPropagation();
-                 handleSelect(result);
-               }}
+                onPointerDown={(e) => {
+                  // Prevent focus from leaving the input before we select.
+                  e.preventDefault();
+                  e.stopPropagation();
+                  handleSelect(result);
+                }}
                className={cn(
                  "w-full px-3 py-2.5 text-left flex items-start gap-2.5 hover:bg-accent transition-colors",
                  index === selectedIndex && "bg-accent"
