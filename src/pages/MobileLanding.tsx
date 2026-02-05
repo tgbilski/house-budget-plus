@@ -79,6 +79,16 @@ export const MobileLanding: React.FC = () => {
               className="w-32 h-32 object-contain"
             />
           </div>
+          
+          {/* App Preview Image */}
+          <div className="rounded-lg overflow-hidden shadow-lg border border-border/40">
+            <img 
+              src="/lovable-uploads/og-image-social.png" 
+              alt="House Budget Calculator app preview - track income, expenses, and savings"
+              className="w-full h-auto"
+            />
+          </div>
+          
           <div>
             <h1 className="text-4xl font-bold text-primary">
               Welcome!
