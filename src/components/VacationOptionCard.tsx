@@ -1,6 +1,6 @@
 // src/components/VacationOptionCard.tsx
 import React, { useState, useEffect } from 'react';
-import { X, Plane, Car, ChevronDown, ChevronUp, StickyNote, Sparkles } from 'lucide-react';
+import { X, Plane, Car, ChevronDown, ChevronUp, StickyNote, Sparkles, ExternalLink, Link } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input'; 
 import { Label } from '@/components/ui/label';
@@ -145,9 +145,39 @@ export const VacationOptionCard: React.FC<VacationOptionCardProps> = ({ option, 
                  <Car className="h-3 w-3" />
                  Search Rentals
                </a>
-             </div>
-           )}
-         </div>
+              </div>
+            )}
+
+            {/* Rental URL field */}
+            <div className="w-full">
+              <Label className="text-sm mb-1.5 block font-semibold">Rental Link 🏠</Label>
+              <div className="flex gap-2">
+                <div className="relative flex-1">
+                  <Link className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
+                  <Input
+                    type="url"
+                    value={localOption.rental_url || ''}
+                    onChange={(e) => handleLocalChange('rental_url', e.target.value)}
+                    onBlur={() => handleBlur('rental_url')}
+                    placeholder="Paste Airbnb, VRBO link..."
+                    className="h-8 text-sm pl-8"
+                  />
+                </div>
+                {localOption.rental_url && (
+                  <a
+                    href={localOption.rental_url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center justify-center h-8 w-8 rounded-md bg-primary/10 text-primary hover:bg-primary/20 transition-colors flex-shrink-0"
+                    title="Open listing"
+                  >
+                    <ExternalLink className="h-3.5 w-3.5" />
+                  </a>
+                )}
+              </div>
+              <p className="text-[10px] text-muted-foreground mt-1">Paste a link for reference, then enter costs manually above</p>
+            </div>
+          </div>
        </CardHeader>
       <CardContent className="space-y-4 flex-1 flex flex-col pt-0">
         {/* Cost inputs */}
