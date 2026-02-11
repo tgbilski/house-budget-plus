@@ -23,6 +23,7 @@ export interface VacationOption {
   overall_rating: number | null;
   destination_lat: number | null;
   destination_lng: number | null;
+  rental_url: string;
 }
 
 interface UseVacationPlannerProps {
@@ -105,7 +106,8 @@ export function useVacationPlanner({ user, year }: UseVacationPlannerProps) {
         vacation_number: currentVacation.vacation_number,
         overall_rating: null,
         destination_lat: null,
-        destination_lng: null
+        destination_lng: null,
+        rental_url: ''
       }]);
       return;
     }
@@ -123,7 +125,8 @@ export function useVacationPlanner({ user, year }: UseVacationPlannerProps) {
         vacation_number: currentVacation.vacation_number,
         overall_rating: null,
         destination_lat: null,
-        destination_lng: null
+        destination_lng: null,
+        rental_url: ''
       }]);
       return;
     }
@@ -148,7 +151,8 @@ export function useVacationPlanner({ user, year }: UseVacationPlannerProps) {
           vacation_number: option.vacation_number,
           overall_rating: option.overall_rating ?? null,
           destination_lat: option.destination_lat ?? null,
-          destination_lng: option.destination_lng ?? null
+          destination_lng: option.destination_lng ?? null,
+          rental_url: option.contact || ''
         })));
       } else {
         // Create a temporary option for empty vacation projects
@@ -161,9 +165,10 @@ export function useVacationPlanner({ user, year }: UseVacationPlannerProps) {
           car_rental_cost: 0,
           notes: '',
           vacation_number: currentVacation.vacation_number,
-          overall_rating: null,
-          destination_lat: null,
-          destination_lng: null
+        overall_rating: null,
+        destination_lat: null,
+        destination_lng: null,
+        rental_url: ''
         }]);
       }
     } catch (error) {
@@ -189,7 +194,8 @@ export function useVacationPlanner({ user, year }: UseVacationPlannerProps) {
       vacation_number: currentVacation.vacation_number,
       overall_rating: null,
       destination_lat: null,
-      destination_lng: null
+      destination_lng: null,
+      rental_url: ''
     };
     setOptions(prev => [...prev, newOption]);
   };
@@ -252,11 +258,12 @@ export function useVacationPlanner({ user, year }: UseVacationPlannerProps) {
   };
 
   const saveOptionToDatabase = async (updatedOption: VacationOption, vacationProjectId: string) => {
-    const { id, vacation_id, ...optionData } = updatedOption;
+    const { id, vacation_id, rental_url, ...optionData } = updatedOption;
     
     // Get vacation_number from the updatedOption itself, as it should be correct
     const saveData = {
       ...optionData,
+      contact: rental_url || null,
       project_id: vacationProjectId,
       user_id: user!.id,
       vacation_number: updatedOption.vacation_number,
