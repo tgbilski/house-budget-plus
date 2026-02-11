@@ -151,7 +151,20 @@ export const VacationOptionCard: React.FC<VacationOptionCardProps> = ({ option, 
             {/* Rental URL field */}
             <div className="w-full">
               <Label className="text-sm mb-1.5 block font-semibold">Rental Link 🏠</Label>
-              <div className="flex gap-2">
+              <div className="flex gap-2 items-center">
+                {localOption.rental_url && (() => {
+                  try {
+                    const domain = new URL(localOption.rental_url).hostname;
+                    return (
+                      <img
+                        src={`https://www.google.com/s2/favicons?domain=${domain}&sz=32`}
+                        alt={domain}
+                        className="h-6 w-6 rounded flex-shrink-0"
+                        onError={(e) => { e.currentTarget.style.display = 'none'; }}
+                      />
+                    );
+                  } catch { return null; }
+                })()}
                 <div className="relative flex-1">
                   <Link className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
                   <Input
