@@ -189,6 +189,28 @@ export const VacationOptionCard: React.FC<VacationOptionCardProps> = ({ option, 
                 )}
               </div>
               <p className="text-[10px] text-muted-foreground mt-1">Paste a link for reference, then enter costs manually above</p>
+              {localOption.destination && (
+                <div className="flex gap-2 flex-wrap mt-1.5">
+                  <a
+                    href={`https://www.airbnb.com/s/${encodeURIComponent(localOption.destination)}/homes`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1.5 text-xs px-2.5 py-1.5 rounded-full bg-[hsl(356,100%,45%)]/10 text-[hsl(356,100%,45%)] hover:bg-[hsl(356,100%,45%)]/20 transition-colors font-medium"
+                  >
+                    <img src="https://www.google.com/s2/favicons?domain=airbnb.com&sz=16" alt="" className="h-3 w-3" />
+                    Search Airbnb
+                  </a>
+                  <a
+                    href={`https://www.vrbo.com/search?destination=${encodeURIComponent(localOption.destination)}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1.5 text-xs px-2.5 py-1.5 rounded-full bg-[hsl(210,100%,40%)]/10 text-[hsl(210,100%,40%)] hover:bg-[hsl(210,100%,40%)]/20 transition-colors font-medium"
+                  >
+                    <img src="https://www.google.com/s2/favicons?domain=vrbo.com&sz=16" alt="" className="h-3 w-3" />
+                    Search VRBO
+                  </a>
+                </div>
+              )}
             </div>
           </div>
        </CardHeader>
