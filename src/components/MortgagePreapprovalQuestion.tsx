@@ -89,7 +89,7 @@ export const MortgagePreapprovalQuestion: React.FC<MortgagePreapprovalQuestionPr
 
   const handleClick = () => {
     if (!user) {
-      navigate('/auth');
+      navigate('/login');
       return;
     }
     setShowAnswer(true);
@@ -134,7 +134,7 @@ export const MortgagePreapprovalQuestion: React.FC<MortgagePreapprovalQuestionPr
               <Lock className="h-4 w-4 flex-shrink-0" />
               <span className="text-sm">Sign in for your estimate</span>
             </div>
-            <Button onClick={() => navigate('/auth')} size="sm">Sign In</Button>
+            <Button onClick={() => navigate('/login')} size="sm">Sign In</Button>
           </div>
         ) : !subscribed ? (
           <div className="bg-background/50 rounded-lg p-3 border border-border">

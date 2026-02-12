@@ -151,7 +151,7 @@ export default function Features() {
         {/* Bottom CTA Section for non-logged-in users */}
         {!user && (
           <section className="container mx-auto px-4 pb-20 text-center">
-            <Link to="/auth" className="inline-block">
+            <Link to="/signup" className="inline-block">
               <Button 
                 size="lg"
                 className="h-14 px-12 text-xl font-bold bg-sage text-sage-foreground hover:bg-sage/90 shadow-2xl transition-all"

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -14,9 +14,10 @@ import mascotIcon from '@/assets/calculator-mascot.png';
 import appPreviewImage from '/lovable-uploads/og-image-social.png';
 
 const Auth: React.FC = () => {
-  const [searchParams] = useSearchParams();
-  const mode = searchParams.get('mode');
-  const [isSignUp, setIsSignUp] = useState(mode !== 'signin');
+  const location = useLocation();
+  // Determine mode from URL path
+  const isSignUpRoute = location.pathname === '/signup';
+  const [isSignUp, setIsSignUp] = useState(isSignUpRoute);
   const [isForgotPassword, setIsForgotPassword] = useState(false);
   const [isResettingPassword, setIsResettingPassword] = useState(false);
   const [verificationSent, setVerificationSent] = useState(false);
@@ -30,12 +31,14 @@ const Auth: React.FC = () => {
   const { toast } = useToast();
   const isMobileApp = isNativeApp();
   
-  // Mark page as ready on mount
   useMarkPageReady();
 
-  // Check for password reset token and redirect if already authenticated
+  // Sync isSignUp with route changes
   useEffect(() => {
-    // Check if this is a password reset callback
+    setIsSignUp(location.pathname === '/signup');
+  }, [location.pathname]);
+
+  useEffect(() => {
     const checkPasswordReset = async () => {
       const hashParams = new URLSearchParams(window.location.hash.substring(1));
       const type = hashParams.get('type');
@@ -52,7 +55,6 @@ const Auth: React.FC = () => {
     checkPasswordReset();
 
     if (user && !isResettingPassword) {
-      // Redirect authenticated users to budget page
       navigate(isMobileApp ? '/budget' : '/budget');
     }
   }, [user, navigate, isResettingPassword, isMobileApp]);
@@ -103,7 +105,7 @@ const Auth: React.FC = () => {
         }
       } else if (isForgotPassword) {
         const { error } = await supabase.auth.resetPasswordForEmail(email, {
-          redirectTo: `${window.location.origin}/auth`
+          redirectTo: `${window.location.origin}/login`
         });
         
         if (error) {
@@ -120,8 +122,7 @@ const Auth: React.FC = () => {
           setIsForgotPassword(false);
         }
       } else if (isSignUp) {
-        // Redirect to budget page after email verification
-        const { error } = await supabase.auth.signUp({
+        const { data, error } = await supabase.auth.signUp({
           email,
           password,
           options: {
@@ -135,18 +136,33 @@ const Auth: React.FC = () => {
             description: error.message,
             variant: "destructive"
           });
+        } else if (data?.user?.identities?.length === 0) {
+          // User already exists — Supabase returns an empty identities array
+          toast({
+            title: "Account already exists",
+            description: "An account with this email already exists. Please sign in instead.",
+            variant: "destructive"
+          });
+          navigate('/login');
         } else {
           setVerificationSent(true);
         }
       } else {
         const { error } = await signIn(email, password);
         if (!error) {
-          // Redirect to budget page after sign in
           navigate('/budget');
         }
       }
     } finally {
       setLoading(false);
+    }
+  };
+
+  const toggleMode = () => {
+    if (isSignUp) {
+      navigate('/login');
+    } else {
+      navigate('/signup');
     }
   };
 
@@ -291,7 +307,7 @@ const Auth: React.FC = () => {
                     <span className="w-full border-t border-foreground/20" />
                   </div>
                   <div className="relative flex justify-center text-xs uppercase">
-                    <span className="bg-sage px-2 text-foreground/70">
+                    <span className={`${isSignUp ? 'bg-sage' : 'bg-muted'} px-2 text-foreground/70`}>
                       Or continue with
                     </span>
                   </div>
@@ -342,7 +358,7 @@ const Auth: React.FC = () => {
             {!isForgotPassword && !isResettingPassword && (
               <Button
                 variant="link"
-                onClick={() => setIsSignUp(!isSignUp)}
+                onClick={toggleMode}
                 className="text-sm text-foreground hover:text-foreground/80"
               >
                 {isSignUp

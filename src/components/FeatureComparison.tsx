@@ -63,7 +63,7 @@ export const FeatureComparison: React.FC = () => {
               <div className="pt-6">
                 {!user && (
                   <Button asChild className="w-full" size="lg">
-                    <Link to="/auth">
+                    <Link to="/signup">
                       <UserCheck className="mr-2 h-5 w-5" />
                       Sign Up Free
                     </Link>
@@ -118,7 +118,7 @@ export const FeatureComparison: React.FC = () => {
                 )}
                 {!user && (
                   <Button asChild className="w-full bg-gradient-to-r from-primary to-primary/80" size="lg">
-                    <Link to="/auth">
+                    <Link to="/signup">
                       <Crown className="mr-2 h-5 w-5" />
                       Start Premium Trial
                     </Link>
