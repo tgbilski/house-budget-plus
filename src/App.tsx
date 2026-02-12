@@ -94,6 +94,8 @@ const AppRoutes = () => {
     return (
       <Routes>
         <Route path="/" element={<MobileLanding />} />
+        <Route path="/login" element={<Auth />} />
+        <Route path="/signup" element={<Auth />} />
         <Route path="/auth" element={<Auth />} />
         <Route path="/expenses" element={<SubscriptionGuard><Expenses /></SubscriptionGuard>} />
         <Route path="/budget" element={<SubscriptionGuard><MonthlyBudget /></SubscriptionGuard>} />
@@ -117,6 +119,8 @@ const AppRoutes = () => {
       <Route path="/savings" element={<SavingsGoals />} />
       <Route path="/vacation" element={<Vacation />} />
       <Route path="/engagement" element={<Engagement />} />
+      <Route path="/login" element={<Auth />} />
+      <Route path="/signup" element={<Auth />} />
       <Route path="/auth" element={<Auth />} />
       <Route path="/settings" element={<UserSettings />} />
       <Route path="/gifts" element={<Gifts />} />
@@ -184,7 +188,7 @@ const AppLayout = () => {
   // Simplified layout for mobile app
   if (isMobileApp) {
     // Landing/auth pages - no header or nav
-    const isAuthPage = location.pathname === '/mobile-landing' || location.pathname === '/auth';
+    const isAuthPage = location.pathname === '/mobile-landing' || location.pathname === '/auth' || location.pathname === '/login' || location.pathname === '/signup';
     if (isAuthPage) {
       return (
         <div className="min-h-screen w-full flex flex-col bg-background">
@@ -225,7 +229,7 @@ const AppLayout = () => {
 
   // Full web app layout
   // Auth page - minimal layout with no header/sidebar
-  const isAuthPage = location.pathname === '/auth';
+  const isAuthPage = location.pathname === '/auth' || location.pathname === '/login' || location.pathname === '/signup';
   if (isAuthPage) {
     return (
       <div className="min-h-screen w-full flex flex-col">

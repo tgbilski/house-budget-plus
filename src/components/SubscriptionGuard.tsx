@@ -21,13 +21,13 @@ export const SubscriptionGuard = ({ children }: SubscriptionGuardProps) => {
     
     // If not loading and not authenticated, redirect to auth
     if (!authLoading && !user) {
-      navigate('/auth');
+      navigate('/login');
       return;
     }
 
     // If not loading and not subscribed, redirect to auth with message
     if (!authLoading && !subLoading && user && !subscribed) {
-      navigate('/auth');
+      navigate('/login');
     }
   }, [user, subscribed, authLoading, subLoading, navigate, isMobileApp]);
 

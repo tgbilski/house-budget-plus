@@ -61,7 +61,7 @@ export default function Engagement() {
                 Sign up to unlock daily check-ins, challenges, and AI insights that actually make sense.
               </p>
               <a 
-                href="/auth" 
+                href="/signup" 
                 className="inline-flex items-center px-6 py-3 bg-primary text-primary-foreground font-medium rounded-lg hover:bg-primary/90 transition-colors"
               >
                 Let's Go

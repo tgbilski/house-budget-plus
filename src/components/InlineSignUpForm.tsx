@@ -56,7 +56,7 @@ const InlineSignUpForm: React.FC<InlineSignUpFormProps> = ({ className = '' }) =
 
     try {
       if (isSignUp) {
-        const { error } = await supabase.auth.signUp({
+        const { data, error } = await supabase.auth.signUp({
           email,
           password,
           options: {
@@ -70,6 +70,13 @@ const InlineSignUpForm: React.FC<InlineSignUpFormProps> = ({ className = '' }) =
             description: error.message,
             variant: "destructive"
           });
+        } else if (data?.user?.identities?.length === 0) {
+          toast({
+            title: "Account already exists",
+            description: "An account with this email already exists. Please sign in instead.",
+            variant: "destructive"
+          });
+          setIsSignUp(false);
         } else {
           setVerificationSent(true);
         }

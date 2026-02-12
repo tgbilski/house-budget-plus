@@ -20,7 +20,7 @@ export const WarningBanner: React.FC = () => {
             Sign up for free to keep your data and access it from any device.
           </p>
         </div>
-        <Link to="/auth">
+        <Link to="/signup">
           <Button className="gap-2 bg-teal hover:bg-teal/90 text-teal-foreground whitespace-nowrap">
             <UserPlus className="h-4 w-4" />
             Sign Up Free

@@ -22,7 +22,7 @@ export default function Marketplace() {
 
   const handleCreateListing = () => {
     if (!user) {
-      navigate("/auth");
+      navigate("/login");
       return;
     }
     setShowForm(true);
