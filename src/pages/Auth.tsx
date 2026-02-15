@@ -131,6 +131,11 @@ const Auth: React.FC = () => {
   // Step 1: "Why sign up?" explainer for signup route
   const renderSignUpStep1 = () => (
     <div className="w-full max-w-md mx-auto text-center">
+      {/* Back to home */}
+      <button onClick={() => navigate('/')} className="flex items-center gap-1.5 text-muted-foreground hover:text-foreground text-sm mb-6 mx-auto lg:mx-0">
+        <ArrowLeft className="w-4 h-4" />
+        Back to calculators
+      </button>
       <img src={mascotIcon} alt="Budget mascot" className="w-20 h-20 mx-auto mb-4 drop-shadow-lg" />
       
       {/* Big free badge */}
@@ -177,6 +182,14 @@ const Auth: React.FC = () => {
             <p className="text-muted-foreground text-sm">We only need your email to create your account. That's it — no payment info, no hidden fees.</p>
           </div>
         </div>
+      </div>
+
+      {/* Premium upsell hint */}
+      <div className="flex items-center gap-3 bg-primary/5 border border-primary/15 rounded-xl p-3 mb-8 text-left">
+        <Sparkles className="w-5 h-5 text-primary flex-shrink-0" />
+        <p className="text-xs text-muted-foreground">
+          <span className="font-semibold text-foreground">Want AI-powered insights?</span> Premium features available for less than a coffee — $2.99/mo.
+        </p>
       </div>
 
       <Button
@@ -278,15 +291,17 @@ const Auth: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-background flex items-center justify-center p-6 relative">
-      {/* Back button */}
-      <Button
-        variant="ghost"
-        size="icon"
-        onClick={() => navigate('/')}
-        className="absolute top-4 left-4 z-20 text-foreground hover:bg-foreground/10"
-      >
-        <ArrowLeft className="h-6 w-6" />
-      </Button>
+      {/* Back button — only on login/reset views (signup steps have their own nav) */}
+      {(!isSignUp || verificationSent) && (
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={() => navigate('/')}
+          className="absolute top-4 left-4 z-20 text-foreground hover:bg-foreground/10"
+        >
+          <ArrowLeft className="h-6 w-6" />
+        </Button>
+      )}
 
       {verificationSent ? (
         <div className="text-center space-y-4 max-w-md mx-auto">
