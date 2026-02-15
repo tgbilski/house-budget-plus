@@ -88,7 +88,7 @@ export const PageSEOContent: React.FC<PageSEOContentProps> = ({
             </ul>
             
             <p className="text-xs text-muted-foreground mt-4 pt-3 border-t border-border/50">
-              Premium features available for just $4.99/month — the cost of a cup of coffee.
+              Premium features available for just $2.99/month — less than a coffee.
             </p>
           </CardContent>
         </Card>

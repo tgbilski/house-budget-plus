@@ -61,7 +61,7 @@ export const seoData: Record<string, SEOData> = {
               "name": "Is the budget calculator really free?",
               "acceptedAnswer": {
                 "@type": "Answer",
-                "text": "Yes! Our monthly budget calculator is 100% free with no signup required. Start budgeting in under 5 minutes. Premium AI features are available for just $4.99/month."
+                "text": "Yes! Our monthly budget calculator is 100% free with no signup required. Start budgeting in under 5 minutes. Premium AI features are available for just $2.99/month."
               }
             },
             {
@@ -225,11 +225,11 @@ export const seoData: Record<string, SEOData> = {
       "description": "AI-powered money advice tailored to your spending habits and lifestyle",
       "offers": {
         "@type": "Offer",
-        "price": "4.99",
+        "price": "2.99",
         "priceCurrency": "USD",
         "priceSpecification": {
           "@type": "UnitPriceSpecification",
-          "price": "4.99",
+          "price": "2.99",
           "priceCurrency": "USD",
           "billingDuration": "P1M"
         }

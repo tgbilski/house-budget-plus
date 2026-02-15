@@ -224,7 +224,7 @@ const MonthlyBudget: React.FC = () => {
                   Want to unlock premium features?
                 </p>
                 <p className="text-sm text-muted-foreground mt-1">
-                  Get AI insights, voice tracking & more for just $4.99/month.
+                  Get AI insights, voice tracking & more for just $2.99/month.
                 </p>
               </div>
               <Button asChild className="gap-2 whitespace-nowrap">

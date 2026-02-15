@@ -88,7 +88,7 @@ export const FeatureComparison: React.FC = () => {
                 Premium
               </CardTitle>
               <CardDescription className="text-lg">
-                <span className="text-3xl font-bold text-foreground">$4.99</span>/month
+                <span className="text-3xl font-bold text-foreground">$2.99</span>/month
               </CardDescription>
               <p className="text-sm text-muted-foreground mt-2">
                 Or $39.99/year (save 33%)
