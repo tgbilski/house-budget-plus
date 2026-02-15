@@ -29,7 +29,7 @@ export const budgetCalculatorFAQs = [
   },
   {
     question: "Is this really a free budgeting calculator?",
-    answer: "Yes! Our home budget calculator is completely free with no signup required. You can calculate your monthly living expenses, track house expenses, and create a full household budget without paying anything. Premium AI features are available for $4.99/month, but the core budget calculator is always free."
+    answer: "Yes! Our home budget calculator is completely free with no signup required. You can calculate your monthly living expenses, track house expenses, and create a full household budget without paying anything. Premium AI features are available for $2.99/month, but the core budget calculator is always free."
   },
   {
     question: "What's the difference between a home budget calculator and a living budget calculator?",
