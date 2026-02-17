@@ -204,12 +204,12 @@ const HouseComparison = () => {
                 onKeyDown={(e) => e.key === "Enter" && fetchMetadata()}
                 className="flex-1"
               />
-              <div className="flex gap-2">
-                <Button onClick={fetchMetadata} disabled={fetching || !urlInput.trim()} className="gap-2">
+              <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
+                <Button onClick={fetchMetadata} disabled={fetching || !urlInput.trim()} className="gap-2 w-full sm:w-auto touch-manipulation">
                   {fetching ? <Loader2 className="h-4 w-4 animate-spin" /> : <Plus className="h-4 w-4" />}
                   {fetching ? "Fetching..." : "Add from URL"}
                 </Button>
-                <Button variant="outline" onClick={addManualProperty} className="gap-2">
+                <Button variant="outline" onClick={addManualProperty} className="gap-2 w-full sm:w-auto touch-manipulation">
                   <Plus className="h-4 w-4" />
                   Add Manually
                 </Button>
