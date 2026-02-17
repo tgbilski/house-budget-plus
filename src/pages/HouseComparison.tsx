@@ -6,8 +6,10 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
+import { useSubscription } from "@/hooks/useSubscription";
 import { supabase } from "@/integrations/supabase/client";
 import { SEO } from "@/components/SEO";
+import { PremiumLimitBanner } from "@/components/PremiumLimitBanner";
 
 interface HouseProperty {
   id: string;
@@ -64,6 +66,9 @@ const HouseComparison = () => {
   const [urlInput, setUrlInput] = useState("");
   const [fetching, setFetching] = useState(false);
   const { toast } = useToast();
+  const { subscribed } = useSubscription();
+
+  const atFreeLimit = !subscribed && properties.length >= 2;
 
   // Persist to localStorage on every change
   const updateProperties = useCallback((updated: HouseProperty[]) => {
@@ -194,29 +199,33 @@ const HouseComparison = () => {
         </div>
 
         {/* URL Input */}
-        <Card>
-          <CardContent className="pt-6">
-            <div className="flex flex-col sm:flex-row gap-3">
-              <Input
-                placeholder="Paste a Zillow, Realtor, or property URL..."
-                value={urlInput}
-                onChange={(e) => setUrlInput(e.target.value)}
-                onKeyDown={(e) => e.key === "Enter" && fetchMetadata()}
-                className="flex-1"
-              />
-              <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
-                <Button onClick={fetchMetadata} disabled={fetching || !urlInput.trim()} className="gap-2 w-full sm:w-auto touch-manipulation">
-                  {fetching ? <Loader2 className="h-4 w-4 animate-spin" /> : <Plus className="h-4 w-4" />}
-                  {fetching ? "Fetching..." : "Add from URL"}
-                </Button>
-                <Button variant="outline" onClick={addManualProperty} className="gap-2 w-full sm:w-auto touch-manipulation">
-                  <Plus className="h-4 w-4" />
-                  Add Manually
-                </Button>
+        {atFreeLimit ? (
+          <PremiumLimitBanner featureName="properties" freeLimit={2} />
+        ) : (
+          <Card>
+            <CardContent className="pt-6">
+              <div className="flex flex-col sm:flex-row gap-3">
+                <Input
+                  placeholder="Paste a Zillow, Realtor, or property URL..."
+                  value={urlInput}
+                  onChange={(e) => setUrlInput(e.target.value)}
+                  onKeyDown={(e) => e.key === "Enter" && fetchMetadata()}
+                  className="flex-1"
+                />
+                <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
+                  <Button onClick={fetchMetadata} disabled={fetching || !urlInput.trim()} className="gap-2 w-full sm:w-auto touch-manipulation">
+                    {fetching ? <Loader2 className="h-4 w-4 animate-spin" /> : <Plus className="h-4 w-4" />}
+                    {fetching ? "Fetching..." : "Add from URL"}
+                  </Button>
+                  <Button variant="outline" onClick={addManualProperty} className="gap-2 w-full sm:w-auto touch-manipulation">
+                    <Plus className="h-4 w-4" />
+                    Add Manually
+                  </Button>
+                </div>
               </div>
-            </div>
-          </CardContent>
-        </Card>
+            </CardContent>
+          </Card>
+        )}
 
         {/* Properties Grid */}
         {sorted.length === 0 ? (
