@@ -5,7 +5,8 @@ import {
   Brain,
   BookOpen,
   Shield,
-  Receipt
+  Receipt,
+  Home
 } from "lucide-react";
 import { NavLink, useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
@@ -49,6 +50,7 @@ const navigationItems = [
   { title: "SAVINGS", url: "/savings", icon: PiggyBank },
   { title: "VACATIONS", url: "/vacation", icon: Plane },
   { title: "GIFTS", url: "/gifts", icon: Gift },
+  { title: "HOUSES", url: "/house-comparison", icon: Home },
   { title: "BLOG", url: "/blog", icon: BookOpen },
   { title: "AI INSIGHT", url: "/ai-insights", icon: Brain },
 ];
