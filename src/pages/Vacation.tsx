@@ -3,6 +3,7 @@ import React, { useEffect } from 'react';
 import { Plus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/hooks/useAuth';
+import { useSubscription } from '@/hooks/useSubscription';
 import { useBadges } from '@/hooks/useBadges';
 import { useYear } from '@/hooks/useYear';
 import { useCurrency } from '@/hooks/useCurrency';
@@ -20,10 +21,12 @@ import { FAQ } from '@/components/FAQ';
 import { BadgeDisplay } from '@/components/BadgeDisplay';
 import { vacationPlanningFAQs } from '@/utils/faqData';
 import { PageSEOContent, pageSEOData } from '@/components/PageSEOContent';
+import { PremiumLimitBanner } from '@/components/PremiumLimitBanner';
 import calculatorMascot from '@/assets/calculator-mascot.png';
 
 const Vacation: React.FC = () => {
   const { user } = useAuth();
+  const { subscribed } = useSubscription();
   const { selectedYear } = useYear();
   const { currency } = useCurrency();
   const { earnBadge, loading: badgesLoading } = useBadges();
@@ -124,11 +127,15 @@ const Vacation: React.FC = () => {
           {/* Interactive Map */}
           <VacationMap options={options} />
 
-          <div className="flex justify-end">
-            <Button onClick={addOption} className="gap-2 bg-teal hover:bg-teal/90 text-teal-foreground">
-              <Plus className="h-4 w-4" /> Add Destination Option
-            </Button>
-          </div>
+          {subscribed || options.length < 2 ? (
+            <div className="flex justify-end">
+              <Button onClick={addOption} className="gap-2 bg-teal hover:bg-teal/90 text-teal-foreground">
+                <Plus className="h-4 w-4" /> Add Destination Option
+              </Button>
+            </div>
+          ) : (
+            <PremiumLimitBanner featureName="vacation options" freeLimit={2} />
+          )}
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {options.map((option, index) => (

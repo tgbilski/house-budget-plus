@@ -27,6 +27,7 @@ import { ToolsGrid } from '@/components/ToolsGrid';
 import { HomeBuyingToolkit } from '@/components/home-buying';
 import InlineSignUpForm from '@/components/InlineSignUpForm';
 import FeedbackForm from '@/components/FeedbackForm';
+import { PremiumLimitBanner } from '@/components/PremiumLimitBanner';
 import { BadgeDisplay } from '@/components/BadgeDisplay';
 import calculatorMascot from '@/assets/calculator-mascot.png';
 // ADDED: Import the hook to detect mobile
@@ -275,20 +276,26 @@ const MonthlyBudget: React.FC = () => {
                   ))}
                   
                   {getNextCalculatorNumber() && (
-                    <div className="animate-fade-in flex items-start">
-                      <button
-                        onClick={revealNextCalculator}
-                        className="w-full max-w-md min-h-[200px] rounded-xl border-[4px] border-dashed border-border/50 bg-muted/20 touch-manipulation [@media(hover:hover)]:hover:bg-muted/40 [@media(hover:hover)]:hover:border-primary/50 transition-all duration-200 flex flex-col items-center justify-center gap-3 group"
-                      >
-                        <div className="p-3 rounded-full bg-primary/10 [@media(hover:hover)]:group-hover:bg-primary/20 transition-colors">
-                          <Plus className="h-8 w-8 text-primary" />
-                        </div>
-                        <div className="text-center">
-                          <p className="font-semibold text-foreground">Add Calculator {getNextCalculatorNumber()}</p>
-                          <p className="text-sm text-muted-foreground">Track another income source or scenario</p>
-                        </div>
-                      </button>
-                    </div>
+                    subscribed || visibleCalculators.size < 2 ? (
+                      <div className="animate-fade-in flex items-start">
+                        <button
+                          onClick={revealNextCalculator}
+                          className="w-full max-w-md min-h-[200px] rounded-xl border-[4px] border-dashed border-border/50 bg-muted/20 touch-manipulation [@media(hover:hover)]:hover:bg-muted/40 [@media(hover:hover)]:hover:border-primary/50 transition-all duration-200 flex flex-col items-center justify-center gap-3 group"
+                        >
+                          <div className="p-3 rounded-full bg-primary/10 [@media(hover:hover)]:group-hover:bg-primary/20 transition-colors">
+                            <Plus className="h-8 w-8 text-primary" />
+                          </div>
+                          <div className="text-center">
+                            <p className="font-semibold text-foreground">Add Calculator {getNextCalculatorNumber()}</p>
+                            <p className="text-sm text-muted-foreground">Track another income source or scenario</p>
+                          </div>
+                        </button>
+                      </div>
+                    ) : (
+                      <div className="animate-fade-in flex items-start">
+                        <PremiumLimitBanner featureName="calculators" freeLimit={1} className="min-h-[200px] flex flex-col items-center justify-center" />
+                      </div>
+                    )
                   )}
                 </>
               ) : (
