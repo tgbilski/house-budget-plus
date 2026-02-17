@@ -46,11 +46,11 @@ const HouseDollarIcon = ({ className }: { className?: string }) => (
 
 const navigationItems = [
   { title: "BUDGET", url: "/budget", icon: HouseDollarIcon },
+  { title: "HOUSES", url: "/house-comparison", icon: Home },
   { title: "EXPENSES", url: "/expenses", icon: Receipt },
   { title: "SAVINGS", url: "/savings", icon: PiggyBank },
   { title: "VACATIONS", url: "/vacation", icon: Plane },
   { title: "GIFTS", url: "/gifts", icon: Gift },
-  { title: "HOUSES", url: "/house-comparison", icon: Home },
   { title: "BLOG", url: "/blog", icon: BookOpen },
   { title: "AI INSIGHT", url: "/ai-insights", icon: Brain },
 ];
