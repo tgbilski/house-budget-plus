@@ -49,6 +49,7 @@ import ContactUs from "@/pages/ContactUs";
 import PrivacyPolicy from "@/pages/PrivacyPolicy";
 import TermsAndConditions from "@/pages/TermsAndConditions";
 import Disclaimer from "@/pages/Disclaimer";
+import HouseComparison from "@/pages/HouseComparison";
 import ErrorBoundary from "@/components/ErrorBoundary";
 import { useState, createContext } from "react";
 import { isNativeApp } from "@/utils/capacitor";
@@ -138,6 +139,7 @@ const AppRoutes = () => {
       <Route path="/privacy" element={<PrivacyPolicy />} />
       <Route path="/terms" element={<TermsAndConditions />} />
       <Route path="/disclaimer" element={<Disclaimer />} />
+      <Route path="/house-comparison" element={<HouseComparison />} />
       <Route path="*" element={<NotFound />} />
     </Routes>
   );
