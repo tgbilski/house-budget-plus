@@ -120,18 +120,26 @@ const HouseComparison = () => {
         body: { url: validUrl },
       });
 
-      const hasData = !error && data?.title && data.title.length > 5;
+      console.log("Metadata response:", data);
+
+      // Check if we got meaningful data back
+      const hasTitle = !error && data?.title && data.title.length > 5;
+      const hasPropertyData = !error && (data?.price || data?.beds || data?.baths || data?.sqft);
       
       const newProp: HouseProperty = {
         ...createEmptyProperty(),
         url: validUrl,
-        title: hasData ? data.title : extractNameFromUrl(validUrl),
-        description: hasData ? (data.description || "") : "",
-        image: hasData ? (data.image || "") : "",
+        title: data?.address || (hasTitle ? data.title : extractNameFromUrl(validUrl)),
+        description: data?.description || "",
+        image: data?.image || "",
+        price: data?.price || "",
+        beds: data?.beds || "",
+        baths: data?.baths || "",
+        sqft: data?.sqft || "",
       };
 
-      if (hasData) {
-        // Try to extract price/beds/baths from metadata
+      // If no direct fields, try parsing from title/description
+      if (!hasPropertyData && hasTitle) {
         const combined = (data.title + " " + data.description) || "";
         const priceMatch = combined.match(/\$[\d,]+/);
         const bedMatch = combined.match(/(\d+)\s*(?:bed|br|bedroom)/i);
@@ -148,9 +156,11 @@ const HouseComparison = () => {
       setUrlInput("");
       toast({ 
         title: "Property added!", 
-        description: hasData 
-          ? "Details pulled from listing. Review and fill in anything missing." 
-          : "Link saved — fill in the details from the listing page." 
+        description: hasPropertyData 
+          ? "Property details pulled from listing!" 
+          : hasTitle
+            ? "Some details found. Fill in anything missing."
+            : "Link saved — fill in the details from the listing page."
       });
     } catch (err) {
       console.error("Metadata fetch error:", err);
