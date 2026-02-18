@@ -86,54 +86,84 @@ const HouseComparison = () => {
       validUrl = `https://${url}`;
     }
 
+    // Extract a friendly name from the URL (e.g. address from Zillow/Realtor path)
+    const extractNameFromUrl = (urlStr: string): string => {
+      try {
+        const urlObj = new URL(urlStr);
+        const hostname = urlObj.hostname.replace("www.", "");
+        const pathParts = urlObj.pathname.split("/").filter(Boolean);
+        
+        // Zillow: /homedetails/123-Main-St-City-ST-12345/12345_zpid/
+        // Realtor: /realestateandhomes-detail/123-Main-St_City_ST_12345
+        const addressPart = pathParts.find(part => 
+          /\d+.*(?:St|Ave|Rd|Dr|Ln|Ct|Blvd|Way|Pl|Cir)/i.test(part) ||
+          part.includes("-") && part.length > 10
+        );
+        
+        if (addressPart) {
+          return addressPart
+            .replace(/_zpid$/i, "")
+            .replace(/[-_]/g, " ")
+            .replace(/\b\w/g, c => c.toUpperCase())
+            .trim();
+        }
+        
+        return `Property from ${hostname}`;
+      } catch {
+        return "New Property";
+      }
+    };
+
     setFetching(true);
     try {
       const { data, error } = await supabase.functions.invoke("fetch-url-metadata", {
         body: { url: validUrl },
       });
 
-      if (error) throw error;
-
+      const hasData = !error && data?.title && data.title.length > 5;
+      
       const newProp: HouseProperty = {
         ...createEmptyProperty(),
         url: validUrl,
-        title: data?.title || "Untitled Property",
-        description: data?.description || "",
-        image: data?.image || "",
+        title: hasData ? data.title : extractNameFromUrl(validUrl),
+        description: hasData ? (data.description || "") : "",
+        image: hasData ? (data.image || "") : "",
       };
 
-      // Try to extract price from title/description
-      const priceMatch = (data?.title + " " + data?.description)?.match(/\$[\d,]+/);
-      if (priceMatch) {
-        newProp.price = priceMatch[0];
+      if (hasData) {
+        // Try to extract price/beds/baths from metadata
+        const combined = (data.title + " " + data.description) || "";
+        const priceMatch = combined.match(/\$[\d,]+/);
+        const bedMatch = combined.match(/(\d+)\s*(?:bed|br|bedroom)/i);
+        const bathMatch = combined.match(/(\d+\.?\d*)\s*(?:bath|ba|bathroom)/i);
+        const sqftMatch = combined.match(/([\d,]+)\s*(?:sq\s*ft|sqft|square\s*feet)/i);
+
+        if (priceMatch) newProp.price = priceMatch[0];
+        if (bedMatch) newProp.beds = bedMatch[1];
+        if (bathMatch) newProp.baths = bathMatch[1];
+        if (sqftMatch) newProp.sqft = sqftMatch[1];
       }
-
-      // Try to extract beds/baths from description
-      const bedMatch = (data?.title + " " + data?.description)?.match(/(\d+)\s*(?:bed|br|bedroom)/i);
-      const bathMatch = (data?.title + " " + data?.description)?.match(/(\d+\.?\d*)\s*(?:bath|ba|bathroom)/i);
-      const sqftMatch = (data?.title + " " + data?.description)?.match(/([\d,]+)\s*(?:sq\s*ft|sqft|square\s*feet)/i);
-
-      if (bedMatch) newProp.beds = bedMatch[1];
-      if (bathMatch) newProp.baths = bathMatch[1];
-      if (sqftMatch) newProp.sqft = sqftMatch[1];
 
       updateProperties([...properties, newProp]);
       setUrlInput("");
-      toast({ title: "Property added!", description: "Fill in any missing details below." });
+      toast({ 
+        title: "Property added!", 
+        description: hasData 
+          ? "Details pulled from listing. Review and fill in anything missing." 
+          : "Link saved — fill in the details from the listing page." 
+      });
     } catch (err) {
       console.error("Metadata fetch error:", err);
-      // Still add with URL even if fetch fails
       const newProp: HouseProperty = {
         ...createEmptyProperty(),
         url: validUrl,
-        title: "Could not load details",
+        title: extractNameFromUrl(validUrl),
       };
       updateProperties([...properties, newProp]);
       setUrlInput("");
       toast({
-        title: "Added property",
-        description: "We couldn't pull details automatically. You can fill them in manually.",
-        variant: "destructive",
+        title: "Property added!",
+        description: "Link saved — fill in the details from the listing page.",
       });
     } finally {
       setFetching(false);
