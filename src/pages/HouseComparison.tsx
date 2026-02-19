@@ -120,47 +120,23 @@ const HouseComparison = () => {
         body: { url: validUrl },
       });
 
-      console.log("Metadata response:", data);
-
-      // Check if we got meaningful data back
       const hasTitle = !error && data?.title && data.title.length > 5;
-      const hasPropertyData = !error && (data?.price || data?.beds || data?.baths || data?.sqft);
-      
+
       const newProp: HouseProperty = {
         ...createEmptyProperty(),
         url: validUrl,
-        title: data?.address || (hasTitle ? data.title : extractNameFromUrl(validUrl)),
+        title: hasTitle ? data.title : extractNameFromUrl(validUrl),
         description: data?.description || "",
         image: data?.image || "",
-        price: data?.price || "",
-        beds: data?.beds || "",
-        baths: data?.baths || "",
-        sqft: data?.sqft || "",
       };
-
-      // If no direct fields, try parsing from title/description
-      if (!hasPropertyData && hasTitle) {
-        const combined = (data.title + " " + data.description) || "";
-        const priceMatch = combined.match(/\$[\d,]+/);
-        const bedMatch = combined.match(/(\d+)\s*(?:bed|br|bedroom)/i);
-        const bathMatch = combined.match(/(\d+\.?\d*)\s*(?:bath|ba|bathroom)/i);
-        const sqftMatch = combined.match(/([\d,]+)\s*(?:sq\s*ft|sqft|square\s*feet)/i);
-
-        if (priceMatch) newProp.price = priceMatch[0];
-        if (bedMatch) newProp.beds = bedMatch[1];
-        if (bathMatch) newProp.baths = bathMatch[1];
-        if (sqftMatch) newProp.sqft = sqftMatch[1];
-      }
 
       updateProperties([...properties, newProp]);
       setUrlInput("");
       toast({ 
         title: "Property added!", 
-        description: hasPropertyData 
-          ? "Property details pulled from listing!" 
-          : hasTitle
-            ? "Some details found. Fill in anything missing."
-            : "Link saved — fill in the details from the listing page."
+        description: hasTitle
+          ? "Preview loaded! Fill in price, beds, baths, etc. from the listing."
+          : "Link saved — fill in the details from the listing page."
       });
     } catch (err) {
       console.error("Metadata fetch error:", err);
@@ -234,7 +210,7 @@ const HouseComparison = () => {
             House Comparison
           </h1>
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-            Paste a Zillow or Realtor link to auto-fill property details, or add manually. Compare side by side and vote as a family!
+            Paste any property link to grab a preview, then fill in the details. Compare side by side and vote as a family!
           </p>
         </div>
 
