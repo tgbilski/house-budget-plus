@@ -350,17 +350,13 @@ const PropertyCard = ({ property, onUpdate, onRemove, onToggleFavorite, onSetRat
           )}
         </a>
       )}
-      {/* Non-URL image fallback */}
-      {p.image && !p.url && (
-        <div className="relative h-48 overflow-hidden">
-          <img
-            src={p.image}
-            alt={p.title || "Property"}
-            className="w-full h-full object-cover"
-            onError={(e) => {
-              (e.target as HTMLImageElement).style.display = "none";
-            }}
-          />
+      {/* Fallback when no image at all */}
+      {!p.image && (
+        <div className="relative h-32 bg-muted/50 flex flex-col items-center justify-center gap-2">
+          <Home className="h-10 w-10 text-muted-foreground/30" />
+          {domain && !hasPreview && (
+            <span className="text-xs text-muted-foreground">{domain}</span>
+          )}
           {p.isFavorite && (
             <Badge className="absolute top-2 left-2 bg-primary text-primary-foreground">
               ⭐ Family Pick
@@ -376,7 +372,7 @@ const PropertyCard = ({ property, onUpdate, onRemove, onToggleFavorite, onSetRat
               value={p.title}
               onChange={(e) => onUpdate(p.id, "title", e.target.value)}
               placeholder="Property name / address"
-              className="font-bold text-lg border-none px-0 h-auto bg-transparent focus-visible:ring-0"
+              className="font-bold text-lg border-none px-0 h-auto bg-transparent focus-visible:ring-0 placeholder:text-muted-foreground/40 placeholder:italic"
             />
           </div>
           <div className="flex gap-1 shrink-0">
@@ -424,7 +420,7 @@ const PropertyCard = ({ property, onUpdate, onRemove, onToggleFavorite, onSetRat
               value={p.price}
               onChange={(e) => onUpdate(p.id, "price", e.target.value)}
               placeholder="$350,000"
-              className="h-8 text-sm"
+              className="h-8 text-sm border-dashed placeholder:text-muted-foreground/40 placeholder:italic"
             />
           </div>
           <div>
@@ -433,7 +429,7 @@ const PropertyCard = ({ property, onUpdate, onRemove, onToggleFavorite, onSetRat
               value={p.sqft}
               onChange={(e) => onUpdate(p.id, "sqft", e.target.value)}
               placeholder="2,100"
-              className="h-8 text-sm"
+              className="h-8 text-sm border-dashed placeholder:text-muted-foreground/40 placeholder:italic"
             />
           </div>
           <div>
@@ -442,7 +438,7 @@ const PropertyCard = ({ property, onUpdate, onRemove, onToggleFavorite, onSetRat
               value={p.beds}
               onChange={(e) => onUpdate(p.id, "beds", e.target.value)}
               placeholder="3"
-              className="h-8 text-sm"
+              className="h-8 text-sm border-dashed placeholder:text-muted-foreground/40 placeholder:italic"
             />
           </div>
           <div>
@@ -451,7 +447,7 @@ const PropertyCard = ({ property, onUpdate, onRemove, onToggleFavorite, onSetRat
               value={p.baths}
               onChange={(e) => onUpdate(p.id, "baths", e.target.value)}
               placeholder="2"
-              className="h-8 text-sm"
+              className="h-8 text-sm border-dashed placeholder:text-muted-foreground/40 placeholder:italic"
             />
           </div>
         </div>
@@ -464,7 +460,7 @@ const PropertyCard = ({ property, onUpdate, onRemove, onToggleFavorite, onSetRat
               value={p.pros}
               onChange={(e) => onUpdate(p.id, "pros", e.target.value)}
               placeholder="Great school district, big yard..."
-              className="min-h-[60px] text-sm resize-none"
+              className="min-h-[60px] text-sm resize-none border-dashed placeholder:text-muted-foreground/40 placeholder:italic"
             />
           </div>
           <div>
@@ -473,7 +469,7 @@ const PropertyCard = ({ property, onUpdate, onRemove, onToggleFavorite, onSetRat
               value={p.cons}
               onChange={(e) => onUpdate(p.id, "cons", e.target.value)}
               placeholder="Needs new roof, far from work..."
-              className="min-h-[60px] text-sm resize-none"
+              className="min-h-[60px] text-sm resize-none border-dashed placeholder:text-muted-foreground/40 placeholder:italic"
             />
           </div>
         </div>
@@ -487,7 +483,7 @@ const PropertyCard = ({ property, onUpdate, onRemove, onToggleFavorite, onSetRat
             value={p.notes}
             onChange={(e) => onUpdate(p.id, "notes", e.target.value)}
             placeholder="Mom loves the kitchen, kids want the pool..."
-            className="min-h-[60px] text-sm resize-none"
+            className="min-h-[60px] text-sm resize-none border-dashed placeholder:text-muted-foreground/40 placeholder:italic"
           />
         </div>
 
