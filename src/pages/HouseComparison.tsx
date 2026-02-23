@@ -292,13 +292,66 @@ interface PropertyCardProps {
   onSetRating: (id: string, rating: number) => void;
 }
 
+const getDomain = (url: string): string => {
+  try {
+    return new URL(url).hostname.replace("www.", "");
+  } catch {
+    return "";
+  }
+};
+
 const PropertyCard = ({ property, onUpdate, onRemove, onToggleFavorite, onSetRating }: PropertyCardProps) => {
   const p = property;
+  const domain = p.url ? getDomain(p.url) : "";
+  const hasPreview = p.image || (p.url && (p.title || p.description));
 
   return (
     <Card className={`relative overflow-hidden transition-all ${p.isFavorite ? "ring-2 ring-primary shadow-lg" : ""}`}>
-      {/* Image */}
-      {p.image && (
+      {/* Link Preview — iMessage style */}
+      {hasPreview && p.url && (
+        <a
+          href={p.url}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="block group cursor-pointer"
+        >
+          {p.image && (
+            <div className="relative h-48 overflow-hidden">
+              <img
+                src={p.image}
+                alt={p.title || "Property"}
+                className="w-full h-full object-cover transition-transform group-hover:scale-105"
+                onError={(e) => {
+                  (e.target as HTMLImageElement).style.display = "none";
+                }}
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
+              {p.isFavorite && (
+                <Badge className="absolute top-2 left-2 bg-primary text-primary-foreground">
+                  ⭐ Family Pick
+                </Badge>
+              )}
+              {domain && (
+                <span className="absolute bottom-2 left-3 text-[11px] font-medium text-white/90 bg-black/40 backdrop-blur-sm px-2 py-0.5 rounded-full">
+                  {domain}
+                </span>
+              )}
+            </div>
+          )}
+          {!p.image && domain && (
+            <div className="flex items-center gap-2 px-4 pt-4">
+              <img
+                src={`https://www.google.com/s2/favicons?domain=${domain}&sz=32`}
+                alt=""
+                className="h-4 w-4 rounded-sm"
+              />
+              <span className="text-xs text-muted-foreground font-medium">{domain}</span>
+            </div>
+          )}
+        </a>
+      )}
+      {/* Non-URL image fallback */}
+      {p.image && !p.url && (
         <div className="relative h-48 overflow-hidden">
           <img
             src={p.image}
