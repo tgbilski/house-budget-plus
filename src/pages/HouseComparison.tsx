@@ -93,19 +93,37 @@ const HouseComparison = () => {
         const hostname = urlObj.hostname.replace("www.", "");
         const pathParts = urlObj.pathname.split("/").filter(Boolean);
         
+        // Realtor: /realestateandhomes-detail/1626-Red-Mill-Dr_Pittsburgh_PA_15241_M40415-90924
+        if (hostname.includes("realtor.com")) {
+          const detail = pathParts.find(p => p.includes("_") && p.length > 10);
+          if (detail) {
+            // Remove trailing ID like _M40415-90924
+            const cleaned = detail.replace(/_M\d+-\d+$/, "");
+            // Split on underscores: address parts use hyphens, city/state use underscores
+            const segments = cleaned.split("_");
+            const address = segments[0]?.replace(/-/g, " ") || "";
+            const city = segments[1]?.replace(/-/g, " ") || "";
+            const state = segments[2] || "";
+            const zip = segments[3] || "";
+            const parts = [address, city, state, zip].filter(Boolean);
+            return parts.join(", ").replace(/\b\w/g, c => c.toUpperCase()).trim();
+          }
+        }
+
         // Zillow: /homedetails/123-Main-St-City-ST-12345/12345_zpid/
-        // Realtor: /realestateandhomes-detail/123-Main-St_City_ST_12345
+        if (hostname.includes("zillow.com")) {
+          const detail = pathParts.find(p => p.includes("-") && p.length > 10 && !p.includes("_zpid"));
+          if (detail) {
+            return detail.replace(/-/g, " ").replace(/\b\w/g, c => c.toUpperCase()).trim();
+          }
+        }
+
+        // Generic: find a path segment that looks like an address
         const addressPart = pathParts.find(part => 
-          /\d+.*(?:St|Ave|Rd|Dr|Ln|Ct|Blvd|Way|Pl|Cir)/i.test(part) ||
-          part.includes("-") && part.length > 10
+          /\d+.*(?:St|Ave|Rd|Dr|Ln|Ct|Blvd|Way|Pl|Cir)/i.test(part)
         );
-        
         if (addressPart) {
-          return addressPart
-            .replace(/_zpid$/i, "")
-            .replace(/[-_]/g, " ")
-            .replace(/\b\w/g, c => c.toUpperCase())
-            .trim();
+          return addressPart.replace(/[-_]/g, " ").replace(/\b\w/g, c => c.toUpperCase()).trim();
         }
         
         return `Property from ${hostname}`;
