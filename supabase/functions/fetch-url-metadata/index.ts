@@ -23,6 +23,7 @@ serve(async (req) => {
 
     let metadata = { title: '', description: '', image: '' };
 
+    // Attempt 1: Direct fetch for OG tags
     try {
       const response = await fetch(url, {
         headers: { 'User-Agent': 'Mozilla/5.0 (compatible; LinkPreview/1.0)' },
@@ -58,7 +59,35 @@ serve(async (req) => {
         }
       }
     } catch (fetchError) {
-      console.log(`Failed to fetch URL: ${url}`, fetchError);
+      console.log(`Direct fetch failed: ${url}`, fetchError);
+    }
+
+    // Attempt 2: If direct fetch returned no useful data, try Microlink API
+    const hasUsefulData = metadata.title || metadata.image;
+    if (!hasUsefulData) {
+      try {
+        console.log(`Direct fetch empty, trying Microlink for: ${url}`);
+        const microlinkUrl = `https://api.microlink.io?url=${encodeURIComponent(url)}&screenshot=true&meta=true`;
+        const mlResponse = await fetch(microlinkUrl);
+        
+        if (mlResponse.ok) {
+          const mlData = await mlResponse.json();
+          if (mlData.status === 'success' && mlData.data) {
+            const d = mlData.data;
+            metadata.title = metadata.title || d.title || '';
+            // Filter out bot-block descriptions
+            const desc = d.description || '';
+            const isBlockPage = desc.toLowerCase().includes('could not be processed') || 
+                               desc.toLowerCase().includes('blocked') ||
+                               desc.toLowerCase().includes('captcha');
+            metadata.description = metadata.description || (isBlockPage ? '' : desc);
+            // Prefer OG image, fall back to Microlink screenshot
+            metadata.image = d.image?.url || d.screenshot?.url || '';
+          }
+        }
+      } catch (mlError) {
+        console.log(`Microlink fallback failed: ${url}`, mlError);
+      }
     }
 
     return new Response(
