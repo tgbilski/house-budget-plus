@@ -843,6 +843,30 @@ export type Database = {
           },
         ]
       }
+      street_view_usage: {
+        Row: {
+          address: string
+          created_at: string
+          id: string
+          status: string
+          user_id: string | null
+        }
+        Insert: {
+          address: string
+          created_at?: string
+          id?: string
+          status?: string
+          user_id?: string | null
+        }
+        Update: {
+          address?: string
+          created_at?: string
+          id?: string
+          status?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       subscribers: {
         Row: {
           ai_queries_count: number | null
