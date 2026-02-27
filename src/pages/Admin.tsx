@@ -9,7 +9,7 @@ import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useAdminStatus } from "@/hooks/useAdminStatus";
 import { useAuth } from "@/hooks/useAuth";
-import { Loader2, CheckCircle, XCircle, AlertTriangle, PenSquare, TrendingUp, Users, Home, CreditCard, MessageSquare } from "lucide-react";
+import { Loader2, CheckCircle, XCircle, AlertTriangle, PenSquare, TrendingUp, Users, Home, CreditCard, MessageSquare, MapPin } from "lucide-react";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { format } from "date-fns";
 import { BlogPostForm } from "@/components/BlogPostForm";
@@ -56,6 +56,8 @@ export default function Admin() {
     users: 0,
     subscribers: 0,
     households: 0,
+    streetViewTotal: 0,
+    streetViewThisMonth: 0,
   });
   const [userGrowth, setUserGrowth] = useState<{ date: string; users: number }[]>([]);
   const [metricsLoading, setMetricsLoading] = useState(true);
@@ -104,17 +106,25 @@ export default function Admin() {
   const loadMetrics = async () => {
     setMetricsLoading(true);
     try {
-      const [usersRes, subscribersRes, householdsRes, profilesRes] = await Promise.all([
+      const startOfMonth = new Date();
+      startOfMonth.setDate(1);
+      startOfMonth.setHours(0, 0, 0, 0);
+
+      const [usersRes, subscribersRes, householdsRes, profilesRes, svTotalRes, svMonthRes] = await Promise.all([
         supabase.from('profiles').select('id', { count: 'exact', head: true }),
         supabase.from('subscribers').select('id', { count: 'exact', head: true }).eq('subscribed', true),
         supabase.from('households').select('id', { count: 'exact', head: true }),
-        supabase.from('profiles').select('created_at').order('created_at', { ascending: true })
+        supabase.from('profiles').select('created_at').order('created_at', { ascending: true }),
+        supabase.from('street_view_usage').select('id', { count: 'exact', head: true }),
+        supabase.from('street_view_usage').select('id', { count: 'exact', head: true }).gte('created_at', startOfMonth.toISOString()),
       ]);
 
       setMetrics({
         users: usersRes.count || 0,
         subscribers: subscribersRes.count || 0,
         households: householdsRes.count || 0,
+        streetViewTotal: svTotalRes.count || 0,
+        streetViewThisMonth: svMonthRes.count || 0,
       });
 
       // Process user growth data by month
@@ -616,7 +626,7 @@ export default function Admin() {
               </div>
             ) : (
               <>
-                <div className="grid gap-4 sm:gap-6 grid-cols-1 sm:grid-cols-3">
+                <div className="grid gap-4 sm:gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
                   <Card>
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                       <CardTitle className="text-sm font-medium">Total Users</CardTitle>
@@ -644,6 +654,19 @@ export default function Admin() {
                     </CardHeader>
                     <CardContent>
                       <div className="text-2xl font-bold">{metrics.households}</div>
+                    </CardContent>
+                  </Card>
+
+                  <Card>
+                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                      <CardTitle className="text-sm font-medium">Street View Fetches</CardTitle>
+                      <MapPin className="h-4 w-4 text-muted-foreground" />
+                    </CardHeader>
+                    <CardContent>
+                      <div className="text-2xl font-bold">{metrics.streetViewThisMonth}</div>
+                      <p className="text-xs text-muted-foreground mt-1">
+                        this month · {metrics.streetViewTotal} total
+                      </p>
                     </CardContent>
                   </Card>
                 </div>

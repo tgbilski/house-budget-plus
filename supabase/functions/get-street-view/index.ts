@@ -1,4 +1,5 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2"
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -28,7 +29,7 @@ serve(async (req) => {
       )
     }
 
-    // First check if Street View imagery exists for this address
+    // Check metadata first (free) to confirm imagery exists
     const metadataUrl = `https://maps.googleapis.com/maps/api/streetview/metadata?location=${encodeURIComponent(address)}&key=${apiKey}`
     const metaResponse = await fetch(metadataUrl)
     const metaData = await metaResponse.json()
@@ -49,6 +50,29 @@ serve(async (req) => {
         JSON.stringify({ error: 'Failed to fetch Street View image' }),
         { status: 502, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       )
+    }
+
+    // Log usage to the database
+    try {
+      const supabaseUrl = Deno.env.get('SUPABASE_URL')!
+      const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
+      const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey)
+
+      // Extract user_id from the auth header if present
+      const authHeader = req.headers.get('authorization')
+      let userId = null
+      if (authHeader) {
+        const { data: { user } } = await supabaseAdmin.auth.getUser(authHeader.replace('Bearer ', ''))
+        userId = user?.id || null
+      }
+
+      await supabaseAdmin.from('street_view_usage').insert({
+        address,
+        user_id: userId,
+        status: 'ok',
+      })
+    } catch (logErr) {
+      console.log('Failed to log street view usage:', logErr)
     }
 
     const imageBuffer = await imageResponse.arrayBuffer()
