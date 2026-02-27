@@ -157,15 +157,8 @@ const HouseComparison = () => {
           const svResponse = await supabase.functions.invoke("get-street-view", {
             body: { address: title },
           });
-          if (svResponse.data && !(svResponse.data instanceof Object && 'error' in svResponse.data)) {
-            // Convert to base64 data URL so it persists in localStorage
-            const blob = new Blob([svResponse.data], { type: 'image/jpeg' });
-            const reader = new FileReader();
-            const dataUrl = await new Promise<string>((resolve) => {
-              reader.onloadend = () => resolve(reader.result as string);
-              reader.readAsDataURL(blob);
-            });
-            newProp.streetViewImage = dataUrl;
+          if (svResponse.data?.image) {
+            newProp.streetViewImage = svResponse.data.image;
           }
         } catch {
           console.log("Street View not available for this address");
