@@ -110,3 +110,7 @@ verify_jwt = true
 [[edge_functions.functions]]
 name = "ai-budget-insights"
 verify_jwt = true
+
+[[edge_functions.functions]]
+name = "get-street-view"
+verify_jwt = true

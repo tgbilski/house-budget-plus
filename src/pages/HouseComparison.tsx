@@ -1,5 +1,5 @@
 import { useState, useCallback } from "react";
-import { Plus, Trash2, ExternalLink, Home, Loader2, Star, StarOff, MessageSquare } from "lucide-react";
+import { Plus, Trash2, ExternalLink, Home, Loader2, Star, StarOff, MessageSquare, MapPin } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
@@ -17,6 +17,7 @@ interface HouseProperty {
   title: string;
   description: string;
   image: string;
+  streetViewImage: string;
   // Manual fields
   price: string;
   beds: string;
@@ -50,6 +51,7 @@ const createEmptyProperty = (): HouseProperty => ({
   title: "",
   description: "",
   image: "",
+  streetViewImage: "",
   price: "",
   beds: "",
   baths: "",
@@ -139,22 +141,41 @@ const HouseComparison = () => {
       });
 
       const hasTitle = !error && data?.title && data.title.length > 5;
+      const title = hasTitle ? data.title : extractNameFromUrl(validUrl);
 
       const newProp: HouseProperty = {
         ...createEmptyProperty(),
         url: validUrl,
-        title: hasTitle ? data.title : extractNameFromUrl(validUrl),
+        title,
         description: data?.description || "",
         image: data?.image || "",
       };
+
+      // If no OG image, try to fetch Street View using the title as address
+      if (!newProp.image && title && title !== "New Property" && !title.startsWith("Property from")) {
+        try {
+          const svResponse = await supabase.functions.invoke("get-street-view", {
+            body: { address: title },
+          });
+          if (svResponse.data && !(svResponse.data instanceof Object && 'error' in svResponse.data)) {
+            // Convert blob to object URL
+            const blob = new Blob([svResponse.data], { type: 'image/jpeg' });
+            newProp.streetViewImage = URL.createObjectURL(blob);
+          }
+        } catch (svErr) {
+          console.log("Street View not available for this address");
+        }
+      }
 
       updateProperties([...properties, newProp]);
       setUrlInput("");
       toast({ 
         title: "Property added!", 
-        description: hasTitle
+        description: newProp.image
           ? "Preview loaded! Fill in price, beds, baths, etc. from the listing."
-          : "Link saved — fill in the details from the listing page."
+          : newProp.streetViewImage
+            ? "Street View loaded! Fill in the details from the listing page."
+            : "Link saved — fill in the details from the listing page."
       });
     } catch (err) {
       console.error("Metadata fetch error:", err);
@@ -321,7 +342,8 @@ const getDomain = (url: string): string => {
 const PropertyCard = ({ property, onUpdate, onRemove, onToggleFavorite, onSetRating }: PropertyCardProps) => {
   const p = property;
   const domain = p.url ? getDomain(p.url) : "";
-  const hasPreview = p.image || (p.url && (p.title || p.description));
+  const displayImage = p.image || p.streetViewImage;
+  const hasPreview = displayImage || (p.url && (p.title || p.description));
 
   return (
     <Card className={`relative overflow-hidden transition-all ${p.isFavorite ? "ring-2 ring-primary shadow-lg" : ""}`}>
@@ -333,10 +355,10 @@ const PropertyCard = ({ property, onUpdate, onRemove, onToggleFavorite, onSetRat
           rel="noopener noreferrer"
           className="block group cursor-pointer"
         >
-          {p.image && (
+          {displayImage && (
             <div className="relative h-48 overflow-hidden">
               <img
-                src={p.image}
+                src={displayImage}
                 alt={p.title || "Property"}
                 className="w-full h-full object-cover transition-transform group-hover:scale-105"
                 onError={(e) => {
@@ -344,6 +366,11 @@ const PropertyCard = ({ property, onUpdate, onRemove, onToggleFavorite, onSetRat
                 }}
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
+              {p.streetViewImage && !p.image && (
+                <span className="absolute top-2 right-2 text-[11px] font-medium text-white/90 bg-black/40 backdrop-blur-sm px-2 py-0.5 rounded-full flex items-center gap-1">
+                  <MapPin className="h-3 w-3" /> Street View
+                </span>
+              )}
               {p.isFavorite && (
                 <Badge className="absolute top-2 left-2 bg-primary text-primary-foreground">
                   ⭐ Family Pick
@@ -356,7 +383,7 @@ const PropertyCard = ({ property, onUpdate, onRemove, onToggleFavorite, onSetRat
               )}
             </div>
           )}
-          {!p.image && domain && (
+          {!displayImage && domain && (
             <div className="flex items-center gap-2 px-4 pt-4">
               <img
                 src={`https://www.google.com/s2/favicons?domain=${domain}&sz=32`}
@@ -369,7 +396,7 @@ const PropertyCard = ({ property, onUpdate, onRemove, onToggleFavorite, onSetRat
         </a>
       )}
       {/* Fallback when no image at all */}
-      {!p.image && (
+      {!displayImage && (
         <div className="relative h-32 bg-muted/50 flex flex-col items-center justify-center gap-2">
           <Home className="h-10 w-10 text-muted-foreground/30" />
           {domain && !hasPreview && (
