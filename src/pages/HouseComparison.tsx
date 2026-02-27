@@ -158,11 +158,16 @@ const HouseComparison = () => {
             body: { address: title },
           });
           if (svResponse.data && !(svResponse.data instanceof Object && 'error' in svResponse.data)) {
-            // Convert blob to object URL
+            // Convert to base64 data URL so it persists in localStorage
             const blob = new Blob([svResponse.data], { type: 'image/jpeg' });
-            newProp.streetViewImage = URL.createObjectURL(blob);
+            const reader = new FileReader();
+            const dataUrl = await new Promise<string>((resolve) => {
+              reader.onloadend = () => resolve(reader.result as string);
+              reader.readAsDataURL(blob);
+            });
+            newProp.streetViewImage = dataUrl;
           }
-        } catch (svErr) {
+        } catch {
           console.log("Street View not available for this address");
         }
       }
