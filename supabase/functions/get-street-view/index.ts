@@ -40,7 +40,7 @@ serve(async (req) => {
       )
     }
 
-    // Proxy the actual Street View image to avoid exposing the API key
+    // Fetch the Street View image
     const imageUrl = `https://maps.googleapis.com/maps/api/streetview?size=600x400&location=${encodeURIComponent(address)}&key=${apiKey}`
     const imageResponse = await fetch(imageUrl)
 
@@ -52,14 +52,17 @@ serve(async (req) => {
     }
 
     const imageBuffer = await imageResponse.arrayBuffer()
+    const uint8 = new Uint8Array(imageBuffer)
+    let binary = ''
+    for (let i = 0; i < uint8.length; i++) {
+      binary += String.fromCharCode(uint8[i])
+    }
+    const base64 = btoa(binary)
 
-    return new Response(imageBuffer, {
-      headers: {
-        ...corsHeaders,
-        'Content-Type': 'image/jpeg',
-        'Cache-Control': 'public, max-age=86400',
-      },
-    })
+    return new Response(
+      JSON.stringify({ image: `data:image/jpeg;base64,${base64}` }),
+      { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+    )
   } catch (error: any) {
     return new Response(
       JSON.stringify({ error: error?.message || 'Failed to get Street View image' }),
