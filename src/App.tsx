@@ -4,11 +4,12 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { SkipToMain } from "@/components/SkipToMain";
 import { MobileBottomNav } from "@/components/MobileBottomNav";
 import { MobileAppHeader } from "@/components/MobileAppHeader";
-import { SubscriptionGuard } from "@/components/SubscriptionGuard";
+// SubscriptionGuard lazy-loaded below
 import { SplashScreen } from "@/components/SplashScreen";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
-import { useEffect } from "react";
+import { useEffect, lazy, Suspense } from "react";
+import ErrorBoundary from "@/components/ErrorBoundary";
 import { trackPageView } from "@/utils/analytics";
 import { HelmetProvider } from 'react-helmet-async';
 import { AuthProvider, useAuth } from "@/hooks/useAuth";
@@ -24,35 +25,36 @@ import Footer from "@/components/Footer";
 import { JazzBackground } from "@/components/JazzBackground";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { cn } from "@/lib/utils";
-// Features page consolidated into MonthlyBudget
-import MobileLanding from "@/pages/MobileLanding";
-import Expenses from "@/pages/Expenses";
-import MonthlyBudget from "@/pages/MonthlyBudget";
-import SavingsGoals from "@/pages/SavingsGoals";
-import Vacation from "@/pages/Vacation";
-import Auth from "@/pages/Auth";
-import NotFound from "@/pages/NotFound";
-import SubscriptionSuccess from "@/pages/SubscriptionSuccess";
-import UserSettings from "@/pages/UserSettings";
-import Engagement from "@/pages/Engagement";
-import AIInsights from "@/pages/AIInsights";
-import Blog from "@/pages/Blog";
-import BlogPost from "@/pages/BlogPost";
-import Admin from "@/pages/Admin";
-import BlogImageUpdater from "@/pages/BlogImageUpdater";
-import UpdateSitemap from "@/pages/UpdateSitemap";
-import GenerateBlogImages from "@/pages/GenerateBlogImages";
-import Gifts from "@/pages/Gifts";
-// Marketplace removed
-import AboutUs from "@/pages/AboutUs";
-import ContactUs from "@/pages/ContactUs";
-import PrivacyPolicy from "@/pages/PrivacyPolicy";
-import TermsAndConditions from "@/pages/TermsAndConditions";
-import Disclaimer from "@/pages/Disclaimer";
-import HouseComparison from "@/pages/HouseComparison";
-import ErrorBoundary from "@/components/ErrorBoundary";
+import { PageSkeleton } from "@/components/LoadingSkeletons";
 import { useState, createContext } from "react";
 import { isNativeApp } from "@/utils/capacitor";
+
+// Lazy-loaded route components
+const MobileLanding = lazy(() => import("@/pages/MobileLanding"));
+const Expenses = lazy(() => import("@/pages/Expenses"));
+const MonthlyBudget = lazy(() => import("@/pages/MonthlyBudget"));
+const SavingsGoals = lazy(() => import("@/pages/SavingsGoals"));
+const Vacation = lazy(() => import("@/pages/Vacation"));
+const Auth = lazy(() => import("@/pages/Auth"));
+const NotFound = lazy(() => import("@/pages/NotFound"));
+const SubscriptionSuccess = lazy(() => import("@/pages/SubscriptionSuccess"));
+const UserSettings = lazy(() => import("@/pages/UserSettings"));
+const Engagement = lazy(() => import("@/pages/Engagement"));
+const AIInsights = lazy(() => import("@/pages/AIInsights"));
+const Blog = lazy(() => import("@/pages/Blog"));
+const BlogPost = lazy(() => import("@/pages/BlogPost"));
+const Admin = lazy(() => import("@/pages/Admin"));
+const BlogImageUpdater = lazy(() => import("@/pages/BlogImageUpdater"));
+const UpdateSitemap = lazy(() => import("@/pages/UpdateSitemap"));
+const GenerateBlogImages = lazy(() => import("@/pages/GenerateBlogImages"));
+const Gifts = lazy(() => import("@/pages/Gifts"));
+const AboutUs = lazy(() => import("@/pages/AboutUs"));
+const ContactUs = lazy(() => import("@/pages/ContactUs"));
+const PrivacyPolicy = lazy(() => import("@/pages/PrivacyPolicy"));
+const TermsAndConditions = lazy(() => import("@/pages/TermsAndConditions"));
+const Disclaimer = lazy(() => import("@/pages/Disclaimer"));
+const HouseComparison = lazy(() => import("@/pages/HouseComparison"));
+const SubscriptionGuard = lazy(() => import("@/components/SubscriptionGuard").then(m => ({ default: m.SubscriptionGuard })));
 
 interface Currency {
   code: string;
@@ -93,55 +95,59 @@ const AppRoutes = () => {
   // Mobile app routes - calculator pages for subscribers only
   if (isMobileApp) {
     return (
-      <Routes>
-        <Route path="/" element={<MobileLanding />} />
-        <Route path="/login" element={<Auth />} />
-        <Route path="/signup" element={<Auth />} />
-        <Route path="/auth" element={<Auth />} />
-        <Route path="/expenses" element={<SubscriptionGuard><Expenses /></SubscriptionGuard>} />
-        <Route path="/budget" element={<SubscriptionGuard><MonthlyBudget /></SubscriptionGuard>} />
-        <Route path="/savings" element={<SubscriptionGuard><SavingsGoals /></SubscriptionGuard>} />
-        <Route path="/vacation" element={<SubscriptionGuard><Vacation /></SubscriptionGuard>} />
-        <Route path="/gifts" element={<SubscriptionGuard><Gifts /></SubscriptionGuard>} />
-        <Route path="/ai-insights" element={<SubscriptionGuard><AIInsights /></SubscriptionGuard>} />
-        <Route path="/settings" element={<SubscriptionGuard><UserSettings /></SubscriptionGuard>} />
-        <Route path="*" element={<MobileLanding />} />
-      </Routes>
+      <Suspense fallback={<PageSkeleton />}>
+        <Routes>
+          <Route path="/" element={<MobileLanding />} />
+          <Route path="/login" element={<Auth />} />
+          <Route path="/signup" element={<Auth />} />
+          <Route path="/auth" element={<Auth />} />
+          <Route path="/expenses" element={<SubscriptionGuard><Expenses /></SubscriptionGuard>} />
+          <Route path="/budget" element={<SubscriptionGuard><MonthlyBudget /></SubscriptionGuard>} />
+          <Route path="/savings" element={<SubscriptionGuard><SavingsGoals /></SubscriptionGuard>} />
+          <Route path="/vacation" element={<SubscriptionGuard><Vacation /></SubscriptionGuard>} />
+          <Route path="/gifts" element={<SubscriptionGuard><Gifts /></SubscriptionGuard>} />
+          <Route path="/ai-insights" element={<SubscriptionGuard><AIInsights /></SubscriptionGuard>} />
+          <Route path="/settings" element={<SubscriptionGuard><UserSettings /></SubscriptionGuard>} />
+          <Route path="*" element={<MobileLanding />} />
+        </Routes>
+      </Suspense>
     );
   }
   
   // Full web app routes
   
   return (
-    <Routes>
-      <Route path="/" element={<MonthlyBudget />} />
-      <Route path="/budget" element={<MonthlyBudget />} />
-      <Route path="/expenses" element={<Expenses />} />
-      <Route path="/savings" element={<SavingsGoals />} />
-      <Route path="/vacation" element={<Vacation />} />
-      <Route path="/engagement" element={<Engagement />} />
-      <Route path="/login" element={<Auth />} />
-      <Route path="/signup" element={<Auth />} />
-      <Route path="/auth" element={<Auth />} />
-      <Route path="/settings" element={<UserSettings />} />
-      <Route path="/gifts" element={<Gifts />} />
-      {/* Marketplace removed */}
-      <Route path="/blog" element={<Blog />} />
-      <Route path="/blog/:slug" element={<BlogPost />} />
-      <Route path="/admin" element={<Admin />} />
-        <Route path="/admin/blog-images" element={<BlogImageUpdater />} />
-        <Route path="/admin/update-sitemap" element={<UpdateSitemap />} />
-        <Route path="/admin/generate-blog-images" element={<GenerateBlogImages />} />
-      <Route path="/ai-insights" element={<AIInsights />} />
-      <Route path="/subscription-success" element={<SubscriptionSuccess />} />
-      <Route path="/about" element={<AboutUs />} />
-      <Route path="/contact" element={<ContactUs />} />
-      <Route path="/privacy" element={<PrivacyPolicy />} />
-      <Route path="/terms" element={<TermsAndConditions />} />
-      <Route path="/disclaimer" element={<Disclaimer />} />
-      <Route path="/house-comparison" element={<HouseComparison />} />
-      <Route path="*" element={<NotFound />} />
-    </Routes>
+    <Suspense fallback={<PageSkeleton />}>
+      <Routes>
+        <Route path="/" element={<MonthlyBudget />} />
+        <Route path="/budget" element={<MonthlyBudget />} />
+        <Route path="/expenses" element={<Expenses />} />
+        <Route path="/savings" element={<SavingsGoals />} />
+        <Route path="/vacation" element={<Vacation />} />
+        <Route path="/engagement" element={<Engagement />} />
+        <Route path="/login" element={<Auth />} />
+        <Route path="/signup" element={<Auth />} />
+        <Route path="/auth" element={<Auth />} />
+        <Route path="/settings" element={<UserSettings />} />
+        <Route path="/gifts" element={<Gifts />} />
+        {/* Marketplace removed */}
+        <Route path="/blog" element={<Blog />} />
+        <Route path="/blog/:slug" element={<BlogPost />} />
+        <Route path="/admin" element={<Admin />} />
+          <Route path="/admin/blog-images" element={<BlogImageUpdater />} />
+          <Route path="/admin/update-sitemap" element={<UpdateSitemap />} />
+          <Route path="/admin/generate-blog-images" element={<GenerateBlogImages />} />
+        <Route path="/ai-insights" element={<AIInsights />} />
+        <Route path="/subscription-success" element={<SubscriptionSuccess />} />
+        <Route path="/about" element={<AboutUs />} />
+        <Route path="/contact" element={<ContactUs />} />
+        <Route path="/privacy" element={<PrivacyPolicy />} />
+        <Route path="/terms" element={<TermsAndConditions />} />
+        <Route path="/disclaimer" element={<Disclaimer />} />
+        <Route path="/house-comparison" element={<HouseComparison />} />
+        <Route path="*" element={<NotFound />} />
+      </Routes>
+    </Suspense>
   );
 };
 
