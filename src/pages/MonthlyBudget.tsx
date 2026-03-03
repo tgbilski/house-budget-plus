@@ -321,41 +321,36 @@ const MonthlyBudget: React.FC = () => {
               )}
             </div>
 
-            {/* Right column */}
-            <div className="lg:col-span-1 space-y-4 order-2">
-              {user ? (
-                <>
-                  {totalIncome > 0 && (
-                    <div className="bg-card border-[3px] border-stroke rounded-xl p-4 shadow-cartoon">
-                      <p className="text-xs text-muted-foreground uppercase tracking-wide mb-1">
-                        {selectedYear} Yearly Household Income
-                      </p>
-                      <p className="text-2xl sm:text-3xl font-bold text-success">
-                        {currency.symbol}{yearlyHouseholdIncome.toLocaleString()}
-                      </p>
-                      <p className="text-xs text-muted-foreground mt-1">
-                        Based on {currency.symbol}{totalIncome.toLocaleString()}/month
-                      </p>
-                    </div>
-                  )}
-                  {/* FIX: Completely unmount the chart on mobile to prevent double-tap bug caused by library listeners */}
-                  {!isMobile && (
-                    <BudgetDonutChart
-                      totalIncome={totalIncome}
-                      totalExpenses={totalExpenses}
-                      currency={currency}
-                    />
-                  )}
-                  <MortgagePreapprovalQuestion
-                    monthlyIncome={totalIncome}
-                    monthlyExpenses={totalExpenses}
+            {/* Right column - only show for authenticated users */}
+            {user && (
+              <div className="lg:col-span-1 space-y-4 order-2">
+                {totalIncome > 0 && (
+                  <div className="bg-card border-[3px] border-stroke rounded-xl p-4 shadow-cartoon">
+                    <p className="text-xs text-muted-foreground uppercase tracking-wide mb-1">
+                      {selectedYear} Yearly Household Income
+                    </p>
+                    <p className="text-2xl sm:text-3xl font-bold text-success">
+                      {currency.symbol}{yearlyHouseholdIncome.toLocaleString()}
+                    </p>
+                    <p className="text-xs text-muted-foreground mt-1">
+                      Based on {currency.symbol}{totalIncome.toLocaleString()}/month
+                    </p>
+                  </div>
+                )}
+                {!isMobile && (
+                  <BudgetDonutChart
+                    totalIncome={totalIncome}
+                    totalExpenses={totalExpenses}
                     currency={currency}
                   />
-                </>
-              ) : (
-                <InlineSignUpForm />
-              )}
-            </div>
+                )}
+                <MortgagePreapprovalQuestion
+                  monthlyIncome={totalIncome}
+                  monthlyExpenses={totalExpenses}
+                  currency={currency}
+                />
+              </div>
+            )}
           </div>
         )}
 
