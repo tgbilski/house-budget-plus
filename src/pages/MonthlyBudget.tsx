@@ -216,26 +216,6 @@ const MonthlyBudget: React.FC = () => {
           </div>
         </div>
 
-        {/* Premium Promo Banner */}
-        {user && !subscribed && (
-          <div className="mb-6 p-4 rounded-xl bg-card border-[3px] border-stroke shadow-cartoon">
-            <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-              <div className="text-center sm:text-left">
-                <p className="text-foreground font-medium">
-                  Want to unlock premium features?
-                </p>
-                <p className="text-sm text-muted-foreground mt-1">
-                  Get AI insights, voice tracking & more for just $2.99/month.
-                </p>
-              </div>
-              <Button asChild className="gap-2 whitespace-nowrap">
-                <Link to="/settings">
-                  Upgrade Now
-                </Link>
-              </Button>
-            </div>
-          </div>
-        )}
 
         <WarningBanner />
 
