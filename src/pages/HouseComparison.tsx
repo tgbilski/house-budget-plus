@@ -1,4 +1,5 @@
 import { useState, useCallback } from "react";
+import calculatorMascot from '@/assets/calculator-mascot.png';
 import { Plus, Trash2, ExternalLink, Home, Loader2, Star, StarOff, MessageSquare, MapPin } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -240,16 +241,22 @@ const HouseComparison = () => {
       />
 
       <div className="max-w-7xl mx-auto space-y-6">
-        {/* Header */}
-        <div className="text-center space-y-2">
-          <h1 className="text-3xl md:text-4xl font-bold flex items-center justify-center gap-3">
-            <Home className="h-8 w-8 text-primary" />
-            House Comparison
-          </h1>
-          <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-            Paste any property link to grab a preview, then fill in the details. Compare side by side and vote as a family!
-          </p>
+        {/* Header - matching other page styles */}
+        <div className="flex items-start justify-between gap-4 mb-4">
+          <div className="flex items-center gap-2 sm:gap-3 min-w-0">
+            <img 
+              src={calculatorMascot} 
+              alt="Budget Calculator Mascot" 
+              className="h-10 w-10 sm:h-12 sm:w-12 md:h-16 md:w-16 flex-shrink-0 object-contain"
+            />
+            <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-foreground tracking-wide truncate">
+              HOUSE COMPARISON
+            </h1>
+          </div>
         </div>
+        <p className="text-muted-foreground mb-4 max-w-2xl">
+          Paste any property link to grab a preview, then fill in the details. Compare side by side and vote as a family!
+        </p>
 
         {/* URL Input */}
         {atFreeLimit ? (
