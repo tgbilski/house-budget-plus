@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import { NavLink, useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
+import { prefetchRoute } from "@/utils/prefetch";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import {
@@ -130,6 +131,8 @@ export function AppSidebar() {
                     <NavLink 
                       to={item.url} 
                       className="flex items-center gap-3 rounded-lg px-3 py-2 transition-all"
+                      onMouseEnter={() => prefetchRoute(item.url)}
+                      onTouchStart={() => prefetchRoute(item.url)}
                       onClick={() => {
                         if (isMobile) {
                           setOpenMobile(false);

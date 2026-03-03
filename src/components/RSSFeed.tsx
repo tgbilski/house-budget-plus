@@ -233,6 +233,7 @@ export const RSSFeed: React.FC<RSSFeedProps> = ({
                       <img 
                         src={financialImages[currentIndex % financialImages.length]} 
                         alt={`Financial news illustration ${currentIndex + 1}`}
+                        loading="lazy"
                         className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
@@ -324,6 +325,7 @@ export const RSSFeed: React.FC<RSSFeedProps> = ({
                         <img 
                           src={financialImages[index % financialImages.length]} 
                           alt={`Financial news illustration ${index + 1}`}
+                          loading="lazy"
                           className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
