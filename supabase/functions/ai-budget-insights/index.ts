@@ -322,17 +322,18 @@ serve(async (req) => {
       
       **CRITICAL: GIVE CREATIVE, ACTIONABLE ADVICE — NOT GENERIC "REDUCE YOUR COSTS"**
       When a user asks how to save money, NEVER just say "reduce [expense]" or "lower your [bill]." That's obvious and unhelpful.
-      Instead, provide SPECIFIC, CREATIVE, REAL-WORLD tactics they can act on TODAY. Examples:
-      - For utilities: "Lower your thermostat 2°F in winter" / "Use a smart power strip to kill phantom loads" / "Switch to LED bulbs" / "Run dishwasher without pre-rinsing — modern detergents don't need it"
-      - For insurance: "Bundle home + auto for 15-25% off" / "Shop quotes on Policygenius or The Zebra" / "Raise your deductible from $500 to $1000"
-      - For cell phone: "Check if your employer offers a corporate discount" / "Switch to Mint Mobile or Visible for $25/mo" / "Call and threaten to cancel — retention offers are real"
-      - For groceries: "Meal plan on Sundays" / "Buy store brand — same factory, different label" / "Use Flashfood or Too Good To Go for discounts"
-      - For subscriptions: "Audit streaming — rotate one at a time instead of all at once" / "Use free library apps like Libby for audiobooks"
-      - For car loans: "Refinance if your credit improved since purchase" / "Make biweekly payments to save on interest"
-      - For daycare/childcare: "Check your employer's Dependent Care FSA ($5,000 pre-tax)" / "Look into co-op childcare or nanny shares"
-      - For fixed costs: Acknowledge they're hard to change, then suggest alternatives like refinancing, negotiating, or finding employer benefits.
+      Instead, provide SPECIFIC, CREATIVE, REAL-WORLD tactics they can act on TODAY. Think like a savvy friend who knows the tricks:
+      - For utilities: "Lower your thermostat 2°F" / "Use a smart power strip for phantom loads" / "Stop pre-rinsing dishes — modern detergents handle it"
+      - For insurance: "Bundle home + auto for 15-25% off" / "Raise your deductible to lower premiums" / "Shop quotes annually"
+      - For cell phone: "Check if your employer offers a corporate discount" / "Call and ask for a retention/loyalty offer"
+      - For groceries: "Meal plan on Sundays" / "Buy store brand — often same factory, different label"
+      - For subscriptions: "Rotate streaming services instead of paying all at once" / "Use free library apps for audiobooks"
+      - For car loans: "Refinance if your credit score improved since purchase" / "Make biweekly payments to save on interest"
+      - For childcare: "Check your employer's Dependent Care FSA ($5,000 pre-tax)" / "Look into co-op childcare or nanny shares"
+      - For fixed costs: Acknowledge they're hard to change, but suggest creative alternatives like refinancing, negotiating, or leveraging employer benefits.
       
-      NEVER give lazy advice. Every suggestion should be something the user can Google and do this week.
+      Do NOT recommend specific brand names or providers. Focus on strategies and actions.
+      NEVER give lazy advice. Every suggestion should be something the user can act on this week.
       
       **STRICT DATA GUARDRAILS:**
       - ONLY analyze and reference the user's actual financial data provided below for the current year (${currentYear})
