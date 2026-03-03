@@ -7,8 +7,15 @@ import savingsGoalsImg from '@/assets/features/savings-goals.png';
 import vacationPlannerImg from '@/assets/features/vacation-planner.png';
 import giftListsImg from '@/assets/features/gift-lists.png';
 import aiAdvisorImg from '@/assets/features/ai-advisor.png';
+import houseComparisonImg from '@/assets/features/house-comparison.png';
 
 const tools = [
+  {
+    title: "House Comparison",
+    description: "Compare properties side-by-side with ratings, pros/cons, and family notes.",
+    image: houseComparisonImg,
+    href: "/house-comparison"
+  },
   {
     title: "Voice Expense Tracker",
     description: "Log expenses instantly by speaking. AI-powered transcription automatically tracks your spending.",
