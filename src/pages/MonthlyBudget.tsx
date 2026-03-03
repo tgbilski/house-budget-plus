@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import BudgetCalculator from '@/components/BudgetCalculator';
 import { useQuery } from '@tanstack/react-query';
-
+import { useMemo } from 'react';
 import { useCurrency } from '@/hooks/useCurrency';
 import { useAuth } from '@/hooks/useAuth';
 import { useYear } from '@/hooks/useYear';
@@ -273,7 +273,12 @@ const MonthlyBudget: React.FC = () => {
                       </div>
                     ) : (
                       <div className="animate-fade-in flex items-start">
-                        <PremiumLimitBanner featureName="calculators" freeLimit={1} className="min-h-[200px] flex flex-col items-center justify-center" />
+                        <PremiumLimitBanner 
+                          featureName="calculators" 
+                          freeLimit={1} 
+                          className="min-h-[200px] flex flex-col items-center justify-center"
+                          savingsAmount={totalExpenses > 100 ? new Intl.NumberFormat('en-US', { style: 'currency', currency: currency.code }).format(Math.round(totalExpenses * (0.08 + 0.04))) : undefined}
+                        />
                       </div>
                     )
                   )}
