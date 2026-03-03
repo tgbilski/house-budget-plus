@@ -13,7 +13,6 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 
 import { supabase } from '@/integrations/supabase/client';
 import { StreamingServiceSelector } from './StreamingServiceSelector';
-import { AISavingsTeaser } from './AISavingsTeaser';
 
 interface ExpenseItem {
   id: string;
@@ -720,12 +719,6 @@ const BudgetCalculator: React.FC<BudgetCalculatorProps> = ({
           </div>
         </div>
 
-        {/* AI Savings Teaser */}
-        <AISavingsTeaser
-          totalExpenses={totalExpenses}
-          monthlyIncome={monthlyIncome}
-          formatCurrency={formatCurrency}
-        />
 
       </CardContent>
     </Card>
