@@ -529,11 +529,24 @@ const BudgetCalculator: React.FC<BudgetCalculatorProps> = ({
 
       <CardContent className="space-y-4 px-5 py-4">
         {/* Monthly Expenses in two columns */}
-        <div>
+        <div className="relative">
           <h3 className="text-xs font-semibold text-foreground mb-3">Monthly Expenses</h3>
           
+          {/* Blur overlay for guests */}
+          {!user && (
+            <div className="absolute inset-0 z-10 flex flex-col items-center justify-center bg-card/80 backdrop-blur-sm rounded-lg mt-6">
+              <p className="text-sm font-semibold text-foreground mb-2 text-center px-4">Sign up free to track your expenses</p>
+              <a
+                href="/signup"
+                className="inline-flex items-center justify-center rounded-md text-sm font-medium bg-primary text-primary-foreground hover:bg-primary/90 h-9 px-4 py-2 shadow-sm transition-colors"
+              >
+                Create Free Account
+              </a>
+            </div>
+          )}
+          
           {/* Responsive layout: single column on mobile, two columns on larger screens */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className={`grid grid-cols-1 sm:grid-cols-2 gap-4 ${!user ? 'blur-md select-none pointer-events-none' : ''}`}>
             {expenses.map((expense) => {
               if (!expense.id.startsWith('subscription')) {
                 return (
