@@ -7,7 +7,6 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { useCurrency } from '@/hooks/useCurrency';
 import { useAuth } from '@/hooks/useAuth';
-import { useYear } from '@/hooks/useYear';
 import { useHousehold } from '@/hooks/useHousehold';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 
@@ -58,7 +57,6 @@ const BudgetCalculator: React.FC<BudgetCalculatorProps> = ({
 }) => {
   const { user } = useAuth();
   const { currentHousehold } = useHousehold(user?.id);
-  const { selectedYear } = useYear();
   const { currency } = useCurrency();
   const [ownerName, setOwnerName] = useState('');
   const [monthlyIncome, setMonthlyIncome] = useState(0);
@@ -107,13 +105,12 @@ const BudgetCalculator: React.FC<BudgetCalculatorProps> = ({
         .delete()
         .eq('user_id', user.id)
         .eq('household_id', currentHousehold.id)
-        .eq('year', selectedYear)
         .eq('calculator_id', id)
         .eq('page_type', pageType);
       
       // Invalidate the React Query cache so deleted data doesn't come back
       queryClient.removeQueries({ 
-        queryKey: ['budget-data', user.id, currentHousehold.id, selectedYear, id, pageType] 
+        queryKey: ['budget-data', user.id, currentHousehold.id, id, pageType] 
       });
     }
     
@@ -141,7 +138,7 @@ const BudgetCalculator: React.FC<BudgetCalculatorProps> = ({
 
   // React Query for loading budget data - cached and won't refetch on window focus
   const { data: budgetQueryData } = useQuery({
-    queryKey: ['budget-data', user?.id, currentHousehold?.id, selectedYear, id, pageType],
+    queryKey: ['budget-data', user?.id, currentHousehold?.id, id, pageType],
     queryFn: async () => {
       if (!user || !currentHousehold) return null;
       
@@ -150,7 +147,6 @@ const BudgetCalculator: React.FC<BudgetCalculatorProps> = ({
         .select('*')
         .eq('user_id', user.id)
         .eq('household_id', currentHousehold.id)
-        .eq('year', selectedYear)
         .eq('calculator_id', id)
         .eq('page_type', pageType)
         .order('created_at', { ascending: false })
@@ -255,10 +251,10 @@ const BudgetCalculator: React.FC<BudgetCalculatorProps> = ({
     }
   }, [budgetQueryData, id, onNameChange]);
 
-  // Reset initialization flag when key dependencies change (e.g., year)
+  // Reset initialization flag when key dependencies change
   useEffect(() => {
     hasInitialized.current = false;
-  }, [selectedYear, user?.id, currentHousehold?.id]);
+  }, [user?.id, currentHousehold?.id]);
 
   // Set up event listener for AI autofill
   useEffect(() => {
@@ -327,11 +323,10 @@ const BudgetCalculator: React.FC<BudgetCalculatorProps> = ({
         household_id: currentHousehold?.id,
         calculator_id: id,
         page_type: pageType,
-        year: selectedYear,
         income: monthlyIncome,
         expenses: expensesData as any
       }, {
-        onConflict: 'user_id,calculator_id,page_type,household_id,year'
+        onConflict: 'user_id,calculator_id,page_type,household_id'
       });
 
     if (error) {
@@ -344,7 +339,7 @@ const BudgetCalculator: React.FC<BudgetCalculatorProps> = ({
       const saveTimeout = setTimeout(saveData, 500);
       return () => clearTimeout(saveTimeout);
     }
-  }, [monthlyIncome, expenses, additionalExpenses, additionalSubscriptions, subscriptionServices, ownerName, user, pageType, id, selectedYear, currentHousehold]);
+  }, [monthlyIncome, expenses, additionalExpenses, additionalSubscriptions, subscriptionServices, ownerName, user, pageType, id, currentHousehold]);
 
   const addAdditionalExpense = () => {
     if (additionalExpenses.length < 10) {
