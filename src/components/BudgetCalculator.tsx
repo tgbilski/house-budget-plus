@@ -997,19 +997,19 @@ const BudgetCalculator: React.FC<BudgetCalculatorProps> = ({
                 )}
               </div>
 
-            <div className="border-t pt-3 relative min-h-[100px]">
+            <div className="border-t pt-3 relative">
               {!user && totalExpenses > 0 && (
-                <div className="absolute inset-0 z-10 flex flex-col items-center justify-center bg-card/70 backdrop-blur-md rounded-lg">
+                <div className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-card rounded-lg">
                   <p className="text-sm font-semibold text-foreground mb-2">Sign up free to see your results</p>
                   <a
-                    href="/signup"
+                    href="/auth"
                     className="inline-flex items-center justify-center rounded-md text-sm font-medium bg-primary text-primary-foreground hover:bg-primary/90 h-9 px-4 py-2 shadow-sm transition-colors"
                   >
                     Create Free Account
                   </a>
                 </div>
               )}
-              <div className={!user && totalExpenses > 0 ? 'blur-md select-none pointer-events-none' : ''}>
+              <div className={!user && totalExpenses > 0 ? 'invisible' : ''}>
                 <div className="flex justify-between items-center mb-2">
                   <span className="text-sm font-medium text-foreground">Subtotal:</span>
                   <span className="text-sm font-semibold text-foreground">
