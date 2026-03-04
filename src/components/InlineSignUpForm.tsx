@@ -139,22 +139,6 @@ const InlineSignUpForm: React.FC<InlineSignUpFormProps> = ({ className = '' }) =
             : 'Your budgets are waiting for you'
           }
         </CardDescription>
-        {isSignUp && (
-          <div className="mt-3 space-y-1.5">
-            <div className="flex items-center gap-2 text-sm">
-              <Check className="h-4 w-4 text-success flex-shrink-0" />
-              <span className="text-foreground">Free forever — unlimited budget calculators</span>
-            </div>
-            <div className="flex items-center gap-2 text-sm">
-              <Check className="h-4 w-4 text-success flex-shrink-0" />
-              <span className="text-foreground">Save & sync your data across devices</span>
-            </div>
-            <div className="flex items-center gap-2 text-sm">
-              <Sparkles className="h-4 w-4 text-primary flex-shrink-0" />
-              <span className="text-muted-foreground">Premium: AI insights & daily expense tracking</span>
-            </div>
-          </div>
-        )}
       </CardHeader>
       <CardContent className="pt-0">
         <form onSubmit={handleSubmit} className="space-y-3">
