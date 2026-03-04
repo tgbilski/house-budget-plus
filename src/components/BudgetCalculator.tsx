@@ -1019,33 +1019,35 @@ const BudgetCalculator: React.FC<BudgetCalculatorProps> = ({
               </div>
             </div>
 
-            <div className="border-t pt-3 space-y-2 relative">
-              {!user && totalExpenses > 0 && (
-                <div className="absolute inset-0 z-10 flex flex-col items-center justify-center bg-card/80 backdrop-blur-sm rounded-lg">
-                  <p className="text-sm font-semibold text-foreground mb-2">Sign up free to see your results</p>
-                  <a
-                    href="/signup"
-                    className="inline-flex items-center justify-center rounded-md text-sm font-medium bg-primary text-primary-foreground hover:bg-primary/90 h-9 px-4 py-2 shadow-sm transition-colors"
-                  >
-                    Create Free Account
-                  </a>
-                </div>
-              )}
-              <div className={!user && totalExpenses > 0 ? 'blur-md select-none' : ''}>
-                <div className="flex justify-between items-center">
-                  <span className="text-sm font-medium text-foreground">Subtotal:</span>
-                  <span className="text-sm font-semibold text-foreground">
-                    {formatCurrency(totalExpenses)}
-                  </span>
-                </div>
-                
-                <div className="flex justify-between items-center mt-2">
-                  <span className="text-base font-semibold text-foreground">Net Result:</span>
-                  <span className={`text-base font-bold ${
-                    netResult >= 0 ? 'text-success' : 'text-destructive'
-                  }`}>
-                    {formatCurrency(netResult)}
-                  </span>
+            <div className="border-t pt-3 space-y-2">
+              <div className="flex justify-between items-center">
+                <span className="text-sm font-medium text-foreground">Subtotal:</span>
+                <span className="text-sm font-semibold text-foreground">
+                  {formatCurrency(totalExpenses)}
+                </span>
+              </div>
+              
+              <div className="relative">
+                {!user && totalExpenses > 0 && (
+                  <div className="absolute inset-0 z-10 flex flex-col items-center justify-center bg-card/60 backdrop-blur-sm rounded-lg py-3">
+                    <p className="text-sm font-semibold text-foreground mb-2">Sign up free to see your net result</p>
+                    <a
+                      href="/signup"
+                      className="inline-flex items-center justify-center rounded-md text-sm font-medium bg-primary text-primary-foreground hover:bg-primary/90 h-9 px-4 py-2 shadow-sm transition-colors"
+                    >
+                      Create Free Account
+                    </a>
+                  </div>
+                )}
+                <div className={!user && totalExpenses > 0 ? 'blur-md select-none' : ''}>
+                  <div className="flex justify-between items-center mt-2">
+                    <span className="text-base font-semibold text-foreground">Net Result:</span>
+                    <span className={`text-base font-bold ${
+                      netResult >= 0 ? 'text-success' : 'text-destructive'
+                    }`}>
+                      {formatCurrency(netResult)}
+                    </span>
+                  </div>
                 </div>
               </div>
             </div>
