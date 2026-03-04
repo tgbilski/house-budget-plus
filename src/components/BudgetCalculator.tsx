@@ -71,6 +71,14 @@ const BudgetCalculator: React.FC<BudgetCalculatorProps> = ({
   const [badgeAwarded, setBadgeAwarded] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
+  // Save guest data to localStorage before signup redirect
+  const saveGuestDataAndRedirect = (e: React.MouseEvent) => {
+    e.preventDefault();
+    const guestData = { ownerName, monthlyIncome, calculatorId: id };
+    localStorage.setItem('guest_budget_data', JSON.stringify(guestData));
+    window.location.href = '/signup';
+  };
+
   // Check if user has entered any data
   const checkHasData = () => {
     return ownerName.trim() !== '' || 
@@ -259,6 +267,43 @@ const BudgetCalculator: React.FC<BudgetCalculatorProps> = ({
   useEffect(() => {
     hasInitialized.current = false;
   }, [user?.id, currentHousehold?.id]);
+
+  // Restore guest data from localStorage after signup
+  useEffect(() => {
+    if (!user) return;
+    const stored = localStorage.getItem('guest_budget_data');
+    if (!stored) return;
+    
+    try {
+      const guestData = JSON.parse(stored);
+      if (guestData.calculatorId === id || id === '1') {
+        if (guestData.ownerName) {
+          setOwnerName(guestData.ownerName);
+          onNameChange(id, guestData.ownerName);
+        }
+        if (guestData.monthlyIncome) {
+          setMonthlyIncome(guestData.monthlyIncome);
+        }
+        
+        // Save ownerName as first_name on profile
+        if (guestData.ownerName) {
+          const nameParts = guestData.ownerName.trim().split(/\s+/);
+          const firstName = nameParts[0] || '';
+          const lastName = nameParts.slice(1).join(' ') || null;
+          supabase
+            .from('profiles')
+            .update({ first_name: firstName, last_name: lastName })
+            .eq('user_id', user.id)
+            .then(({ error }) => {
+              if (error) console.error('Error updating profile with guest name:', error);
+            });
+        }
+      }
+      localStorage.removeItem('guest_budget_data');
+    } catch (e) {
+      localStorage.removeItem('guest_budget_data');
+    }
+  }, [user, id]);
 
   // Set up event listener for AI autofill
   useEffect(() => {
@@ -564,9 +609,9 @@ const BudgetCalculator: React.FC<BudgetCalculatorProps> = ({
                 {!user && (
                   <div className="flex flex-col items-center justify-center py-6">
                     <p className="text-sm font-semibold text-foreground mb-2 text-center">Sign up free to track expenses</p>
-                    <a href="/signup" className="inline-flex items-center justify-center rounded-md text-sm font-medium bg-primary text-primary-foreground hover:bg-primary/90 h-9 px-4 py-2 shadow-sm transition-colors">
-                      Create Free Account
-                    </a>
+                     <a href="/signup" onClick={saveGuestDataAndRedirect} className="inline-flex items-center justify-center rounded-md text-sm font-medium bg-primary text-primary-foreground hover:bg-primary/90 h-9 px-4 py-2 shadow-sm transition-colors">
+                       Create Free Account
+                     </a>
                   </div>
                 )}
                 <div className={`grid grid-cols-2 gap-3 ${!user ? 'blur-md select-none pointer-events-none' : ''}`}>
@@ -691,9 +736,9 @@ const BudgetCalculator: React.FC<BudgetCalculatorProps> = ({
                   {!user && totalExpenses > 0 && (
                     <div className="absolute inset-0 z-10 flex flex-col items-center justify-center bg-card/80 backdrop-blur-sm rounded-lg">
                       <p className="text-sm font-semibold text-foreground mb-2">Sign up free to see results</p>
-                      <a href="/signup" className="inline-flex items-center justify-center rounded-md text-sm font-medium bg-primary text-primary-foreground hover:bg-primary/90 h-9 px-4 py-2 shadow-sm transition-colors">
-                        Create Free Account
-                      </a>
+                       <a href="/signup" onClick={saveGuestDataAndRedirect} className="inline-flex items-center justify-center rounded-md text-sm font-medium bg-primary text-primary-foreground hover:bg-primary/90 h-9 px-4 py-2 shadow-sm transition-colors">
+                         Create Free Account
+                       </a>
                     </div>
                   )}
                   <div className={!user && totalExpenses > 0 ? 'blur-md select-none' : ''}>
