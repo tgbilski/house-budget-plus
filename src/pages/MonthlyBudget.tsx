@@ -214,7 +214,7 @@ const MonthlyBudget: React.FC = () => {
         ) : (
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-2 md:mt-0">
             {/* Budget calculators - takes 2 columns on left */}
-            <div className="lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-6 order-1">
+            <div className={`${user ? 'lg:col-span-2 grid grid-cols-1 md:grid-cols-2' : 'lg:col-span-2 grid grid-cols-1 md:grid-cols-2'} gap-6 order-1`}>
               {user ? (
                 <>
                   {calculators
@@ -266,58 +266,90 @@ const MonthlyBudget: React.FC = () => {
                   )}
                 </>
               ) : (
-                <>
-                  {['1', '2'].map((id, index) => (
-                    <div
-                      key={id}
-                      className="animate-fade-in"
-                      style={{ animationDelay: `${index * 0.1}s`, animationFillMode: 'both' }}
-                    >
-                      <BudgetCalculator
-                        id={id}
-                        calculatorNumber={parseInt(id)}
-                        showRemove={false}
-                        onRemove={() => {}}
-                        onNameChange={handleNameChange}
-                        pageType="monthly_budget"
-                        onEmptyStateChange={handleCalculatorReset}
-                      />
-                    </div>
-                  ))}
-                </>
+                <div className="animate-fade-in">
+                  <BudgetCalculator
+                    id="1"
+                    calculatorNumber={1}
+                    showRemove={false}
+                    onRemove={() => {}}
+                    onNameChange={handleNameChange}
+                    pageType="monthly_budget"
+                    onEmptyStateChange={handleCalculatorReset}
+                  />
+                </div>
               )}
             </div>
 
-            {/* Right column - only show for authenticated users */}
-            {user && (
-              <div className="lg:col-span-1 space-y-4 order-2">
-                {totalIncome > 0 && (
-                  <div className="bg-card border-[3px] border-stroke rounded-xl p-4 shadow-cartoon">
-                    <p className="text-xs text-muted-foreground uppercase tracking-wide mb-1">
-                      Yearly Household Income
-                    </p>
-                    <p className="text-2xl sm:text-3xl font-bold text-success">
-                      {currency.symbol}{yearlyHouseholdIncome.toLocaleString()}
-                    </p>
-                    <p className="text-xs text-muted-foreground mt-1">
-                      Based on {currency.symbol}{totalIncome.toLocaleString()}/month
-                    </p>
-                  </div>
-                )}
-                {!isMobile && (
-                  <BudgetDonutChart
-                    totalIncome={totalIncome}
-                    totalExpenses={totalExpenses}
+            {/* Right column */}
+            <div className="lg:col-span-1 space-y-4 order-2">
+              {user ? (
+                <>
+                  {totalIncome > 0 && (
+                    <div className="bg-card border-[3px] border-stroke rounded-xl p-4 shadow-cartoon">
+                      <p className="text-xs text-muted-foreground uppercase tracking-wide mb-1">
+                        Yearly Household Income
+                      </p>
+                      <p className="text-2xl sm:text-3xl font-bold text-success">
+                        {currency.symbol}{yearlyHouseholdIncome.toLocaleString()}
+                      </p>
+                      <p className="text-xs text-muted-foreground mt-1">
+                        Based on {currency.symbol}{totalIncome.toLocaleString()}/month
+                      </p>
+                    </div>
+                  )}
+                  {!isMobile && (
+                    <BudgetDonutChart
+                      totalIncome={totalIncome}
+                      totalExpenses={totalExpenses}
+                      currency={currency}
+                    />
+                  )}
+                  <MortgagePreapprovalQuestion
+                    monthlyIncome={totalIncome}
+                    monthlyExpenses={totalExpenses}
                     currency={currency}
                   />
-                )}
-                <MortgagePreapprovalQuestion
-                  monthlyIncome={totalIncome}
-                  monthlyExpenses={totalExpenses}
-                  currency={currency}
-                />
-              </div>
-            )}
+                </>
+              ) : (
+                <div className="space-y-4">
+                  {/* Fun sales pitch for guests */}
+                  <div className="bg-card border-[3px] border-stroke rounded-xl p-5 shadow-cartoon">
+                    <h2 className="text-xl font-bold text-foreground mb-2">
+                      Adulting is hard. Budgeting doesn't have to be. 😤
+                    </h2>
+                    <p className="text-sm text-muted-foreground mb-3">
+                      You're already here crunching numbers — why not save your work? Sign up and unlock the full toolkit:
+                    </p>
+                    <ul className="space-y-2 text-sm mb-4">
+                      <li className="flex items-start gap-2">
+                        <span className="text-lg leading-none">🔒</span>
+                        <span className="text-foreground"><strong>Your data, saved forever</strong> — no more "wait, what was my rent again?"</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <span className="text-lg leading-none">👯</span>
+                        <span className="text-foreground"><strong>Add roommates & partners</strong> — split costs without the awkward convos</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <span className="text-lg leading-none">📊</span>
+                        <span className="text-foreground"><strong>Charts that actually slap</strong> — see where your money goes at a glance</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <span className="text-lg leading-none">🤖</span>
+                        <span className="text-foreground"><strong>AI money tips</strong> — like a financial advisor, but free and less judgy</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <span className="text-lg leading-none">🎁</span>
+                        <span className="text-foreground"><strong>Gift lists, vacation planner & more</strong> — we're basically a whole adulting toolkit</span>
+                      </li>
+                    </ul>
+                    <p className="text-xs text-muted-foreground italic">
+                      No credit card needed. No spam. Just vibes and financial literacy. 🫡
+                    </p>
+                  </div>
+                  <InlineSignUpForm />
+                </div>
+              )}
+            </div>
           </div>
         )}
 
