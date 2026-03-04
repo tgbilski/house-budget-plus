@@ -1,5 +1,6 @@
 // src/components/BudgetCalculator.tsx
 import React, { useState, useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Plus, Trash2, RotateCcw, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -59,6 +60,7 @@ const BudgetCalculator: React.FC<BudgetCalculatorProps> = ({
 }) => {
   const { user } = useAuth();
   const { currentHousehold } = useHousehold(user?.id);
+  const navigate = useNavigate();
   const { currency } = useCurrency();
   const isMobile = useIsMobile();
   const [mobileStep, setMobileStep] = useState(0);
@@ -76,7 +78,7 @@ const BudgetCalculator: React.FC<BudgetCalculatorProps> = ({
     e.preventDefault();
     const guestData = { ownerName, monthlyIncome, calculatorId: id };
     localStorage.setItem('guest_budget_data', JSON.stringify(guestData));
-    window.location.href = '/signup';
+    navigate('/signup');
   };
 
   // Check if user has entered any data
