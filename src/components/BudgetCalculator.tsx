@@ -1027,9 +1027,9 @@ const BudgetCalculator: React.FC<BudgetCalculatorProps> = ({
                 </span>
               </div>
               
-              <div className="relative">
+              <div className="relative min-h-[80px]">
                 {!user && totalExpenses > 0 && (
-                  <div className="absolute inset-0 z-10 flex flex-col items-center justify-center bg-card/60 backdrop-blur-sm rounded-lg py-3">
+                  <div className="absolute inset-0 z-10 flex flex-col items-center justify-center bg-card/70 backdrop-blur-md rounded-lg">
                     <p className="text-sm font-semibold text-foreground mb-2">Sign up free to see your net result</p>
                     <a
                       href="/signup"
@@ -1039,10 +1039,10 @@ const BudgetCalculator: React.FC<BudgetCalculatorProps> = ({
                     </a>
                   </div>
                 )}
-                <div className={!user && totalExpenses > 0 ? 'blur-md select-none' : ''}>
-                  <div className="flex justify-between items-center mt-2">
+                <div className={!user && totalExpenses > 0 ? 'blur-md select-none pointer-events-none' : ''}>
+                  <div className="flex justify-between items-center py-3">
                     <span className="text-base font-semibold text-foreground">Net Result:</span>
-                    <span className={`text-base font-bold ${
+                    <span className={`text-lg font-bold ${
                       netResult >= 0 ? 'text-success' : 'text-destructive'
                     }`}>
                       {formatCurrency(netResult)}
