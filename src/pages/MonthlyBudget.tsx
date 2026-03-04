@@ -7,7 +7,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useMemo } from 'react';
 import { useCurrency } from '@/hooks/useCurrency';
 import { useAuth } from '@/hooks/useAuth';
-import { useYear } from '@/hooks/useYear';
+
 import { useBadges } from '@/hooks/useBadges';
 import { useHousehold } from '@/hooks/useHousehold';
 import { useSubscription } from '@/hooks/useSubscription';
@@ -16,7 +16,6 @@ import { supabase } from '@/integrations/supabase/client';
 
 import { SEO } from '@/components/SEO';
 import { seoData } from '@/utils/seoData';
-import { YearSelector } from '@/components/YearSelector';
 import { budgetCalculatorFAQs } from '@/utils/faqData';
 import { FAQ } from '@/components/FAQ';
 import { BudgetDonutChart } from '@/components/BudgetDonutChart';
@@ -49,7 +48,6 @@ const MonthlyBudget: React.FC = () => {
 
   const { currency } = useCurrency();
   const { user } = useAuth();
-  const { selectedYear } = useYear();
   const { earnBadge, loading: badgesLoading } = useBadges();
   const { currentHousehold } = useHousehold(user?.id);
   const { subscribed } = useSubscription();
@@ -92,7 +90,7 @@ const MonthlyBudget: React.FC = () => {
   }, [earnBadge, badgesLoading]);
 
   const { data: calculatorVisibility, isLoading, error: queryError } = useQuery({
-    queryKey: ['budget-calculators', user?.id, currentHousehold?.id, selectedYear],
+    queryKey: ['budget-calculators', user?.id, currentHousehold?.id],
     queryFn: async () => {
       if (!user || !currentHousehold) return null;
       
@@ -101,7 +99,6 @@ const MonthlyBudget: React.FC = () => {
         .select('calculator_id')
         .eq('user_id', user.id)
         .eq('household_id', currentHousehold.id)
-        .eq('year', selectedYear)
         .eq('page_type', 'monthly_budget');
 
       if (dbError) throw dbError;
@@ -141,11 +138,6 @@ const MonthlyBudget: React.FC = () => {
     }
   }, [isLoading, setPageReady]);
   
-  useEffect(() => {
-    setBudgetData({});
-    setCalculatorNames({});
-  }, [selectedYear]);
-
   const error = queryError ? "Failed to load your budget data. Please refresh the page to try again." : null;
 
   const revealNextCalculator = () => {
@@ -203,16 +195,6 @@ const MonthlyBudget: React.FC = () => {
                 MONTHLY BUDGET
               </h1>
             </div>
-            <div className="hidden sm:block flex-shrink-0 bg-card border border-border rounded-xl p-2 sm:p-3 shadow-sm">
-              <p className="text-xs text-muted-foreground mb-1 text-center">Budget Year</p>
-              <YearSelector />
-            </div>
-          </div>
-          <div className="sm:hidden bg-card border border-border rounded-xl p-2 shadow-sm w-full">
-            <div className="flex items-center justify-between">
-              <p className="text-xs text-muted-foreground">Budget Year</p>
-              <YearSelector />
-            </div>
           </div>
         </div>
 
@@ -239,7 +221,7 @@ const MonthlyBudget: React.FC = () => {
                     .filter(calculator => visibleCalculators.has(calculator.id))
                     .map((calculator, index) => (
                     <div
-                      key={`${selectedYear}-${calculator.id}`}
+                      key={calculator.id}
                       className="animate-fade-in"
                       style={{ animationDelay: `${index * 0.1}s`, animationFillMode: 'both' }}
                     >
@@ -287,7 +269,7 @@ const MonthlyBudget: React.FC = () => {
                 <>
                   {['1', '2'].map((id, index) => (
                     <div
-                      key={`${selectedYear}-${id}`}
+                      key={id}
                       className="animate-fade-in"
                       style={{ animationDelay: `${index * 0.1}s`, animationFillMode: 'both' }}
                     >
@@ -312,7 +294,7 @@ const MonthlyBudget: React.FC = () => {
                 {totalIncome > 0 && (
                   <div className="bg-card border-[3px] border-stroke rounded-xl p-4 shadow-cartoon">
                     <p className="text-xs text-muted-foreground uppercase tracking-wide mb-1">
-                      {selectedYear} Yearly Household Income
+                      Yearly Household Income
                     </p>
                     <p className="text-2xl sm:text-3xl font-bold text-success">
                       {currency.symbol}{yearlyHouseholdIncome.toLocaleString()}
