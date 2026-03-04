@@ -1,10 +1,11 @@
 // src/components/BudgetCalculator.tsx
 import React, { useState, useEffect, useRef } from 'react';
-import { Plus, Trash2, RotateCcw } from 'lucide-react';
+import { Plus, Trash2, RotateCcw, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
+import { useIsMobile } from '@/hooks/use-mobile';
 import { useCurrency } from '@/hooks/useCurrency';
 import { useAuth } from '@/hooks/useAuth';
 import { useHousehold } from '@/hooks/useHousehold';
@@ -58,6 +59,8 @@ const BudgetCalculator: React.FC<BudgetCalculatorProps> = ({
   const { user } = useAuth();
   const { currentHousehold } = useHousehold(user?.id);
   const { currency } = useCurrency();
+  const isMobile = useIsMobile();
+  const [mobileStep, setMobileStep] = useState(0);
   const [ownerName, setOwnerName] = useState('');
   const [monthlyIncome, setMonthlyIncome] = useState(0);
   const [expenses, setExpenses] = useState<ExpenseItem[]>(defaultExpenses);
@@ -455,267 +458,512 @@ const BudgetCalculator: React.FC<BudgetCalculatorProps> = ({
       <Button
         variant="ghost"
         size="sm"
-        onClick={resetCalculator}
+        onClick={() => { resetCalculator(); setMobileStep(0); }}
         className="absolute top-2 right-2 text-muted-foreground hover:text-foreground hover:bg-muted h-7 text-xs z-10"
       >
         <RotateCcw className="h-3 w-3 mr-1" />
         Reset
       </Button>
-      
-      <CardHeader className="pb-4 pt-4 bg-teal/10 rounded-t-lg">
-        <div className="space-y-3">
-          {/* Owner name and Monthly Income - stacked on separate rows */}
-          <div className="space-y-3">
-            <div>
-              <Label className="text-xs text-muted-foreground mb-1.5 block">
-                Calculator {calculatorNumber} Owner
-              </Label>
-              <Input
-                id={`owner-${id}`}
-                placeholder="Owner name..."
-                value={ownerName}
-                onChange={(e) => {
-                  const newName = e.target.value;
-                  setOwnerName(newName);
-                  onNameChange(id, newName);
-                }}
-                className="text-sm font-semibold h-9 border-2 focus:border-primary transition-colors"
-              />
-            </div>
-            
-            <div>
-              <Label htmlFor={`income-${id}`} className="text-xs font-semibold text-foreground mb-1.5 block">
-                Monthly Income
-              </Label>
-              <div className="relative">
-                <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground text-xs">{currency.symbol}</span>
-                <Input
-                  id={`income-${id}`}
-                  type="number"
-                  min="0"
-                  max="999999"
-                  step="1"
-                  value={monthlyIncome || ''}
-                  onChange={(e) => setMonthlyIncome(parseInt(e.target.value) || 0)}
-                  className="pl-7 h-9 text-sm [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                  placeholder="0"
+
+      {/* ========== MOBILE STEPPER LAYOUT ========== */}
+      {isMobile ? (
+        <>
+          {/* Progress bar */}
+          <div className="px-4 pt-3 pb-2">
+            <div className="flex gap-1 mb-1">
+              {[0, 1, 2, 3, 4].map((step) => (
+                <div
+                  key={step}
+                  className={`h-1.5 flex-1 rounded-full transition-colors ${
+                    step <= mobileStep ? 'bg-teal' : 'bg-muted'
+                  }`}
                 />
-              </div>
+              ))}
             </div>
+            <p className="text-[10px] text-muted-foreground text-center">
+              Step {mobileStep + 1} of 5
+            </p>
           </div>
-          
-          {/* Compact remove button - only show if showRemove is true */}
-          {showRemove && (
-            <div className="flex justify-end">
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={onRemove}
-                className="text-destructive hover:text-destructive hover:bg-red-50 h-7 text-xs"
-              >
-                <Trash2 className="h-3 w-3 mr-1" />
-                Remove
-              </Button>
-            </div>
-          )}
-        </div>
-      </CardHeader>
 
-      <CardContent className="space-y-4 px-5 py-4">
-        {/* Monthly Expenses in two columns */}
-        <div className="relative">
-          <h3 className="text-xs font-semibold text-foreground mb-3">Monthly Expenses</h3>
-          
-          {/* Blur overlay for guests */}
-          {!user && (
-            <div className="absolute inset-0 z-10 flex flex-col items-center justify-center bg-card/80 backdrop-blur-sm rounded-lg mt-6">
-              <p className="text-sm font-semibold text-foreground mb-2 text-center px-4">Sign up free to track your expenses</p>
-              <a
-                href="/signup"
-                className="inline-flex items-center justify-center rounded-md text-sm font-medium bg-primary text-primary-foreground hover:bg-primary/90 h-9 px-4 py-2 shadow-sm transition-colors"
-              >
-                Create Free Account
-              </a>
-            </div>
-          )}
-          
-          {/* Responsive layout: single column on mobile, two columns on larger screens */}
-          <div className={`grid grid-cols-1 sm:grid-cols-2 gap-4 ${!user ? 'blur-md select-none pointer-events-none' : ''}`}>
-            {expenses.map((expense) => {
-              if (!expense.id.startsWith('subscription')) {
-                return (
-                  <div key={expense.id} className="space-y-1.5">
-                    <Label className="text-xs text-muted-foreground block">
-                      {expense.label}
-                    </Label>
-                    <div className="relative">
-                      <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground text-xs">{currency.symbol}</span>
-                      <Input
-                        type="number"
-                        min="0"
-                        max="999999"
-                        step="1"
-                        value={expense.amount || ''}
-                        onChange={(e) => updateExpense(expense.id, parseInt(e.target.value) || 0)}
-                        className="pl-7 h-8 text-sm w-full [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                        placeholder="0"
-                      />
-                    </div>
-                  </div>
-                );
-              }
-              return null;
-            })}
-
-            {/* Additional Expenses span full width on mobile, 2 columns on larger screens */}
-            {additionalExpenses.map((expense) => (
-              <div key={expense.id} className="col-span-1 sm:col-span-2 flex items-end gap-2">
-                <div className="flex-1 space-y-1.5">
-                  <Label className="text-xs text-muted-foreground block">Custom Expense</Label>
+          <CardContent className="px-4 py-3 space-y-3">
+            {/* Step 0: Owner + Income */}
+            {mobileStep === 0 && (
+              <div className="space-y-4">
+                <h3 className="text-sm font-bold text-foreground">Who's budget is this?</h3>
+                <div className="space-y-1.5">
+                  <Label className="text-xs text-muted-foreground block">
+                    Calculator {calculatorNumber} Owner
+                  </Label>
                   <Input
-                    value={expense.label}
-                    onChange={(e) => updateAdditionalExpenseLabel(expense.id, e.target.value)}
-                    className="h-8 text-sm min-w-0"
-                    placeholder="Expense name"
+                    id={`owner-${id}`}
+                    placeholder="Owner name..."
+                    value={ownerName}
+                    onChange={(e) => {
+                      const newName = e.target.value;
+                      setOwnerName(newName);
+                      onNameChange(id, newName);
+                    }}
+                    className="text-sm font-semibold h-10 border-2 focus:border-primary transition-colors"
                   />
                 </div>
-                <div className="w-24 space-y-1.5">
-                  <Label className="text-xs text-muted-foreground block">Amount</Label>
+                <div className="space-y-1.5">
+                  <Label htmlFor={`income-${id}`} className="text-xs font-semibold text-foreground block">
+                    Monthly Income
+                  </Label>
                   <div className="relative">
-                    <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground text-xs">{currency.symbol}</span>
+                    <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground text-sm">{currency.symbol}</span>
                     <Input
+                      id={`income-${id}`}
                       type="number"
                       min="0"
                       max="999999"
                       step="1"
-                      value={expense.amount || ''}
-                      onChange={(e) => updateExpense(expense.id, parseInt(e.target.value) || 0, true)}
-                      className="pl-7 h-8 text-sm w-24 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                      value={monthlyIncome || ''}
+                      onChange={(e) => setMonthlyIncome(parseInt(e.target.value) || 0)}
+                      className="pl-7 h-10 text-sm [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                       placeholder="0"
                     />
                   </div>
                 </div>
-                <Button
-                  variant="destructive"
-                  size="sm"
-                  onClick={() => removeAdditionalExpense(expense.id)}
-                  className="h-8 w-8 p-0 flex-shrink-0"
-                >
-                  <Trash2 className="h-3 w-3" />
-                </Button>
               </div>
-            ))}
+            )}
 
-            {/* Add Expense Button - spans full width */}
-            {additionalExpenses.length < 10 && (
-              <div className="col-span-1 sm:col-span-2 pt-1">
+            {/* Step 1: Housing & Utilities */}
+            {mobileStep === 1 && (
+              <div className="space-y-3">
+                <h3 className="text-sm font-bold text-foreground">Housing & Utilities</h3>
+                {!user && (
+                  <div className="flex flex-col items-center justify-center py-6">
+                    <p className="text-sm font-semibold text-foreground mb-2 text-center">Sign up free to track expenses</p>
+                    <a href="/signup" className="inline-flex items-center justify-center rounded-md text-sm font-medium bg-primary text-primary-foreground hover:bg-primary/90 h-9 px-4 py-2 shadow-sm transition-colors">
+                      Create Free Account
+                    </a>
+                  </div>
+                )}
+                <div className={`grid grid-cols-2 gap-3 ${!user ? 'blur-md select-none pointer-events-none' : ''}`}>
+                  {expenses.filter(e => ['mortgage', 'electric', 'gas', 'water', 'sewage', 'utilities'].includes(e.id)).map((expense) => (
+                    <div key={expense.id} className="space-y-1">
+                      <Label className="text-[11px] text-muted-foreground block">{expense.label}</Label>
+                      <div className="relative">
+                        <span className="absolute left-2 top-1/2 transform -translate-y-1/2 text-muted-foreground text-xs">{currency.symbol}</span>
+                        <Input
+                          type="number" min="0" max="999999" step="1"
+                          value={expense.amount || ''}
+                          onChange={(e) => updateExpense(expense.id, parseInt(e.target.value) || 0)}
+                          className="pl-6 h-9 text-sm [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                          placeholder="0"
+                        />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Step 2: Auto & Phone */}
+            {mobileStep === 2 && (
+              <div className="space-y-3">
+                <h3 className="text-sm font-bold text-foreground">Auto, Insurance & Phone</h3>
+                <div className={`grid grid-cols-2 gap-3 ${!user ? 'blur-md select-none pointer-events-none' : ''}`}>
+                  {expenses.filter(e => ['car-loan', 'car-insurance', 'internet', 'phone'].includes(e.id)).map((expense) => (
+                    <div key={expense.id} className="space-y-1">
+                      <Label className="text-[11px] text-muted-foreground block">{expense.label}</Label>
+                      <div className="relative">
+                        <span className="absolute left-2 top-1/2 transform -translate-y-1/2 text-muted-foreground text-xs">{currency.symbol}</span>
+                        <Input
+                          type="number" min="0" max="999999" step="1"
+                          value={expense.amount || ''}
+                          onChange={(e) => updateExpense(expense.id, parseInt(e.target.value) || 0)}
+                          className="pl-6 h-9 text-sm [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                          placeholder="0"
+                        />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Custom expenses */}
+                <div className="space-y-2">
+                  {additionalExpenses.map((expense) => (
+                    <div key={expense.id} className="flex items-end gap-2">
+                      <div className="flex-1 space-y-1">
+                        <Input value={expense.label} onChange={(e) => updateAdditionalExpenseLabel(expense.id, e.target.value)} className="h-9 text-sm" placeholder="Expense name" />
+                      </div>
+                      <div className="w-20">
+                        <div className="relative">
+                          <span className="absolute left-2 top-1/2 transform -translate-y-1/2 text-muted-foreground text-xs">{currency.symbol}</span>
+                          <Input type="number" min="0" value={expense.amount || ''} onChange={(e) => updateExpense(expense.id, parseInt(e.target.value) || 0, true)} className="pl-6 h-9 text-sm [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" placeholder="0" />
+                        </div>
+                      </div>
+                      <Button variant="destructive" size="sm" onClick={() => removeAdditionalExpense(expense.id)} className="h-9 w-9 p-0 flex-shrink-0">
+                        <Trash2 className="h-3 w-3" />
+                      </Button>
+                    </div>
+                  ))}
+                  {additionalExpenses.length < 10 && (
+                    <Button variant="outline" size="sm" onClick={addAdditionalExpense} className="w-full h-9 text-xs touch-manipulation">
+                      <Plus className="h-3 w-3 mr-1" /> Add Expense
+                    </Button>
+                  )}
+                </div>
+              </div>
+            )}
+
+            {/* Step 3: Subscriptions */}
+            {mobileStep === 3 && (
+              <div className="space-y-3">
+                <h3 className="text-sm font-bold text-foreground">Subscriptions</h3>
+                <div className={`space-y-3 ${!user ? 'blur-md select-none pointer-events-none' : ''}`}>
+                  {expenses.filter(e => e.id.startsWith('subscription')).map((expense) => (
+                    <div key={expense.id}>
+                      <StreamingServiceSelector
+                        value={expense.amount}
+                        onChange={(amount) => updateExpense(expense.id, amount)}
+                        label={expense.label}
+                        expenseId={expense.id}
+                        selectedService={subscriptionServices[expense.id] || ''}
+                        onServiceChange={(serviceId) => updateSubscriptionService(expense.id, serviceId)}
+                        placeholder="subscription option"
+                      />
+                    </div>
+                  ))}
+                  {additionalSubscriptions.map((subscription) => (
+                    <div key={subscription.id} className="flex items-end gap-2">
+                      <div className="flex-1">
+                        <StreamingServiceSelector
+                          value={subscription.amount}
+                          onChange={(amount) => updateAdditionalSubscription(subscription.id, amount)}
+                          label={subscription.label}
+                          expenseId={subscription.id}
+                          selectedService={subscriptionServices[subscription.id] || ''}
+                          onServiceChange={(serviceId) => updateSubscriptionService(subscription.id, serviceId)}
+                          placeholder="subscription option"
+                        />
+                      </div>
+                      <Button variant="destructive" size="sm" onClick={() => removeAdditionalSubscription(subscription.id)} className="h-9 w-9 p-0 flex-shrink-0">
+                        <Trash2 className="h-3 w-3" />
+                      </Button>
+                    </div>
+                  ))}
+                  {additionalSubscriptions.length < 10 && (
+                    <Button variant="outline" size="sm" onClick={addAdditionalSubscription} className="w-full h-9 text-xs touch-manipulation">
+                      <Plus className="h-3 w-3 mr-1" /> Add Subscription
+                    </Button>
+                  )}
+                </div>
+              </div>
+            )}
+
+            {/* Step 4: Results */}
+            {mobileStep === 4 && (
+              <div className="space-y-4">
+                <h3 className="text-sm font-bold text-foreground">Your Budget Summary</h3>
+                <div className="relative">
+                  {!user && totalExpenses > 0 && (
+                    <div className="absolute inset-0 z-10 flex flex-col items-center justify-center bg-card/80 backdrop-blur-sm rounded-lg">
+                      <p className="text-sm font-semibold text-foreground mb-2">Sign up free to see results</p>
+                      <a href="/signup" className="inline-flex items-center justify-center rounded-md text-sm font-medium bg-primary text-primary-foreground hover:bg-primary/90 h-9 px-4 py-2 shadow-sm transition-colors">
+                        Create Free Account
+                      </a>
+                    </div>
+                  )}
+                  <div className={!user && totalExpenses > 0 ? 'blur-md select-none' : ''}>
+                    <div className="bg-muted/30 rounded-lg p-4 space-y-3">
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm text-muted-foreground">Monthly Income</span>
+                        <span className="text-sm font-semibold text-foreground">{formatCurrency(monthlyIncome)}</span>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm text-muted-foreground">Total Expenses</span>
+                        <span className="text-sm font-semibold text-foreground">{formatCurrency(totalExpenses)}</span>
+                      </div>
+                      <div className="border-t border-border pt-3">
+                        <div className="flex justify-between items-center">
+                          <span className="text-base font-bold text-foreground">Net Result</span>
+                          <span className={`text-xl font-bold ${netResult >= 0 ? 'text-success' : 'text-destructive'}`}>
+                            {formatCurrency(netResult)}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Navigation buttons */}
+            <div className="flex gap-2 pt-2">
+              {mobileStep > 0 && (
                 <Button
                   variant="outline"
                   size="sm"
-                  onClick={addAdditionalExpense}
-                  className="w-full h-8 text-xs"
+                  onClick={() => setMobileStep(prev => prev - 1)}
+                  className="flex-1 h-10 text-sm touch-manipulation"
                 >
-                  <Plus className="h-3 w-3 mr-1" />
-                  Add Expense
+                  <ChevronLeft className="h-4 w-4 mr-1" />
+                  Back
                 </Button>
-              </div>
-            )}
-            {/* Default Subscription Expenses - full width */}
-            {expenses.map((expense, index) => {
-              if (expense.id.startsWith('subscription')) {
-                return (
-                  <div key={expense.id} className="col-span-1 sm:col-span-2">
-                    <StreamingServiceSelector
-                      value={expense.amount}
-                      onChange={(amount) => updateExpense(expense.id, amount)}
-                      label={expense.label}
-                      expenseId={expense.id}
-                      selectedService={subscriptionServices[expense.id] || ''}
-                      onServiceChange={(serviceId) => updateSubscriptionService(expense.id, serviceId)}
-                      placeholder="subscription option"
-                    />
-                  </div>
-                );
-              }
-              return null;
-            })}
-
-            {/* Additional Subscriptions */}
-            {additionalSubscriptions.map((subscription, index) => (
-              <div key={subscription.id} className="col-span-1 sm:col-span-2 flex items-end gap-2">
-                <div className="flex-1">
-                  <StreamingServiceSelector
-                    value={subscription.amount}
-                    onChange={(amount) => updateAdditionalSubscription(subscription.id, amount)}
-                    label={subscription.label}
-                    expenseId={subscription.id}
-                    selectedService={subscriptionServices[subscription.id] || ''}
-                    onServiceChange={(serviceId) => updateSubscriptionService(subscription.id, serviceId)}
-                    placeholder="subscription option"
+              )}
+              {mobileStep < 4 && (
+                <Button
+                  size="sm"
+                  onClick={() => setMobileStep(prev => prev + 1)}
+                  className="flex-1 h-10 text-sm bg-teal hover:bg-teal/90 text-white touch-manipulation"
+                >
+                  Next
+                  <ChevronRight className="h-4 w-4 ml-1" />
+                </Button>
+              )}
+            </div>
+          </CardContent>
+        </>
+      ) : (
+        /* ========== DESKTOP LAYOUT (unchanged) ========== */
+        <>
+          <CardHeader className="pb-4 pt-4 bg-teal/10 rounded-t-lg">
+            <div className="space-y-3">
+              <div className="space-y-3">
+                <div>
+                  <Label className="text-xs text-muted-foreground mb-1.5 block">
+                    Calculator {calculatorNumber} Owner
+                  </Label>
+                  <Input
+                    id={`owner-${id}`}
+                    placeholder="Owner name..."
+                    value={ownerName}
+                    onChange={(e) => {
+                      const newName = e.target.value;
+                      setOwnerName(newName);
+                      onNameChange(id, newName);
+                    }}
+                    className="text-sm font-semibold h-9 border-2 focus:border-primary transition-colors"
                   />
                 </div>
-                <Button
-                  variant="destructive"
-                  size="sm"
-                  onClick={() => removeAdditionalSubscription(subscription.id)}
-                  className="h-8 w-8 p-0 flex-shrink-0"
-                >
-                  <Trash2 className="h-3 w-3" />
-                </Button>
+                
+                <div>
+                  <Label htmlFor={`income-${id}`} className="text-xs font-semibold text-foreground mb-1.5 block">
+                    Monthly Income
+                  </Label>
+                  <div className="relative">
+                    <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground text-xs">{currency.symbol}</span>
+                    <Input
+                      id={`income-${id}`}
+                      type="number"
+                      min="0"
+                      max="999999"
+                      step="1"
+                      value={monthlyIncome || ''}
+                      onChange={(e) => setMonthlyIncome(parseInt(e.target.value) || 0)}
+                      className="pl-7 h-9 text-sm [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                      placeholder="0"
+                    />
+                  </div>
+                </div>
               </div>
-            ))}
+              
+              {showRemove && (
+                <div className="flex justify-end">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={onRemove}
+                    className="text-destructive hover:text-destructive hover:bg-destructive/10 h-7 text-xs"
+                  >
+                    <Trash2 className="h-3 w-3 mr-1" />
+                    Remove
+                  </Button>
+                </div>
+              )}
+            </div>
+          </CardHeader>
 
-            {/* Add Subscription Button */}
-            {additionalSubscriptions.length < 10 && (
-              <div className="col-span-1 sm:col-span-2 pt-1">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={addAdditionalSubscription}
-                  className="w-full h-8 text-xs"
-                >
-                  <Plus className="h-3 w-3 mr-1" />
-                  Subscription
-                </Button>
+          <CardContent className="space-y-4 px-5 py-4">
+            <div className="relative">
+              <h3 className="text-xs font-semibold text-foreground mb-3">Monthly Expenses</h3>
+              
+              {!user && (
+                <div className="absolute inset-0 z-10 flex flex-col items-center justify-center bg-card/80 backdrop-blur-sm rounded-lg mt-6">
+                  <p className="text-sm font-semibold text-foreground mb-2 text-center px-4">Sign up free to track your expenses</p>
+                  <a
+                    href="/signup"
+                    className="inline-flex items-center justify-center rounded-md text-sm font-medium bg-primary text-primary-foreground hover:bg-primary/90 h-9 px-4 py-2 shadow-sm transition-colors"
+                  >
+                    Create Free Account
+                  </a>
+                </div>
+              )}
+              
+              <div className={`grid grid-cols-2 gap-4 ${!user ? 'blur-md select-none pointer-events-none' : ''}`}>
+                {expenses.map((expense) => {
+                  if (!expense.id.startsWith('subscription')) {
+                    return (
+                      <div key={expense.id} className="space-y-1.5">
+                        <Label className="text-xs text-muted-foreground block">
+                          {expense.label}
+                        </Label>
+                        <div className="relative">
+                          <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground text-xs">{currency.symbol}</span>
+                          <Input
+                            type="number"
+                            min="0"
+                            max="999999"
+                            step="1"
+                            value={expense.amount || ''}
+                            onChange={(e) => updateExpense(expense.id, parseInt(e.target.value) || 0)}
+                            className="pl-7 h-8 text-sm w-full [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                            placeholder="0"
+                          />
+                        </div>
+                      </div>
+                    );
+                  }
+                  return null;
+                })}
+
+                {additionalExpenses.map((expense) => (
+                  <div key={expense.id} className="col-span-2 flex items-end gap-2">
+                    <div className="flex-1 space-y-1.5">
+                      <Label className="text-xs text-muted-foreground block">Custom Expense</Label>
+                      <Input
+                        value={expense.label}
+                        onChange={(e) => updateAdditionalExpenseLabel(expense.id, e.target.value)}
+                        className="h-8 text-sm min-w-0"
+                        placeholder="Expense name"
+                      />
+                    </div>
+                    <div className="w-24 space-y-1.5">
+                      <Label className="text-xs text-muted-foreground block">Amount</Label>
+                      <div className="relative">
+                        <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground text-xs">{currency.symbol}</span>
+                        <Input
+                          type="number"
+                          min="0"
+                          max="999999"
+                          step="1"
+                          value={expense.amount || ''}
+                          onChange={(e) => updateExpense(expense.id, parseInt(e.target.value) || 0, true)}
+                          className="pl-7 h-8 text-sm w-24 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                          placeholder="0"
+                        />
+                      </div>
+                    </div>
+                    <Button
+                      variant="destructive"
+                      size="sm"
+                      onClick={() => removeAdditionalExpense(expense.id)}
+                      className="h-8 w-8 p-0 flex-shrink-0"
+                    >
+                      <Trash2 className="h-3 w-3" />
+                    </Button>
+                  </div>
+                ))}
+
+                {additionalExpenses.length < 10 && (
+                  <div className="col-span-2 pt-1">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={addAdditionalExpense}
+                      className="w-full h-8 text-xs"
+                    >
+                      <Plus className="h-3 w-3 mr-1" />
+                      Add Expense
+                    </Button>
+                  </div>
+                )}
+
+                {expenses.map((expense) => {
+                  if (expense.id.startsWith('subscription')) {
+                    return (
+                      <div key={expense.id} className="col-span-2">
+                        <StreamingServiceSelector
+                          value={expense.amount}
+                          onChange={(amount) => updateExpense(expense.id, amount)}
+                          label={expense.label}
+                          expenseId={expense.id}
+                          selectedService={subscriptionServices[expense.id] || ''}
+                          onServiceChange={(serviceId) => updateSubscriptionService(expense.id, serviceId)}
+                          placeholder="subscription option"
+                        />
+                      </div>
+                    );
+                  }
+                  return null;
+                })}
+
+                {additionalSubscriptions.map((subscription) => (
+                  <div key={subscription.id} className="col-span-2 flex items-end gap-2">
+                    <div className="flex-1">
+                      <StreamingServiceSelector
+                        value={subscription.amount}
+                        onChange={(amount) => updateAdditionalSubscription(subscription.id, amount)}
+                        label={subscription.label}
+                        expenseId={subscription.id}
+                        selectedService={subscriptionServices[subscription.id] || ''}
+                        onServiceChange={(serviceId) => updateSubscriptionService(subscription.id, serviceId)}
+                        placeholder="subscription option"
+                      />
+                    </div>
+                    <Button
+                      variant="destructive"
+                      size="sm"
+                      onClick={() => removeAdditionalSubscription(subscription.id)}
+                      className="h-8 w-8 p-0 flex-shrink-0"
+                    >
+                      <Trash2 className="h-3 w-3" />
+                    </Button>
+                  </div>
+                ))}
+
+                {additionalSubscriptions.length < 10 && (
+                  <div className="col-span-2 pt-1">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={addAdditionalSubscription}
+                      className="w-full h-8 text-xs"
+                    >
+                      <Plus className="h-3 w-3 mr-1" />
+                      Subscription
+                    </Button>
+                  </div>
+                )}
               </div>
-            )}
-          </div>
-        </div>
-
-        {/* Compact Subtotal and Net Result */}
-        <div className="border-t pt-3 space-y-2 relative">
-          {!user && totalExpenses > 0 && (
-            <div className="absolute inset-0 z-10 flex flex-col items-center justify-center bg-card/80 backdrop-blur-sm rounded-lg">
-              <p className="text-sm font-semibold text-foreground mb-2">Sign up free to see your results</p>
-              <a
-                href="/signup"
-                className="inline-flex items-center justify-center rounded-md text-sm font-medium bg-primary text-primary-foreground hover:bg-primary/90 h-9 px-4 py-2 shadow-sm transition-colors"
-              >
-                Create Free Account
-              </a>
             </div>
-          )}
-          <div className={!user && totalExpenses > 0 ? 'blur-md select-none' : ''}>
-            <div className="flex justify-between items-center">
-              <span className="text-sm font-medium text-foreground">Subtotal:</span>
-              <span className="text-sm font-semibold text-foreground">
-                {formatCurrency(totalExpenses)}
-              </span>
-            </div>
-            
-            <div className="flex justify-between items-center mt-2">
-              <span className="text-base font-semibold text-foreground">Net Result:</span>
-              <span className={`text-base font-bold ${
-                netResult >= 0 ? 'text-success' : 'text-destructive'
-              }`}>
-                {formatCurrency(netResult)}
-              </span>
-            </div>
-          </div>
-        </div>
 
-
-      </CardContent>
+            <div className="border-t pt-3 space-y-2 relative">
+              {!user && totalExpenses > 0 && (
+                <div className="absolute inset-0 z-10 flex flex-col items-center justify-center bg-card/80 backdrop-blur-sm rounded-lg">
+                  <p className="text-sm font-semibold text-foreground mb-2">Sign up free to see your results</p>
+                  <a
+                    href="/signup"
+                    className="inline-flex items-center justify-center rounded-md text-sm font-medium bg-primary text-primary-foreground hover:bg-primary/90 h-9 px-4 py-2 shadow-sm transition-colors"
+                  >
+                    Create Free Account
+                  </a>
+                </div>
+              )}
+              <div className={!user && totalExpenses > 0 ? 'blur-md select-none' : ''}>
+                <div className="flex justify-between items-center">
+                  <span className="text-sm font-medium text-foreground">Subtotal:</span>
+                  <span className="text-sm font-semibold text-foreground">
+                    {formatCurrency(totalExpenses)}
+                  </span>
+                </div>
+                
+                <div className="flex justify-between items-center mt-2">
+                  <span className="text-base font-semibold text-foreground">Net Result:</span>
+                  <span className={`text-base font-bold ${
+                    netResult >= 0 ? 'text-success' : 'text-destructive'
+                  }`}>
+                    {formatCurrency(netResult)}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </>
+      )}
     </Card>
   );
 };
