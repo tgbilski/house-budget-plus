@@ -454,21 +454,23 @@ const BudgetCalculator: React.FC<BudgetCalculatorProps> = ({
       className="w-full max-w-md border-[4px] border-stroke shadow-cartoon bg-card relative" 
       data-calculator-id={id}
     >
-      {/* Reset button - top right corner */}
-      <Button
-        variant="ghost"
-        size="sm"
-        onClick={() => { resetCalculator(); setMobileStep(0); }}
-        className="absolute top-2 right-2 text-muted-foreground hover:text-foreground hover:bg-muted h-7 text-xs z-10"
-      >
-        <RotateCcw className="h-3 w-3 mr-1" />
-        Reset
-      </Button>
+      {/* Reset button - top right corner (desktop only) */}
+      {!isMobile && (
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={() => { resetCalculator(); setMobileStep(0); }}
+          className="absolute top-2 right-2 text-muted-foreground hover:text-foreground hover:bg-muted h-7 text-xs z-10"
+        >
+          <RotateCcw className="h-3 w-3 mr-1" />
+          Reset
+        </Button>
+      )}
 
       {/* ========== MOBILE STEPPER LAYOUT ========== */}
       {isMobile ? (
         <>
-          {/* Progress bar */}
+          {/* Progress bar + Reset */}
           <div className="px-4 pt-3 pb-2">
             <div className="flex gap-1 mb-1">
               {[0, 1, 2, 3, 4].map((step) => (
@@ -480,9 +482,20 @@ const BudgetCalculator: React.FC<BudgetCalculatorProps> = ({
                 />
               ))}
             </div>
-            <p className="text-[10px] text-muted-foreground text-center">
-              Step {mobileStep + 1} of 5
-            </p>
+            <div className="flex items-center justify-between">
+              <p className="text-[10px] text-muted-foreground">
+                Step {mobileStep + 1} of 5
+              </p>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => { resetCalculator(); setMobileStep(0); }}
+                className="text-muted-foreground hover:text-foreground h-6 text-[10px] px-2 touch-manipulation"
+              >
+                <RotateCcw className="h-3 w-3 mr-1" />
+                Reset
+              </Button>
+            </div>
           </div>
 
           <CardContent className="px-4 py-3 space-y-3">
