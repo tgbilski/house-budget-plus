@@ -13,6 +13,7 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 
 import { supabase } from '@/integrations/supabase/client';
 import { StreamingServiceSelector } from './StreamingServiceSelector';
+import { MortgagePreapprovalQuestion } from './MortgagePreapprovalQuestion';
 
 interface ExpenseItem {
   id: string;
@@ -473,7 +474,7 @@ const BudgetCalculator: React.FC<BudgetCalculatorProps> = ({
           {/* Progress bar + Reset */}
           <div className="px-4 pt-3 pb-2">
             <div className="flex gap-1 mb-1">
-              {[0, 1, 2, 3, 4].map((step) => (
+              {[0, 1, 2, 3, 4, 5].map((step) => (
                 <div
                   key={step}
                   className={`h-1.5 flex-1 rounded-full transition-colors ${
@@ -484,7 +485,7 @@ const BudgetCalculator: React.FC<BudgetCalculatorProps> = ({
             </div>
             <div className="flex items-center justify-between">
               <p className="text-[10px] text-muted-foreground">
-                Step {mobileStep + 1} of 5
+                Step {mobileStep + 1} of 6
               </p>
               <Button
                 variant="ghost"
@@ -704,6 +705,18 @@ const BudgetCalculator: React.FC<BudgetCalculatorProps> = ({
               </div>
             )}
 
+            {/* Step 5: Mortgage Preapproval */}
+            {mobileStep === 5 && (
+              <div className="space-y-3">
+                <h3 className="text-sm font-bold text-foreground">Mortgage Preapproval</h3>
+                <MortgagePreapprovalQuestion
+                  monthlyIncome={monthlyIncome}
+                  monthlyExpenses={totalExpenses}
+                  currency={currency}
+                />
+              </div>
+            )}
+
             {/* Navigation buttons */}
             <div className="flex gap-2 pt-2">
               {mobileStep > 0 && (
@@ -717,7 +730,7 @@ const BudgetCalculator: React.FC<BudgetCalculatorProps> = ({
                   Back
                 </Button>
               )}
-              {mobileStep < 4 && (
+              {mobileStep < 5 && (
                 <Button
                   size="sm"
                   onClick={() => setMobileStep(prev => prev + 1)}
