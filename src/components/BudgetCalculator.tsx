@@ -487,15 +487,17 @@ const BudgetCalculator: React.FC<BudgetCalculatorProps> = ({
               <p className="text-[10px] text-muted-foreground">
                 Step {mobileStep + 1} of 6
               </p>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => { resetCalculator(); setMobileStep(0); }}
-                className="text-muted-foreground hover:text-foreground h-6 text-[10px] px-2 touch-manipulation"
-              >
-                <RotateCcw className="h-3 w-3 mr-1" />
-                Reset
-              </Button>
+              {mobileStep > 0 && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setMobileStep(0)}
+                  className="text-muted-foreground hover:text-foreground h-6 text-[10px] px-2 touch-manipulation"
+                >
+                  <RotateCcw className="h-3 w-3 mr-1" />
+                  Start Over
+                </Button>
+              )}
             </div>
           </div>
 
@@ -538,6 +540,19 @@ const BudgetCalculator: React.FC<BudgetCalculatorProps> = ({
                       placeholder="0"
                     />
                   </div>
+                </div>
+                
+                {/* Reset data option on step 1 */}
+                <div className="pt-2 border-t border-border">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => { resetCalculator(); setMobileStep(0); }}
+                    className="w-full text-xs text-destructive hover:text-destructive hover:bg-destructive/10"
+                  >
+                    <RotateCcw className="h-3 w-3 mr-1" />
+                    Reset All Data
+                  </Button>
                 </div>
               </div>
             )}
