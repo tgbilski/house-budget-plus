@@ -30,6 +30,8 @@ import calculatorMascot from '@/assets/calculator-mascot.png';
 import InlineSignUpForm from '@/components/InlineSignUpForm';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { sanitizeText } from '@/utils/sanitize';
+import { VoiceAddSection, ParsedEntry } from '@/components/VoiceAddSection';
+import { useNavigate } from 'react-router-dom';
 
 const EXPENSE_CATEGORIES = [
   'Groceries', 'Dining Out', 'Transportation', 'Entertainment',
