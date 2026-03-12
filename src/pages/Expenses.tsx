@@ -957,7 +957,7 @@ export default function Expenses() {
           </Card>
         )}
 
-        <BadgeDisplay />
+        
       </div>
     </div>
   );
