@@ -14,7 +14,6 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 
 import { supabase } from '@/integrations/supabase/client';
 import { StreamingServiceSelector } from './StreamingServiceSelector';
-import { MortgagePreapprovalQuestion } from './MortgagePreapprovalQuestion';
 
 interface ExpenseItem {
   id: string;
