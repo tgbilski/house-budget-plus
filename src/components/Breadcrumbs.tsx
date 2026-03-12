@@ -11,12 +11,8 @@ interface BreadcrumbItem {
 const routeLabels: Record<string, string> = {
   '/': 'Home',
   '/budget': 'Monthly Budget',
+  '/expenses': 'Expense Tracker',
   '/savings': 'Savings Goals',
-  '/compare-prices': 'Compare Vendors',
-  '/vacation': 'Vacation Planner',
-  '/gifts': 'Gift Lists',
-  '/blog': 'Blog',
-  '/ai-insights': 'AI Insights',
   '/settings': 'Settings',
   '/login': 'Sign In',
   '/signup': 'Sign Up',

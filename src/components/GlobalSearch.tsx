@@ -14,11 +14,8 @@ import {
 
 const searchablePages = [
   { title: 'Monthly Budget Calculator', path: '/budget', keywords: ['budget', 'income', 'expenses', 'calculator'] },
+  { title: 'Expense Tracker', path: '/expenses', keywords: ['expenses', 'spending', 'tracker', 'log'] },
   { title: 'Savings Goals', path: '/savings', keywords: ['savings', 'goals', 'tracker', 'progress'] },
-  { title: 'Vacation Planner', path: '/vacation', keywords: ['vacation', 'travel', 'trip', 'planner'] },
-  { title: 'Gift Lists', path: '/gifts', keywords: ['gifts', 'presents', 'occasions', 'shopping'] },
-  { title: 'AI Financial Advisor', path: '/ai-insights', keywords: ['ai', 'insights', 'advice', 'assistant'] },
-  { title: 'Blog', path: '/blog', keywords: ['blog', 'articles', 'tips', 'guides'] },
   { title: 'Settings', path: '/settings', keywords: ['settings', 'profile', 'account', 'preferences'] },
 ];
 
