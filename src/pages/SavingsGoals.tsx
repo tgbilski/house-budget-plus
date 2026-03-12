@@ -25,7 +25,7 @@ const SavingsGoals: React.FC = () => {
   const { currentHousehold } = useHouseholdContext();
   // Local year state - independent from other pages, defaults to 2025
   const [selectedYear, setSelectedYear] = useState<number>(2025);
-  const { earnBadge, loading: badgesLoading } = useBadges();
+  
   const { setPageReady } = usePageReady();
   const isMobileApp = isNativeApp();
 
