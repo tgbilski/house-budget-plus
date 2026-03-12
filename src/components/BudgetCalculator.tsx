@@ -758,17 +758,6 @@ const BudgetCalculator: React.FC<BudgetCalculatorProps> = ({
               </div>
             )}
 
-            {/* Step 5: Mortgage Preapproval */}
-            {mobileStep === 5 && (
-              <div className="space-y-3">
-                <h3 className="text-sm font-bold text-foreground">Mortgage Preapproval</h3>
-                <MortgagePreapprovalQuestion
-                  monthlyIncome={monthlyIncome}
-                  monthlyExpenses={totalExpenses}
-                  currency={currency}
-                />
-              </div>
-            )}
 
             {/* Navigation buttons */}
             <div className="flex gap-2 pt-2">
