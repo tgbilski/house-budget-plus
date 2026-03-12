@@ -120,8 +120,7 @@ const TOOL_ROUTES = ['/', '/budget', '/expenses', '/savings', '/settings', '/adm
 const FooterWrapper = () => {
   const location = useLocation();
   const isToolPage = TOOL_ROUTES.includes(location.pathname);
-  if (isToolPage) return null;
-  return <Footer />;
+  return <Footer hideTools={isToolPage} />;
 };
 
 const AppLayout = () => {
