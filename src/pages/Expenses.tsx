@@ -71,13 +71,25 @@ export default function Expenses() {
     }
   }, [loading, setPageReady]);
   
-  // Voice recording state
-  const [isRecording, setIsRecording] = useState(false);
-  const [transcription, setTranscription] = useState('');
-  const [parsedExpense, setParsedExpense] = useState<any>(null);
-  const [isProcessing, setIsProcessing] = useState(false);
-  const [aiStatus, setAiStatus] = useState('');
-  
+  // Voice save handlers
+  const handleVoiceSaveExpense = async (entry: ParsedEntry, transcription: string) => {
+    const result = await addExpense({
+      date: format(selectedDate, 'yyyy-MM-dd'),
+      amount: entry.amount,
+      merchant: entry.merchant === 'Unknown' ? null : entry.merchant || null,
+      category: entry.category || 'Other',
+      notes: transcription,
+      year: selectedDate.getFullYear(),
+    });
+    if (result) {
+      toast({ title: 'Saved!', description: `${currency.symbol}${entry.amount} expense added` });
+    }
+  };
+
+  const handleVoiceSaveSavings = async (entry: ParsedEntry, transcription: string) => {
+    toast({ title: 'Savings detected!', description: 'Redirecting to savings page to save...' });
+    navigate('/savings');
+  };
   // Manual entry state
   const [showManualEntry, setShowManualEntry] = useState(false);
   const [manualForm, setManualForm] = useState({ amount: '', merchant: '', category: 'Other', notes: '' });
