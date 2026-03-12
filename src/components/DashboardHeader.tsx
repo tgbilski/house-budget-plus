@@ -10,7 +10,7 @@ const DashboardHeader: React.FC = () => {
   const { user } = useAuth();
 
   return (
-    <header className="w-full bg-card border-b-[3px] border-stroke sticky top-0 z-50 shadow-cartoon-sm">
+    <header className="w-full bg-primary border-b-[3px] border-stroke sticky top-0 z-50 shadow-sm">
       <div className="w-full px-4 py-2">
         <div className="flex items-center justify-between min-h-[40px]">
           <Link
@@ -22,7 +22,7 @@ const DashboardHeader: React.FC = () => {
               alt="House Budget Calculator" 
               className="h-8 w-8 object-contain drop-shadow-[2px_2px_0px_hsl(var(--stroke))]"
             />
-            <span className="hidden sm:block text-lg font-bold text-foreground tracking-wide">
+            <span className="hidden sm:block text-lg font-bold text-primary-foreground tracking-wide">
               House Budget Calculator
             </span>
           </Link>
@@ -31,7 +31,7 @@ const DashboardHeader: React.FC = () => {
             {user ? (
               <ProfileDropdown />
             ) : (
-              <Button asChild size="sm">
+              <Button asChild size="sm" variant="secondary">
                 <Link to="/login" className="flex items-center space-x-2">
                   <User className="h-4 w-4" />
                   <span>Sign In</span>
