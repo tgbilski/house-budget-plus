@@ -110,28 +110,17 @@ const AppRoutes = () => {
         <Route path="/budget" element={<MonthlyBudget />} />
         <Route path="/expenses" element={<Expenses />} />
         <Route path="/savings" element={<SavingsGoals />} />
-        <Route path="/vacation" element={<Vacation />} />
-        <Route path="/engagement" element={<Engagement />} />
         <Route path="/login" element={<Auth />} />
         <Route path="/signup" element={<Auth />} />
         <Route path="/auth" element={<Auth />} />
         <Route path="/settings" element={<UserSettings />} />
-        <Route path="/gifts" element={<Gifts />} />
-        {/* Marketplace removed */}
-        <Route path="/blog" element={<Blog />} />
-        <Route path="/blog/:slug" element={<BlogPost />} />
         <Route path="/admin" element={<Admin />} />
-          <Route path="/admin/blog-images" element={<BlogImageUpdater />} />
-          <Route path="/admin/update-sitemap" element={<UpdateSitemap />} />
-          <Route path="/admin/generate-blog-images" element={<GenerateBlogImages />} />
-        <Route path="/ai-insights" element={<AIInsights />} />
         <Route path="/subscription-success" element={<SubscriptionSuccess />} />
         <Route path="/about" element={<AboutUs />} />
         <Route path="/contact" element={<ContactUs />} />
         <Route path="/privacy" element={<PrivacyPolicy />} />
         <Route path="/terms" element={<TermsAndConditions />} />
         <Route path="/disclaimer" element={<Disclaimer />} />
-        <Route path="/house-comparison" element={<HouseComparison />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </Suspense>

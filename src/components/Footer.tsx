@@ -22,11 +22,8 @@ const Footer: React.FC = () => {
             <h4 className="font-semibold text-gray-900 mb-4">Tools</h4>
             <ul className="space-y-2 text-sm">
               <li><Link to="/budget" className="text-gray-600 hover:text-primary transition-colors">Monthly Budget</Link></li>
+              <li><Link to="/expenses" className="text-gray-600 hover:text-primary transition-colors">Expense Tracking</Link></li>
               <li><Link to="/savings" className="text-gray-600 hover:text-primary transition-colors">Savings Goals</Link></li>
-              <li><Link to="/vacation" className="text-gray-600 hover:text-primary transition-colors">Vacation Planner</Link></li>
-              <li><Link to="/gifts" className="text-gray-600 hover:text-primary transition-colors">Gift Lists</Link></li>
-              <li><Link to="/expenses" className="text-gray-600 hover:text-primary transition-colors">Voice Expense Tracking</Link></li>
-              <li><Link to="/ai-insights" className="text-gray-600 hover:text-primary transition-colors">AI Insights</Link></li>
             </ul>
           </div>
 
