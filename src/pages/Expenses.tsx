@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useMemo } from 'react';
 import { SEO } from '@/components/SEO';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -15,24 +15,46 @@ import { useCurrency } from '@/hooks/useCurrency';
 import { useHouseholdContext } from '@/providers/HouseholdProvider';
 import { useBadges } from '@/hooks/useBadges';
 import { usePageReady } from '@/hooks/usePageReady';
-import { Mic, MicOff, Calendar as CalendarIcon, Trash2, TrendingUp, Edit2 } from 'lucide-react';
+import { Mic, MicOff, Calendar as CalendarIcon, Trash2, TrendingUp, Edit2, Plus, Download, Search, Filter, X } from 'lucide-react';
 import { format } from 'date-fns';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { Link } from 'react-router-dom';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { cn } from '@/lib/utils';
-import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, PieChart, Pie, Cell, Legend } from 'recharts';
-import { AlertCircle, TrendingDown } from 'lucide-react';
+import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, PieChart, Pie, Cell, Legend, BarChart, Bar } from 'recharts';
+import { AlertCircle } from 'lucide-react';
 import { isNativeApp } from '@/utils/capacitor';
 import calculatorMascot from '@/assets/calculator-mascot.png';
 import { BadgeDisplay } from '@/components/BadgeDisplay';
 import { PageSEOContent, pageSEOData } from '@/components/PageSEOContent';
+import InlineSignUpForm from '@/components/InlineSignUpForm';
+import { useIsMobile } from '@/hooks/use-mobile';
+import { sanitizeText } from '@/utils/sanitize';
+
+const EXPENSE_CATEGORIES = [
+  'Groceries', 'Dining Out', 'Transportation', 'Entertainment',
+  'Shopping', 'Bills', 'Healthcare', 'Other'
+];
+
+// Demo data for guest preview
+const DEMO_CHART_DATA = [
+  { month: 'Jan', amount: 1200 }, { month: 'Feb', amount: 980 },
+  { month: 'Mar', amount: 1450 }, { month: 'Apr', amount: 1100 },
+  { month: 'May', amount: 890 }, { month: 'Jun', amount: 1320 },
+];
+
+const DEMO_CATEGORY_DATA = [
+  { name: 'Groceries', value: 450 }, { name: 'Dining Out', value: 280 },
+  { name: 'Transportation', value: 190 }, { name: 'Bills', value: 520 },
+  { name: 'Entertainment', value: 150 },
+];
 
 export default function Expenses() {
   const { user } = useAuth();
   const { subscribed } = useSubscription();
   const isMobileApp = isNativeApp();
+  const isMobile = useIsMobile();
   const { currency } = useCurrency();
   const { currentHousehold } = useHouseholdContext();
   const { toast } = useToast();
@@ -41,34 +63,40 @@ export default function Expenses() {
   const [selectedDate, setSelectedDate] = useState(new Date());
   const { expenses, loading, addExpense, deleteExpense, updateExpense } = useExpenses(selectedDate);
   
-  // Signal page is ready once expenses load
   useEffect(() => {
     if (!loading) {
-      requestAnimationFrame(() => {
-        setPageReady();
-      });
+      requestAnimationFrame(() => setPageReady());
     }
   }, [loading, setPageReady]);
   
+  // Voice recording state
   const [isRecording, setIsRecording] = useState(false);
   const [transcription, setTranscription] = useState('');
   const [parsedExpense, setParsedExpense] = useState<any>(null);
   const [isProcessing, setIsProcessing] = useState(false);
   const [aiStatus, setAiStatus] = useState('');
   
+  // Manual entry state
+  const [showManualEntry, setShowManualEntry] = useState(false);
+  const [manualForm, setManualForm] = useState({ amount: '', merchant: '', category: 'Other', notes: '' });
+  
   // Edit dialog state
   const [editingExpense, setEditingExpense] = useState<any>(null);
   const [editForm, setEditForm] = useState({ amount: '', merchant: '', category: '' });
   const [yearlyExpenses, setYearlyExpenses] = useState<any[]>([]);
   
+  // Filter state
+  const [searchQuery, setSearchQuery] = useState('');
+  const [filterCategory, setFilterCategory] = useState<string>('all');
+  const [showFilters, setShowFilters] = useState(false);
+  
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioChunksRef = useRef<Blob[]>([]);
 
-  // Fetch all expenses for the entire year (for the chart)
+  // Fetch yearly expenses
   useEffect(() => {
     const fetchYearlyExpenses = async () => {
       if (!user || !currentHousehold) return;
-      
       const { data, error } = await supabase
         .from('expenses')
         .select('*')
@@ -76,122 +104,114 @@ export default function Expenses() {
         .eq('household_id', currentHousehold.id)
         .eq('year', selectedDate.getFullYear())
         .order('date', { ascending: true });
-      
-      if (!error && data) {
-        setYearlyExpenses(data);
-      }
+      if (!error && data) setYearlyExpenses(data);
     };
-    
     fetchYearlyExpenses();
   }, [user, currentHousehold, selectedDate.getFullYear(), expenses]);
 
-  // Award expense tracking badges based on total expense count (after badges load)
+  // Badge awards
   useEffect(() => {
     if (!user || badgesLoading || yearlyExpenses.length === 0) return;
-    
     const count = yearlyExpenses.length;
-    
-    if (count >= 1 && !hasBadge('expense_first')) {
-      earnBadge('expense_first');
-    }
-    if (count >= 3 && !hasBadge('expense_3')) {
-      earnBadge('expense_3');
-    }
-    if (count >= 10 && !hasBadge('expense_10')) {
-      earnBadge('expense_10');
-    }
-    if (count >= 20 && !hasBadge('expense_20')) {
-      earnBadge('expense_20');
-    }
-    if (count >= 50 && !hasBadge('expense_50')) {
-      earnBadge('expense_50');
-    }
+    if (count >= 1 && !hasBadge('expense_first')) earnBadge('expense_first');
+    if (count >= 3 && !hasBadge('expense_3')) earnBadge('expense_3');
+    if (count >= 10 && !hasBadge('expense_10')) earnBadge('expense_10');
+    if (count >= 20 && !hasBadge('expense_20')) earnBadge('expense_20');
+    if (count >= 50 && !hasBadge('expense_50')) earnBadge('expense_50');
   }, [user, badgesLoading, yearlyExpenses.length, earnBadge, hasBadge]);
 
-  // Calculate chart data - monthly aggregation using yearly data
-  const chartData = React.useMemo(() => {
+  // Chart data
+  const chartData = useMemo(() => {
     const monthlyTotals: Record<number, number> = {};
-    
-    // Use yearlyExpenses for the chart (all months)
     yearlyExpenses.forEach((expense) => {
-      const expenseDate = new Date(expense.date);
-      const month = expenseDate.getMonth(); // 0-11
-      if (!monthlyTotals[month]) {
-        monthlyTotals[month] = 0;
-      }
-      monthlyTotals[month] += Number(expense.amount);
+      const month = new Date(expense.date).getMonth();
+      monthlyTotals[month] = (monthlyTotals[month] || 0) + Number(expense.amount);
     });
-
-    // Create array with all 12 months
     const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-    return monthNames.map((name, index) => ({
-      month: name,
-      amount: monthlyTotals[index] || 0,
-    }));
+    return monthNames.map((name, index) => ({ month: name, amount: monthlyTotals[index] || 0 }));
   }, [yearlyExpenses]);
 
   const totalSpent = expenses.reduce((sum, exp) => sum + Number(exp.amount), 0);
   const yearlyTotal = yearlyExpenses.reduce((sum, exp) => sum + Number(exp.amount), 0);
-  // Calculate category breakdown
-  const categoryData = React.useMemo(() => {
+
+  const categoryData = useMemo(() => {
     const breakdown = expenses.reduce((acc, expense) => {
       const cat = expense.category || 'Other';
-      if (!acc[cat]) {
-        acc[cat] = 0;
-      }
-      acc[cat] += Number(expense.amount);
+      acc[cat] = (acc[cat] || 0) + Number(expense.amount);
       return acc;
     }, {} as Record<string, number>);
-
     return Object.entries(breakdown).map(([name, value]) => ({ name, value }));
   }, [expenses]);
 
   const COLORS = [
-    'hsl(var(--primary))',      // Primary blue
-    'hsl(var(--teal))',         // Teal
-    'hsl(var(--success))',      // Green
-    'hsl(var(--sage))',         // Sage green
-    'hsl(var(--primary-glow))', // Light blue
-    'hsl(var(--teal-glow))',    // Light teal
-    'hsl(var(--accent))',       // Accent
-    'hsl(var(--secondary))',    // Secondary
+    'hsl(var(--primary))', 'hsl(var(--teal))', 'hsl(var(--success))', 'hsl(var(--sage))',
+    'hsl(var(--primary-glow))', 'hsl(var(--teal-glow))', 'hsl(var(--accent))', 'hsl(var(--secondary))',
   ];
 
-  // Budget alert threshold (example: warn if over $1000/month)
   const budgetThreshold = 1000;
   const isOverBudget = totalSpent > budgetThreshold;
 
+  // Filtered expenses for the log
+  const filteredExpenses = useMemo(() => {
+    const dateExpenses = expenses.filter(expense =>
+      format(new Date(expense.date), 'yyyy-MM-dd') === format(selectedDate, 'yyyy-MM-dd')
+    );
+    return dateExpenses.filter(expense => {
+      const matchesSearch = !searchQuery || 
+        (expense.merchant?.toLowerCase().includes(searchQuery.toLowerCase())) ||
+        (expense.notes?.toLowerCase().includes(searchQuery.toLowerCase())) ||
+        expense.category.toLowerCase().includes(searchQuery.toLowerCase());
+      const matchesCategory = filterCategory === 'all' || expense.category === filterCategory;
+      return matchesSearch && matchesCategory;
+    });
+  }, [expenses, selectedDate, searchQuery, filterCategory]);
 
+  // CSV export
+  const exportToCSV = () => {
+    if (expenses.length === 0) {
+      toast({ title: 'No data', description: 'No expenses to export for this month', variant: 'destructive' });
+      return;
+    }
+    const headers = ['Date', 'Amount', 'Merchant', 'Category', 'Notes'];
+    const rows = expenses.map(e => [
+      format(new Date(e.date), 'yyyy-MM-dd'),
+      Number(e.amount).toFixed(2),
+      `"${(e.merchant || '').replace(/"/g, '""')}"`,
+      e.category,
+      `"${(e.notes || '').replace(/"/g, '""')}"`,
+    ]);
+    const csv = [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `expenses-${format(selectedDate, 'yyyy-MM')}.csv`;
+    link.click();
+    URL.revokeObjectURL(url);
+    toast({ title: 'Exported!', description: `${expenses.length} expenses exported to CSV` });
+  };
+
+  // Voice recording functions
   const startRecording = async () => {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       const mediaRecorder = new MediaRecorder(stream);
       mediaRecorderRef.current = mediaRecorder;
       audioChunksRef.current = [];
-
       mediaRecorder.ondataavailable = (event) => {
-        if (event.data.size > 0) {
-          audioChunksRef.current.push(event.data);
-        }
+        if (event.data.size > 0) audioChunksRef.current.push(event.data);
       };
-
       mediaRecorder.onstop = async () => {
         const audioBlob = new Blob(audioChunksRef.current, { type: 'audio/webm' });
         await processAudio(audioBlob);
         stream.getTracks().forEach(track => track.stop());
       };
-
       mediaRecorder.start();
       setIsRecording(true);
       setTranscription('');
       setParsedExpense(null);
     } catch (error) {
-      console.error('Error accessing microphone:', error);
-      toast({
-        title: 'Error',
-        description: 'Could not access microphone',
-        variant: 'destructive',
-      });
+      toast({ title: 'Error', description: 'Could not access microphone', variant: 'destructive' });
     }
   };
 
@@ -206,36 +226,23 @@ export default function Expenses() {
     setIsProcessing(true);
     setAiStatus('Transcribing audio...');
     try {
-      // Convert audio to base64
       const reader = new FileReader();
       reader.readAsDataURL(audioBlob);
       reader.onloadend = async () => {
         const base64Audio = (reader.result as string).split(',')[1];
-
         setAiStatus('Analyzing expense details...');
         const { data, error } = await supabase.functions.invoke('voice-expense', {
           body: { audio: base64Audio },
         });
-
         if (error) throw error;
-
         setTranscription(data.transcription);
         setParsedExpense(data.expense);
-        setAiStatus('Expense parsed successfully! Review and save below.');
-        
-        toast({
-          title: 'Success',
-          description: 'Expense details extracted',
-        });
+        setAiStatus('Expense parsed successfully!');
+        toast({ title: 'Success', description: 'Expense details extracted' });
       };
     } catch (error) {
-      console.error('Error processing audio:', error);
       setAiStatus('');
-      toast({
-        title: 'Error',
-        description: 'Failed to process voice recording',
-        variant: 'destructive',
-      });
+      toast({ title: 'Error', description: 'Failed to process voice recording', variant: 'destructive' });
     } finally {
       setIsProcessing(false);
     }
@@ -243,98 +250,194 @@ export default function Expenses() {
 
   const saveExpense = async () => {
     if (!parsedExpense) return;
-
-    console.log('Saving expense:', {
-      parsedExpense,
-      selectedDate,
-      user: user?.id,
-      household: currentHousehold?.id
-    });
-
     try {
-      const expenseData = {
+      const result = await addExpense({
         date: format(selectedDate, 'yyyy-MM-dd'),
         amount: parsedExpense.amount,
         merchant: parsedExpense.merchant === 'Unknown' ? null : parsedExpense.merchant,
         category: parsedExpense.category,
         notes: transcription,
         year: selectedDate.getFullYear(),
-      };
-
-      console.log('Expense data to save:', expenseData);
-
-      const result = await addExpense(expenseData);
-
-      console.log('Save result:', result);
-
+      });
       if (result) {
         setTranscription('');
         setParsedExpense(null);
         setAiStatus('');
-        
-        toast({
-          title: 'Saved!',
-          description: `${currency.symbol}${parsedExpense.amount} expense added`,
-        });
-      } else {
-        throw new Error('Failed to save expense');
+        toast({ title: 'Saved!', description: `${currency.symbol}${parsedExpense.amount} expense added` });
       }
     } catch (error) {
-      console.error('Error saving expense:', error);
-      toast({
-        title: 'Error',
-        description: 'Failed to save expense',
-        variant: 'destructive',
+      toast({ title: 'Error', description: 'Failed to save expense', variant: 'destructive' });
+    }
+  };
+
+  // Manual entry save
+  const saveManualExpense = async () => {
+    const amount = parseFloat(manualForm.amount);
+    if (isNaN(amount) || amount <= 0) {
+      toast({ title: 'Invalid amount', description: 'Please enter a valid amount', variant: 'destructive' });
+      return;
+    }
+    if (manualForm.merchant && manualForm.merchant.length > 100) {
+      toast({ title: 'Too long', description: 'Merchant name must be under 100 characters', variant: 'destructive' });
+      return;
+    }
+    if (manualForm.notes && manualForm.notes.length > 500) {
+      toast({ title: 'Too long', description: 'Notes must be under 500 characters', variant: 'destructive' });
+      return;
+    }
+    try {
+      const result = await addExpense({
+        date: format(selectedDate, 'yyyy-MM-dd'),
+        amount,
+        merchant: manualForm.merchant.trim() || null,
+        category: manualForm.category,
+        notes: manualForm.notes.trim() || null,
+        year: selectedDate.getFullYear(),
       });
+      if (result) {
+        setManualForm({ amount: '', merchant: '', category: 'Other', notes: '' });
+        setShowManualEntry(false);
+      }
+    } catch (error) {
+      toast({ title: 'Error', description: 'Failed to add expense', variant: 'destructive' });
     }
   };
 
   const openEditDialog = (expense: any) => {
     setEditingExpense(expense);
-    setEditForm({
-      amount: expense.amount.toString(),
-      merchant: expense.merchant || '',
-      category: expense.category,
-    });
+    setEditForm({ amount: expense.amount.toString(), merchant: expense.merchant || '', category: expense.category });
   };
 
   const handleEditSave = async () => {
     if (!editingExpense) return;
-
+    const amount = parseFloat(editForm.amount);
+    if (isNaN(amount) || amount <= 0) {
+      toast({ title: 'Invalid amount', description: 'Please enter a valid amount', variant: 'destructive' });
+      return;
+    }
     await updateExpense(editingExpense.id, {
-      amount: parseFloat(editForm.amount),
+      amount,
       merchant: editForm.merchant || null,
       category: editForm.category,
     });
-
     setEditingExpense(null);
   };
 
-  // If not logged in, show auth prompt
+  // ─── GUEST VIEW ───
   if (!user) {
     return (
-      <div className="min-h-screen flex items-center justify-center p-4">
-        <Card className="max-w-md w-full border-2 shadow-[var(--shadow-elegant)]">
-          <CardContent className="pt-6 text-center space-y-4">
-            <div className="w-16 h-16 bg-gradient-to-br from-primary/20 to-primary-glow/20 rounded-full flex items-center justify-center mx-auto">
-              <Mic className="w-8 h-8 text-primary" />
+      <div className="min-h-screen">
+        <SEO
+          title="Voice Expense Tracker - House Budget Calculator"
+          description="Track your daily expenses effortlessly with voice input and AI-powered categorization"
+          keywords="expense tracker, voice input, budget tracking, AI expense logging"
+        />
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+          <div className="text-center mb-8">
+            <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-primary/20 to-primary-glow/20 rounded-2xl shadow-lg mb-4">
+              <Mic className="h-8 w-8 text-primary" />
             </div>
-            <h2 className="text-2xl font-bold">Welcome to Voice Expense Tracker</h2>
-            <p className="text-muted-foreground">
-              Please sign in to start tracking your expenses with voice input.
+            <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-2">
+              Voice Expense Tracker
+            </h1>
+            <p className="text-muted-foreground max-w-xl mx-auto">
+              Speak your expenses — AI handles the rest. See trends, categories, and alerts automatically.
             </p>
-            <Link to="/auth">
-              <Button size="lg" className="w-full">
-                Sign In / Sign Up
-              </Button>
-            </Link>
-          </CardContent>
-        </Card>
+          </div>
+
+          <div className={cn("grid gap-6", isMobile ? "grid-cols-1" : "grid-cols-2")}>
+            {/* Demo chart with blur overlay */}
+            <Card className="relative overflow-hidden border-2 border-border/50">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2 text-sm">
+                  <TrendingUp className="h-4 w-4" /> Monthly Spending Trends
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="h-[200px]">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <BarChart data={DEMO_CHART_DATA}>
+                      <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+                      <XAxis dataKey="month" tick={{ fontSize: 10 }} />
+                      <YAxis tick={{ fontSize: 10 }} tickFormatter={(v) => `$${v}`} width={45} />
+                      <Bar dataKey="amount" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} />
+                    </BarChart>
+                  </ResponsiveContainer>
+                </div>
+              </CardContent>
+              {/* Blur overlay */}
+              <div className="absolute inset-0 bg-gradient-to-t from-background via-background/80 to-transparent flex items-end justify-center pb-6">
+                <Link to="/auth">
+                  <Button size="sm" className="bg-gradient-to-r from-primary to-primary-glow">
+                    Sign Up to Track Your Spending
+                  </Button>
+                </Link>
+              </div>
+            </Card>
+
+            {/* Demo category pie with blur */}
+            <Card className="relative overflow-hidden border-2 border-border/50">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2 text-sm">
+                  <Filter className="h-4 w-4" /> Category Breakdown
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="h-[200px]">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <PieChart>
+                      <Pie data={DEMO_CATEGORY_DATA} cx="50%" cy="50%" outerRadius={70} dataKey="value"
+                        label={({ name }) => name}>
+                        {DEMO_CATEGORY_DATA.map((_, i) => (
+                          <Cell key={i} fill={COLORS[i % COLORS.length]} />
+                        ))}
+                      </Pie>
+                      <Legend />
+                    </PieChart>
+                  </ResponsiveContainer>
+                </div>
+              </CardContent>
+              <div className="absolute inset-0 bg-gradient-to-t from-background via-background/80 to-transparent flex items-end justify-center pb-6">
+                <Link to="/auth">
+                  <Button size="sm" className="bg-gradient-to-r from-primary to-primary-glow">
+                    Sign Up to See Your Categories
+                  </Button>
+                </Link>
+              </div>
+            </Card>
+
+            {/* Sales pitch + signup form */}
+            <Card className={cn("border-2 border-primary/30 bg-gradient-to-br from-primary/5 to-primary-glow/5", isMobile ? "" : "col-span-2")}>
+              <CardContent className="p-6">
+                <div className={cn("gap-6", isMobile ? "space-y-6" : "grid grid-cols-2")}>
+                  <div className="space-y-4">
+                    <h2 className="text-xl font-bold text-foreground">Track every dollar, effortlessly</h2>
+                    <ul className="space-y-2 text-sm text-muted-foreground">
+                      <li className="flex items-center gap-2">
+                        <span className="text-success font-bold">✓</span> Voice-to-expense: just speak naturally
+                      </li>
+                      <li className="flex items-center gap-2">
+                        <span className="text-success font-bold">✓</span> AI auto-categorizes your spending
+                      </li>
+                      <li className="flex items-center gap-2">
+                        <span className="text-success font-bold">✓</span> Monthly trends & category charts
+                      </li>
+                      <li className="flex items-center gap-2">
+                        <span className="text-success font-bold">✓</span> Export your data to CSV anytime
+                      </li>
+                    </ul>
+                  </div>
+                  <InlineSignUpForm />
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
       </div>
     );
   }
 
-  // Mobile app subscription check
+  // ─── MOBILE APP: subscription gate ───
   if (isMobileApp && !subscribed) {
     return (
       <div className="min-h-screen flex items-center justify-center p-4">
@@ -344,27 +447,8 @@ export default function Expenses() {
               <AlertCircle className="w-8 h-8 text-warning" />
             </div>
             <h2 className="text-2xl font-bold">Subscribers Only</h2>
-            <p className="text-muted-foreground">
-              This mobile app feature is available for subscribed users only.
-            </p>
-            <div className="p-4 bg-muted/50 rounded-lg">
-              <p className="text-sm text-muted-foreground">
-                For more information, please visit our website at:
-              </p>
-              <a 
-                href="https://housebudgetcalculator.com" 
-                className="text-primary font-semibold hover:underline mt-2 block"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                housebudgetcalculator.com
-              </a>
-            </div>
-            <Button 
-              variant="outline" 
-              onClick={() => window.location.href = 'https://housebudgetcalculator.com'}
-              className="w-full"
-            >
+            <p className="text-muted-foreground">This mobile app feature is available for subscribed users only.</p>
+            <Button variant="outline" onClick={() => window.location.href = 'https://housebudgetcalculator.com'} className="w-full">
               Visit Website
             </Button>
           </CardContent>
@@ -373,7 +457,7 @@ export default function Expenses() {
     );
   }
 
-  // Web app subscription check
+  // ─── WEB: subscription gate (premium sales page) ───
   if (!subscribed) {
     return (
       <div className="min-h-screen">
@@ -382,9 +466,7 @@ export default function Expenses() {
           description="Track your daily expenses effortlessly with voice input and AI-powered categorization"
           keywords="expense tracker, voice input, budget tracking, AI expense logging"
         />
-        
         <div className="max-w-7xl mx-auto p-4 md:p-6 lg:p-8">
-          {/* Hero Section */}
           <div className="text-center mb-12 animate-fade-in">
             <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-primary/20 to-primary-glow/20 rounded-3xl shadow-lg mb-6">
               <Mic className="h-10 w-10 text-primary" />
@@ -393,116 +475,68 @@ export default function Expenses() {
               Voice Expense Tracker
             </h1>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto mb-8">
-              Just speak your expenses. Our AI handles the rest - categorizing, organizing, and visualizing your spending automatically.
+              Just speak your expenses. Our AI handles the rest.
             </p>
             <Link to="/settings">
               <Button size="lg" className="bg-gradient-to-r from-primary to-primary-glow hover:scale-105 transition-transform">
-                Upgrade to Premium - Start Tracking
+                Upgrade to Premium
               </Button>
             </Link>
           </div>
 
-          {/* Feature Preview Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
-            {/* Voice Input Preview */}
             <Card className="bg-card border-2 border-border/50 shadow-cartoon">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Mic className="h-5 w-5" />
-                  Effortless Voice Input
-                </CardTitle>
-              </CardHeader>
+              <CardHeader><CardTitle className="flex items-center gap-2"><Mic className="h-5 w-5" /> Effortless Voice Input</CardTitle></CardHeader>
               <CardContent>
                 <div className="flex justify-center mb-4">
                   <div className="w-32 h-32 rounded-full bg-gradient-to-br from-primary/20 to-primary-glow/20 flex items-center justify-center">
                     <Mic className="h-16 w-16 text-primary" />
                   </div>
                 </div>
-                <p className="text-muted-foreground text-center">
-                  "Spent $45.99 at Whole Foods for groceries"
-                </p>
+                <p className="text-muted-foreground text-center">"Spent $45.99 at Whole Foods for groceries"</p>
                 <div className="mt-4 p-4 bg-success/10 border border-success/30 rounded-lg">
                   <p className="text-sm font-medium">✓ AI Parsed:</p>
                   <p className="text-xs text-muted-foreground">Amount: $45.99 | Merchant: Whole Foods | Category: Groceries</p>
                 </div>
               </CardContent>
             </Card>
-
-            {/* Chart Preview */}
             <Card className="bg-card border-2 border-border/50 shadow-cartoon">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <TrendingUp className="h-5 w-5" />
-                  Visual Analytics
-                </CardTitle>
-              </CardHeader>
+              <CardHeader><CardTitle className="flex items-center gap-2"><TrendingUp className="h-5 w-5" /> Visual Analytics</CardTitle></CardHeader>
               <CardContent>
                 <div className="h-[200px] flex items-center justify-center bg-muted/20 rounded-lg">
                   <div className="text-center">
                     <TrendingUp className="h-12 w-12 text-primary mx-auto mb-2" />
                     <p className="text-sm text-muted-foreground">Daily spending trends</p>
-                    <p className="text-xs text-muted-foreground">Category breakdowns</p>
-                    <p className="text-xs text-muted-foreground">Budget alerts</p>
+                    <p className="text-xs text-muted-foreground">Category breakdowns & CSV export</p>
                   </div>
                 </div>
               </CardContent>
             </Card>
           </div>
 
-          {/* Benefits List */}
           <Card className="bg-card border-2 border-primary/20 shadow-cartoon">
-            <CardHeader>
-              <CardTitle>What You'll Get</CardTitle>
-            </CardHeader>
+            <CardHeader><CardTitle>What You'll Get</CardTitle></CardHeader>
             <CardContent>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="flex items-start gap-3">
-                  <div className="w-8 h-8 rounded-full bg-success/20 flex items-center justify-center flex-shrink-0">
-                    <span className="text-success font-bold">✓</span>
+                {[
+                  ['Voice-to-Expense Magic', 'Speak naturally, we\'ll extract amount, merchant, and category'],
+                  ['Manual Entry Too', 'Prefer typing? Quick form to add expenses manually'],
+                  ['Smart Categorization', 'AI automatically categorizes your spending'],
+                  ['Search & Filter', 'Find any expense by merchant, category, or notes'],
+                  ['Visual Analytics', 'Charts and graphs show spending patterns'],
+                  ['CSV Export', 'Download your expense data anytime'],
+                ].map(([title, desc]) => (
+                  <div key={title} className="flex items-start gap-3">
+                    <div className="w-8 h-8 rounded-full bg-success/20 flex items-center justify-center flex-shrink-0">
+                      <span className="text-success font-bold">✓</span>
+                    </div>
+                    <div>
+                      <h3 className="font-semibold mb-1">{title}</h3>
+                      <p className="text-sm text-muted-foreground">{desc}</p>
+                    </div>
                   </div>
-                  <div>
-                    <h3 className="font-semibold mb-1">Voice-to-Expense Magic</h3>
-                    <p className="text-sm text-muted-foreground">Speak naturally, we'll extract amount, merchant, and category</p>
-                  </div>
-                </div>
-                <div className="flex items-start gap-3">
-                  <div className="w-8 h-8 rounded-full bg-success/20 flex items-center justify-center flex-shrink-0">
-                    <span className="text-success font-bold">✓</span>
-                  </div>
-                  <div>
-                    <h3 className="font-semibold mb-1">Smart Categorization</h3>
-                    <p className="text-sm text-muted-foreground">AI automatically categorizes your spending</p>
-                  </div>
-                </div>
-                <div className="flex items-start gap-3">
-                  <div className="w-8 h-8 rounded-full bg-success/20 flex items-center justify-center flex-shrink-0">
-                    <span className="text-success font-bold">✓</span>
-                  </div>
-                  <div>
-                    <h3 className="font-semibold mb-1">Visual Analytics</h3>
-                    <p className="text-sm text-muted-foreground">Charts and graphs show spending patterns</p>
-                  </div>
-                </div>
-                <div className="flex items-start gap-3">
-                  <div className="w-8 h-8 rounded-full bg-success/20 flex items-center justify-center flex-shrink-0">
-                    <span className="text-success font-bold">✓</span>
-                  </div>
-                  <div>
-                    <h3 className="font-semibold mb-1">Budget Alerts</h3>
-                    <p className="text-sm text-muted-foreground">Get notified when you're approaching limits</p>
-                  </div>
-                </div>
-                <div className="flex items-start gap-3">
-                  <div className="w-8 h-8 rounded-full bg-success/20 flex items-center justify-center flex-shrink-0">
-                    <span className="text-success font-bold">✓</span>
-                  </div>
-                  <div>
-                    <h3 className="font-semibold mb-1">Household Tracking</h3>
-                    <p className="text-sm text-muted-foreground">Track expenses across your entire household</p>
-                  </div>
-                </div>
+                ))}
               </div>
-              
               <div className="mt-8 text-center">
                 <Link to="/settings">
                   <Button size="lg" className="bg-gradient-to-r from-primary to-primary-glow hover:scale-105 transition-transform">
@@ -517,10 +551,9 @@ export default function Expenses() {
     );
   }
 
+  // ─── SUBSCRIBED USER: Full expense tracker ───
   return (
-    <div className={cn(
-      isMobileApp ? "" : "min-h-screen"
-    )}>
+    <div className={cn(isMobileApp ? "" : "min-h-screen")}>
       <SEO
         title="Voice Expense Tracker - House Budget Calculator"
         description="Track your daily expenses effortlessly with voice input and AI-powered categorization"
@@ -528,46 +561,40 @@ export default function Expenses() {
       />
 
       <div className="w-full px-4 sm:px-6 lg:px-8 pt-2">
-        {/* Header - matching Monthly Budget style */}
+        {/* Header */}
         <div className="flex flex-col gap-3 mb-4">
           <div className="flex items-center justify-between gap-4">
             <div className="flex items-center gap-2 sm:gap-3 min-w-0">
-              <img 
-                src={calculatorMascot} 
-                alt="Budget Calculator Mascot" 
-                className="h-10 w-10 sm:h-12 sm:w-12 md:h-16 md:w-16 flex-shrink-0 object-contain"
-              />
-              <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-foreground tracking-wide truncate">
-                DAILY EXPENSES
-              </h1>
+              <img src={calculatorMascot} alt="Budget Calculator Mascot" className="h-10 w-10 sm:h-12 sm:w-12 md:h-16 md:w-16 flex-shrink-0 object-contain" />
+              <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-foreground tracking-wide truncate">DAILY EXPENSES</h1>
             </div>
-            
-            {/* Desktop Date Picker */}
-            <div className="hidden sm:block flex-shrink-0">
-              <Popover>
-                <PopoverTrigger asChild>
-                  <Button variant="outline" className={cn("w-[180px] md:w-[240px] justify-start text-left font-normal text-sm")}>
-                    <CalendarIcon className="mr-2 h-4 w-4" />
-                    {format(selectedDate, 'PPP')}
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent className="w-auto p-0" align="end">
-                  <Calendar
-                    mode="single"
-                    selected={selectedDate}
-                    onSelect={(date) => date && setSelectedDate(date)}
-                    initialFocus
-                  />
-                </PopoverContent>
-              </Popover>
+            <div className="flex items-center gap-2 flex-shrink-0">
+              {/* CSV Export */}
+              <Button variant="outline" size="sm" onClick={exportToCSV} className="hidden sm:flex items-center gap-1">
+                <Download className="h-4 w-4" />
+                <span>CSV</span>
+              </Button>
+              {/* Desktop Date Picker */}
+              <div className="hidden sm:block">
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button variant="outline" className={cn("w-[180px] md:w-[240px] justify-start text-left font-normal text-sm")}>
+                      <CalendarIcon className="mr-2 h-4 w-4" />
+                      {format(selectedDate, 'PPP')}
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0" align="end">
+                    <Calendar mode="single" selected={selectedDate} onSelect={(date) => date && setSelectedDate(date)} initialFocus />
+                  </PopoverContent>
+                </Popover>
+              </div>
             </div>
           </div>
-          
-          {/* Mobile Date Picker - separate row */}
-          <div className="sm:hidden w-full">
+          {/* Mobile Date Picker + Export */}
+          <div className="sm:hidden flex gap-2 w-full">
             <Popover>
               <PopoverTrigger asChild>
-                <Button variant="outline" className="w-full justify-between text-left font-normal text-sm">
+                <Button variant="outline" className="flex-1 justify-between text-left font-normal text-sm">
                   <span className="flex items-center">
                     <CalendarIcon className="mr-2 h-4 w-4" />
                     {format(selectedDate, 'PPP')}
@@ -575,52 +602,42 @@ export default function Expenses() {
                 </Button>
               </PopoverTrigger>
               <PopoverContent className="w-auto p-0" align="start">
-                <Calendar
-                  mode="single"
-                  selected={selectedDate}
-                  onSelect={(date) => date && setSelectedDate(date)}
-                  initialFocus
-                />
+                <Calendar mode="single" selected={selectedDate} onSelect={(date) => date && setSelectedDate(date)} initialFocus />
               </PopoverContent>
             </Popover>
+            <Button variant="outline" size="icon" onClick={exportToCSV} className="flex-shrink-0">
+              <Download className="h-4 w-4" />
+            </Button>
           </div>
         </div>
 
-        {/* Yearly Spending Summary */}
+        {/* Summary Cards */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6 animate-fade-in">
           <Card className="bg-gradient-to-br from-primary/10 to-primary-glow/10 border-primary/20">
             <CardContent className="p-4 text-center">
               <p className="text-xs text-muted-foreground uppercase tracking-wide">Year Total</p>
-              <p className="text-2xl md:text-3xl font-bold text-primary">
-                {currency.symbol}{yearlyTotal.toFixed(2)}
-              </p>
+              <p className="text-2xl md:text-3xl font-bold text-primary">{currency.symbol}{yearlyTotal.toFixed(2)}</p>
               <p className="text-xs text-muted-foreground">{selectedDate.getFullYear()}</p>
             </CardContent>
           </Card>
           <Card className="bg-gradient-to-br from-teal/10 to-teal-glow/10 border-teal/20">
             <CardContent className="p-4 text-center">
               <p className="text-xs text-muted-foreground uppercase tracking-wide">This Month</p>
-              <p className="text-2xl md:text-3xl font-bold text-teal">
-                {currency.symbol}{totalSpent.toFixed(2)}
-              </p>
+              <p className="text-2xl md:text-3xl font-bold text-teal">{currency.symbol}{totalSpent.toFixed(2)}</p>
               <p className="text-xs text-muted-foreground">{format(selectedDate, 'MMMM')}</p>
             </CardContent>
           </Card>
           <Card className="bg-gradient-to-br from-sage/10 to-success/10 border-sage/20">
             <CardContent className="p-4 text-center">
               <p className="text-xs text-muted-foreground uppercase tracking-wide">Monthly Avg</p>
-              <p className="text-2xl md:text-3xl font-bold text-sage">
-                {currency.symbol}{(yearlyTotal / (selectedDate.getMonth() + 1)).toFixed(2)}
-              </p>
+              <p className="text-2xl md:text-3xl font-bold text-sage">{currency.symbol}{(yearlyTotal / (selectedDate.getMonth() + 1)).toFixed(2)}</p>
               <p className="text-xs text-muted-foreground">per month</p>
             </CardContent>
           </Card>
           <Card className="bg-gradient-to-br from-secondary/30 to-muted/30 border-border/50">
             <CardContent className="p-4 text-center">
               <p className="text-xs text-muted-foreground uppercase tracking-wide">Transactions</p>
-              <p className="text-2xl md:text-3xl font-bold text-foreground">
-                {yearlyExpenses.length}
-              </p>
+              <p className="text-2xl md:text-3xl font-bold text-foreground">{yearlyExpenses.length}</p>
               <p className="text-xs text-muted-foreground">this year</p>
             </CardContent>
           </Card>
@@ -631,7 +648,7 @@ export default function Expenses() {
           <Alert variant="destructive" className="mb-6 animate-fade-in">
             <AlertCircle className="h-4 w-4" />
             <AlertDescription>
-              You've exceeded your monthly budget of {currency.symbol}{budgetThreshold.toFixed(2)}. Current spending: {currency.symbol}{totalSpent.toFixed(2)}
+              You've exceeded your monthly budget of {currency.symbol}{budgetThreshold.toFixed(2)}. Current: {currency.symbol}{totalSpent.toFixed(2)}
             </AlertDescription>
           </Alert>
         )}
@@ -642,11 +659,10 @@ export default function Expenses() {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Mic className="h-5 w-5" />
-                What did you spend your money on today?
+                What did you spend today?
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              {/* Mic Button */}
               <div className="flex justify-center">
                 <Button
                   size="lg"
@@ -659,23 +675,12 @@ export default function Expenses() {
                       : "bg-gradient-to-br from-primary to-primary-glow hover:scale-110"
                   )}
                 >
-                  {isRecording ? (
-                    <MicOff style={{ width: 32, height: 32 }} />
-                  ) : (
-                    <Mic style={{ width: 32, height: 32 }} />
-                  )}
+                  {isRecording ? <MicOff style={{ width: 32, height: 32 }} /> : <Mic style={{ width: 32, height: 32 }} />}
                 </Button>
               </div>
-
               <p className="text-center text-sm text-muted-foreground">
-                {isRecording
-                  ? "Listening... (Tap to stop)"
-                  : isProcessing
-                  ? "Processing..."
-                  : "Tap to start recording"}
+                {isRecording ? "Listening... (Tap to stop)" : isProcessing ? "Processing..." : "Tap to start recording"}
               </p>
-
-              {/* AI Status */}
               {aiStatus && (
                 <Alert className="bg-primary/5 border-primary/30">
                   <AlertDescription className="flex items-center gap-2">
@@ -684,203 +689,215 @@ export default function Expenses() {
                   </AlertDescription>
                 </Alert>
               )}
-
-              {/* Transcription */}
               {transcription && (
                 <Alert className="border-2">
-                  <AlertDescription>
-                    <strong>You said:</strong> "{transcription}"
-                  </AlertDescription>
+                  <AlertDescription><strong>You said:</strong> "{sanitizeText(transcription)}"</AlertDescription>
                 </Alert>
               )}
-
-              {/* Parsed Expense */}
               {parsedExpense && (
                 <Card className="border-2 border-success/40 bg-success/5">
                   <CardContent className="pt-4 space-y-2">
-                    <p className="text-lg font-bold">
-                      {currency.symbol}{parsedExpense.amount.toFixed(2)}
-                    </p>
-                    <p className="text-sm">
-                      <strong>Merchant:</strong> {parsedExpense.merchant || 'Unknown'}
-                    </p>
-                    <p className="text-sm">
-                      <strong>Category:</strong> {parsedExpense.category}
-                    </p>
-                    <Button onClick={saveExpense} className="w-full mt-4">
-                      Save Expense
-                    </Button>
+                    <p className="text-lg font-bold">{currency.symbol}{parsedExpense.amount.toFixed(2)}</p>
+                    <p className="text-sm"><strong>Merchant:</strong> {parsedExpense.merchant || 'Unknown'}</p>
+                    <p className="text-sm"><strong>Category:</strong> {parsedExpense.category}</p>
+                    <Button onClick={saveExpense} className="w-full mt-4">Save Expense</Button>
                   </CardContent>
                 </Card>
+              )}
+
+              {/* Manual entry toggle */}
+              <div className="border-t border-border pt-4">
+                <Button variant="outline" size="sm" onClick={() => setShowManualEntry(!showManualEntry)} className="w-full flex items-center gap-2">
+                  <Plus className="h-4 w-4" />
+                  {showManualEntry ? 'Hide Manual Entry' : 'Add Manually Instead'}
+                </Button>
+              </div>
+
+              {/* Manual entry form */}
+              {showManualEntry && (
+                <div className="space-y-3 p-4 bg-muted/30 rounded-lg border border-border/50 animate-fade-in">
+                  <div className="grid grid-cols-2 gap-3">
+                    <div className="space-y-1">
+                      <Label htmlFor="manual-amount" className="text-xs">Amount *</Label>
+                      <Input
+                        id="manual-amount"
+                        type="number"
+                        step="0.01"
+                        min="0.01"
+                        max="999999.99"
+                        placeholder="0.00"
+                        value={manualForm.amount}
+                        onChange={(e) => setManualForm({ ...manualForm, amount: e.target.value })}
+                      />
+                    </div>
+                    <div className="space-y-1">
+                      <Label htmlFor="manual-category" className="text-xs">Category</Label>
+                      <Select value={manualForm.category} onValueChange={(v) => setManualForm({ ...manualForm, category: v })}>
+                        <SelectTrigger id="manual-category"><SelectValue /></SelectTrigger>
+                        <SelectContent>
+                          {EXPENSE_CATEGORIES.map(c => <SelectItem key={c} value={c}>{c}</SelectItem>)}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
+                  <div className="space-y-1">
+                    <Label htmlFor="manual-merchant" className="text-xs">Merchant (optional)</Label>
+                    <Input
+                      id="manual-merchant"
+                      placeholder="e.g. Whole Foods"
+                      maxLength={100}
+                      value={manualForm.merchant}
+                      onChange={(e) => setManualForm({ ...manualForm, merchant: e.target.value })}
+                    />
+                  </div>
+                  <div className="space-y-1">
+                    <Label htmlFor="manual-notes" className="text-xs">Notes (optional)</Label>
+                    <Input
+                      id="manual-notes"
+                      placeholder="Quick note..."
+                      maxLength={500}
+                      value={manualForm.notes}
+                      onChange={(e) => setManualForm({ ...manualForm, notes: e.target.value })}
+                    />
+                  </div>
+                  <Button onClick={saveManualExpense} className="w-full" size="sm">
+                    <Plus className="h-4 w-4 mr-1" /> Add Expense
+                  </Button>
+                </div>
               )}
             </CardContent>
           </Card>
 
-          {/* Monthly Summary & Export */}
+          {/* Monthly Summary */}
           <Card className="bg-card border-2 border-border/50 shadow-cartoon">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <TrendingUp className="h-5 w-5" />
-                This Month
+                <TrendingUp className="h-5 w-5" /> This Month
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-3xl font-bold text-primary mb-2">
-                {currency.symbol}{totalSpent.toFixed(2)}
-              </p>
-              <p className="text-sm text-muted-foreground mb-4">
-                {expenses.length} expenses logged
-              </p>
+              <p className="text-3xl font-bold text-primary mb-2">{currency.symbol}{totalSpent.toFixed(2)}</p>
+              <p className="text-sm text-muted-foreground mb-4">{expenses.length} expenses logged</p>
             </CardContent>
           </Card>
         </div>
 
-        {/* Expense Log */}
+        {/* Expense Log with Search & Filter */}
         <Card className="mt-6 bg-card border-2 border-border/50 shadow-cartoon">
           <CardHeader>
-            <CardTitle>Expense Log - {format(selectedDate, 'MMMM d, yyyy')}</CardTitle>
+            <div className="flex items-center justify-between gap-2 flex-wrap">
+              <CardTitle className="text-base">Expense Log - {format(selectedDate, 'MMMM d, yyyy')}</CardTitle>
+              <Button variant="ghost" size="sm" onClick={() => setShowFilters(!showFilters)} className="flex items-center gap-1">
+                <Filter className="h-4 w-4" />
+                <span className="text-xs">{showFilters ? 'Hide' : 'Filter'}</span>
+              </Button>
+            </div>
+            {showFilters && (
+              <div className="flex flex-col sm:flex-row gap-2 mt-3 animate-fade-in">
+                <div className="relative flex-1">
+                  <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+                  <Input
+                    placeholder="Search merchant, notes..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="pl-8 h-9 text-sm"
+                    maxLength={100}
+                  />
+                  {searchQuery && (
+                    <button onClick={() => setSearchQuery('')} className="absolute right-2.5 top-2.5">
+                      <X className="h-4 w-4 text-muted-foreground hover:text-foreground" />
+                    </button>
+                  )}
+                </div>
+                <Select value={filterCategory} onValueChange={setFilterCategory}>
+                  <SelectTrigger className="w-full sm:w-[150px] h-9 text-sm">
+                    <SelectValue placeholder="Category" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Categories</SelectItem>
+                    {EXPENSE_CATEGORIES.map(c => <SelectItem key={c} value={c}>{c}</SelectItem>)}
+                  </SelectContent>
+                </Select>
+              </div>
+            )}
           </CardHeader>
           <CardContent>
             {loading ? (
               <p className="text-center text-muted-foreground py-8">Loading expenses...</p>
-            ) : (() => {
-              const selectedDateExpenses = expenses.filter(expense => 
-                format(new Date(expense.date), 'yyyy-MM-dd') === format(selectedDate, 'yyyy-MM-dd')
-              );
-              
-              return selectedDateExpenses.length === 0 ? (
-                <p className="text-center text-muted-foreground py-8">
-                  No expenses logged for {format(selectedDate, 'MMMM d, yyyy')}. Start recording!
-                </p>
-              ) : (
-                <div className="space-y-2 max-h-[500px] overflow-y-auto">
-                  {selectedDateExpenses.map((expense) => (
-                    <div
-                      key={expense.id}
-                      className="flex items-center justify-between p-4 bg-background/50 rounded-lg hover:bg-background/80 transition-colors"
-                    >
-                      <div className="flex-1">
-                        <div className="flex items-center gap-3 mb-1">
-                          <p className="text-lg font-semibold">{currency.symbol}{Number(expense.amount).toFixed(2)}</p>
-                          <span className="text-xs text-muted-foreground px-2 py-1 bg-muted rounded">
-                            {expense.category}
-                          </span>
-                        </div>
-                        <p className="text-sm text-muted-foreground">
-                          {expense.merchant && <span className="font-medium">{expense.merchant} • </span>}
-                          {format(new Date(expense.date), 'h:mm a')}
-                        </p>
-                        {expense.notes && (
-                          <p className="text-xs text-muted-foreground mt-1 italic">"{expense.notes}"</p>
-                        )}
+            ) : filteredExpenses.length === 0 ? (
+              <p className="text-center text-muted-foreground py-8">
+                {searchQuery || filterCategory !== 'all'
+                  ? 'No expenses match your filters.'
+                  : `No expenses logged for ${format(selectedDate, 'MMMM d, yyyy')}. Start recording!`}
+              </p>
+            ) : (
+              <div className="space-y-2 max-h-[500px] overflow-y-auto">
+                {filteredExpenses.map((expense) => (
+                  <div key={expense.id} className="flex items-center justify-between p-4 bg-background/50 rounded-lg hover:bg-background/80 transition-colors">
+                    <div className="flex-1">
+                      <div className="flex items-center gap-3 mb-1">
+                        <p className="text-lg font-semibold">{currency.symbol}{Number(expense.amount).toFixed(2)}</p>
+                        <span className="text-xs text-muted-foreground px-2 py-1 bg-muted rounded">{expense.category}</span>
                       </div>
-                      <div className="flex gap-2">
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => openEditDialog(expense)}
-                        >
-                          <Edit2 className="h-4 w-4" />
-                        </Button>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => deleteExpense(expense.id)}
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
-                      </div>
+                      <p className="text-sm text-muted-foreground">
+                        {expense.merchant && <span className="font-medium">{expense.merchant} • </span>}
+                        {format(new Date(expense.date), 'h:mm a')}
+                      </p>
+                      {expense.notes && <p className="text-xs text-muted-foreground mt-1 italic">"{expense.notes}"</p>}
                     </div>
-                  ))}
-                </div>
-              );
-            })()}
+                    <div className="flex gap-2">
+                      <Button variant="ghost" size="sm" onClick={() => openEditDialog(expense)}><Edit2 className="h-4 w-4" /></Button>
+                      <Button variant="ghost" size="sm" onClick={() => deleteExpense(expense.id)}><Trash2 className="h-4 w-4" /></Button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
           </CardContent>
         </Card>
 
         {/* Edit Expense Dialog */}
         <Dialog open={!!editingExpense} onOpenChange={(open) => !open && setEditingExpense(null)}>
           <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Edit Expense</DialogTitle>
-            </DialogHeader>
+            <DialogHeader><DialogTitle>Edit Expense</DialogTitle></DialogHeader>
             <div className="space-y-4 py-4">
               <div className="space-y-2">
                 <Label htmlFor="edit-amount">Amount</Label>
-                <Input
-                  id="edit-amount"
-                  type="number"
-                  step="0.01"
-                  value={editForm.amount}
-                  onChange={(e) => setEditForm({ ...editForm, amount: e.target.value })}
-                  placeholder="0.00"
-                />
+                <Input id="edit-amount" type="number" step="0.01" min="0.01" max="999999.99" value={editForm.amount} onChange={(e) => setEditForm({ ...editForm, amount: e.target.value })} />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="edit-merchant">Merchant (Optional)</Label>
-                <Input
-                  id="edit-merchant"
-                  value={editForm.merchant}
-                  onChange={(e) => setEditForm({ ...editForm, merchant: e.target.value })}
-                  placeholder="Enter merchant name"
-                />
+                <Input id="edit-merchant" value={editForm.merchant} maxLength={100} onChange={(e) => setEditForm({ ...editForm, merchant: e.target.value })} />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="edit-category">Category</Label>
-                <Select
-                  value={editForm.category}
-                  onValueChange={(value) => setEditForm({ ...editForm, category: value })}
-                >
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
+                <Select value={editForm.category} onValueChange={(v) => setEditForm({ ...editForm, category: v })}>
+                  <SelectTrigger><SelectValue /></SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="Groceries">Groceries</SelectItem>
-                    <SelectItem value="Dining Out">Dining Out</SelectItem>
-                    <SelectItem value="Transportation">Transportation</SelectItem>
-                    <SelectItem value="Entertainment">Entertainment</SelectItem>
-                    <SelectItem value="Shopping">Shopping</SelectItem>
-                    <SelectItem value="Bills">Bills</SelectItem>
-                    <SelectItem value="Healthcare">Healthcare</SelectItem>
-                    <SelectItem value="Other">Other</SelectItem>
+                    {EXPENSE_CATEGORIES.map(c => <SelectItem key={c} value={c}>{c}</SelectItem>)}
                   </SelectContent>
                 </Select>
               </div>
             </div>
             <DialogFooter>
-              <Button variant="outline" onClick={() => setEditingExpense(null)}>
-                Cancel
-              </Button>
-              <Button onClick={handleEditSave}>
-                Save Changes
-              </Button>
+              <Button variant="outline" onClick={() => setEditingExpense(null)}>Cancel</Button>
+              <Button onClick={handleEditSave}>Save Changes</Button>
             </DialogFooter>
           </DialogContent>
         </Dialog>
 
-        {/* Category Breakdown Pie Chart */}
+        {/* Category Breakdown Pie */}
         {categoryData.length > 0 && (
           <Card className="mt-6 bg-card border-2 border-border/50 shadow-cartoon">
-            <CardHeader>
-              <CardTitle>Spending by Category - {format(selectedDate, 'MMMM yyyy')}</CardTitle>
-            </CardHeader>
+            <CardHeader><CardTitle>Spending by Category - {format(selectedDate, 'MMMM yyyy')}</CardTitle></CardHeader>
             <CardContent>
               <div className="h-[300px]">
                 <ResponsiveContainer width="100%" height="100%">
                   <PieChart>
-                    <Pie
-                      data={categoryData}
-                      cx="50%"
-                      cy="50%"
-                      labelLine={false}
+                    <Pie data={categoryData} cx="50%" cy="50%" labelLine={false}
                       label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
-                      outerRadius={100}
-                      fill="hsl(var(--primary))"
-                      dataKey="value"
-                    >
-                      {categoryData.map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                      ))}
+                      outerRadius={100} dataKey="value">
+                      {categoryData.map((_, i) => <Cell key={i} fill={COLORS[i % COLORS.length]} />)}
                     </Pie>
                     <Tooltip formatter={(value: number) => `${currency.symbol}${value.toFixed(2)}`} />
                     <Legend />
@@ -891,43 +908,19 @@ export default function Expenses() {
           </Card>
         )}
 
-        {/* Chart */}
+        {/* Monthly Spending Chart */}
         {chartData.length > 0 && (
           <Card className="mt-6 bg-card border-2 border-border/50 shadow-cartoon">
-            <CardHeader>
-              <CardTitle>Monthly Spending - {selectedDate.getFullYear()}</CardTitle>
-            </CardHeader>
+            <CardHeader><CardTitle>Monthly Spending - {selectedDate.getFullYear()}</CardTitle></CardHeader>
             <CardContent>
               <div className="h-[250px] md:h-[300px]">
                 <ResponsiveContainer width="100%" height="100%">
                   <LineChart data={chartData} margin={{ top: 5, right: 10, left: 0, bottom: 5 }}>
                     <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-                    <XAxis
-                      dataKey="month"
-                      tick={{ fontSize: 10 }}
-                      tickMargin={5}
-                      axisLine={{ stroke: 'hsl(var(--border))' }}
-                    />
-                    <YAxis
-                      tick={{ fontSize: 10 }}
-                      tickMargin={5}
-                      width={40}
-                      axisLine={{ stroke: 'hsl(var(--border))' }}
-                      tickFormatter={(value) => `${currency.symbol}${value}`}
-                    />
-                    <Tooltip
-                      formatter={(value: number) => [`${currency.symbol}${value.toFixed(2)}`, 'Spent']}
-                      labelFormatter={(label) => label}
-                      contentStyle={{ fontSize: 12 }}
-                    />
-                    <Line
-                      type="monotone"
-                      dataKey="amount"
-                      stroke="hsl(var(--primary))"
-                      strokeWidth={2}
-                      dot={{ fill: 'hsl(var(--primary))', r: 3 }}
-                      activeDot={{ r: 5 }}
-                    />
+                    <XAxis dataKey="month" tick={{ fontSize: 10 }} tickMargin={5} axisLine={{ stroke: 'hsl(var(--border))' }} />
+                    <YAxis tick={{ fontSize: 10 }} tickMargin={5} width={40} axisLine={{ stroke: 'hsl(var(--border))' }} tickFormatter={(v) => `${currency.symbol}${v}`} />
+                    <Tooltip formatter={(value: number) => [`${currency.symbol}${value.toFixed(2)}`, 'Spent']} contentStyle={{ fontSize: 12 }} />
+                    <Line type="monotone" dataKey="amount" stroke="hsl(var(--primary))" strokeWidth={2} dot={{ fill: 'hsl(var(--primary))', r: 3 }} activeDot={{ r: 5 }} />
                   </LineChart>
                 </ResponsiveContainer>
               </div>
@@ -935,7 +928,6 @@ export default function Expenses() {
           </Card>
         )}
 
-        {/* Badge Display */}
         <BadgeDisplay />
         
         <PageSEOContent
