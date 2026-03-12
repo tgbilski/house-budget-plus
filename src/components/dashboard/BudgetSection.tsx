@@ -11,6 +11,9 @@ import { supabase } from '@/integrations/supabase/client';
 import BudgetCalculator from '@/components/BudgetCalculator';
 import { BudgetDonutChart } from '@/components/BudgetDonutChart';
 import { PremiumLimitBanner } from '@/components/PremiumLimitBanner';
+import { InsightsDashboard } from '@/components/InsightsDashboard';
+import { AISavingsTeaser } from '@/components/AISavingsTeaser';
+import { MortgagePreapprovalCard } from '@/components/MortgagePreapprovalCard';
 import { cn } from '@/lib/utils';
 
 const BudgetSection: React.FC = () => {
@@ -28,8 +31,11 @@ const BudgetSection: React.FC = () => {
 
   const totalIncome = Object.values(budgetData).reduce((sum, d) => sum + (d.income || 0), 0);
   const totalExpenses = Object.values(budgetData).reduce((sum, d) => sum + (d.expenses || 0), 0);
+  const totalHousingExpense = Object.values(budgetData).reduce((sum, d) => sum + (d.housingExpense || 0), 0);
   const netBalance = totalIncome - totalExpenses;
   const yearlyHouseholdIncome = totalIncome * 12;
+
+  const formatCurrency = (amount: number) => `${currency.symbol}${amount.toLocaleString()}`;
 
   useEffect(() => {
     const handler = (event: Event) => {
@@ -147,7 +153,7 @@ const BudgetSection: React.FC = () => {
 
         {expanded && (
           <div className="mt-3 space-y-4 animate-fade-in">
-            {['1', '2', '3', '4'].filter(id => visibleCalculators.has(id)).map((id, index) => (
+            {['1', '2', '3', '4'].filter(id => visibleCalculators.has(id)).map((id) => (
               <BudgetCalculator
                 key={id}
                 id={id}
@@ -172,6 +178,29 @@ const BudgetSection: React.FC = () => {
               ) : (
                 <PremiumLimitBanner featureName="calculators" freeLimit={1} />
               )
+            )}
+
+            {/* Mortgage Preapproval on mobile */}
+            {totalIncome > 0 && (
+              <MortgagePreapprovalCard
+                monthlyIncome={totalIncome}
+                housingExpense={totalHousingExpense}
+                totalExpenses={totalExpenses}
+              />
+            )}
+
+            {/* AI Savings Teaser on mobile */}
+            {!subscribed && totalExpenses > 100 && (
+              <AISavingsTeaser
+                totalExpenses={totalExpenses}
+                monthlyIncome={totalIncome}
+                formatCurrency={formatCurrency}
+              />
+            )}
+
+            {/* AI Insights on mobile (premium) */}
+            {subscribed && user && (
+              <InsightsDashboard />
             )}
           </div>
         )}
@@ -244,6 +273,7 @@ const BudgetSection: React.FC = () => {
           )}
         </div>
 
+        {/* Right column: income summary, donut chart, mortgage, AI insights */}
         <div className="lg:col-span-1 space-y-4">
           {user && totalIncome > 0 && (
             <div className="bg-card border-[3px] border-stroke rounded-xl p-4 shadow-cartoon">
@@ -256,8 +286,32 @@ const BudgetSection: React.FC = () => {
               </p>
             </div>
           )}
+
           {user && (
             <BudgetDonutChart totalIncome={totalIncome} totalExpenses={totalExpenses} currency={currency} />
+          )}
+
+          {/* Mortgage Preapproval Card */}
+          {totalIncome > 0 && (
+            <MortgagePreapprovalCard
+              monthlyIncome={totalIncome}
+              housingExpense={totalHousingExpense}
+              totalExpenses={totalExpenses}
+            />
+          )}
+
+          {/* AI Savings Teaser for non-subscribers */}
+          {!subscribed && totalExpenses > 100 && (
+            <AISavingsTeaser
+              totalExpenses={totalExpenses}
+              monthlyIncome={totalIncome}
+              formatCurrency={formatCurrency}
+            />
+          )}
+
+          {/* AI Insights Dashboard for premium users */}
+          {subscribed && user && (
+            <InsightsDashboard />
           )}
         </div>
       </div>
