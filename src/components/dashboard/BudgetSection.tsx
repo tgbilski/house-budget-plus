@@ -281,9 +281,7 @@ const BudgetSection: React.FC = () => {
               />
             )}
 
-            {subscribed && (
-              <InsightsDashboard />
-            )}
+            {/* AI Insights hidden for now - not working */}
           </div>
         </div>
       ) : (
