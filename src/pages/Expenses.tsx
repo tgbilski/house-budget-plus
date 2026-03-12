@@ -13,7 +13,7 @@ import { useSubscription } from '@/hooks/useSubscription';
 import { useExpenses } from '@/hooks/useExpenses';
 import { useCurrency } from '@/hooks/useCurrency';
 import { useHouseholdContext } from '@/providers/HouseholdProvider';
-import { useBadges } from '@/hooks/useBadges';
+
 import { usePageReady } from '@/hooks/usePageReady';
 import { Mic, MicOff, Calendar as CalendarIcon, Trash2, TrendingUp, Edit2, Plus, Download, Search, Filter, X } from 'lucide-react';
 import { format } from 'date-fns';
