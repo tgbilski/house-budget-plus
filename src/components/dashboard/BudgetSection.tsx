@@ -52,16 +52,6 @@ const BudgetSection: React.FC = () => {
     return () => window.removeEventListener('budgetUpdate', handler);
   }, []);
 
-  useEffect(() => {
-    const handler = (event: Event) => {
-      if (badgesLoading) return;
-      if (event instanceof CustomEvent) {
-        earnBadge(event.detail.badgeType);
-      }
-    };
-    window.addEventListener('earnBadge', handler);
-    return () => window.removeEventListener('earnBadge', handler);
-  }, [earnBadge, badgesLoading]);
 
   const { data: calculatorVisibility } = useQuery({
     queryKey: ['budget-calculators', user?.id, currentHousehold?.id],

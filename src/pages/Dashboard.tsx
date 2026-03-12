@@ -90,11 +90,6 @@ const Dashboard: React.FC = () => {
           )}
         </div>
 
-        {user && (
-          <div className="mt-8">
-            <BadgeDisplay />
-          </div>
-        )}
         
         <div className="mt-6">
           <FeedbackForm pageSource="dashboard" />
