@@ -3,7 +3,7 @@ import { Plus, ChevronDown, ChevronUp } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { useHousehold } from '@/hooks/useHousehold';
 import { useSubscription } from '@/hooks/useSubscription';
-import { useBadges } from '@/hooks/useBadges';
+
 import { useCurrency } from '@/hooks/useCurrency';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { useQuery } from '@tanstack/react-query';
