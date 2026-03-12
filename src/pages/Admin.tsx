@@ -40,13 +40,9 @@ interface Review {
 }
 
 export default function Admin() {
-  const [flaggedListings, setFlaggedListings] = useState<Listing[]>([]);
-  const [pendingListings, setPendingListings] = useState<Listing[]>([]);
   const [reviews, setReviews] = useState<Review[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [reviewsLoading, setReviewsLoading] = useState(true);
-  const [saving, setSaving] = useState(false);
-  const [publishingGiftPost, setPublishingGiftPost] = useState(false);
   const [metrics, setMetrics] = useState({
     users: 0,
     subscribers: 0,
