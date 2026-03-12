@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import { useHouseholdContext } from '@/providers/HouseholdProvider';
 import { useSavingsTracker } from '@/hooks/useSavingsTracker';
-import { useBadges } from '@/hooks/useBadges';
+
 import { usePageReady } from '@/hooks/usePageReady';
 import { isNativeApp } from '@/utils/capacitor';
 import { cn } from '@/lib/utils';
