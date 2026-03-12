@@ -45,12 +45,6 @@ const SavingsGoals: React.FC = () => {
   
   const progressPercentage = currentGoal?.target_amount ? Math.min((totalSaved / currentGoal.target_amount) * 100, 100) : 0;
 
-  // Award badge when user has savings data (after badges load)
-  useEffect(() => {
-    if (user && !badgesLoading && (goals.length > 0 || totalSaved > 0)) {
-      earnBadge('savings_tracker');
-    }
-  }, [user, badgesLoading, goals.length, totalSaved, earnBadge]);
 
   // Signal page is ready once data loads
   useEffect(() => {
