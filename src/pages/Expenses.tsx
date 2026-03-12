@@ -142,10 +142,7 @@ export default function Expenses() {
 
   // Filtered expenses for the log
   const filteredExpenses = useMemo(() => {
-    const dateExpenses = expenses.filter(expense =>
-      format(new Date(expense.date), 'yyyy-MM-dd') === format(selectedDate, 'yyyy-MM-dd')
-    );
-    return dateExpenses.filter(expense => {
+    return expenses.filter(expense => {
       const matchesSearch = !searchQuery || 
         (expense.merchant?.toLowerCase().includes(searchQuery.toLowerCase())) ||
         (expense.notes?.toLowerCase().includes(searchQuery.toLowerCase())) ||
@@ -153,7 +150,7 @@ export default function Expenses() {
       const matchesCategory = filterCategory === 'all' || expense.category === filterCategory;
       return matchesSearch && matchesCategory;
     });
-  }, [expenses, selectedDate, searchQuery, filterCategory]);
+  }, [expenses, searchQuery, filterCategory]);
 
   // CSV export
   const exportToCSV = () => {
@@ -815,7 +812,7 @@ export default function Expenses() {
         <Card className="mt-6 bg-card border-2 border-border/50 shadow-cartoon">
           <CardHeader>
             <div className="flex items-center justify-between gap-2 flex-wrap">
-              <CardTitle className="text-base">Expense Log - {format(selectedDate, 'MMMM d, yyyy')}</CardTitle>
+              <CardTitle className="text-base">Expense Log - {format(selectedDate, 'MMMM yyyy')}</CardTitle>
               <Button variant="ghost" size="sm" onClick={() => setShowFilters(!showFilters)} className="flex items-center gap-1">
                 <Filter className="h-4 w-4" />
                 <span className="text-xs">{showFilters ? 'Hide' : 'Filter'}</span>
@@ -857,7 +854,7 @@ export default function Expenses() {
               <p className="text-center text-muted-foreground py-8">
                 {searchQuery || filterCategory !== 'all'
                   ? 'No expenses match your filters.'
-                  : `No expenses logged for ${format(selectedDate, 'MMMM d, yyyy')}. Start recording!`}
+                  : `No expenses logged for ${format(selectedDate, 'MMMM yyyy')}. Start recording!`}
               </p>
             ) : (
               <div className="space-y-2 max-h-[500px] overflow-y-auto">
@@ -870,7 +867,7 @@ export default function Expenses() {
                       </div>
                       <p className="text-sm text-muted-foreground">
                         {expense.merchant && <span className="font-medium">{expense.merchant} • </span>}
-                        {format(new Date(expense.date), 'h:mm a')}
+                        {format(new Date(expense.date), 'MMM d')}
                       </p>
                       {expense.notes && <p className="text-xs text-muted-foreground mt-1 italic">"{expense.notes}"</p>}
                     </div>
