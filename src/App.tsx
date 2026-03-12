@@ -115,7 +115,16 @@ const AppRoutes = () => {
   );
 };
 
-const AppLayout = () => {
+const TOOL_ROUTES = ['/', '/budget', '/expenses', '/savings', '/settings', '/admin'];
+
+const FooterWrapper = () => {
+  const location = useLocation();
+  const isToolPage = TOOL_ROUTES.includes(location.pathname);
+  if (isToolPage) return null;
+  return <Footer />;
+};
+
+
   const { loading: authLoading } = useAuth();
   const { checkoutLoading } = useSubscription();
   const { isPageReady, resetPageReady } = usePageReady();
