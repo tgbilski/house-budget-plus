@@ -333,21 +333,36 @@ export default function Expenses() {
           keywords="expense tracker, voice input, budget tracking, AI expense logging"
         />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-          <div className="text-center mb-8">
-            <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-primary/20 to-primary-glow/20 rounded-2xl shadow-lg mb-4">
-              <Mic className="h-8 w-8 text-primary" />
+          {/* Hero Section */}
+          <div className="text-center mb-6 stagger-1 relative z-10">
+            <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-primary/20 to-primary-glow/20 rounded-3xl shadow-[var(--shadow-elegant)] mb-5 animate-bounce-in">
+              <Mic className="h-10 w-10 text-primary" />
             </div>
-            <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-2">
+            <h1 className="text-3xl md:text-5xl font-bold bg-gradient-to-r from-foreground via-primary to-teal bg-clip-text text-transparent mb-3">
               Voice Expense Tracker
             </h1>
-            <p className="text-muted-foreground max-w-xl mx-auto">
-              Speak your expenses — AI handles the rest. See trends, categories, and alerts automatically.
+            <p className="text-lg text-muted-foreground max-w-xl mx-auto mb-2">
+              Speak your expenses — AI handles the rest.
+            </p>
+            <p className="text-sm text-muted-foreground/70">
+              See trends, categories, and alerts automatically.
             </p>
           </div>
 
-          <div className={cn("grid gap-6", isMobile ? "grid-cols-1" : "grid-cols-2")}>
+          {/* Scroll indicator */}
+          <div className="flex justify-center mb-8 stagger-2">
+            <div className="flex flex-col items-center gap-1 text-muted-foreground/50">
+              <span className="text-xs uppercase tracking-widest">See what you're missing</span>
+              <svg className="w-5 h-5 animate-scroll-bounce" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+              </svg>
+            </div>
+          </div>
+
+          {/* Section: Interactive Previews */}
+          <div className={cn("grid gap-6 mb-8 stagger-3", isMobile ? "grid-cols-1" : "grid-cols-2")}>
             {/* Demo chart with blur overlay */}
-            <Card className="relative overflow-hidden border-2 border-border/50">
+            <Card className="relative overflow-hidden border-2 border-border/50 bg-card relative z-10">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-sm">
                   <TrendingUp className="h-4 w-4" /> Monthly Spending Trends
@@ -365,10 +380,9 @@ export default function Expenses() {
                   </ResponsiveContainer>
                 </div>
               </CardContent>
-              {/* Blur overlay */}
               <div className="absolute inset-0 bg-gradient-to-t from-background via-background/80 to-transparent flex items-end justify-center pb-6">
                 <Link to="/auth">
-                  <Button size="sm" className="bg-gradient-to-r from-primary to-primary-glow">
+                  <Button size="sm" className="bg-gradient-to-r from-primary to-primary-glow shadow-[var(--shadow-elegant)] hover:scale-105 transition-transform">
                     Sign Up to Track Your Spending
                   </Button>
                 </Link>
@@ -376,7 +390,7 @@ export default function Expenses() {
             </Card>
 
             {/* Demo category pie with blur */}
-            <Card className="relative overflow-hidden border-2 border-border/50">
+            <Card className="relative overflow-hidden border-2 border-border/50 bg-card relative z-10">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-sm">
                   <Filter className="h-4 w-4" /> Category Breakdown
@@ -399,39 +413,45 @@ export default function Expenses() {
               </CardContent>
               <div className="absolute inset-0 bg-gradient-to-t from-background via-background/80 to-transparent flex items-end justify-center pb-6">
                 <Link to="/auth">
-                  <Button size="sm" className="bg-gradient-to-r from-primary to-primary-glow">
+                  <Button size="sm" className="bg-gradient-to-r from-primary to-primary-glow shadow-[var(--shadow-elegant)] hover:scale-105 transition-transform">
                     Sign Up to See Your Categories
                   </Button>
                 </Link>
               </div>
             </Card>
-
-            {/* Sales pitch + signup form */}
-            <Card className={cn("border-2 border-primary/30 bg-gradient-to-br from-primary/5 to-primary-glow/5", isMobile ? "" : "col-span-2")}>
-              <CardContent className="p-6">
-                <div className={cn("gap-6", isMobile ? "space-y-6" : "grid grid-cols-2")}>
-                  <div className="space-y-4">
-                    <h2 className="text-xl font-bold text-foreground">Track every dollar, effortlessly</h2>
-                    <ul className="space-y-2 text-sm text-muted-foreground">
-                      <li className="flex items-center gap-2">
-                        <span className="text-success font-bold">✓</span> Voice-to-expense: just speak naturally
-                      </li>
-                      <li className="flex items-center gap-2">
-                        <span className="text-success font-bold">✓</span> AI auto-categorizes your spending
-                      </li>
-                      <li className="flex items-center gap-2">
-                        <span className="text-success font-bold">✓</span> Monthly trends & category charts
-                      </li>
-                      <li className="flex items-center gap-2">
-                        <span className="text-success font-bold">✓</span> Export your data to CSV anytime
-                      </li>
-                    </ul>
-                  </div>
-                  <InlineSignUpForm />
-                </div>
-              </CardContent>
-            </Card>
           </div>
+
+          {/* Decorative divider */}
+          <div className="flex items-center gap-4 my-10 stagger-4">
+            <div className="flex-1 h-px bg-gradient-to-r from-transparent via-primary/30 to-transparent" />
+            <span className="text-xs uppercase tracking-widest text-muted-foreground/60 font-medium">Ready to start?</span>
+            <div className="flex-1 h-px bg-gradient-to-r from-transparent via-teal/30 to-transparent" />
+          </div>
+
+          {/* Sales pitch + signup form */}
+          <Card className={cn("border-2 border-primary/30 bg-card shadow-[var(--shadow-elegant)] relative z-10 stagger-5", isMobile ? "" : "")}>
+            <CardContent className="p-6 md:p-8">
+              <div className={cn("gap-8", isMobile ? "space-y-6" : "grid grid-cols-2")}>
+                <div className="space-y-5">
+                  <h2 className="text-2xl font-bold text-foreground">Track every dollar, effortlessly</h2>
+                  <ul className="space-y-3 text-sm">
+                    {[
+                      ['🎤', 'Voice-to-expense: just speak naturally'],
+                      ['🤖', 'AI auto-categorizes your spending'],
+                      ['📊', 'Monthly trends & category charts'],
+                      ['📥', 'Export your data to CSV anytime'],
+                    ].map(([emoji, text]) => (
+                      <li key={text} className="flex items-center gap-3 text-muted-foreground">
+                        <span className="text-lg">{emoji}</span>
+                        <span>{text}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+                <InlineSignUpForm />
+              </div>
+            </CardContent>
+          </Card>
         </div>
       </div>
     );
