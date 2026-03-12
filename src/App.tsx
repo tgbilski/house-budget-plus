@@ -188,7 +188,7 @@ const AppLayout = () => {
       <main id="main-content" className="flex-1 relative z-10">
         <AppRoutes />
       </main>
-      <Footer />
+      <FooterWrapper />
     </div>
   );
 };
