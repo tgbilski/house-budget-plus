@@ -338,14 +338,11 @@ export default function Expenses() {
             <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-primary/20 to-primary-glow/20 rounded-3xl shadow-[var(--shadow-elegant)] mb-5 animate-bounce-in">
               <Mic className="h-10 w-10 text-primary" />
             </div>
-            <h1 className="text-3xl md:text-5xl font-bold bg-gradient-to-r from-foreground via-primary to-teal bg-clip-text text-transparent mb-3">
-              Voice Expense Tracker
+            <h1 className="text-4xl md:text-6xl font-bold bg-gradient-to-r from-foreground via-primary to-teal bg-clip-text text-transparent mb-4">
+              Welcome to House Budget Calculator
             </h1>
-            <p className="text-lg text-muted-foreground max-w-xl mx-auto mb-2">
-              Speak your expenses — AI handles the rest.
-            </p>
-            <p className="text-sm text-muted-foreground/70">
-              See trends, categories, and alerts automatically.
+            <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-2">
+              Track every dollar you spend with voice or manual entry — AI categorizes it, charts reveal your patterns, and smart alerts keep you on budget.
             </p>
           </div>
 
