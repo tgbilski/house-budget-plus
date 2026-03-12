@@ -94,9 +94,6 @@ const AppRoutes = () => {
           <Route path="/expenses" element={<SubscriptionGuard><Expenses /></SubscriptionGuard>} />
           <Route path="/budget" element={<SubscriptionGuard><MonthlyBudget /></SubscriptionGuard>} />
           <Route path="/savings" element={<SubscriptionGuard><SavingsGoals /></SubscriptionGuard>} />
-          <Route path="/vacation" element={<SubscriptionGuard><Vacation /></SubscriptionGuard>} />
-          <Route path="/gifts" element={<SubscriptionGuard><Gifts /></SubscriptionGuard>} />
-          <Route path="/ai-insights" element={<SubscriptionGuard><AIInsights /></SubscriptionGuard>} />
           <Route path="/settings" element={<SubscriptionGuard><UserSettings /></SubscriptionGuard>} />
           <Route path="*" element={<MobileLanding />} />
         </Routes>
