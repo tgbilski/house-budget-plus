@@ -1,8 +1,10 @@
 // src/pages/SavingsGoals.tsx
 import React, { useEffect, useState } from 'react';
 import { useAuth } from '@/hooks/useAuth';
+import { useSubscription } from '@/hooks/useSubscription';
 import { useHouseholdContext } from '@/providers/HouseholdProvider';
 import { useSavingsTracker } from '@/hooks/useSavingsTracker';
+import { useCurrency } from '@/hooks/useCurrency';
 
 import { usePageReady } from '@/hooks/usePageReady';
 import { isNativeApp } from '@/utils/capacitor';
@@ -10,6 +12,7 @@ import { cn } from '@/lib/utils';
 
 import { MonthlySavingsGrid } from '@/components/MonthlySavingsGrid';
 import { CumulativeSavingsChart } from '@/components/CumulativeSavingsChart';
+import { VoiceAddSection, ParsedEntry } from '@/components/VoiceAddSection';
 
 import { SEO } from '@/components/SEO';
 import { seoData } from '@/utils/seoData';
@@ -19,11 +22,16 @@ import { FAQ } from '@/components/FAQ';
 
 import { PageSEOContent, pageSEOData } from '@/components/PageSEOContent';
 import calculatorMascot from '@/assets/calculator-mascot.png';
+import { useToast } from '@/hooks/use-toast';
+import { useNavigate } from 'react-router-dom';
 
 const SavingsGoals: React.FC = () => {
   const { user } = useAuth();
+  const { subscribed } = useSubscription();
   const { currentHousehold } = useHouseholdContext();
-  // Local year state - independent from other pages, defaults to 2025
+  const { currency } = useCurrency();
+  const { toast } = useToast();
+  const navigate = useNavigate();
   const [selectedYear, setSelectedYear] = useState<number>(2025);
   
   const { setPageReady } = usePageReady();
@@ -34,7 +42,7 @@ const SavingsGoals: React.FC = () => {
     currentGoal,
     currentGoalId,
     monthlyData,
-    totalSaved, // Total across ALL years for this goal
+    totalSaved,
     isLoading,
     editingState,
     setEditingState,
@@ -45,8 +53,6 @@ const SavingsGoals: React.FC = () => {
   
   const progressPercentage = currentGoal?.target_amount ? Math.min((totalSaved / currentGoal.target_amount) * 100, 100) : 0;
 
-
-  // Signal page is ready once data loads
   useEffect(() => {
     if (!isLoading) {
       requestAnimationFrame(() => {
@@ -54,6 +60,19 @@ const SavingsGoals: React.FC = () => {
       });
     }
   }, [isLoading, setPageReady]);
+
+  // Voice save handlers
+  const handleVoiceSaveSavings = async (entry: ParsedEntry, transcription: string) => {
+    // Use current month if AI didn't detect a specific month
+    const monthIndex = entry.month ? entry.month - 1 : new Date().getMonth();
+    await updateMonthlyAmount(monthIndex, entry.amount);
+    toast({ title: 'Saved!', description: `${currency.symbol}${entry.amount} added to ${['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][monthIndex]} savings` });
+  };
+
+  const handleVoiceSaveExpense = async (entry: ParsedEntry, transcription: string) => {
+    toast({ title: 'Expense detected!', description: 'Redirecting to expenses page...' });
+    navigate('/expenses');
+  };
 
   if (isLoading) {
     return <div className="p-8 text-center">Loading your savings goals...</div>;
@@ -73,7 +92,7 @@ const SavingsGoals: React.FC = () => {
       />
 
       <div className="w-full px-4 sm:px-6 lg:px-8 pt-2">
-        {/* Header - matching Monthly Budget style */}
+        {/* Header */}
         <div className="flex items-start justify-between gap-4 mb-4">
           <div className="flex items-center gap-2 sm:gap-3 min-w-0">
             <img 
@@ -90,6 +109,15 @@ const SavingsGoals: React.FC = () => {
         <WarningBanner />
 
         <div className="space-y-8">
+          {/* Voice Add Section - Premium only */}
+          {subscribed && user && (
+            <VoiceAddSection
+              context="savings"
+              onSaveExpense={handleVoiceSaveExpense}
+              onSaveSavings={handleVoiceSaveSavings}
+            />
+          )}
+
           {/* Chart with integrated goal selection */}
           <CumulativeSavingsChart
             monthlyData={monthlyData}
@@ -112,7 +140,6 @@ const SavingsGoals: React.FC = () => {
 
           {!isMobileApp && (
             <>
-              
               <div className="animate-slide-up" style={{ animationDelay: '0.3s' }}>
                 <FAQ 
                   faqs={[
@@ -126,7 +153,7 @@ const SavingsGoals: React.FC = () => {
                     },
                     {
                       question: "How do I update my monthly savings?",
-                      answer: "Click on any month in the yearly grid and enter the amount you saved that month. The progress bar will automatically update to show your overall achievement toward the goal."
+                      answer: "Use the slider or type directly in the amount field for any month. You can also use the Voice Quick Add feature (premium) to speak your savings entries."
                     },
                     {
                       question: "What happens if I save more than my target?",

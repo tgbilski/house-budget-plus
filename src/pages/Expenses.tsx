@@ -15,7 +15,7 @@ import { useCurrency } from '@/hooks/useCurrency';
 import { useHouseholdContext } from '@/providers/HouseholdProvider';
 
 import { usePageReady } from '@/hooks/usePageReady';
-import { Mic, MicOff, Calendar as CalendarIcon, Trash2, TrendingUp, Edit2, Plus, Download, Search, Filter, X } from 'lucide-react';
+import { Mic, Calendar as CalendarIcon, Trash2, TrendingUp, Edit2, Plus, Download, Search, Filter, X } from 'lucide-react';
 import { format } from 'date-fns';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
