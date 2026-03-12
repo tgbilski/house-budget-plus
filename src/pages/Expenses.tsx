@@ -487,30 +487,42 @@ export default function Expenses() {
           keywords="expense tracker, voice input, budget tracking, AI expense logging"
         />
         <div className="max-w-7xl mx-auto p-4 md:p-6 lg:p-8">
-          <div className="text-center mb-12 animate-fade-in">
-            <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-primary/20 to-primary-glow/20 rounded-3xl shadow-lg mb-6">
+          {/* Hero with staggered entrance */}
+          <div className="text-center mb-8 stagger-1 relative z-10">
+            <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-primary/20 to-primary-glow/20 rounded-3xl shadow-[var(--shadow-elegant)] mb-5 animate-bounce-in">
               <Mic className="h-10 w-10 text-primary" />
             </div>
-            <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-foreground to-primary bg-clip-text text-transparent mb-4">
+            <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-foreground via-primary to-teal bg-clip-text text-transparent mb-4">
               Voice Expense Tracker
             </h1>
-            <p className="text-xl text-muted-foreground max-w-2xl mx-auto mb-8">
+            <p className="text-xl text-muted-foreground max-w-2xl mx-auto mb-3">
               Just speak your expenses. Our AI handles the rest.
             </p>
             <Link to="/settings">
-              <Button size="lg" className="bg-gradient-to-r from-primary to-primary-glow hover:scale-105 transition-transform">
+              <Button size="lg" className="bg-gradient-to-r from-primary to-primary-glow hover:scale-105 transition-transform shadow-[var(--shadow-elegant)]">
                 Upgrade to Premium
               </Button>
             </Link>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
-            <Card className="bg-card border-2 border-border/50 shadow-cartoon">
+          {/* Scroll indicator */}
+          <div className="flex justify-center mb-8 stagger-2">
+            <div className="flex flex-col items-center gap-1 text-muted-foreground/50">
+              <span className="text-xs uppercase tracking-widest">Discover premium features</span>
+              <svg className="w-5 h-5 animate-scroll-bounce" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+              </svg>
+            </div>
+          </div>
+
+          {/* Feature cards */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8 stagger-3">
+            <Card className="bg-card border-2 border-border/50 shadow-cartoon relative z-10 hover-cartoon">
               <CardHeader><CardTitle className="flex items-center gap-2"><Mic className="h-5 w-5" /> Effortless Voice Input</CardTitle></CardHeader>
               <CardContent>
                 <div className="flex justify-center mb-4">
-                  <div className="w-32 h-32 rounded-full bg-gradient-to-br from-primary/20 to-primary-glow/20 flex items-center justify-center">
-                    <Mic className="h-16 w-16 text-primary" />
+                  <div className="w-28 h-28 rounded-full bg-gradient-to-br from-primary/20 to-primary-glow/20 flex items-center justify-center animate-pulse-subtle">
+                    <Mic className="h-14 w-14 text-primary" />
                   </div>
                 </div>
                 <p className="text-muted-foreground text-center">"Spent $45.99 at Whole Foods for groceries"</p>
@@ -520,35 +532,46 @@ export default function Expenses() {
                 </div>
               </CardContent>
             </Card>
-            <Card className="bg-card border-2 border-border/50 shadow-cartoon">
+            <Card className="bg-card border-2 border-border/50 shadow-cartoon relative z-10 hover-cartoon">
               <CardHeader><CardTitle className="flex items-center gap-2"><TrendingUp className="h-5 w-5" /> Visual Analytics</CardTitle></CardHeader>
               <CardContent>
-                <div className="h-[200px] flex items-center justify-center bg-muted/20 rounded-lg">
-                  <div className="text-center">
-                    <TrendingUp className="h-12 w-12 text-primary mx-auto mb-2" />
-                    <p className="text-sm text-muted-foreground">Daily spending trends</p>
-                    <p className="text-xs text-muted-foreground">Category breakdowns & CSV export</p>
-                  </div>
+                <div className="h-[200px]">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <BarChart data={DEMO_CHART_DATA}>
+                      <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+                      <XAxis dataKey="month" tick={{ fontSize: 10 }} />
+                      <YAxis tick={{ fontSize: 10 }} tickFormatter={(v) => `$${v}`} width={45} />
+                      <Bar dataKey="amount" fill="hsl(var(--teal))" radius={[4, 4, 0, 0]} />
+                    </BarChart>
+                  </ResponsiveContainer>
                 </div>
               </CardContent>
             </Card>
           </div>
 
-          <Card className="bg-card border-2 border-primary/20 shadow-cartoon">
+          {/* Decorative divider */}
+          <div className="flex items-center gap-4 my-10 stagger-4">
+            <div className="flex-1 h-px bg-gradient-to-r from-transparent via-teal/30 to-transparent" />
+            <span className="text-xs uppercase tracking-widest text-muted-foreground/60 font-medium">Everything included</span>
+            <div className="flex-1 h-px bg-gradient-to-r from-transparent via-primary/30 to-transparent" />
+          </div>
+
+          {/* Benefits card */}
+          <Card className="bg-card border-2 border-primary/20 shadow-cartoon relative z-10 stagger-5">
             <CardHeader><CardTitle>What You'll Get</CardTitle></CardHeader>
             <CardContent>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {[
-                  ['Voice-to-Expense Magic', 'Speak naturally, we\'ll extract amount, merchant, and category'],
-                  ['Manual Entry Too', 'Prefer typing? Quick form to add expenses manually'],
-                  ['Smart Categorization', 'AI automatically categorizes your spending'],
-                  ['Search & Filter', 'Find any expense by merchant, category, or notes'],
-                  ['Visual Analytics', 'Charts and graphs show spending patterns'],
-                  ['CSV Export', 'Download your expense data anytime'],
-                ].map(([title, desc]) => (
+                  ['🎤', 'Voice-to-Expense Magic', 'Speak naturally, we\'ll extract amount, merchant, and category'],
+                  ['⌨️', 'Manual Entry Too', 'Prefer typing? Quick form to add expenses manually'],
+                  ['🤖', 'Smart Categorization', 'AI automatically categorizes your spending'],
+                  ['🔍', 'Search & Filter', 'Find any expense by merchant, category, or notes'],
+                  ['📊', 'Visual Analytics', 'Charts and graphs show spending patterns'],
+                  ['📥', 'CSV Export', 'Download your expense data anytime'],
+                ].map(([emoji, title, desc]) => (
                   <div key={title} className="flex items-start gap-3">
-                    <div className="w-8 h-8 rounded-full bg-success/20 flex items-center justify-center flex-shrink-0">
-                      <span className="text-success font-bold">✓</span>
+                    <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary/10 to-teal/10 flex items-center justify-center flex-shrink-0 text-lg">
+                      {emoji}
                     </div>
                     <div>
                       <h3 className="font-semibold mb-1">{title}</h3>
@@ -559,7 +582,7 @@ export default function Expenses() {
               </div>
               <div className="mt-8 text-center">
                 <Link to="/settings">
-                  <Button size="lg" className="bg-gradient-to-r from-primary to-primary-glow hover:scale-105 transition-transform">
+                  <Button size="lg" className="bg-gradient-to-r from-primary to-primary-glow hover:scale-105 transition-transform shadow-[var(--shadow-elegant)]">
                     Get Started
                   </Button>
                 </Link>
