@@ -327,12 +327,12 @@ const MonthlyBudget: React.FC = () => {
                         <span className="text-foreground"><strong>Charts that actually slap</strong> — see where your money goes at a glance</span>
                       </li>
                       <li className="flex items-start gap-2">
-                        <span className="text-lg leading-none">🤖</span>
-                        <span className="text-foreground"><strong>AI money tips</strong> — like a financial advisor, but free and less judgy</span>
+                        <span className="text-lg leading-none">🎯</span>
+                        <span className="text-foreground"><strong>Savings goals tracker</strong> — watch your progress grow month by month</span>
                       </li>
                       <li className="flex items-start gap-2">
-                        <span className="text-lg leading-none">🎁</span>
-                        <span className="text-foreground"><strong>Gift lists, vacation planner & more</strong> — we're basically a whole adulting toolkit</span>
+                        <span className="text-lg leading-none">🧾</span>
+                        <span className="text-foreground"><strong>Expense tracking</strong> — log purchases and see spending patterns</span>
                       </li>
                     </ul>
                     <p className="text-xs text-muted-foreground italic">
