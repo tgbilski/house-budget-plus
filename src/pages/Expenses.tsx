@@ -59,6 +59,7 @@ export default function Expenses() {
   const { currency } = useCurrency();
   const { currentHousehold } = useHouseholdContext();
   const { toast } = useToast();
+  const navigate = useNavigate();
   
   const { setPageReady } = usePageReady();
   const [selectedDate, setSelectedDate] = useState(new Date());
