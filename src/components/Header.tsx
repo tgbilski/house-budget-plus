@@ -12,19 +12,19 @@ const Header: React.FC = () => {
   const isMobile = useIsMobile();
 
   return (
-    <header className="w-full bg-card border-b-[4px] border-stroke sticky top-0 z-50 shadow-sm">
+    <header className="w-full bg-primary border-b-[4px] border-stroke sticky top-0 z-50 shadow-sm">
       <div className="w-full px-4 md:px-6 py-1.5 md:py-2">
         <div className="flex items-center justify-between min-h-[40px] md:min-h-[48px]">
           {/* Brand with Logo */}
           <div className="flex items-center gap-3">
             {isMobile && (
-              <SidebarTrigger className="h-8 w-8" />
+              <SidebarTrigger className="h-8 w-8 text-primary-foreground" />
             )}
             <Link
               to="/"
               className="flex items-center touch-manipulation transition-opacity [@media(hover:hover)]:hover:opacity-80"
             >
-              <h1 className="hidden sm:block text-lg md:text-xl font-semibold text-foreground">
+              <h1 className="hidden sm:block text-lg md:text-xl font-semibold text-primary-foreground">
                 House Budget Calculator
               </h1>
             </Link>
@@ -35,7 +35,7 @@ const Header: React.FC = () => {
             {user ? (
               <ProfileDropdown />
             ) : (
-              <Button asChild size="sm">
+              <Button asChild size="sm" variant="secondary">
                 <Link to="/login" className="flex items-center space-x-2">
                   <User className="h-4 w-4" />
                   <span className="hidden sm:inline">Sign In</span>
