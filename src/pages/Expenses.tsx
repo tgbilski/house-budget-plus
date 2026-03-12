@@ -27,7 +27,6 @@ import { AlertCircle } from 'lucide-react';
 import { isNativeApp } from '@/utils/capacitor';
 import calculatorMascot from '@/assets/calculator-mascot.png';
 import { BadgeDisplay } from '@/components/BadgeDisplay';
-import { PageSEOContent, pageSEOData } from '@/components/PageSEOContent';
 import InlineSignUpForm from '@/components/InlineSignUpForm';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { sanitizeText } from '@/utils/sanitize';
