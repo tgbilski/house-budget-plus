@@ -34,26 +34,16 @@ const MobileLanding = lazy(() => import("@/pages/MobileLanding"));
 const Expenses = lazy(() => import("@/pages/Expenses"));
 const MonthlyBudget = lazy(() => import("@/pages/MonthlyBudget"));
 const SavingsGoals = lazy(() => import("@/pages/SavingsGoals"));
-const Vacation = lazy(() => import("@/pages/Vacation"));
 const Auth = lazy(() => import("@/pages/Auth"));
 const NotFound = lazy(() => import("@/pages/NotFound"));
 const SubscriptionSuccess = lazy(() => import("@/pages/SubscriptionSuccess"));
 const UserSettings = lazy(() => import("@/pages/UserSettings"));
-const Engagement = lazy(() => import("@/pages/Engagement"));
-const AIInsights = lazy(() => import("@/pages/AIInsights"));
-const Blog = lazy(() => import("@/pages/Blog"));
-const BlogPost = lazy(() => import("@/pages/BlogPost"));
 const Admin = lazy(() => import("@/pages/Admin"));
-const BlogImageUpdater = lazy(() => import("@/pages/BlogImageUpdater"));
-const UpdateSitemap = lazy(() => import("@/pages/UpdateSitemap"));
-const GenerateBlogImages = lazy(() => import("@/pages/GenerateBlogImages"));
-const Gifts = lazy(() => import("@/pages/Gifts"));
 const AboutUs = lazy(() => import("@/pages/AboutUs"));
 const ContactUs = lazy(() => import("@/pages/ContactUs"));
 const PrivacyPolicy = lazy(() => import("@/pages/PrivacyPolicy"));
 const TermsAndConditions = lazy(() => import("@/pages/TermsAndConditions"));
 const Disclaimer = lazy(() => import("@/pages/Disclaimer"));
-const HouseComparison = lazy(() => import("@/pages/HouseComparison"));
 const SubscriptionGuard = lazy(() => import("@/components/SubscriptionGuard").then(m => ({ default: m.SubscriptionGuard })));
 
 interface Currency {
@@ -104,9 +94,6 @@ const AppRoutes = () => {
           <Route path="/expenses" element={<SubscriptionGuard><Expenses /></SubscriptionGuard>} />
           <Route path="/budget" element={<SubscriptionGuard><MonthlyBudget /></SubscriptionGuard>} />
           <Route path="/savings" element={<SubscriptionGuard><SavingsGoals /></SubscriptionGuard>} />
-          <Route path="/vacation" element={<SubscriptionGuard><Vacation /></SubscriptionGuard>} />
-          <Route path="/gifts" element={<SubscriptionGuard><Gifts /></SubscriptionGuard>} />
-          <Route path="/ai-insights" element={<SubscriptionGuard><AIInsights /></SubscriptionGuard>} />
           <Route path="/settings" element={<SubscriptionGuard><UserSettings /></SubscriptionGuard>} />
           <Route path="*" element={<MobileLanding />} />
         </Routes>
@@ -123,28 +110,17 @@ const AppRoutes = () => {
         <Route path="/budget" element={<MonthlyBudget />} />
         <Route path="/expenses" element={<Expenses />} />
         <Route path="/savings" element={<SavingsGoals />} />
-        <Route path="/vacation" element={<Vacation />} />
-        <Route path="/engagement" element={<Engagement />} />
         <Route path="/login" element={<Auth />} />
         <Route path="/signup" element={<Auth />} />
         <Route path="/auth" element={<Auth />} />
         <Route path="/settings" element={<UserSettings />} />
-        <Route path="/gifts" element={<Gifts />} />
-        {/* Marketplace removed */}
-        <Route path="/blog" element={<Blog />} />
-        <Route path="/blog/:slug" element={<BlogPost />} />
         <Route path="/admin" element={<Admin />} />
-          <Route path="/admin/blog-images" element={<BlogImageUpdater />} />
-          <Route path="/admin/update-sitemap" element={<UpdateSitemap />} />
-          <Route path="/admin/generate-blog-images" element={<GenerateBlogImages />} />
-        <Route path="/ai-insights" element={<AIInsights />} />
         <Route path="/subscription-success" element={<SubscriptionSuccess />} />
         <Route path="/about" element={<AboutUs />} />
         <Route path="/contact" element={<ContactUs />} />
         <Route path="/privacy" element={<PrivacyPolicy />} />
         <Route path="/terms" element={<TermsAndConditions />} />
         <Route path="/disclaimer" element={<Disclaimer />} />
-        <Route path="/house-comparison" element={<HouseComparison />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </Suspense>

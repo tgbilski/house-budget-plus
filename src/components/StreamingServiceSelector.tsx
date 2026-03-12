@@ -1,74 +1,73 @@
-import React, { useState } from 'react';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import React from 'react';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { useCurrency } from '@/hooks/useCurrency';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
-interface StreamingService {
-  id: string;
-  name: string;
-}
+const STREAMING_SERVICES = [
+  { id: 'netflix', name: 'Netflix', price: 15.49 },
+  { id: 'hulu', name: 'Hulu', price: 7.99 },
+  { id: 'disney', name: 'Disney+', price: 7.99 },
+  { id: 'hbo', name: 'Max', price: 9.99 },
+  { id: 'spotify', name: 'Spotify', price: 10.99 },
+  { id: 'apple_music', name: 'Apple Music', price: 10.99 },
+  { id: 'youtube', name: 'YouTube Premium', price: 13.99 },
+  { id: 'amazon', name: 'Prime Video', price: 8.99 },
+  { id: 'peacock', name: 'Peacock', price: 5.99 },
+  { id: 'paramount', name: 'Paramount+', price: 5.99 },
+  { id: 'custom', name: 'Other', price: 0 },
+];
 
 interface StreamingServiceSelectorProps {
   value: number;
   onChange: (amount: number) => void;
   label: string;
   expenseId: string;
-  selectedService?: string;
-  onServiceChange?: (serviceId: string) => void;
+  selectedService: string;
+  onServiceChange: (serviceId: string) => void;
   placeholder?: string;
 }
 
-const streamingServices: StreamingService[] = [
-  { id: 'netflix', name: 'Netflix ($15.00)' },
-  { id: 'disney-plus', name: 'Disney+ ($15.00)' },
-  { id: 'hulu', name: 'Hulu ($15.00)' },
-  { id: 'amazon-prime', name: 'Amazon Prime Video ($15.00)' },
-  { id: 'max', name: 'Max (HBO Max) ($15.00)' },
-  { id: 'spotify', name: 'Spotify ($15.00)' },
-  { id: 'apple-music', name: 'Apple Music ($15.00)' },
-  { id: 'paramount-plus', name: 'Paramount+ ($15.00)' },
-  { id: 'peacock', name: 'Peacock ($15.00)' },
-  { id: 'custom', name: 'Select Subscription' }
-];
-
-export function StreamingServiceSelector({ 
-  value, 
-  onChange, 
-  label, 
-  expenseId, 
-  selectedService = 'custom', 
+export const StreamingServiceSelector: React.FC<StreamingServiceSelectorProps> = ({
+  value,
+  onChange,
+  label,
+  selectedService,
   onServiceChange,
-  placeholder = "subscription option"
-}: StreamingServiceSelectorProps) {
-  const { currency } = useCurrency();
-  
+}) => {
   const handleServiceSelect = (serviceId: string) => {
-    console.log(`[${expenseId}] Service selected:`, serviceId);
-    onServiceChange?.(serviceId);
-    // Set $15 for subscription services, $0 for custom/select subscription
-    const amount = serviceId === 'custom' ? 0 : 15;
-    onChange(amount);
+    onServiceChange(serviceId);
+    const service = STREAMING_SERVICES.find(s => s.id === serviceId);
+    if (service && service.price > 0) {
+      onChange(service.price);
+    }
   };
 
   return (
-    <div className="space-y-1">
-      <Select value={selectedService} onValueChange={handleServiceSelect}>
-        <SelectTrigger className="h-6 text-xs">
-          <SelectValue placeholder={placeholder} />
-        </SelectTrigger>
-        <SelectContent className="max-h-60 bg-popover border shadow-lg z-50">
-          {streamingServices.map((service) => (
-            <SelectItem 
-              key={service.id} 
-              value={service.id}
-              className="text-xs"
-            >
-              {service.name}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
+    <div className="space-y-1.5">
+      <Label className="text-xs font-medium text-muted-foreground">{label}</Label>
+      <div className="flex gap-2">
+        <Select value={selectedService} onValueChange={handleServiceSelect}>
+          <SelectTrigger className="h-9 text-xs flex-1">
+            <SelectValue placeholder="Pick a service" />
+          </SelectTrigger>
+          <SelectContent>
+            {STREAMING_SERVICES.map((service) => (
+              <SelectItem key={service.id} value={service.id} className="text-xs">
+                {service.name}{service.price > 0 ? ` ($${service.price})` : ''}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+        <Input
+          type="number"
+          value={value || ''}
+          onChange={(e) => onChange(parseFloat(e.target.value) || 0)}
+          className="h-9 w-24 text-xs"
+          placeholder="$0.00"
+          min={0}
+          step={0.01}
+        />
+      </div>
     </div>
   );
-}
+};

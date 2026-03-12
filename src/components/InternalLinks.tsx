@@ -2,14 +2,13 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Calculator, Calendar, MapPin, Gift, Brain } from 'lucide-react';
+import { Calculator, Target, Receipt } from 'lucide-react';
 
 interface RelatedTool {
   title: string;
   description: string;
   href: string;
   icon: React.ComponentType<any>;
-  category: string;
 }
 
 const allTools: RelatedTool[] = [
@@ -18,36 +17,19 @@ const allTools: RelatedTool[] = [
     description: "Track your monthly income and expenses with our comprehensive budget planner",
     href: "/budget",
     icon: Calculator,
-    category: "planning"
+  },
+  {
+    title: "Expense Tracker",
+    description: "Log purchases and see monthly spending breakdowns by category",
+    href: "/expenses",
+    icon: Receipt,
   },
   {
     title: "Savings Goals Tracker",
     description: "Set financial goals and track your progress with visual insights",
     href: "/savings",
-    icon: Calendar,
-    category: "planning"
+    icon: Target,
   },
-  {
-    title: "Vacation Budget Planner",
-    description: "Plan and compare vacation options within your travel budget",
-    href: "/vacation",
-    icon: MapPin,
-    category: "planning"
-  },
-  {
-    title: "Gift Lists & Budget",
-    description: "Organize gifts for every occasion and stay within budget",
-    href: "/gifts",
-    icon: Gift,
-    category: "planning"
-  },
-  {
-    title: "AI Financial Insights",
-    description: "Get personalized financial advice powered by artificial intelligence",
-    href: "/ai-insights",
-    icon: Brain,
-    category: "planning"
-  }
 ];
 
 interface InternalLinksProps {
@@ -58,12 +40,10 @@ interface InternalLinksProps {
 
 export const InternalLinks: React.FC<InternalLinksProps> = ({ 
   currentPage, 
-  category,
   limit = 3 
 }) => {
   const filteredTools = allTools
     .filter(tool => tool.href !== currentPage)
-    .filter(tool => !category || tool.category === category)
     .slice(0, limit);
 
   if (filteredTools.length === 0) return null;

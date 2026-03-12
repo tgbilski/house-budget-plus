@@ -1,12 +1,7 @@
 import { 
   PiggyBank, 
-  Plane, 
-  Gift, 
-  Brain,
-  BookOpen,
   Shield,
   Receipt,
-  Home
 } from "lucide-react";
 import { NavLink, useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
@@ -47,13 +42,8 @@ const HouseDollarIcon = ({ className }: { className?: string }) => (
 
 const navigationItems = [
   { title: "BUDGET", url: "/budget", icon: HouseDollarIcon },
-  { title: "HOUSES", url: "/house-comparison", icon: Home },
   { title: "EXPENSES", url: "/expenses", icon: Receipt },
   { title: "SAVINGS", url: "/savings", icon: PiggyBank },
-  { title: "VACATIONS", url: "/vacation", icon: Plane },
-  { title: "GIFTS", url: "/gifts", icon: Gift },
-  { title: "BLOG", url: "/blog", icon: BookOpen },
-  { title: "AI INSIGHT", url: "/ai-insights", icon: Brain },
 ];
 
 export function AppSidebar() {

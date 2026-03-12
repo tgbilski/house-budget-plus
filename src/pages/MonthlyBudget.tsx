@@ -21,9 +21,7 @@ import { FAQ } from '@/components/FAQ';
 import { BudgetDonutChart } from '@/components/BudgetDonutChart';
 import { PageSEOContent, pageSEOData } from '@/components/PageSEOContent';
 import { WarningBanner } from '@/components/WarningBanner';
-import { MortgagePreapprovalQuestion } from '@/components/MortgagePreapprovalQuestion';
 import { ToolsGrid } from '@/components/ToolsGrid';
-import { HomeBuyingToolkit } from '@/components/home-buying';
 import InlineSignUpForm from '@/components/InlineSignUpForm';
 import FeedbackForm from '@/components/FeedbackForm';
 import { PremiumLimitBanner } from '@/components/PremiumLimitBanner';
@@ -304,11 +302,6 @@ const MonthlyBudget: React.FC = () => {
                       currency={currency}
                     />
                   )}
-                  <MortgagePreapprovalQuestion
-                    monthlyIncome={totalIncome}
-                    monthlyExpenses={totalExpenses}
-                    currency={currency}
-                  />
                 </>
               ) : (
                 <div className="space-y-4">
@@ -334,12 +327,12 @@ const MonthlyBudget: React.FC = () => {
                         <span className="text-foreground"><strong>Charts that actually slap</strong> — see where your money goes at a glance</span>
                       </li>
                       <li className="flex items-start gap-2">
-                        <span className="text-lg leading-none">🤖</span>
-                        <span className="text-foreground"><strong>AI money tips</strong> — like a financial advisor, but free and less judgy</span>
+                        <span className="text-lg leading-none">🎯</span>
+                        <span className="text-foreground"><strong>Savings goals tracker</strong> — watch your progress grow month by month</span>
                       </li>
                       <li className="flex items-start gap-2">
-                        <span className="text-lg leading-none">🎁</span>
-                        <span className="text-foreground"><strong>Gift lists, vacation planner & more</strong> — we're basically a whole adulting toolkit</span>
+                        <span className="text-lg leading-none">🧾</span>
+                        <span className="text-foreground"><strong>Expense tracking</strong> — log purchases and see spending patterns</span>
                       </li>
                     </ul>
                     <p className="text-xs text-muted-foreground italic">
@@ -353,14 +346,6 @@ const MonthlyBudget: React.FC = () => {
           </div>
         )}
 
-        <div className="mt-8">
-          <HomeBuyingToolkit
-            monthlyIncome={totalIncome}
-            monthlyExpenses={totalExpenses}
-            housingExpense={totalHousingExpense}
-            currencySymbol={currency.symbol}
-          />
-        </div>
 
         <div className="mt-8">
           <FeedbackForm pageSource="budget" />

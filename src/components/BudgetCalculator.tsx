@@ -14,7 +14,6 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 
 import { supabase } from '@/integrations/supabase/client';
 import { StreamingServiceSelector } from './StreamingServiceSelector';
-import { MortgagePreapprovalQuestion } from './MortgagePreapprovalQuestion';
 
 interface ExpenseItem {
   id: string;
@@ -759,17 +758,6 @@ const BudgetCalculator: React.FC<BudgetCalculatorProps> = ({
               </div>
             )}
 
-            {/* Step 5: Mortgage Preapproval */}
-            {mobileStep === 5 && (
-              <div className="space-y-3">
-                <h3 className="text-sm font-bold text-foreground">Mortgage Preapproval</h3>
-                <MortgagePreapprovalQuestion
-                  monthlyIncome={monthlyIncome}
-                  monthlyExpenses={totalExpenses}
-                  currency={currency}
-                />
-              </div>
-            )}
 
             {/* Navigation buttons */}
             <div className="flex gap-2 pt-2">
@@ -784,7 +772,7 @@ const BudgetCalculator: React.FC<BudgetCalculatorProps> = ({
                   Back
                 </Button>
               )}
-              {mobileStep < 5 && (
+              {mobileStep < 4 && (
                 <Button
                   size="sm"
                   onClick={() => setMobileStep(prev => prev + 1)}
