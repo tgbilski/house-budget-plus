@@ -34,26 +34,16 @@ const MobileLanding = lazy(() => import("@/pages/MobileLanding"));
 const Expenses = lazy(() => import("@/pages/Expenses"));
 const MonthlyBudget = lazy(() => import("@/pages/MonthlyBudget"));
 const SavingsGoals = lazy(() => import("@/pages/SavingsGoals"));
-const Vacation = lazy(() => import("@/pages/Vacation"));
 const Auth = lazy(() => import("@/pages/Auth"));
 const NotFound = lazy(() => import("@/pages/NotFound"));
 const SubscriptionSuccess = lazy(() => import("@/pages/SubscriptionSuccess"));
 const UserSettings = lazy(() => import("@/pages/UserSettings"));
-const Engagement = lazy(() => import("@/pages/Engagement"));
-const AIInsights = lazy(() => import("@/pages/AIInsights"));
-const Blog = lazy(() => import("@/pages/Blog"));
-const BlogPost = lazy(() => import("@/pages/BlogPost"));
 const Admin = lazy(() => import("@/pages/Admin"));
-const BlogImageUpdater = lazy(() => import("@/pages/BlogImageUpdater"));
-const UpdateSitemap = lazy(() => import("@/pages/UpdateSitemap"));
-const GenerateBlogImages = lazy(() => import("@/pages/GenerateBlogImages"));
-const Gifts = lazy(() => import("@/pages/Gifts"));
 const AboutUs = lazy(() => import("@/pages/AboutUs"));
 const ContactUs = lazy(() => import("@/pages/ContactUs"));
 const PrivacyPolicy = lazy(() => import("@/pages/PrivacyPolicy"));
 const TermsAndConditions = lazy(() => import("@/pages/TermsAndConditions"));
 const Disclaimer = lazy(() => import("@/pages/Disclaimer"));
-const HouseComparison = lazy(() => import("@/pages/HouseComparison"));
 const SubscriptionGuard = lazy(() => import("@/components/SubscriptionGuard").then(m => ({ default: m.SubscriptionGuard })));
 
 interface Currency {
