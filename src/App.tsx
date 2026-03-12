@@ -122,6 +122,7 @@ const FooterWrapper = () => {
   const isToolPage = TOOL_ROUTES.includes(location.pathname);
   if (isToolPage) return null;
   return <Footer />;
+};
 
 const AppLayout = () => {
   const { loading: authLoading } = useAuth();
