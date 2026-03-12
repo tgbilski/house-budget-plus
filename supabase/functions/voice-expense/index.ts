@@ -3,7 +3,7 @@ import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version',
 };
 
 // Process base64 in chunks to prevent memory issues
@@ -38,7 +38,7 @@ function processBase64Chunks(base64String: string, chunkSize = 32768) {
 
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
-    return new Response('ok', { headers: corsHeaders });
+    return new Response(null, { headers: corsHeaders });
   }
 
   try {
@@ -75,7 +75,7 @@ serve(async (req) => {
     const transcribedText = transcription.text;
     console.log('Transcribed text:', transcribedText);
 
-    // Step 2: Parse expense using Lovable AI
+    // Step 2: Parse with AI - determine if expense or savings
     const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
     if (!LOVABLE_API_KEY) {
       throw new Error('LOVABLE_API_KEY is not configured');
@@ -88,25 +88,31 @@ serve(async (req) => {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'google/gemini-2.5-flash',
+        model: 'google/gemini-3-flash-preview',
         messages: [
           {
             role: 'system',
-            content: `You are an expense parser. Extract structured data from natural language expense descriptions.
-Extract: amount (as a number), merchant (or "Unknown" if not mentioned), category (one of: Groceries, Dining Out, Transportation, Entertainment, Shopping, Bills, Healthcare, Other).
+            content: `You are a financial entry parser. Determine if the user is describing an EXPENSE or a SAVINGS deposit, then extract structured data.
 
-Respond ONLY with valid JSON in this exact format:
-{
-  "amount": 42.50,
-  "merchant": "Whole Foods",
-  "category": "Groceries"
-}
+EXPENSE indicators: "spent", "bought", "paid", "cost", "grabbed", "got", purchasing language
+SAVINGS indicators: "saved", "put away", "deposited", "set aside", "added to savings", "tucked away"
+
+For EXPENSES extract: amount, merchant (or "Unknown"), category (Groceries, Dining Out, Transportation, Entertainment, Shopping, Bills, Healthcare, Other).
+For SAVINGS extract: amount, month (1-12 or null if not mentioned), notes (brief description).
+
+Respond ONLY with valid JSON:
+
+For expense:
+{"type": "expense", "amount": 42.50, "merchant": "Whole Foods", "category": "Groceries"}
+
+For savings:
+{"type": "savings", "amount": 200, "month": 3, "notes": "bonus from work"}
 
 Examples:
-"Spent $42 on groceries at Whole Foods" → {"amount": 42, "merchant": "Whole Foods", "category": "Groceries"}
-"Grabbed lunch for $18" → {"amount": 18, "merchant": "Unknown", "category": "Dining Out"}
-"Coffee this morning was like 6 bucks" → {"amount": 6, "merchant": "Unknown", "category": "Dining Out"}
-"Got gas around $50" → {"amount": 50, "merchant": "Unknown", "category": "Transportation"}`
+"Spent $42 on groceries at Whole Foods" → {"type": "expense", "amount": 42, "merchant": "Whole Foods", "category": "Groceries"}
+"Put away $200 into savings this month" → {"type": "savings", "amount": 200, "month": null, "notes": "monthly savings"}
+"Saved $500 from my tax refund" → {"type": "savings", "amount": 500, "month": null, "notes": "tax refund"}
+"Coffee this morning was like 6 bucks" → {"type": "expense", "amount": 6, "merchant": "Unknown", "category": "Dining Out"}`
           },
           {
             role: 'user',
@@ -118,7 +124,21 @@ Examples:
 
     if (!parseResponse.ok) {
       const errorText = await parseResponse.text();
-      console.error('Lovable AI error:', errorText);
+      console.error('AI error:', errorText);
+      
+      if (parseResponse.status === 429) {
+        return new Response(JSON.stringify({ error: 'Rate limit exceeded. Please try again in a moment.' }), {
+          status: 429,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      }
+      if (parseResponse.status === 402) {
+        return new Response(JSON.stringify({ error: 'AI credits exhausted. Please try again later.' }), {
+          status: 402,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      }
+      
       throw new Error(`AI parsing error: ${errorText}`);
     }
 
@@ -128,14 +148,14 @@ Examples:
     // Strip markdown code blocks if present
     aiContent = aiContent.replace(/```json\s*/g, '').replace(/```\s*/g, '').trim();
     
-    const parsedExpense = JSON.parse(aiContent);
+    const parsedEntry = JSON.parse(aiContent);
     
-    console.log('Parsed expense:', parsedExpense);
+    console.log('Parsed entry:', parsedEntry);
 
     return new Response(
       JSON.stringify({
         transcription: transcribedText,
-        expense: parsedExpense
+        entry: parsedEntry
       }),
       {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
