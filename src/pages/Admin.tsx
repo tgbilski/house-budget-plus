@@ -65,7 +65,6 @@ export default function Admin() {
 
   useEffect(() => {
     if (isAdmin) {
-      loadListings();
       loadMetrics();
       loadReviews();
     }
