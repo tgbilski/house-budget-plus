@@ -21,7 +21,7 @@ const BudgetSection: React.FC = () => {
   const { user } = useAuth();
   const { currentHousehold } = useHousehold(user?.id);
   const { subscribed } = useSubscription();
-  const { earnBadge, loading: badgesLoading } = useBadges();
+  
   const { currency } = useCurrency();
   const isMobile = useIsMobile();
 
