@@ -215,52 +215,93 @@ const BudgetSection: React.FC = () => {
         <h2 className="text-2xl font-bold text-foreground tracking-wide">MONTHLY BUDGET</h2>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-6">
-          {user ? (
-            <>
-              {['1', '2', '3', '4'].filter(id => visibleCalculators.has(id)).map((id, index) => (
-                <div key={id} className="animate-fade-in" style={{ animationDelay: `${index * 0.1}s`, animationFillMode: 'both' }}>
-                  <BudgetCalculator
-                    id={id}
-                    calculatorNumber={parseInt(id)}
-                    showRemove={false}
-                    onRemove={() => {}}
-                    onNameChange={(id, name) => setCalculatorNames(prev => ({ ...prev, [id]: name }))}
-                    pageType="monthly_budget"
-                    onEmptyStateChange={handleCalculatorReset}
+      {user ? (
+        /* Authenticated: 3-column layout */
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-6">
+            {['1', '2', '3', '4'].filter(id => visibleCalculators.has(id)).map((id, index) => (
+              <div key={id} className="animate-fade-in" style={{ animationDelay: `${index * 0.1}s`, animationFillMode: 'both' }}>
+                <BudgetCalculator
+                  id={id}
+                  calculatorNumber={parseInt(id)}
+                  showRemove={false}
+                  onRemove={() => {}}
+                  onNameChange={(id, name) => setCalculatorNames(prev => ({ ...prev, [id]: name }))}
+                  pageType="monthly_budget"
+                  onEmptyStateChange={handleCalculatorReset}
+                />
+              </div>
+            ))}
+
+            {getNextCalculatorNumber() && (
+              subscribed || visibleCalculators.size < 2 ? (
+                <div className="animate-fade-in flex items-start">
+                  <button
+                    onClick={revealNextCalculator}
+                    className="w-full max-w-md min-h-[200px] rounded-xl border-[4px] border-dashed border-border/50 bg-muted/20 touch-manipulation [@media(hover:hover)]:hover:bg-muted/40 [@media(hover:hover)]:hover:border-primary/50 transition-all duration-200 flex flex-col items-center justify-center gap-3 group"
+                  >
+                    <div className="p-3 rounded-full bg-primary/10 [@media(hover:hover)]:group-hover:bg-primary/20 transition-colors">
+                      <Plus className="h-8 w-8 text-primary" />
+                    </div>
+                    <div className="text-center">
+                      <p className="font-semibold text-foreground">Add Calculator {getNextCalculatorNumber()}</p>
+                      <p className="text-sm text-muted-foreground">Track another income source</p>
+                    </div>
+                  </button>
+                </div>
+              ) : (
+                <div className="animate-fade-in flex items-start">
+                  <PremiumLimitBanner 
+                    featureName="calculators" 
+                    freeLimit={1} 
+                    className="min-h-[200px] flex flex-col items-center justify-center"
                   />
                 </div>
-              ))}
+              )
+            )}
+          </div>
 
-              {getNextCalculatorNumber() && (
-                subscribed || visibleCalculators.size < 2 ? (
-                  <div className="animate-fade-in flex items-start">
-                    <button
-                      onClick={revealNextCalculator}
-                      className="w-full max-w-md min-h-[200px] rounded-xl border-[4px] border-dashed border-border/50 bg-muted/20 touch-manipulation [@media(hover:hover)]:hover:bg-muted/40 [@media(hover:hover)]:hover:border-primary/50 transition-all duration-200 flex flex-col items-center justify-center gap-3 group"
-                    >
-                      <div className="p-3 rounded-full bg-primary/10 [@media(hover:hover)]:group-hover:bg-primary/20 transition-colors">
-                        <Plus className="h-8 w-8 text-primary" />
-                      </div>
-                      <div className="text-center">
-                        <p className="font-semibold text-foreground">Add Calculator {getNextCalculatorNumber()}</p>
-                        <p className="text-sm text-muted-foreground">Track another income source</p>
-                      </div>
-                    </button>
-                  </div>
-                ) : (
-                  <div className="animate-fade-in flex items-start">
-                    <PremiumLimitBanner 
-                      featureName="calculators" 
-                      freeLimit={1} 
-                      className="min-h-[200px] flex flex-col items-center justify-center"
-                    />
-                  </div>
-                )
-              )}
-            </>
-          ) : (
+          {/* Right column: income summary, donut chart, mortgage, AI insights */}
+          <div className="lg:col-span-1 space-y-4">
+            {totalIncome > 0 && (
+              <div className="bg-card border-[3px] border-stroke rounded-xl p-4 shadow-cartoon">
+                <p className="text-xs text-muted-foreground uppercase tracking-wide mb-1">Yearly Household Income</p>
+                <p className="text-2xl sm:text-3xl font-bold text-success">
+                  {currency.symbol}{yearlyHouseholdIncome.toLocaleString()}
+                </p>
+                <p className="text-xs text-muted-foreground mt-1">
+                  Based on {currency.symbol}{totalIncome.toLocaleString()}/month
+                </p>
+              </div>
+            )}
+
+            <BudgetDonutChart totalIncome={totalIncome} totalExpenses={totalExpenses} currency={currency} />
+
+            {totalIncome > 0 && (
+              <MortgagePreapprovalCard
+                monthlyIncome={totalIncome}
+                housingExpense={totalHousingExpense}
+                totalExpenses={totalExpenses}
+              />
+            )}
+
+            {!subscribed && totalExpenses > 100 && (
+              <AISavingsTeaser
+                totalExpenses={totalExpenses}
+                monthlyIncome={totalIncome}
+                formatCurrency={formatCurrency}
+              />
+            )}
+
+            {subscribed && (
+              <InsightsDashboard />
+            )}
+          </div>
+        </div>
+      ) : (
+        /* Guest: 2-column layout — calculator left, pitch + signup right */
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div className="animate-fade-in">
             <BudgetCalculator
               id="1"
               calculatorNumber={1}
@@ -270,51 +311,49 @@ const BudgetSection: React.FC = () => {
               pageType="monthly_budget"
               onEmptyStateChange={handleCalculatorReset}
             />
-          )}
-        </div>
+          </div>
 
-        {/* Right column: income summary, donut chart, mortgage, AI insights */}
-        <div className="lg:col-span-1 space-y-4">
-          {user && totalIncome > 0 && (
-            <div className="bg-card border-[3px] border-stroke rounded-xl p-4 shadow-cartoon">
-              <p className="text-xs text-muted-foreground uppercase tracking-wide mb-1">Yearly Household Income</p>
-              <p className="text-2xl sm:text-3xl font-bold text-success">
-                {currency.symbol}{yearlyHouseholdIncome.toLocaleString()}
+          <div className="space-y-4 animate-fade-in" style={{ animationDelay: '0.15s', animationFillMode: 'both' }}>
+            {/* Sales pitch */}
+            <div className="bg-card border-[3px] border-stroke rounded-xl p-5 shadow-cartoon">
+              <h2 className="text-xl font-bold text-foreground mb-2">
+                Adulting is hard. Budgeting doesn't have to be. 😤
+              </h2>
+              <p className="text-sm text-muted-foreground mb-3">
+                You're already crunching numbers — why not save your work?
               </p>
-              <p className="text-xs text-muted-foreground mt-1">
-                Based on {currency.symbol}{totalIncome.toLocaleString()}/month
+              <ul className="space-y-2 text-sm mb-4">
+                <li className="flex items-start gap-2">
+                  <span className="text-lg leading-none">🔒</span>
+                  <span className="text-foreground"><strong>Your data, saved forever</strong> — no more "what was my rent?"</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-lg leading-none">👯</span>
+                  <span className="text-foreground"><strong>Add roommates & partners</strong> — split costs easily</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-lg leading-none">🧾</span>
+                  <span className="text-foreground"><strong>Voice expense tracking</strong> — just speak it</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-lg leading-none">🎯</span>
+                  <span className="text-foreground"><strong>Savings goals</strong> — watch your progress grow</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-lg leading-none">🏠</span>
+                  <span className="text-foreground"><strong>Mortgage preapproval</strong> — know what you can afford</span>
+                </li>
+              </ul>
+              <p className="text-xs text-muted-foreground italic">
+                No credit card needed. No spam. Just vibes and financial literacy. 🫡
               </p>
             </div>
-          )}
 
-          {user && (
-            <BudgetDonutChart totalIncome={totalIncome} totalExpenses={totalExpenses} currency={currency} />
-          )}
-
-          {/* Mortgage Preapproval Card */}
-          {totalIncome > 0 && (
-            <MortgagePreapprovalCard
-              monthlyIncome={totalIncome}
-              housingExpense={totalHousingExpense}
-              totalExpenses={totalExpenses}
-            />
-          )}
-
-          {/* AI Savings Teaser for non-subscribers */}
-          {!subscribed && totalExpenses > 100 && (
-            <AISavingsTeaser
-              totalExpenses={totalExpenses}
-              monthlyIncome={totalIncome}
-              formatCurrency={formatCurrency}
-            />
-          )}
-
-          {/* AI Insights Dashboard for premium users */}
-          {subscribed && user && (
-            <InsightsDashboard />
-          )}
+            {/* Inline signup */}
+            <InlineSignUpForm />
+          </div>
         </div>
-      </div>
+      )}
     </section>
   );
 };
