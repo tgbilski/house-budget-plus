@@ -969,16 +969,6 @@ export default function Expenses() {
         )}
 
         <BadgeDisplay />
-        
-        <PageSEOContent
-          title={pageSEOData.expenses.title}
-          description={pageSEOData.expenses.description}
-          features={pageSEOData.expenses.features}
-          keywords={pageSEOData.expenses.keywords}
-          premiumTitle={pageSEOData.expenses.premiumTitle}
-          premiumDescription={pageSEOData.expenses.premiumDescription}
-          premiumFeatures={pageSEOData.expenses.premiumFeatures}
-        />
       </div>
     </div>
   );
