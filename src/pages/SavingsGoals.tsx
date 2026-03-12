@@ -112,11 +112,6 @@ const SavingsGoals: React.FC = () => {
 
           {!isMobileApp && (
             <>
-              {user && (
-                <div className="animate-slide-up" style={{ animationDelay: '0.25s' }}>
-                  <BadgeDisplay />
-                </div>
-              )}
               
               <div className="animate-slide-up" style={{ animationDelay: '0.3s' }}>
                 <FAQ 
