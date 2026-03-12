@@ -1,22 +1,17 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-// Removed unused Header and Footer imports
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useAdminStatus } from "@/hooks/useAdminStatus";
 import { useAuth } from "@/hooks/useAuth";
-import { Loader2, CheckCircle, XCircle, AlertTriangle, PenSquare, TrendingUp, Users, Home, CreditCard, MessageSquare, MapPin } from "lucide-react";
+import { Loader2, TrendingUp, Users, Home, CreditCard, MessageSquare, MapPin } from "lucide-react";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { format } from "date-fns";
-import { BlogPostForm } from "@/components/BlogPostForm";
-import { BlogPost } from "@/hooks/useBlogPosts";
 import { SEO } from "@/components/SEO";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
-import { giftListChristmasShoppingPost } from "@/utils/blogPosts/giftListChristmasShopping";
 
 interface Listing {
   id: string;
