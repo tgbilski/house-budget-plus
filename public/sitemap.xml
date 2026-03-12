@@ -2,187 +2,49 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://www.housebudgetcalculator.com/</loc>
-    <lastmod>2026-01-27</lastmod>
+    <lastmod>2026-03-12</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
     <loc>https://www.housebudgetcalculator.com/budget</loc>
-    <lastmod>2026-01-27</lastmod>
+    <lastmod>2026-03-12</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://www.housebudgetcalculator.com/savings</loc>
-    <lastmod>2026-01-27</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
     <loc>https://www.housebudgetcalculator.com/expenses</loc>
-    <lastmod>2026-01-27</lastmod>
+    <lastmod>2026-03-12</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://www.housebudgetcalculator.com/vacation</loc>
-    <lastmod>2026-01-27</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://www.housebudgetcalculator.com/gifts</loc>
-    <lastmod>2026-01-27</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://www.housebudgetcalculator.com/ai-insights</loc>
-    <lastmod>2026-01-27</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://www.housebudgetcalculator.com/marketplace</loc>
-    <lastmod>2026-01-27</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://www.housebudgetcalculator.com/engagement</loc>
-    <lastmod>2026-01-27</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://www.housebudgetcalculator.com/blog</loc>
-    <lastmod>2026-01-27</lastmod>
+    <loc>https://www.housebudgetcalculator.com/savings</loc>
+    <lastmod>2026-03-12</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>https://www.housebudgetcalculator.com/blog/creating-house-budget-beginners-guide</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://www.housebudgetcalculator.com/blog/complete-financial-toolkit-family-money-management</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://www.housebudgetcalculator.com/blog/holiday-gift-ideas-budget-planning-2025</loc>
-    <lastmod>2025-10-07</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://www.housebudgetcalculator.com/blog/community-marketplace-guide</loc>
-    <lastmod>2025-10-07</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://www.housebudgetcalculator.com/blog/don-t-just-dive-in-why-weighing-house-remodel-options-is-crucial-for-your-wallet-your-peace-of-mind</loc>
-    <lastmod>2025-10-12</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://www.housebudgetcalculator.com/blog/budget-savvy-traveler-weighing-your-vacation-options-for-maximum-savings</loc>
-    <lastmod>2025-10-16</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://www.housebudgetcalculator.com/blog/sleigh-ride-or-stay-inside-should-you-travel-for-christmas-or-stay-home</loc>
-    <lastmod>2025-10-16</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://www.housebudgetcalculator.com/blog/how-to-budget-for-holiday-shopping-without-breaking-the-bank</loc>
-    <lastmod>2025-10-22</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://www.housebudgetcalculator.com/blog/5-streaming-services-overpaying-how-to-cut-costs</loc>
-    <lastmod>2025-10-24</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://www.housebudgetcalculator.com/blog/ai-voice-expense-tracking-save-money</loc>
-    <lastmod>2025-10-30</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://www.housebudgetcalculator.com/blog/household-budget-splitting-guide</loc>
-    <lastmod>2025-11-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://www.housebudgetcalculator.com/blog/5-proven-strategies-reach-savings-goals-faster</loc>
-    <lastmod>2025-11-04</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://www.housebudgetcalculator.com/blog/roof-replacement-vendor-comparison-guide</loc>
-    <lastmod>2025-11-07</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://www.housebudgetcalculator.com/blog/emergency-fund-guide-families</loc>
-    <lastmod>2025-11-14</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://www.housebudgetcalculator.com/blog/stop-overpaying-the-smart-way-to-compare-home-improvement-estimates</loc>
-    <lastmod>2025-11-14</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://www.housebudgetcalculator.com/blog/christmas-gift-list-organizer-2025</loc>
-    <lastmod>2025-12-04</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
   </url>
   <url>
     <loc>https://www.housebudgetcalculator.com/about</loc>
-    <lastmod>2026-01-27</lastmod>
+    <lastmod>2026-03-12</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
   <url>
     <loc>https://www.housebudgetcalculator.com/contact</loc>
-    <lastmod>2026-01-27</lastmod>
+    <lastmod>2026-03-12</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
   <url>
     <loc>https://www.housebudgetcalculator.com/privacy</loc>
-    <lastmod>2026-01-27</lastmod>
+    <lastmod>2026-03-12</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.3</priority>
   </url>
   <url>
     <loc>https://www.housebudgetcalculator.com/terms</loc>
-    <lastmod>2026-01-27</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.3</priority>
-  </url>
-  <url>
-    <loc>https://www.housebudgetcalculator.com/disclaimer</loc>
-    <lastmod>2026-01-27</lastmod>
+    <lastmod>2026-03-12</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.3</priority>
   </url>
