@@ -115,6 +115,15 @@ const AppRoutes = () => {
   );
 };
 
+const TOOL_ROUTES = ['/', '/budget', '/expenses', '/savings', '/settings', '/admin'];
+
+const FooterWrapper = () => {
+  const location = useLocation();
+  const isToolPage = TOOL_ROUTES.includes(location.pathname);
+  if (isToolPage) return null;
+  return <Footer />;
+};
+
 const AppLayout = () => {
   const { loading: authLoading } = useAuth();
   const { checkoutLoading } = useSubscription();
@@ -188,7 +197,7 @@ const AppLayout = () => {
       <main id="main-content" className="flex-1 relative z-10">
         <AppRoutes />
       </main>
-      <Footer />
+      <FooterWrapper />
     </div>
   );
 };
