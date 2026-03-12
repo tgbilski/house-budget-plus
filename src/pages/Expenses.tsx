@@ -854,7 +854,7 @@ export default function Expenses() {
               <p className="text-center text-muted-foreground py-8">
                 {searchQuery || filterCategory !== 'all'
                   ? 'No expenses match your filters.'
-                  : `No expenses logged for ${format(selectedDate, 'MMMM d, yyyy')}. Start recording!`}
+                  : `No expenses logged for ${format(selectedDate, 'MMMM yyyy')}. Start recording!`}
               </p>
             ) : (
               <div className="space-y-2 max-h-[500px] overflow-y-auto">
