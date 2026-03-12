@@ -4,50 +4,27 @@ import { Link } from "react-router-dom";
 // Import feature images
 import voiceExpenseImg from '@/assets/features/voice-expense.png';
 import savingsGoalsImg from '@/assets/features/savings-goals.png';
-import vacationPlannerImg from '@/assets/features/vacation-planner.png';
-import giftListsImg from '@/assets/features/gift-lists.png';
-import aiAdvisorImg from '@/assets/features/ai-advisor.png';
-import houseComparisonImg from '@/assets/features/house-comparison.png';
+import budgetCalculatorImg from '@/assets/features/budget-calculator.png';
 
 const tools = [
   {
-    title: "House Comparison",
-    description: "Compare properties side-by-side with ratings, pros/cons, and family notes.",
-    image: houseComparisonImg,
-    href: "/house-comparison"
+    title: "Monthly Budget",
+    description: "See exactly where your paycheck goes with our simple, visual budget calculator.",
+    image: budgetCalculatorImg,
+    href: "/budget"
   },
   {
-    title: "Voice Expense Tracker",
-    description: "Log expenses instantly by speaking. AI-powered transcription automatically tracks your spending.",
+    title: "Expense Tracker",
+    description: "Log expenses instantly and see monthly spending breakdowns by category.",
     image: voiceExpenseImg,
-    href: "/expenses",
-    isPremium: true
+    href: "/expenses"
   },
   {
-    title: "Savings Goals Tracker",
+    title: "Savings Goals",
     description: "Set financial goals and monitor your progress with visual tracking and milestone celebrations.",
     image: savingsGoalsImg,
     href: "/savings"
   },
-  {
-    title: "Vacation Planner",
-    description: "Compare vacation destinations, track costs, and plan your dream trips within budget.",
-    image: vacationPlannerImg,
-    href: "/vacation"
-  },
-  {
-    title: "Gift Lists",
-    description: "Organize gift ideas for every occasion with budget tracking and shopping lists.",
-    image: giftListsImg,
-    href: "/gifts"
-  },
-  {
-    title: "AI Financial Advisor",
-    description: "Get personalized financial insights and smart recommendations powered by AI.",
-    image: aiAdvisorImg,
-    href: "/ai-insights",
-    isPremium: true
-  }
 ];
 
 interface ToolsGridProps {
@@ -70,7 +47,7 @@ export function ToolsGrid({ excludeHref }: ToolsGridProps) {
         </p>
       </div>
       
-      <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+      <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {filteredTools.map((tool) => (
           <Link key={tool.title} to={tool.href} className="block group touch-manipulation">
             <Card className="h-full overflow-hidden bg-card transition-all duration-200 [@media(hover:hover)]:hover:translate-y-[-2px] [@media(hover:hover)]:hover:shadow-cartoon-hover">
@@ -81,11 +58,6 @@ export function ToolsGrid({ excludeHref }: ToolsGridProps) {
                   className="w-full h-full object-cover"
                   loading="lazy"
                 />
-                {tool.isPremium && (
-                  <div className="absolute top-2 right-2 bg-gradient-to-r from-amber-500 to-orange-500 text-white text-xs font-bold px-2 py-0.5 rounded-full">
-                    PREMIUM
-                  </div>
-                )}
               </div>
               <CardHeader className="p-3 bg-muted/50">
                 <CardTitle className="text-base transition-colors [@media(hover:hover)]:group-hover:text-primary">
