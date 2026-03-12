@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import { useHouseholdContext } from '@/providers/HouseholdProvider';
 import { useSavingsTracker } from '@/hooks/useSavingsTracker';
-import { useBadges } from '@/hooks/useBadges';
+
 import { usePageReady } from '@/hooks/usePageReady';
 import { isNativeApp } from '@/utils/capacitor';
 import { cn } from '@/lib/utils';
@@ -16,7 +16,7 @@ import { seoData } from '@/utils/seoData';
 import { WarningBanner } from '@/components/WarningBanner';
 import { InternalLinks } from '@/components/InternalLinks';
 import { FAQ } from '@/components/FAQ';
-import { BadgeDisplay } from '@/components/BadgeDisplay';
+
 import { PageSEOContent, pageSEOData } from '@/components/PageSEOContent';
 import calculatorMascot from '@/assets/calculator-mascot.png';
 
@@ -25,7 +25,7 @@ const SavingsGoals: React.FC = () => {
   const { currentHousehold } = useHouseholdContext();
   // Local year state - independent from other pages, defaults to 2025
   const [selectedYear, setSelectedYear] = useState<number>(2025);
-  const { earnBadge, loading: badgesLoading } = useBadges();
+  
   const { setPageReady } = usePageReady();
   const isMobileApp = isNativeApp();
 
@@ -45,12 +45,6 @@ const SavingsGoals: React.FC = () => {
   
   const progressPercentage = currentGoal?.target_amount ? Math.min((totalSaved / currentGoal.target_amount) * 100, 100) : 0;
 
-  // Award badge when user has savings data (after badges load)
-  useEffect(() => {
-    if (user && !badgesLoading && (goals.length > 0 || totalSaved > 0)) {
-      earnBadge('savings_tracker');
-    }
-  }, [user, badgesLoading, goals.length, totalSaved, earnBadge]);
 
   // Signal page is ready once data loads
   useEffect(() => {
@@ -118,11 +112,6 @@ const SavingsGoals: React.FC = () => {
 
           {!isMobileApp && (
             <>
-              {user && (
-                <div className="animate-slide-up" style={{ animationDelay: '0.25s' }}>
-                  <BadgeDisplay />
-                </div>
-              )}
               
               <div className="animate-slide-up" style={{ animationDelay: '0.3s' }}>
                 <FAQ 

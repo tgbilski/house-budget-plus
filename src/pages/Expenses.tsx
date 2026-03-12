@@ -13,7 +13,7 @@ import { useSubscription } from '@/hooks/useSubscription';
 import { useExpenses } from '@/hooks/useExpenses';
 import { useCurrency } from '@/hooks/useCurrency';
 import { useHouseholdContext } from '@/providers/HouseholdProvider';
-import { useBadges } from '@/hooks/useBadges';
+
 import { usePageReady } from '@/hooks/usePageReady';
 import { Mic, MicOff, Calendar as CalendarIcon, Trash2, TrendingUp, Edit2, Plus, Download, Search, Filter, X } from 'lucide-react';
 import { format } from 'date-fns';
@@ -26,7 +26,7 @@ import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianG
 import { AlertCircle } from 'lucide-react';
 import { isNativeApp } from '@/utils/capacitor';
 import calculatorMascot from '@/assets/calculator-mascot.png';
-import { BadgeDisplay } from '@/components/BadgeDisplay';
+
 import InlineSignUpForm from '@/components/InlineSignUpForm';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { sanitizeText } from '@/utils/sanitize';
@@ -57,7 +57,7 @@ export default function Expenses() {
   const { currency } = useCurrency();
   const { currentHousehold } = useHouseholdContext();
   const { toast } = useToast();
-  const { earnBadge, hasBadge, loading: badgesLoading } = useBadges();
+  
   const { setPageReady } = usePageReady();
   const [selectedDate, setSelectedDate] = useState(new Date());
   const { expenses, loading, addExpense, deleteExpense, updateExpense } = useExpenses(selectedDate);
@@ -108,16 +108,6 @@ export default function Expenses() {
     fetchYearlyExpenses();
   }, [user, currentHousehold, selectedDate.getFullYear(), expenses]);
 
-  // Badge awards
-  useEffect(() => {
-    if (!user || badgesLoading || yearlyExpenses.length === 0) return;
-    const count = yearlyExpenses.length;
-    if (count >= 1 && !hasBadge('expense_first')) earnBadge('expense_first');
-    if (count >= 3 && !hasBadge('expense_3')) earnBadge('expense_3');
-    if (count >= 10 && !hasBadge('expense_10')) earnBadge('expense_10');
-    if (count >= 20 && !hasBadge('expense_20')) earnBadge('expense_20');
-    if (count >= 50 && !hasBadge('expense_50')) earnBadge('expense_50');
-  }, [user, badgesLoading, yearlyExpenses.length, earnBadge, hasBadge]);
 
   // Chart data
   const chartData = useMemo(() => {
@@ -967,7 +957,7 @@ export default function Expenses() {
           </Card>
         )}
 
-        <BadgeDisplay />
+        
       </div>
     </div>
   );

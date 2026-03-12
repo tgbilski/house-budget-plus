@@ -3,7 +3,7 @@ import { Plus, ChevronDown, ChevronUp } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { useHousehold } from '@/hooks/useHousehold';
 import { useSubscription } from '@/hooks/useSubscription';
-import { useBadges } from '@/hooks/useBadges';
+
 import { useCurrency } from '@/hooks/useCurrency';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { useQuery } from '@tanstack/react-query';
@@ -21,7 +21,7 @@ const BudgetSection: React.FC = () => {
   const { user } = useAuth();
   const { currentHousehold } = useHousehold(user?.id);
   const { subscribed } = useSubscription();
-  const { earnBadge, loading: badgesLoading } = useBadges();
+  
   const { currency } = useCurrency();
   const isMobile = useIsMobile();
 
@@ -52,16 +52,6 @@ const BudgetSection: React.FC = () => {
     return () => window.removeEventListener('budgetUpdate', handler);
   }, []);
 
-  useEffect(() => {
-    const handler = (event: Event) => {
-      if (badgesLoading) return;
-      if (event instanceof CustomEvent) {
-        earnBadge(event.detail.badgeType);
-      }
-    };
-    window.addEventListener('earnBadge', handler);
-    return () => window.removeEventListener('earnBadge', handler);
-  }, [earnBadge, badgesLoading]);
 
   const { data: calculatorVisibility } = useQuery({
     queryKey: ['budget-calculators', user?.id, currentHousehold?.id],
