@@ -16,7 +16,7 @@ import { seoData } from '@/utils/seoData';
 import { WarningBanner } from '@/components/WarningBanner';
 import { InternalLinks } from '@/components/InternalLinks';
 import { FAQ } from '@/components/FAQ';
-import { BadgeDisplay } from '@/components/BadgeDisplay';
+
 import { PageSEOContent, pageSEOData } from '@/components/PageSEOContent';
 import calculatorMascot from '@/assets/calculator-mascot.png';
 
