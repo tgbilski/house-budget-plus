@@ -615,119 +615,76 @@ export default function Expenses() {
         )}
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {/* Voice Input Card */}
-          <Card className="bg-card border-2 border-sage/30 shadow-cartoon">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Mic className="h-5 w-5" />
-                What did you spend today?
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="flex justify-center">
-                <Button
-                  size="lg"
-                  onClick={isRecording ? stopRecording : startRecording}
-                  disabled={isProcessing}
-                  className={cn(
-                    "w-32 h-32 rounded-full transition-all duration-300",
-                    isRecording
-                      ? "bg-destructive hover:bg-destructive/90 animate-pulse"
-                      : "bg-gradient-to-br from-primary to-primary-glow hover:scale-110"
-                  )}
-                >
-                  {isRecording ? <MicOff style={{ width: 32, height: 32 }} /> : <Mic style={{ width: 32, height: 32 }} />}
-                </Button>
-              </div>
-              <p className="text-center text-sm text-muted-foreground">
-                {isRecording ? "Listening... (Tap to stop)" : isProcessing ? "Processing..." : "Tap to start recording"}
-              </p>
-              {aiStatus && (
-                <Alert className="bg-primary/5 border-primary/30">
-                  <AlertDescription className="flex items-center gap-2">
-                    <div className="animate-pulse w-2 h-2 bg-primary rounded-full"></div>
-                    <span className="text-sm">{aiStatus}</span>
-                  </AlertDescription>
-                </Alert>
-              )}
-              {transcription && (
-                <Alert className="border-2">
-                  <AlertDescription><strong>You said:</strong> "{sanitizeText(transcription)}"</AlertDescription>
-                </Alert>
-              )}
-              {parsedExpense && (
-                <Card className="border-2 border-success/40 bg-success/5">
-                  <CardContent className="pt-4 space-y-2">
-                    <p className="text-lg font-bold">{currency.symbol}{parsedExpense.amount.toFixed(2)}</p>
-                    <p className="text-sm"><strong>Merchant:</strong> {parsedExpense.merchant || 'Unknown'}</p>
-                    <p className="text-sm"><strong>Category:</strong> {parsedExpense.category}</p>
-                    <Button onClick={saveExpense} className="w-full mt-4">Save Expense</Button>
-                  </CardContent>
-                </Card>
-              )}
+          {/* Voice Input + Manual Entry */}
+          <div className="space-y-4">
+            <VoiceAddSection
+              context="expenses"
+              onSaveExpense={handleVoiceSaveExpense}
+              onSaveSavings={handleVoiceSaveSavings}
+            />
 
-              {/* Manual entry toggle */}
-              <div className="border-t border-border pt-4">
+            {/* Manual entry card */}
+            <Card className="bg-card border-2 border-border/50 shadow-cartoon">
+              <CardContent className="pt-4 space-y-3">
                 <Button variant="outline" size="sm" onClick={() => setShowManualEntry(!showManualEntry)} className="w-full flex items-center gap-2">
                   <Plus className="h-4 w-4" />
                   {showManualEntry ? 'Hide Manual Entry' : 'Add Manually Instead'}
                 </Button>
-              </div>
 
-              {/* Manual entry form */}
-              {showManualEntry && (
-                <div className="space-y-3 p-4 bg-muted/30 rounded-lg border border-border/50 animate-fade-in">
-                  <div className="grid grid-cols-2 gap-3">
+                {showManualEntry && (
+                  <div className="space-y-3 p-4 bg-muted/30 rounded-lg border border-border/50 animate-fade-in">
+                    <div className="grid grid-cols-2 gap-3">
+                      <div className="space-y-1">
+                        <Label htmlFor="manual-amount" className="text-xs">Amount *</Label>
+                        <Input
+                          id="manual-amount"
+                          type="number"
+                          step="0.01"
+                          min="0.01"
+                          max="999999.99"
+                          placeholder="0.00"
+                          value={manualForm.amount}
+                          onChange={(e) => setManualForm({ ...manualForm, amount: e.target.value })}
+                        />
+                      </div>
+                      <div className="space-y-1">
+                        <Label htmlFor="manual-category" className="text-xs">Category</Label>
+                        <Select value={manualForm.category} onValueChange={(v) => setManualForm({ ...manualForm, category: v })}>
+                          <SelectTrigger id="manual-category"><SelectValue /></SelectTrigger>
+                          <SelectContent>
+                            {EXPENSE_CATEGORIES.map(c => <SelectItem key={c} value={c}>{c}</SelectItem>)}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    </div>
                     <div className="space-y-1">
-                      <Label htmlFor="manual-amount" className="text-xs">Amount *</Label>
+                      <Label htmlFor="manual-merchant" className="text-xs">Merchant (optional)</Label>
                       <Input
-                        id="manual-amount"
-                        type="number"
-                        step="0.01"
-                        min="0.01"
-                        max="999999.99"
-                        placeholder="0.00"
-                        value={manualForm.amount}
-                        onChange={(e) => setManualForm({ ...manualForm, amount: e.target.value })}
+                        id="manual-merchant"
+                        placeholder="e.g. Whole Foods"
+                        maxLength={100}
+                        value={manualForm.merchant}
+                        onChange={(e) => setManualForm({ ...manualForm, merchant: e.target.value })}
                       />
                     </div>
                     <div className="space-y-1">
-                      <Label htmlFor="manual-category" className="text-xs">Category</Label>
-                      <Select value={manualForm.category} onValueChange={(v) => setManualForm({ ...manualForm, category: v })}>
-                        <SelectTrigger id="manual-category"><SelectValue /></SelectTrigger>
-                        <SelectContent>
-                          {EXPENSE_CATEGORIES.map(c => <SelectItem key={c} value={c}>{c}</SelectItem>)}
-                        </SelectContent>
-                      </Select>
+                      <Label htmlFor="manual-notes" className="text-xs">Notes (optional)</Label>
+                      <Input
+                        id="manual-notes"
+                        placeholder="Quick note..."
+                        maxLength={500}
+                        value={manualForm.notes}
+                        onChange={(e) => setManualForm({ ...manualForm, notes: e.target.value })}
+                      />
                     </div>
+                    <Button onClick={saveManualExpense} className="w-full" size="sm">
+                      <Plus className="h-4 w-4 mr-1" /> Add Expense
+                    </Button>
                   </div>
-                  <div className="space-y-1">
-                    <Label htmlFor="manual-merchant" className="text-xs">Merchant (optional)</Label>
-                    <Input
-                      id="manual-merchant"
-                      placeholder="e.g. Whole Foods"
-                      maxLength={100}
-                      value={manualForm.merchant}
-                      onChange={(e) => setManualForm({ ...manualForm, merchant: e.target.value })}
-                    />
-                  </div>
-                  <div className="space-y-1">
-                    <Label htmlFor="manual-notes" className="text-xs">Notes (optional)</Label>
-                    <Input
-                      id="manual-notes"
-                      placeholder="Quick note..."
-                      maxLength={500}
-                      value={manualForm.notes}
-                      onChange={(e) => setManualForm({ ...manualForm, notes: e.target.value })}
-                    />
-                  </div>
-                  <Button onClick={saveManualExpense} className="w-full" size="sm">
-                    <Plus className="h-4 w-4 mr-1" /> Add Expense
-                  </Button>
-                </div>
-              )}
-            </CardContent>
-          </Card>
+                )}
+              </CardContent>
+            </Card>
+          </div>
 
           {/* Monthly Summary */}
           <Card className="bg-card border-2 border-border/50 shadow-cartoon">
