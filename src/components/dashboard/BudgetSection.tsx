@@ -189,10 +189,7 @@ const BudgetSection: React.FC = () => {
               />
             )}
 
-            {/* AI Insights on mobile (premium) */}
-            {subscribed && user && (
-              <InsightsDashboard />
-            )}
+            {/* AI Insights hidden for now - not working */}
           </div>
         )}
       </section>
@@ -284,9 +281,7 @@ const BudgetSection: React.FC = () => {
               />
             )}
 
-            {subscribed && (
-              <InsightsDashboard />
-            )}
+            {/* AI Insights hidden for now - not working */}
           </div>
         </div>
       ) : (
