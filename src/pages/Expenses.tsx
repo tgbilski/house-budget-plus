@@ -108,16 +108,6 @@ export default function Expenses() {
     fetchYearlyExpenses();
   }, [user, currentHousehold, selectedDate.getFullYear(), expenses]);
 
-  // Badge awards
-  useEffect(() => {
-    if (!user || badgesLoading || yearlyExpenses.length === 0) return;
-    const count = yearlyExpenses.length;
-    if (count >= 1 && !hasBadge('expense_first')) earnBadge('expense_first');
-    if (count >= 3 && !hasBadge('expense_3')) earnBadge('expense_3');
-    if (count >= 10 && !hasBadge('expense_10')) earnBadge('expense_10');
-    if (count >= 20 && !hasBadge('expense_20')) earnBadge('expense_20');
-    if (count >= 50 && !hasBadge('expense_50')) earnBadge('expense_50');
-  }, [user, badgesLoading, yearlyExpenses.length, earnBadge, hasBadge]);
 
   // Chart data
   const chartData = useMemo(() => {
