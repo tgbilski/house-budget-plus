@@ -772,7 +772,7 @@ const BudgetCalculator: React.FC<BudgetCalculatorProps> = ({
                   Back
                 </Button>
               )}
-              {mobileStep < 5 && (
+              {mobileStep < 4 && (
                 <Button
                   size="sm"
                   onClick={() => setMobileStep(prev => prev + 1)}

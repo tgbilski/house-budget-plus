@@ -346,14 +346,6 @@ const MonthlyBudget: React.FC = () => {
           </div>
         )}
 
-        <div className="mt-8">
-          <HomeBuyingToolkit
-            monthlyIncome={totalIncome}
-            monthlyExpenses={totalExpenses}
-            housingExpense={totalHousingExpense}
-            currencySymbol={currency.symbol}
-          />
-        </div>
 
         <div className="mt-8">
           <FeedbackForm pageSource="budget" />
