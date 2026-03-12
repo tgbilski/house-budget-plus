@@ -350,11 +350,9 @@ export default function Admin() {
       <main className="flex-1 container mx-auto px-4 py-8">
 
         <Tabs defaultValue="metrics" className="w-full">
-          <TabsList className="mb-6 w-full grid grid-cols-4 lg:w-auto lg:inline-flex">
+          <TabsList className="mb-6 w-full grid grid-cols-2 lg:w-auto lg:inline-flex">
             <TabsTrigger value="metrics" className="text-xs sm:text-sm">Metrics</TabsTrigger>
             <TabsTrigger value="feedback" className="text-xs sm:text-sm">Feedback</TabsTrigger>
-            <TabsTrigger value="listings" className="text-xs sm:text-sm">Listings</TabsTrigger>
-            <TabsTrigger value="blog" className="text-xs sm:text-sm">Blog</TabsTrigger>
           </TabsList>
 
           <TabsContent value="blog" className="space-y-6">
