@@ -142,10 +142,7 @@ export default function Expenses() {
 
   // Filtered expenses for the log
   const filteredExpenses = useMemo(() => {
-    const dateExpenses = expenses.filter(expense =>
-      format(new Date(expense.date), 'yyyy-MM-dd') === format(selectedDate, 'yyyy-MM-dd')
-    );
-    return dateExpenses.filter(expense => {
+    return expenses.filter(expense => {
       const matchesSearch = !searchQuery || 
         (expense.merchant?.toLowerCase().includes(searchQuery.toLowerCase())) ||
         (expense.notes?.toLowerCase().includes(searchQuery.toLowerCase())) ||
@@ -153,7 +150,7 @@ export default function Expenses() {
       const matchesCategory = filterCategory === 'all' || expense.category === filterCategory;
       return matchesSearch && matchesCategory;
     });
-  }, [expenses, selectedDate, searchQuery, filterCategory]);
+  }, [expenses, searchQuery, filterCategory]);
 
   // CSV export
   const exportToCSV = () => {
