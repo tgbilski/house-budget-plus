@@ -867,7 +867,7 @@ export default function Expenses() {
                       </div>
                       <p className="text-sm text-muted-foreground">
                         {expense.merchant && <span className="font-medium">{expense.merchant} • </span>}
-                        {format(new Date(expense.date), 'h:mm a')}
+                        {format(new Date(expense.date), 'MMM d')}
                       </p>
                       {expense.notes && <p className="text-xs text-muted-foreground mt-1 italic">"{expense.notes}"</p>}
                     </div>
