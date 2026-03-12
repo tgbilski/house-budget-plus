@@ -812,7 +812,7 @@ export default function Expenses() {
         <Card className="mt-6 bg-card border-2 border-border/50 shadow-cartoon">
           <CardHeader>
             <div className="flex items-center justify-between gap-2 flex-wrap">
-              <CardTitle className="text-base">Expense Log - {format(selectedDate, 'MMMM d, yyyy')}</CardTitle>
+              <CardTitle className="text-base">Expense Log - {format(selectedDate, 'MMMM yyyy')}</CardTitle>
               <Button variant="ghost" size="sm" onClick={() => setShowFilters(!showFilters)} className="flex items-center gap-1">
                 <Filter className="h-4 w-4" />
                 <span className="text-xs">{showFilters ? 'Hide' : 'Filter'}</span>
