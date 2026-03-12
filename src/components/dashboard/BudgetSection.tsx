@@ -14,6 +14,7 @@ import { PremiumLimitBanner } from '@/components/PremiumLimitBanner';
 import { InsightsDashboard } from '@/components/InsightsDashboard';
 import { AISavingsTeaser } from '@/components/AISavingsTeaser';
 import { MortgagePreapprovalCard } from '@/components/MortgagePreapprovalCard';
+import InlineSignUpForm from '@/components/InlineSignUpForm';
 import { cn } from '@/lib/utils';
 
 const BudgetSection: React.FC = () => {
