@@ -5,7 +5,7 @@ import { useIsMobile } from '@/hooks/use-mobile';
 import { SEO } from '@/components/SEO';
 import { seoData } from '@/utils/seoData';
 import { WarningBanner } from '@/components/WarningBanner';
-import { BadgeDisplay } from '@/components/BadgeDisplay';
+
 import FeedbackForm from '@/components/FeedbackForm';
 import BudgetSection from '@/components/dashboard/BudgetSection';
 import ExpensesSection from '@/components/dashboard/ExpensesSection';
