@@ -302,11 +302,6 @@ const MonthlyBudget: React.FC = () => {
                       currency={currency}
                     />
                   )}
-                  <MortgagePreapprovalQuestion
-                    monthlyIncome={totalIncome}
-                    monthlyExpenses={totalExpenses}
-                    currency={currency}
-                  />
                 </>
               ) : (
                 <div className="space-y-4">
