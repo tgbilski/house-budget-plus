@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Separator } from '@/components/ui/separator';
+import { useAdminStatus } from '@/hooks/useAdminStatus';
 
 interface FooterProps {
   hideTools?: boolean;
@@ -8,6 +9,7 @@ interface FooterProps {
 
 const Footer: React.FC<FooterProps> = ({ hideTools = false }) => {
   const currentYear = new Date().getFullYear();
+  const { isAdmin } = useAdminStatus();
 
   return (
     <footer className="mt-auto bg-gray-50 border-t border-gray-200">
@@ -49,6 +51,9 @@ const Footer: React.FC<FooterProps> = ({ hideTools = false }) => {
               <li><Link to="/privacy" className="text-gray-600 hover:text-primary transition-colors">Privacy Policy</Link></li>
               <li><Link to="/terms" className="text-gray-600 hover:text-primary transition-colors">Terms & Conditions</Link></li>
               <li><Link to="/disclaimer" className="text-gray-600 hover:text-primary transition-colors">Disclaimer</Link></li>
+              {isAdmin && (
+                <li><Link to="/admin" className="text-gray-600 hover:text-primary transition-colors">Admin Dashboard</Link></li>
+              )}
             </ul>
           </div>
         </div>
