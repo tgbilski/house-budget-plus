@@ -159,7 +159,7 @@ export const MonthlySavingsGrid: React.FC<Props> = ({ year, onYearChange, monthl
                       onChange={(e) => handleInputChange(index, e.target.value)}
                       onBlur={() => handleBlur(index)}
                       className={cn(
-                        "pl-8 pr-3 h-12 w-32 text-2xl font-extrabold bg-background/50 border-0 border-b-2 rounded-none focus:ring-0 transition-all text-right",
+                        "pl-8 pr-3 h-12 w-32 !text-2xl font-extrabold bg-background/50 border-0 border-b-2 rounded-none focus:ring-0 transition-all text-right",
                         hasSavings 
                           ? "border-success/40 text-foreground" 
                           : "border-border/30 text-muted-foreground"
