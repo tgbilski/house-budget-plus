@@ -9,6 +9,7 @@ interface FooterProps {
 
 const Footer: React.FC<FooterProps> = ({ hideTools = false }) => {
   const currentYear = new Date().getFullYear();
+  const { isAdmin } = useAdminStatus();
 
   return (
     <footer className="mt-auto bg-gray-50 border-t border-gray-200">
