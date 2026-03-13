@@ -51,6 +51,9 @@ const Footer: React.FC<FooterProps> = ({ hideTools = false }) => {
               <li><Link to="/privacy" className="text-gray-600 hover:text-primary transition-colors">Privacy Policy</Link></li>
               <li><Link to="/terms" className="text-gray-600 hover:text-primary transition-colors">Terms & Conditions</Link></li>
               <li><Link to="/disclaimer" className="text-gray-600 hover:text-primary transition-colors">Disclaimer</Link></li>
+              {isAdmin && (
+                <li><Link to="/admin" className="text-gray-600 hover:text-primary transition-colors">Admin Dashboard</Link></li>
+              )}
             </ul>
           </div>
         </div>
