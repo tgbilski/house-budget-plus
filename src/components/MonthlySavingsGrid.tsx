@@ -129,15 +129,15 @@ export const MonthlySavingsGrid: React.FC<Props> = ({ year, onYearChange, monthl
                     : "border-border/40 bg-card hover:border-border/60"
                 )}
               >
-                {/* Month label */}
-                <div className="flex items-center justify-between mb-3">
-                  <span className={cn(
-                    "text-sm font-bold tracking-wide",
-                    isCurrentMonth ? "text-teal" : "text-foreground"
-                  )}>
-                    {month}
-                  </span>
+                {/* Month label + Amount on same row */}
+                <div className="flex items-center justify-between mb-4">
                   <div className="flex items-center gap-2">
+                    <span className={cn(
+                      "text-2xl font-extrabold tracking-wide",
+                      isCurrentMonth ? "text-teal" : "text-foreground"
+                    )}>
+                      {month}
+                    </span>
                     {isCurrentMonth && (
                       <span className="text-[10px] font-semibold uppercase tracking-wider bg-teal/20 text-teal px-2 py-0.5 rounded-full">
                         Now
@@ -147,26 +147,26 @@ export const MonthlySavingsGrid: React.FC<Props> = ({ year, onYearChange, monthl
                       <div className="w-2.5 h-2.5 bg-success rounded-full animate-scale-in" />
                     )}
                   </div>
-                </div>
 
-                {/* Amount input */}
-                <div className="relative mb-3">
-                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground font-semibold text-sm z-10">
-                    {currency.symbol}
-                  </span>
-                  <Input
-                    type="number"
-                    value={localInputs[monthKey] || ''}
-                    onChange={(e) => handleInputChange(index, e.target.value)}
-                    onBlur={() => handleBlur(index)}
-                    className={cn(
-                      "pl-7 pr-3 h-11 text-lg font-bold bg-background/50 border-0 border-b-2 rounded-none focus:ring-0 transition-all",
-                      hasSavings 
-                        ? "border-success/40 text-foreground" 
-                        : "border-border/30 text-muted-foreground"
-                    )}
-                    placeholder="0"
-                  />
+                  {/* Amount input */}
+                  <div className="relative">
+                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground font-bold text-xl z-10">
+                      {currency.symbol}
+                    </span>
+                    <Input
+                      type="number"
+                      value={localInputs[monthKey] || ''}
+                      onChange={(e) => handleInputChange(index, e.target.value)}
+                      onBlur={() => handleBlur(index)}
+                      className={cn(
+                        "pl-8 pr-3 h-12 w-32 text-2xl font-extrabold bg-background/50 border-0 border-b-2 rounded-none focus:ring-0 transition-all text-right",
+                        hasSavings 
+                          ? "border-success/40 text-foreground" 
+                          : "border-border/30 text-muted-foreground"
+                      )}
+                      placeholder="0"
+                    />
+                  </div>
                 </div>
 
                 {/* Slider */}
