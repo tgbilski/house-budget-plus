@@ -150,7 +150,7 @@ export const MonthlySavingsGrid: React.FC<Props> = ({ year, onYearChange, monthl
 
                   {/* Amount input */}
                   <div className="relative">
-                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground font-bold text-xl z-10">
+                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground font-extrabold text-2xl z-10">
                       {currency.symbol}
                     </span>
                     <Input
