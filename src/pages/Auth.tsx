@@ -15,7 +15,6 @@ const Auth: React.FC = () => {
   const location = useLocation();
   const isSignUpRoute = location.pathname === '/signup';
   const [isSignUp, setIsSignUp] = useState(isSignUpRoute);
-  const [signUpStep, setSignUpStep] = useState(1); // Step 1 = why, Step 2 = form
   const [isForgotPassword, setIsForgotPassword] = useState(false);
   const [isResettingPassword, setIsResettingPassword] = useState(false);
   const [verificationSent, setVerificationSent] = useState(false);
