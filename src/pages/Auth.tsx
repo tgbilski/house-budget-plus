@@ -251,10 +251,8 @@ const Auth: React.FC = () => {
             Go to Sign In
           </Button>
         </div>
-      ) : isSignUp && signUpStep === 1 ? (
-        renderSignUpStep1()
-      ) : isSignUp && signUpStep === 2 ? (
-        renderSignUpStep2()
+      ) : isSignUp ? (
+        renderSignUpForm()
       ) : (
         /* Login / Forgot Password / Reset Password */
         <div className="w-full max-w-md">
