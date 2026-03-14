@@ -20,6 +20,7 @@ import DashboardHeader from "@/components/DashboardHeader";
 import ScrollToTop from "@/components/ScrollToTop";
 import Footer from "@/components/Footer";
 import { JazzBackground } from "@/components/JazzBackground";
+import { MobileSignupBar } from "@/components/MobileSignupBar";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { PageSkeleton } from "@/components/LoadingSkeletons";
 import { useState, createContext } from "react";
@@ -196,6 +197,7 @@ const AppLayout = () => {
       <main id="main-content" className="flex-1 relative z-10">
         <AppRoutes />
       </main>
+      <MobileSignupBar />
       <FooterWrapper />
     </div>
   );
