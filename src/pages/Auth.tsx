@@ -32,7 +32,6 @@ const Auth: React.FC = () => {
 
   useEffect(() => {
     setIsSignUp(location.pathname === '/signup');
-    setSignUpStep(1);
   }, [location.pathname]);
 
   useEffect(() => {
