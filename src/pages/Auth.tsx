@@ -8,7 +8,7 @@ import { useMarkPageReady } from '@/hooks/usePageReady';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { isNativeApp } from '@/utils/capacitor';
-import { ArrowLeft, Sparkles, Shield, Save, CheckCircle2, CreditCard, Lock } from 'lucide-react';
+import { ArrowLeft, Sparkles, Shield, Save, CheckCircle2 } from 'lucide-react';
 import mascotIcon from '@/assets/calculator-mascot.png';
 
 const Auth: React.FC = () => {
