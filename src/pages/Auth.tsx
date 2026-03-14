@@ -128,108 +128,29 @@ const Auth: React.FC = () => {
     }
   };
 
-  // Step 1: "Why sign up?" explainer for signup route
-  const renderSignUpStep1 = () => (
-    <div className="w-full max-w-md mx-auto text-center">
+  // Single-step signup: benefits + form together
+  const renderSignUpForm = () => (
+    <div className="w-full max-w-md mx-auto">
       {/* Back to home */}
       <button onClick={() => navigate('/')} className="flex items-center gap-1.5 text-muted-foreground hover:text-foreground text-sm mb-6 mx-auto lg:mx-0">
         <ArrowLeft className="w-4 h-4" />
         Back to calculators
       </button>
-      <img src={mascotIcon} alt="Budget mascot" className="w-20 h-20 mx-auto mb-4 drop-shadow-lg" />
-      
-      {/* Big free badge */}
-      <div className="inline-flex items-center gap-2 bg-success/10 text-success rounded-full px-5 py-2 mb-5 font-bold text-sm">
-        <CheckCircle2 className="w-5 h-5" />
-        100% Free — No catches
-      </div>
 
-      <h1 className="text-2xl lg:text-3xl font-black text-foreground mb-3 leading-tight">
-        Why create an account?
-      </h1>
-      <p className="text-muted-foreground text-base lg:text-lg mb-8 leading-relaxed max-w-sm mx-auto">
-        Our calculators work without an account. But signing up lets you <span className="font-semibold text-foreground">save your numbers</span> so you don't lose them.
-      </p>
+      <div className="text-center">
+        <img src={mascotIcon} alt="Budget mascot" className="w-16 h-16 mx-auto mb-3 drop-shadow-lg" />
 
-      {/* Reason cards */}
-      <div className="space-y-3 text-left mb-8">
-        <div className="flex items-start gap-4 bg-card rounded-xl p-4 border border-border shadow-sm">
-          <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
-            <Save className="w-5 h-5 text-primary" />
-          </div>
-          <div>
-            <p className="font-bold text-foreground text-sm">Save your calculations</p>
-            <p className="text-muted-foreground text-sm">Your budgets, savings goals, and gift lists are saved to your account so you can come back anytime.</p>
-          </div>
+        <div className="inline-flex items-center gap-2 bg-success/10 text-success rounded-full px-4 py-1.5 mb-4 font-bold text-xs">
+          <CheckCircle2 className="w-4 h-4" />
+          100% Free — No credit card
         </div>
 
-        <div className="flex items-start gap-4 bg-card rounded-xl p-4 border border-border shadow-sm">
-          <div className="w-10 h-10 rounded-full bg-secondary/10 flex items-center justify-center flex-shrink-0">
-            <Shield className="w-5 h-5 text-secondary" />
-          </div>
-          <div>
-            <p className="font-bold text-foreground text-sm">Sync across devices</p>
-            <p className="text-muted-foreground text-sm">Start on your phone, finish on your laptop. Your data follows you everywhere.</p>
-          </div>
-        </div>
-
-        <div className="flex items-start gap-4 bg-card rounded-xl p-4 border border-border shadow-sm">
-          <div className="w-10 h-10 rounded-full bg-accent flex items-center justify-center flex-shrink-0">
-            <CreditCard className="w-5 h-5 text-accent-foreground" />
-          </div>
-          <div>
-            <p className="font-bold text-foreground text-sm">No credit card. Ever.</p>
-            <p className="text-muted-foreground text-sm">We only need your email to create your account. That's it — no payment info, no hidden fees.</p>
-          </div>
-        </div>
-      </div>
-
-      {/* Premium upsell hint */}
-      <div className="flex items-center gap-3 bg-primary/5 border border-primary/15 rounded-xl p-3 mb-8 text-left">
-        <Sparkles className="w-5 h-5 text-primary flex-shrink-0" />
-        <p className="text-xs text-muted-foreground">
-          <span className="font-semibold text-foreground">Want AI-powered insights?</span> Premium features available for less than a coffee — $2.99/mo.
+        <h1 className="text-2xl lg:text-3xl font-black text-foreground mb-1 leading-tight">
+          Create your free account
+        </h1>
+        <p className="text-muted-foreground text-sm mb-6">
+          Save your budgets, sync across devices, and track your savings.
         </p>
-      </div>
-
-      <Button
-        onClick={() => setSignUpStep(2)}
-        className="w-full h-14 text-lg font-bold bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg shadow-primary/25 mb-3"
-      >
-        Got it — Sign me up! 🚀
-      </Button>
-
-      <p className="text-xs text-muted-foreground">
-        Already have an account?{' '}
-        <button onClick={() => navigate('/login')} className="text-primary font-semibold hover:underline">
-          Sign in
-        </button>
-      </p>
-    </div>
-  );
-
-  // Step 2: Actual signup form
-  const renderSignUpStep2 = () => (
-    <div className="w-full max-w-md mx-auto">
-      {/* Step indicator */}
-      <div className="flex items-center gap-2 mb-6">
-        <button onClick={() => setSignUpStep(1)} className="text-muted-foreground hover:text-foreground">
-          <ArrowLeft className="w-5 h-5" />
-        </button>
-        <div className="flex gap-1.5 flex-1 justify-center">
-          <div className="w-8 h-1.5 rounded-full bg-primary" />
-          <div className="w-8 h-1.5 rounded-full bg-primary" />
-        </div>
-        <div className="w-5" /> {/* spacer for centering */}
-      </div>
-
-      <div className="text-center mb-6">
-        <div className="inline-flex items-center gap-2 bg-success/10 text-success rounded-full px-4 py-1.5 mb-3 font-bold text-xs">
-          <Lock className="w-3.5 h-3.5" />
-          Free forever • No credit card
-        </div>
-        <h2 className="text-2xl font-black text-foreground mb-1">Create your free account</h2>
-        <p className="text-muted-foreground text-sm">Just so we can save your calculations</p>
       </div>
 
       {/* Google signup — fastest path */}
@@ -276,9 +197,25 @@ const Auth: React.FC = () => {
           className="w-full h-12 text-base font-bold bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg shadow-primary/25"
           disabled={loading}
         >
-          {loading ? 'Please wait...' : "Create Free Account"}
+          {loading ? 'Please wait...' : "Create Free Account 🚀"}
         </Button>
       </form>
+
+      {/* Compact benefit highlights */}
+      <div className="mt-6 grid grid-cols-3 gap-2 text-center">
+        <div className="rounded-lg bg-muted/50 p-2.5">
+          <Save className="w-4 h-4 mx-auto mb-1 text-primary" />
+          <p className="text-xs font-medium text-foreground">Save data</p>
+        </div>
+        <div className="rounded-lg bg-muted/50 p-2.5">
+          <Shield className="w-4 h-4 mx-auto mb-1 text-primary" />
+          <p className="text-xs font-medium text-foreground">Sync devices</p>
+        </div>
+        <div className="rounded-lg bg-muted/50 p-2.5">
+          <Sparkles className="w-4 h-4 mx-auto mb-1 text-primary" />
+          <p className="text-xs font-medium text-foreground">AI insights</p>
+        </div>
+      </div>
 
       <p className="text-center text-xs text-muted-foreground mt-4">
         Already have an account?{' '}
