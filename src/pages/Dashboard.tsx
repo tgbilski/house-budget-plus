@@ -1,10 +1,14 @@
 import React, { useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import { usePageReady } from '@/hooks/usePageReady';
 import { useIsMobile } from '@/hooks/use-mobile';
+import { useSubscription } from '@/hooks/useSubscription';
 import { SEO } from '@/components/SEO';
 import { seoData } from '@/utils/seoData';
 import { WarningBanner } from '@/components/WarningBanner';
+import { Button } from '@/components/ui/button';
+import { Lock, Sparkles } from 'lucide-react';
 
 import FeedbackForm from '@/components/FeedbackForm';
 import BudgetSection from '@/components/dashboard/BudgetSection';
