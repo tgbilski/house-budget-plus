@@ -14,7 +14,7 @@ const SavingsSection: React.FC = () => {
   const { currentHousehold } = useHouseholdContext();
   const { currency } = useCurrency();
   const isMobile = useIsMobile();
-  const [selectedYear, setSelectedYear] = useState<number>(2025);
+  const [selectedYear, setSelectedYear] = useState<number>(2026);
   const [expanded, setExpanded] = useState(!isMobile);
 
   const {
