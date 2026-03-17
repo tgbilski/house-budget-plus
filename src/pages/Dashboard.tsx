@@ -21,6 +21,7 @@ const Dashboard: React.FC = () => {
   const { user } = useAuth();
   const { setPageReady } = usePageReady();
   const isMobile = useIsMobile();
+  const { subscribed } = useSubscription();
 
   useEffect(() => {
     requestAnimationFrame(() => setPageReady());
