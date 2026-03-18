@@ -26,8 +26,9 @@ import InlineSignUpForm from '@/components/InlineSignUpForm';
 import FeedbackForm from '@/components/FeedbackForm';
 import { PremiumLimitBanner } from '@/components/PremiumLimitBanner';
 import { BadgeDisplay } from '@/components/BadgeDisplay';
+import GuestHero from '@/components/GuestHero';
+import CalculatorSignupNudge from '@/components/CalculatorSignupNudge';
 import calculatorMascot from '@/assets/calculator-mascot.png';
-// ADDED: Import the hook to detect mobile
 import { useIsMobile } from '@/hooks/use-mobile';
 
 interface Calculator {
