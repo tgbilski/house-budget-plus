@@ -235,8 +235,9 @@ export default {
     			wiggle: 'wiggle 0.5s ease-in-out',
     			pop: 'pop 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)',
     			glow: 'glow 2s ease-in-out infinite',
-    			shimmer: 'shimmer 2s ease-in-out infinite'
-    		}
+			shimmer: 'shimmer 2s ease-in-out infinite',
+			'bounce-slow': 'bounce 3s ease-in-out infinite'
+		}
     	}
     },
 	plugins: [require("tailwindcss-animate")],
