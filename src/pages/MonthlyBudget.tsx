@@ -181,22 +181,26 @@ const MonthlyBudget: React.FC = () => {
       />
       
       <div className="w-full px-4 sm:px-6 lg:px-8 pt-2 pb-4">
-        {/* Page Header */}
-        <div className="flex flex-col gap-3 mb-4">
-          <div className="flex items-center justify-between gap-4">
-            <div className="flex items-center gap-2 sm:gap-3 min-w-0">
-              <img 
-                src={calculatorMascot} 
-                alt="Budget Calculator Mascot" 
-                className="h-10 w-10 sm:h-12 sm:w-12 md:h-16 md:w-16 flex-shrink-0 object-contain drop-shadow-[2px_2px_0px_hsl(var(--stroke))]"
-              />
-              <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-foreground tracking-wide truncate">
-                MONTHLY BUDGET
-              </h1>
+        {/* Guest Hero - above everything for non-authenticated users */}
+        {!user && <GuestHero />}
+
+        {/* Page Header - only for authenticated users (hero replaces it for guests) */}
+        {user && (
+          <div className="flex flex-col gap-3 mb-4">
+            <div className="flex items-center justify-between gap-4">
+              <div className="flex items-center gap-2 sm:gap-3 min-w-0">
+                <img 
+                  src={calculatorMascot} 
+                  alt="Budget Calculator Mascot" 
+                  className="h-10 w-10 sm:h-12 sm:w-12 md:h-16 md:w-16 flex-shrink-0 object-contain drop-shadow-[2px_2px_0px_hsl(var(--stroke))]"
+                />
+                <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-foreground tracking-wide truncate">
+                  MONTHLY BUDGET
+                </h1>
+              </div>
             </div>
           </div>
-        </div>
-
+        )}
 
         <WarningBanner />
 
@@ -210,65 +214,21 @@ const MonthlyBudget: React.FC = () => {
           <div className="bg-destructive/10 border border-destructive text-destructive rounded-lg p-4 text-center">
             <p>{error}</p>
           </div>
-        ) : (
-          <div className={`grid grid-cols-1 ${user ? 'lg:grid-cols-3' : 'lg:grid-cols-2'} gap-6 mt-2 md:mt-0`}>
-            {/* Budget calculators - takes 2 columns on left */}
-            <div className={`${user ? 'lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-6' : ''} order-1`}>
-              {user ? (
-                <>
-                  {calculators
-                    .filter(calculator => visibleCalculators.has(calculator.id))
-                    .map((calculator, index) => (
-                    <div
-                      key={calculator.id}
-                      className="animate-fade-in"
-                      style={{ animationDelay: `${index * 0.1}s`, animationFillMode: 'both' }}
-                    >
-                      <BudgetCalculator
-                        id={calculator.id}
-                        calculatorNumber={parseInt(calculator.id)}
-                        showRemove={false}
-                        onRemove={() => {}}
-                        onNameChange={handleNameChange}
-                        pageType="monthly_budget"
-                        onEmptyStateChange={handleCalculatorReset}
-                      />
-                    </div>
-                  ))}
-                  
-                  {getNextCalculatorNumber() && (
-                    subscribed || visibleCalculators.size < 2 ? (
-                      <div className="animate-fade-in flex items-start">
-                        <button
-                          onClick={revealNextCalculator}
-                          className="w-full max-w-md min-h-[200px] rounded-xl border-[4px] border-dashed border-border/50 bg-muted/20 touch-manipulation [@media(hover:hover)]:hover:bg-muted/40 [@media(hover:hover)]:hover:border-primary/50 transition-all duration-200 flex flex-col items-center justify-center gap-3 group"
-                        >
-                          <div className="p-3 rounded-full bg-primary/10 [@media(hover:hover)]:group-hover:bg-primary/20 transition-colors">
-                            <Plus className="h-8 w-8 text-primary" />
-                          </div>
-                          <div className="text-center">
-                            <p className="font-semibold text-foreground">Add Calculator {getNextCalculatorNumber()}</p>
-                            <p className="text-sm text-muted-foreground">Track another income source or scenario</p>
-                          </div>
-                        </button>
-                      </div>
-                    ) : (
-                      <div className="animate-fade-in flex items-start">
-                        <PremiumLimitBanner 
-                          featureName="calculators" 
-                          freeLimit={1} 
-                          className="min-h-[200px] flex flex-col items-center justify-center"
-                          savingsAmount={totalExpenses > 100 ? new Intl.NumberFormat('en-US', { style: 'currency', currency: currency.code }).format(Math.round(totalExpenses * (0.08 + 0.04))) : undefined}
-                        />
-                      </div>
-                    )
-                  )}
-                </>
-              ) : (
-                <div className="animate-fade-in">
+        ) : user ? (
+          /* Authenticated user layout - 3 column grid */
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-2 md:mt-0">
+            <div className="lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-6 order-1">
+              {calculators
+                .filter(calculator => visibleCalculators.has(calculator.id))
+                .map((calculator, index) => (
+                <div
+                  key={calculator.id}
+                  className="animate-fade-in"
+                  style={{ animationDelay: `${index * 0.1}s`, animationFillMode: 'both' }}
+                >
                   <BudgetCalculator
-                    id="1"
-                    calculatorNumber={1}
+                    id={calculator.id}
+                    calculatorNumber={parseInt(calculator.id)}
                     showRemove={false}
                     onRemove={() => {}}
                     onNameChange={handleNameChange}
@@ -276,77 +236,110 @@ const MonthlyBudget: React.FC = () => {
                     onEmptyStateChange={handleCalculatorReset}
                   />
                 </div>
+              ))}
+              
+              {getNextCalculatorNumber() && (
+                subscribed || visibleCalculators.size < 2 ? (
+                  <div className="animate-fade-in flex items-start">
+                    <button
+                      onClick={revealNextCalculator}
+                      className="w-full max-w-md min-h-[200px] rounded-xl border-[4px] border-dashed border-border/50 bg-muted/20 touch-manipulation [@media(hover:hover)]:hover:bg-muted/40 [@media(hover:hover)]:hover:border-primary/50 transition-all duration-200 flex flex-col items-center justify-center gap-3 group"
+                    >
+                      <div className="p-3 rounded-full bg-primary/10 [@media(hover:hover)]:group-hover:bg-primary/20 transition-colors">
+                        <Plus className="h-8 w-8 text-primary" />
+                      </div>
+                      <div className="text-center">
+                        <p className="font-semibold text-foreground">Add Calculator {getNextCalculatorNumber()}</p>
+                        <p className="text-sm text-muted-foreground">Track another income source or scenario</p>
+                      </div>
+                    </button>
+                  </div>
+                ) : (
+                  <div className="animate-fade-in flex items-start">
+                    <PremiumLimitBanner 
+                      featureName="calculators" 
+                      freeLimit={1} 
+                      className="min-h-[200px] flex flex-col items-center justify-center"
+                      savingsAmount={totalExpenses > 100 ? new Intl.NumberFormat('en-US', { style: 'currency', currency: currency.code }).format(Math.round(totalExpenses * (0.08 + 0.04))) : undefined}
+                    />
+                  </div>
+                )
               )}
             </div>
 
-            {/* Right column */}
+            {/* Right column - charts */}
             <div className="lg:col-span-1 space-y-4 order-2">
-              {user ? (
-                <>
-                  {totalIncome > 0 && (
-                    <div className="bg-card border-[3px] border-stroke rounded-xl p-4 shadow-cartoon">
-                      <p className="text-xs text-muted-foreground uppercase tracking-wide mb-1">
-                        Yearly Household Income
-                      </p>
-                      <p className="text-2xl sm:text-3xl font-bold text-success">
-                        {currency.symbol}{yearlyHouseholdIncome.toLocaleString()}
-                      </p>
-                      <p className="text-xs text-muted-foreground mt-1">
-                        Based on {currency.symbol}{totalIncome.toLocaleString()}/month
-                      </p>
-                    </div>
-                  )}
-                  {!isMobile && (
-                    <BudgetDonutChart
-                      totalIncome={totalIncome}
-                      totalExpenses={totalExpenses}
-                      currency={currency}
-                    />
-                  )}
-                </>
-              ) : (
-                <div className="space-y-4">
-                  {/* Fun sales pitch for guests */}
-                  <div className="bg-card border-[3px] border-stroke rounded-xl p-5 shadow-cartoon">
-                    <h2 className="text-xl font-bold text-foreground mb-2">
-                      Adulting is hard. Budgeting doesn't have to be. 😤
-                    </h2>
-                    <p className="text-sm text-muted-foreground mb-3">
-                      You're already here crunching numbers — why not save your work? Sign up and unlock the full toolkit:
-                    </p>
-                    <ul className="space-y-2 text-sm mb-4">
-                      <li className="flex items-start gap-2">
-                        <span className="text-lg leading-none">🔒</span>
-                        <span className="text-foreground"><strong>Your data, saved forever</strong> — no more "wait, what was my rent again?"</span>
-                      </li>
-                      <li className="flex items-start gap-2">
-                        <span className="text-lg leading-none">👯</span>
-                        <span className="text-foreground"><strong>Add roommates & partners</strong> — split costs without the awkward convos</span>
-                      </li>
-                      <li className="flex items-start gap-2">
-                        <span className="text-lg leading-none">📊</span>
-                        <span className="text-foreground"><strong>Charts that actually slap</strong> — see where your money goes at a glance</span>
-                      </li>
-                      <li className="flex items-start gap-2">
-                        <span className="text-lg leading-none">🎯</span>
-                        <span className="text-foreground"><strong>Savings goals tracker</strong> — watch your progress grow month by month</span>
-                      </li>
-                      <li className="flex items-start gap-2">
-                        <span className="text-lg leading-none">🧾</span>
-                        <span className="text-foreground"><strong>Expense tracking</strong> — log purchases and see spending patterns</span>
-                      </li>
-                    </ul>
-                    <p className="text-xs text-muted-foreground italic">
-                      No credit card needed. No spam. Just vibes and financial literacy. 🫡
-                    </p>
-                  </div>
-                  <InlineSignUpForm />
+              {totalIncome > 0 && (
+                <div className="bg-card border-[3px] border-stroke rounded-xl p-4 shadow-cartoon">
+                  <p className="text-xs text-muted-foreground uppercase tracking-wide mb-1">
+                    Yearly Household Income
+                  </p>
+                  <p className="text-2xl sm:text-3xl font-bold text-success">
+                    {currency.symbol}{yearlyHouseholdIncome.toLocaleString()}
+                  </p>
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Based on {currency.symbol}{totalIncome.toLocaleString()}/month
+                  </p>
                 </div>
+              )}
+              {!isMobile && (
+                <BudgetDonutChart
+                  totalIncome={totalIncome}
+                  totalExpenses={totalExpenses}
+                  currency={currency}
+                />
               )}
             </div>
           </div>
-        )}
+        ) : (
+          /* Guest layout - single column, calculator then signup */
+          <div className="space-y-6 mt-2">
+            <div id="guest-calculator" className="max-w-xl mx-auto animate-fade-in">
+              <BudgetCalculator
+                id="1"
+                calculatorNumber={1}
+                showRemove={false}
+                onRemove={() => {}}
+                onNameChange={handleNameChange}
+                pageType="monthly_budget"
+                onEmptyStateChange={handleCalculatorReset}
+              />
+            </div>
 
+            {/* Signup section after calculator */}
+            <div className="max-w-xl mx-auto space-y-4">
+              <div className="bg-card border-[3px] border-stroke rounded-xl p-5 shadow-cartoon">
+                <h2 className="text-xl font-bold text-foreground mb-2">
+                  Adulting is hard. Budgeting doesn't have to be. 😤
+                </h2>
+                <p className="text-sm text-muted-foreground mb-3">
+                  You're already here crunching numbers — why not save your work?
+                </p>
+                <ul className="space-y-2 text-sm mb-4">
+                  <li className="flex items-start gap-2">
+                    <span className="text-lg leading-none">🔒</span>
+                    <span className="text-foreground"><strong>Your data, saved forever</strong> — no more "wait, what was my rent again?"</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-lg leading-none">📊</span>
+                    <span className="text-foreground"><strong>Charts that actually slap</strong> — see where your money goes</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-lg leading-none">🎯</span>
+                    <span className="text-foreground"><strong>Savings goals + expense tracking</strong> — the full toolkit</span>
+                  </li>
+                </ul>
+                <p className="text-xs text-muted-foreground italic">
+                  No credit card needed. Just vibes and financial literacy. 🫡
+                </p>
+              </div>
+              <InlineSignUpForm />
+            </div>
+            
+            {/* Contextual signup nudge - appears after calculator interaction */}
+            <CalculatorSignupNudge />
+          </div>
+        )}
 
         <div className="mt-8">
           <FeedbackForm pageSource="budget" />
