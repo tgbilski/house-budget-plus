@@ -270,8 +270,6 @@ export const AffiliateRecommendations: React.FC<AffiliateRecommendationsProps> =
   const hasData = totalIncome > 0 || totalExpenses > 0;
   const [expanded, setExpanded] = useState(false);
 
-  if (!hasData) return null;
-
   const handleClick = (tag: string, url: string) => {
     trackEvent('affiliate_click', {
       recommendation: tag,
@@ -282,6 +280,7 @@ export const AffiliateRecommendations: React.FC<AffiliateRecommendationsProps> =
   };
 
   const getMessage = () => {
+    if (!hasData) return "Smart tools to level up your finances 🚀";
     if (surplus > 500) return "Nice surplus! Here's how to make your money work harder 💪";
     if (surplus > 0) return "Every dollar counts — these tools can stretch your budget further 🎯";
     if (surplus < 0) return "Tight budget? These tools can help you find extra cash 💡";
