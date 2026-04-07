@@ -161,7 +161,7 @@ const MonthlyBudget: React.FC = () => {
   };
 
   const getNextCalculatorNumber = () => {
-    const allIds = ['1', '2', '3', '4'];
+    const allIds = ['1', '2'];
     const nextHidden = allIds.find(id => !visibleCalculators.has(id));
     return nextHidden ? parseInt(nextHidden) : null;
   };
