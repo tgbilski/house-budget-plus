@@ -258,6 +258,14 @@ const categoryLabels: Record<string, string> = {
   office: '🗂️ Office & Organization',
 };
 
+const categoryImages: Record<string, string> = {
+  finance: affiliateFinance,
+  budgeting: affiliateBudgeting,
+  home: affiliateHome,
+  auto: affiliateAuto,
+  office: affiliateOffice,
+};
+
 const categoryOrder = ['finance', 'budgeting', 'home', 'auto', 'office'];
 
 interface AffiliateRecommendationsProps {
