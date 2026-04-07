@@ -205,13 +205,8 @@ export const AffiliateRecommendations: React.FC<AffiliateRecommendationsProps> =
   const hasData = totalIncome > 0 || totalExpenses > 0;
   const [expanded, setExpanded] = useState(false);
 
-  const handleClick = (tag: string, asin: string) => {
-    trackEvent('affiliate_click', {
-      recommendation: tag,
-      asin,
-      surplus: surplus,
-      income: totalIncome,
-    });
+  const handleClick = (tag: string, asin: string, title: string) => {
+    trackAffiliateClick(tag, asin, 'recommendations_grid', title);
     window.open(amazonUrl(asin), '_blank', 'noopener,noreferrer');
   };
 
