@@ -9,6 +9,7 @@ import { seoData } from '@/utils/seoData';
 import { WarningBanner } from '@/components/WarningBanner';
 import { Button } from '@/components/ui/button';
 import { Lock, Sparkles } from 'lucide-react';
+import { AffiliateRecommendations } from '@/components/AffiliateRecommendations';
 
 import FeedbackForm from '@/components/FeedbackForm';
 import BudgetSection from '@/components/dashboard/BudgetSection';
