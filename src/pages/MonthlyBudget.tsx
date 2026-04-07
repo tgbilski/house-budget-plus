@@ -335,9 +335,6 @@ const MonthlyBudget: React.FC = () => {
           </div>
         )}
 
-        {/* Affiliate recommendations - below calculators, above feedback */}
-        <AffiliateRecommendations className="mt-6" />
-
         <div className="mt-8">
           <FeedbackForm pageSource="budget" />
         </div>
