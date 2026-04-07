@@ -330,10 +330,11 @@ const MonthlyBudget: React.FC = () => {
             {/* Contextual signup nudge - appears after calculator interaction */}
             <CalculatorSignupNudge />
             <ContextualProductPopup />
-
-            <AffiliateRecommendations className="mt-4" />
           </div>
         )}
+
+        {/* Affiliate recommendations - below calculators, above feedback */}
+        <AffiliateRecommendations className="mt-6" />
 
         <div className="mt-8">
           <FeedbackForm pageSource="budget" />
