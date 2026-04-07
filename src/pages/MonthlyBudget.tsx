@@ -282,6 +282,9 @@ const MonthlyBudget: React.FC = () => {
               )}
             </div>
           </div>
+
+          {/* Affiliate recommendations for authenticated users */}
+          <AffiliateRecommendations className="mt-6" />
         ) : (
           /* Guest layout - single column, calculator then signup */
           <div className="space-y-6 mt-2">
