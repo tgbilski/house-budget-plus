@@ -113,7 +113,7 @@ const MonthlyBudget: React.FC = () => {
   });
 
   useEffect(() => {
-    setCalculators([{ id: '1' }, { id: '2' }, { id: '3' }, { id: '4' }]);
+    setCalculators([{ id: '1' }, { id: '2' }]);
     
     if (!user || !currentHousehold) {
       setVisibleCalculators(new Set(['1']));
