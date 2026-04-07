@@ -124,7 +124,9 @@ const Dashboard: React.FC = () => {
           )}
         </div>
 
-        
+        {/* Affiliate Recommendations - shown to all users */}
+        <AffiliateRecommendations className="mt-8" />
+
         <div className="mt-6">
           <FeedbackForm pageSource="dashboard" />
         </div>
