@@ -217,6 +217,7 @@ const MonthlyBudget: React.FC = () => {
             <p>{error}</p>
           </div>
         ) : user ? (
+          <>
           /* Authenticated user layout - 3 column grid */
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-2 md:mt-0">
             <div className="lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-6 order-1">
