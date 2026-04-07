@@ -12,6 +12,14 @@ const amazonImg = (asin: string) =>
 const amazonUrl = (asin: string) =>
   `https://www.amazon.com/dp/${asin}?tag=${AMAZON_TAG}`;
 
+const fallbackCategoryIcon: Record<Recommendation['category'], string> = {
+  finance: '💸',
+  budgeting: '📒',
+  home: '🏠',
+  auto: '🚗',
+  office: '🗂️',
+};
+
 interface Recommendation {
   title: string;
   description: string;
@@ -204,6 +212,7 @@ export const AffiliateRecommendations: React.FC<AffiliateRecommendationsProps> =
   const surplus = totalIncome - totalExpenses;
   const hasData = totalIncome > 0 || totalExpenses > 0;
   const [expanded, setExpanded] = useState(false);
+  const [failedImages, setFailedImages] = useState<Record<string, boolean>>({});
 
   const handleClick = (tag: string, asin: string, title: string) => {
     trackAffiliateClick(tag, asin, 'recommendations_grid', title);
@@ -249,17 +258,26 @@ export const AffiliateRecommendations: React.FC<AffiliateRecommendationsProps> =
               >
                 <CardContent className="p-3 flex items-center gap-3">
                   <div className="w-16 h-16 flex-shrink-0 rounded-lg overflow-hidden bg-white flex items-center justify-center border border-border/30">
-                    <img
-                      src={amazonImg(rec.asin)}
-                      alt={rec.title}
-                      loading="lazy"
-                      width={80}
-                      height={80}
-                      className="w-full h-full object-contain p-1"
-                      onError={(e) => {
-                        (e.target as HTMLImageElement).style.display = 'none';
-                      }}
-                    />
+                    {failedImages[rec.tag] ? (
+                      <div className="w-full h-full bg-muted text-foreground flex flex-col items-center justify-center px-1 text-center">
+                        <span className="text-lg leading-none">{fallbackCategoryIcon[rec.category]}</span>
+                        <span className="mt-1 text-[9px] font-medium leading-tight line-clamp-2">
+                          {rec.title}
+                        </span>
+                      </div>
+                    ) : (
+                      <img
+                        src={amazonImg(rec.asin)}
+                        alt={rec.title}
+                        loading="lazy"
+                        width={80}
+                        height={80}
+                        className="w-full h-full object-contain p-1"
+                        onError={() => {
+                          setFailedImages((prev) => ({ ...prev, [rec.tag]: true }));
+                        }}
+                      />
+                    )}
                   </div>
                   <div className="min-w-0 flex-1">
                     <h4 className="text-sm font-semibold text-foreground leading-tight">{rec.title}</h4>
