@@ -270,8 +270,6 @@ export const AffiliateRecommendations: React.FC<AffiliateRecommendationsProps> =
   const hasData = totalIncome > 0 || totalExpenses > 0;
   const [expanded, setExpanded] = useState(false);
 
-  if (!hasData) return null;
-
   const handleClick = (tag: string, url: string) => {
     trackEvent('affiliate_click', {
       recommendation: tag,
