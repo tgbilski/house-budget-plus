@@ -297,6 +297,9 @@ const MonthlyBudget: React.FC = () => {
               />
             </div>
 
+            {/* Affiliate recommendations - above signup section */}
+            <AffiliateRecommendations className="max-w-xl mx-auto" />
+
             {/* Signup section after calculator */}
             <div className="max-w-xl mx-auto space-y-4">
               <div className="bg-card border-[3px] border-stroke rounded-xl p-5 shadow-cartoon">
