@@ -39,6 +39,8 @@ const ContactUs = lazy(() => import("@/pages/ContactUs"));
 const PrivacyPolicy = lazy(() => import("@/pages/PrivacyPolicy"));
 const TermsAndConditions = lazy(() => import("@/pages/TermsAndConditions"));
 const Disclaimer = lazy(() => import("@/pages/Disclaimer"));
+const Blog = lazy(() => import("@/pages/Blog"));
+const BlogPost = lazy(() => import("@/pages/BlogPost"));
 const SubscriptionGuard = lazy(() => import("@/components/SubscriptionGuard").then(m => ({ default: m.SubscriptionGuard })));
 
 interface Currency {
