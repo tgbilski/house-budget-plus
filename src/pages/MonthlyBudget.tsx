@@ -141,7 +141,7 @@ const MonthlyBudget: React.FC = () => {
   const error = queryError ? "Failed to load your budget data. Please refresh the page to try again." : null;
 
   const revealNextCalculator = () => {
-    const allIds = ['1', '2', '3', '4'];
+    const allIds = ['1', '2'];
     const nextHidden = allIds.find(id => !visibleCalculators.has(id));
     if (nextHidden) {
       setVisibleCalculators(prev => new Set([...prev, nextHidden]));
