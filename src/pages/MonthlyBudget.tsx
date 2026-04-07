@@ -218,74 +218,75 @@ const MonthlyBudget: React.FC = () => {
           </div>
         ) : user ? (
           <>
-          /* Authenticated user layout - 3 column grid */
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-2 md:mt-0">
-            <div className="lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-6 order-1">
-              {calculators
-                .filter(calculator => visibleCalculators.has(calculator.id))
-                .map((calculator, index) => (
-                <div
-                  key={calculator.id}
-                  className="animate-fade-in"
-                  style={{ animationDelay: `${index * 0.1}s`, animationFillMode: 'both' }}
-                >
-                  <BudgetCalculator
-                    id={calculator.id}
-                    calculatorNumber={parseInt(calculator.id)}
-                    showRemove={false}
-                    onRemove={() => {}}
-                    onNameChange={handleNameChange}
-                    pageType="monthly_budget"
-                    onEmptyStateChange={handleCalculatorReset}
-                  />
-                </div>
-              ))}
-              
-              {getNextCalculatorNumber() && (
-                  <div className="animate-fade-in flex items-start">
-                    <button
-                      onClick={revealNextCalculator}
-                      className="w-full max-w-md min-h-[200px] rounded-xl border-[4px] border-dashed border-border/50 bg-muted/20 touch-manipulation [@media(hover:hover)]:hover:bg-muted/40 [@media(hover:hover)]:hover:border-primary/50 transition-all duration-200 flex flex-col items-center justify-center gap-3 group"
-                    >
-                      <div className="p-3 rounded-full bg-primary/10 [@media(hover:hover)]:group-hover:bg-primary/20 transition-colors">
-                        <Plus className="h-8 w-8 text-primary" />
-                      </div>
-                      <div className="text-center">
-                        <p className="font-semibold text-foreground">Add Calculator {getNextCalculatorNumber()}</p>
-                        <p className="text-sm text-muted-foreground">Track another income source or scenario</p>
-                      </div>
-                    </button>
+            {/* Authenticated user layout - 3 column grid */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-2 md:mt-0">
+              <div className="lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-6 order-1">
+                {calculators
+                  .filter(calculator => visibleCalculators.has(calculator.id))
+                  .map((calculator, index) => (
+                  <div
+                    key={calculator.id}
+                    className="animate-fade-in"
+                    style={{ animationDelay: `${index * 0.1}s`, animationFillMode: 'both' }}
+                  >
+                    <BudgetCalculator
+                      id={calculator.id}
+                      calculatorNumber={parseInt(calculator.id)}
+                      showRemove={false}
+                      onRemove={() => {}}
+                      onNameChange={handleNameChange}
+                      pageType="monthly_budget"
+                      onEmptyStateChange={handleCalculatorReset}
+                    />
                   </div>
-              )}
+                ))}
+                
+                {getNextCalculatorNumber() && (
+                    <div className="animate-fade-in flex items-start">
+                      <button
+                        onClick={revealNextCalculator}
+                        className="w-full max-w-md min-h-[200px] rounded-xl border-[4px] border-dashed border-border/50 bg-muted/20 touch-manipulation [@media(hover:hover)]:hover:bg-muted/40 [@media(hover:hover)]:hover:border-primary/50 transition-all duration-200 flex flex-col items-center justify-center gap-3 group"
+                      >
+                        <div className="p-3 rounded-full bg-primary/10 [@media(hover:hover)]:group-hover:bg-primary/20 transition-colors">
+                          <Plus className="h-8 w-8 text-primary" />
+                        </div>
+                        <div className="text-center">
+                          <p className="font-semibold text-foreground">Add Calculator {getNextCalculatorNumber()}</p>
+                          <p className="text-sm text-muted-foreground">Track another income source or scenario</p>
+                        </div>
+                      </button>
+                    </div>
+                )}
+              </div>
+
+              {/* Right column - charts */}
+              <div className="lg:col-span-1 space-y-4 order-2">
+                {totalIncome > 0 && (
+                  <div className="bg-card border-[3px] border-stroke rounded-xl p-4 shadow-cartoon">
+                    <p className="text-xs text-muted-foreground uppercase tracking-wide mb-1">
+                      Yearly Household Income
+                    </p>
+                    <p className="text-2xl sm:text-3xl font-bold text-success">
+                      {currency.symbol}{yearlyHouseholdIncome.toLocaleString()}
+                    </p>
+                    <p className="text-xs text-muted-foreground mt-1">
+                      Based on {currency.symbol}{totalIncome.toLocaleString()}/month
+                    </p>
+                  </div>
+                )}
+                {!isMobile && (
+                  <BudgetDonutChart
+                    totalIncome={totalIncome}
+                    totalExpenses={totalExpenses}
+                    currency={currency}
+                  />
+                )}
+              </div>
             </div>
 
-            {/* Right column - charts */}
-            <div className="lg:col-span-1 space-y-4 order-2">
-              {totalIncome > 0 && (
-                <div className="bg-card border-[3px] border-stroke rounded-xl p-4 shadow-cartoon">
-                  <p className="text-xs text-muted-foreground uppercase tracking-wide mb-1">
-                    Yearly Household Income
-                  </p>
-                  <p className="text-2xl sm:text-3xl font-bold text-success">
-                    {currency.symbol}{yearlyHouseholdIncome.toLocaleString()}
-                  </p>
-                  <p className="text-xs text-muted-foreground mt-1">
-                    Based on {currency.symbol}{totalIncome.toLocaleString()}/month
-                  </p>
-                </div>
-              )}
-              {!isMobile && (
-                <BudgetDonutChart
-                  totalIncome={totalIncome}
-                  totalExpenses={totalExpenses}
-                  currency={currency}
-                />
-              )}
-            </div>
-          </div>
-
-          {/* Affiliate recommendations for authenticated users */}
-          <AffiliateRecommendations className="mt-6" />
+            {/* Affiliate recommendations for authenticated users */}
+            <AffiliateRecommendations className="mt-6" />
+          </>
         ) : (
           /* Guest layout - single column, calculator then signup */
           <div className="space-y-6 mt-2">
