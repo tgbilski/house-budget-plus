@@ -9,6 +9,7 @@ import { format } from 'date-fns';
 import ReactMarkdown from 'react-markdown';
 import { usePageReady } from '@/hooks/usePageReady';
 import InlineSignUpForm from '@/components/InlineSignUpForm';
+import BlogAffiliateSection from '@/components/BlogAffiliateSection';
 import { useAuth } from '@/hooks/useAuth';
 
 const BlogPost: React.FC = () => {
