@@ -63,7 +63,7 @@ const BlogPost: React.FC = () => {
       <SEO
         title={`${post.title} | House Budget Calculator Blog`}
         description={post.excerpt || post.title}
-        keywords={post.tags || []}
+        keywords={post.tags?.join(', ') || ''}
         canonical={`https://house-budget-plus.lovable.app/blog/${post.slug}`}
         ogImage={post.featured_image_url || undefined}
       />

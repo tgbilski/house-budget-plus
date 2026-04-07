@@ -37,7 +37,7 @@ const Blog: React.FC = () => {
       <SEO
         title="Financial Tips & Budget Guides | House Budget Calculator"
         description="Free financial tips, budgeting strategies, and money-saving guides to help you master your household finances."
-        keywords={['budgeting tips', 'financial advice', 'money saving', 'household budget guide']}
+        keywords="budgeting tips, financial advice, money saving, household budget guide"
         canonical="https://house-budget-plus.lovable.app/blog"
       />
 
