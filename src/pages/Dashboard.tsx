@@ -79,6 +79,8 @@ const Dashboard: React.FC = () => {
         <div className={isMobile ? "space-y-4" : "space-y-12"}>
           <BudgetSection />
 
+          <AffiliateRecommendations />
+
           {user ? (
             <>
               {!isMobile && <hr className="border-t-[3px] border-stroke/20" />}
@@ -123,9 +125,6 @@ const Dashboard: React.FC = () => {
             </>
           )}
         </div>
-
-        {/* Affiliate Recommendations - shown to all users */}
-        <AffiliateRecommendations className="mt-8" />
 
         <div className="mt-6">
           <FeedbackForm pageSource="dashboard" />
