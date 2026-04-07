@@ -22,6 +22,7 @@ import Footer from "@/components/Footer";
 import { JazzBackground } from "@/components/JazzBackground";
 import { MobileSignupBar } from "@/components/MobileSignupBar";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { EmailCaptureModal } from "@/components/EmailCaptureModal";
 import { PageSkeleton } from "@/components/LoadingSkeletons";
 import { useState, createContext } from "react";
 import { isNativeApp } from "@/utils/capacitor";
@@ -39,6 +40,8 @@ const ContactUs = lazy(() => import("@/pages/ContactUs"));
 const PrivacyPolicy = lazy(() => import("@/pages/PrivacyPolicy"));
 const TermsAndConditions = lazy(() => import("@/pages/TermsAndConditions"));
 const Disclaimer = lazy(() => import("@/pages/Disclaimer"));
+const Blog = lazy(() => import("@/pages/Blog"));
+const BlogPost = lazy(() => import("@/pages/BlogPost"));
 const SubscriptionGuard = lazy(() => import("@/components/SubscriptionGuard").then(m => ({ default: m.SubscriptionGuard })));
 
 interface Currency {
@@ -110,6 +113,8 @@ const AppRoutes = () => {
         <Route path="/privacy" element={<PrivacyPolicy />} />
         <Route path="/terms" element={<TermsAndConditions />} />
         <Route path="/disclaimer" element={<Disclaimer />} />
+        <Route path="/blog" element={<Blog />} />
+        <Route path="/blog/:slug" element={<BlogPost />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </Suspense>
@@ -198,6 +203,7 @@ const AppLayout = () => {
         <AppRoutes />
       </main>
       <MobileSignupBar />
+      <EmailCaptureModal />
       <FooterWrapper />
     </div>
   );

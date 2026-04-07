@@ -9,6 +9,7 @@ import { seoData } from '@/utils/seoData';
 import { WarningBanner } from '@/components/WarningBanner';
 import { Button } from '@/components/ui/button';
 import { Lock, Sparkles } from 'lucide-react';
+import { AffiliateRecommendations } from '@/components/AffiliateRecommendations';
 
 import FeedbackForm from '@/components/FeedbackForm';
 import BudgetSection from '@/components/dashboard/BudgetSection';
@@ -95,9 +96,9 @@ const Dashboard: React.FC = () => {
                       </div>
                     </div>
                     <div>
-                      <h2 className="text-lg font-bold text-foreground">Expense Tracker</h2>
+                      <h2 className="text-lg font-bold text-foreground">Expense Tracker + Insights</h2>
                       <p className="text-sm text-muted-foreground mt-1">
-                        Track daily expenses with voice input, charts, and category breakdowns. Upgrade to unlock.
+                        Track daily expenses, see spending trends over time, and get year-over-year comparisons. Upgrade to unlock.
                       </p>
                     </div>
                     <div className="flex items-center justify-center gap-2 text-sm text-success font-medium">
@@ -123,7 +124,9 @@ const Dashboard: React.FC = () => {
           )}
         </div>
 
-        
+        {/* Affiliate Recommendations - shown to all users */}
+        <AffiliateRecommendations className="mt-8" />
+
         <div className="mt-6">
           <FeedbackForm pageSource="dashboard" />
         </div>

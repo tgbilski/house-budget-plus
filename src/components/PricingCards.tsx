@@ -14,9 +14,10 @@ export function PricingCards() {
   };
 
   const features = [
-    "Share Households",
-    "Voice Expense Tracking",
-    "25 AI Insights / Month",
+    "Monthly spending trends & insights",
+    "Voice expense & savings tracking",
+    "Year-over-year budget comparisons",
+    "Household sharing for families",
     "Cancel anytime"
   ];
 

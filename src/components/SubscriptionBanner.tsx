@@ -38,7 +38,7 @@ export function SubscriptionBanner() {
               <h3 className="font-semibold text-foreground">Choose Your Plan</h3>
             </div>
             <p className="text-sm text-muted-foreground">
-              Get unlimited PDF processing with AI-powered expense categorization
+               Unlock spending trends, year-over-year comparisons, and voice tracking
             </p>
           </div>
         </CardContent>
