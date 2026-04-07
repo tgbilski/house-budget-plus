@@ -73,3 +73,13 @@ export const trackFeatureView = (featureName: string) => {
     feature_name: featureName,
   });
 };
+
+// Affiliate click tracking
+export const trackAffiliateClick = (productTag: string, asin: string, location: string, productTitle?: string) => {
+  trackEvent('affiliate_click', {
+    product_tag: productTag,
+    asin,
+    location,
+    product_title: productTitle || '',
+  });
+};

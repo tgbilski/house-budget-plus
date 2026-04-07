@@ -9,6 +9,7 @@ import { format } from 'date-fns';
 import ReactMarkdown from 'react-markdown';
 import { usePageReady } from '@/hooks/usePageReady';
 import InlineSignUpForm from '@/components/InlineSignUpForm';
+import BlogAffiliateSection from '@/components/BlogAffiliateSection';
 import { useAuth } from '@/hooks/useAuth';
 
 const BlogPost: React.FC = () => {
@@ -104,6 +105,9 @@ const BlogPost: React.FC = () => {
         <div className="prose prose-sm sm:prose max-w-none text-foreground">
           <ReactMarkdown>{post.content}</ReactMarkdown>
         </div>
+
+        {/* Affiliate products mid-article */}
+        <BlogAffiliateSection />
 
         {/* CTA after article */}
         {!user && (

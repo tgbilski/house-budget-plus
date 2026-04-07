@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { ExternalLink, ChevronDown, ChevronUp } from 'lucide-react';
-import { trackEvent } from '@/utils/analytics';
+import { trackAffiliateClick } from '@/utils/analytics';
 import { Button } from '@/components/ui/button';
 
 const AMAZON_TAG = 'housebudgetca-20';
@@ -205,13 +205,8 @@ export const AffiliateRecommendations: React.FC<AffiliateRecommendationsProps> =
   const hasData = totalIncome > 0 || totalExpenses > 0;
   const [expanded, setExpanded] = useState(false);
 
-  const handleClick = (tag: string, asin: string) => {
-    trackEvent('affiliate_click', {
-      recommendation: tag,
-      asin,
-      surplus: surplus,
-      income: totalIncome,
-    });
+  const handleClick = (tag: string, asin: string, title: string) => {
+    trackAffiliateClick(tag, asin, 'recommendations_grid', title);
     window.open(amazonUrl(asin), '_blank', 'noopener,noreferrer');
   };
 
@@ -250,7 +245,7 @@ export const AffiliateRecommendations: React.FC<AffiliateRecommendationsProps> =
               <Card
                 key={rec.tag}
                 className="border-2 border-border/50 bg-card cursor-pointer transition-all duration-200 hover:border-primary/50 hover:shadow-md group overflow-hidden"
-                onClick={() => handleClick(rec.tag, rec.asin)}
+                onClick={() => handleClick(rec.tag, rec.asin, rec.title)}
               >
                 <CardContent className="p-3 flex items-center gap-3">
                   <div className="w-16 h-16 flex-shrink-0 rounded-lg overflow-hidden bg-white flex items-center justify-center border border-border/30">
