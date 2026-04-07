@@ -332,7 +332,6 @@ const MonthlyBudget: React.FC = () => {
             
             {/* Contextual signup nudge - appears after calculator interaction */}
             <CalculatorSignupNudge />
-            <ContextualProductPopup />
           </div>
         )}
 
