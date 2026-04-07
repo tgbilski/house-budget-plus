@@ -3,6 +3,11 @@ import { Card, CardContent } from '@/components/ui/card';
 import { ExternalLink, TrendingUp, PiggyBank, CreditCard, Shield, Home, Car, Briefcase, BookOpen, Calculator, Wrench, FileText, ChevronDown, ChevronUp } from 'lucide-react';
 import { trackEvent } from '@/utils/analytics';
 import { Button } from '@/components/ui/button';
+import affiliateFinance from '@/assets/affiliate-finance.jpg';
+import affiliateBudgeting from '@/assets/affiliate-budgeting.jpg';
+import affiliateHome from '@/assets/affiliate-home.jpg';
+import affiliateAuto from '@/assets/affiliate-auto.jpg';
+import affiliateOffice from '@/assets/affiliate-office.jpg';
 
 interface Recommendation {
   title: string;
