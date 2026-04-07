@@ -28,6 +28,7 @@ import { PremiumLimitBanner } from '@/components/PremiumLimitBanner';
 import { BadgeDisplay } from '@/components/BadgeDisplay';
 import GuestHero from '@/components/GuestHero';
 import CalculatorSignupNudge from '@/components/CalculatorSignupNudge';
+import { AffiliateRecommendations } from '@/components/AffiliateRecommendations';
 import calculatorMascot from '@/assets/calculator-mascot.png';
 import { useIsMobile } from '@/hooks/use-mobile';
 
