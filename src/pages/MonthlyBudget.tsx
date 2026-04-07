@@ -342,6 +342,8 @@ const MonthlyBudget: React.FC = () => {
           </div>
         )}
 
+        <AffiliateRecommendations className="mt-8" />
+
         <div className="mt-8">
           <FeedbackForm pageSource="budget" />
         </div>
