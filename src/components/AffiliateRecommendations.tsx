@@ -13,6 +13,8 @@ interface Recommendation {
   tag: string;
 }
 
+const AMAZON_TAG = 'housebudgetca-20';
+
 const recommendations: Recommendation[] = [
   {
     title: 'High-Yield Savings Account',
@@ -24,6 +26,24 @@ const recommendations: Recommendation[] = [
     tag: 'savings',
   },
   {
+    title: 'Budget Planner & Organizer',
+    description: 'Top-rated monthly budget planner to track spending offline too.',
+    cta: 'Shop on Amazon →',
+    icon: <PiggyBank className="h-5 w-5" />,
+    color: 'text-orange-600',
+    url: `https://www.amazon.com/s?k=budget+planner+organizer&tag=${AMAZON_TAG}`,
+    tag: 'amazon-planner',
+  },
+  {
+    title: 'Total Money Makeover',
+    description: 'Dave Ramsey\'s bestselling guide to getting out of debt fast.',
+    cta: 'Get the book →',
+    icon: <TrendingUp className="h-5 w-5" />,
+    color: 'text-green-600',
+    url: `https://www.amazon.com/Total-Money-Makeover-Classic-Financial/dp/1595555277?tag=${AMAZON_TAG}`,
+    tag: 'amazon-ramsey',
+  },
+  {
     title: 'Cash Back Credit Cards',
     description: 'Get 1-5% back on purchases you\'re already making.',
     cta: 'See top picks →',
@@ -31,15 +51,6 @@ const recommendations: Recommendation[] = [
     color: 'text-blue-600',
     url: 'https://www.nerdwallet.com/best/credit-cards/cash-back',
     tag: 'credit-card',
-  },
-  {
-    title: 'Start Investing with $1',
-    description: 'Automated investing that grows your money while you sleep.',
-    cta: 'Learn more →',
-    icon: <TrendingUp className="h-5 w-5" />,
-    color: 'text-purple-600',
-    url: 'https://www.nerdwallet.com/best/investing/robo-advisors',
-    tag: 'investing',
   },
   {
     title: 'Lower Your Bills',
