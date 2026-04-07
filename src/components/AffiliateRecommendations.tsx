@@ -3,6 +3,11 @@ import { Card, CardContent } from '@/components/ui/card';
 import { ExternalLink, TrendingUp, PiggyBank, CreditCard, Shield, Home, Car, Briefcase, BookOpen, Calculator, Wrench, FileText, ChevronDown, ChevronUp } from 'lucide-react';
 import { trackEvent } from '@/utils/analytics';
 import { Button } from '@/components/ui/button';
+import affiliateFinance from '@/assets/affiliate-finance.jpg';
+import affiliateBudgeting from '@/assets/affiliate-budgeting.jpg';
+import affiliateHome from '@/assets/affiliate-home.jpg';
+import affiliateAuto from '@/assets/affiliate-auto.jpg';
+import affiliateOffice from '@/assets/affiliate-office.jpg';
 
 interface Recommendation {
   title: string;
@@ -253,6 +258,14 @@ const categoryLabels: Record<string, string> = {
   office: '🗂️ Office & Organization',
 };
 
+const categoryImages: Record<string, string> = {
+  finance: affiliateFinance,
+  budgeting: affiliateBudgeting,
+  home: affiliateHome,
+  auto: affiliateAuto,
+  office: affiliateOffice,
+};
+
 const categoryOrder = ['finance', 'budgeting', 'home', 'auto', 'office'];
 
 interface AffiliateRecommendationsProps {
@@ -307,8 +320,18 @@ export const AffiliateRecommendations: React.FC<AffiliateRecommendationsProps> =
       </div>
 
       {grouped.map((group) => (
-        <div key={group.key} className="space-y-2">
-          <h4 className="text-sm font-semibold text-muted-foreground">{group.label}</h4>
+        <div key={group.key} className="space-y-3">
+          <div className="flex items-center gap-3">
+            <img
+              src={categoryImages[group.key]}
+              alt={group.label}
+              loading="lazy"
+              width={64}
+              height={64}
+              className="w-16 h-16 rounded-xl object-cover border-2 border-border/50 flex-shrink-0"
+            />
+            <h4 className="text-base font-bold text-foreground">{group.label}</h4>
+          </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             {group.items.map((rec) => (
               <Card

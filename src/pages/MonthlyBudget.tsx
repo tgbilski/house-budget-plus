@@ -113,7 +113,7 @@ const MonthlyBudget: React.FC = () => {
   });
 
   useEffect(() => {
-    setCalculators([{ id: '1' }, { id: '2' }, { id: '3' }, { id: '4' }]);
+    setCalculators([{ id: '1' }, { id: '2' }]);
     
     if (!user || !currentHousehold) {
       setVisibleCalculators(new Set(['1']));
@@ -141,7 +141,7 @@ const MonthlyBudget: React.FC = () => {
   const error = queryError ? "Failed to load your budget data. Please refresh the page to try again." : null;
 
   const revealNextCalculator = () => {
-    const allIds = ['1', '2', '3', '4'];
+    const allIds = ['1', '2'];
     const nextHidden = allIds.find(id => !visibleCalculators.has(id));
     if (nextHidden) {
       setVisibleCalculators(prev => new Set([...prev, nextHidden]));
@@ -161,7 +161,7 @@ const MonthlyBudget: React.FC = () => {
   };
 
   const getNextCalculatorNumber = () => {
-    const allIds = ['1', '2', '3', '4'];
+    const allIds = ['1', '2'];
     const nextHidden = allIds.find(id => !visibleCalculators.has(id));
     return nextHidden ? parseInt(nextHidden) : null;
   };
@@ -266,6 +266,11 @@ const MonthlyBudget: React.FC = () => {
                   </div>
                 )
               )}
+
+              {/* Affiliate recommendations right below calculators */}
+              <div className="md:col-span-2">
+                <AffiliateRecommendations className="mt-2" />
+              </div>
             </div>
 
             {/* Right column - charts */}
@@ -339,10 +344,10 @@ const MonthlyBudget: React.FC = () => {
             
             {/* Contextual signup nudge - appears after calculator interaction */}
             <CalculatorSignupNudge />
+
+            <AffiliateRecommendations className="mt-4" />
           </div>
         )}
-
-        <AffiliateRecommendations className="mt-8" />
 
         <div className="mt-8">
           <FeedbackForm pageSource="budget" />
