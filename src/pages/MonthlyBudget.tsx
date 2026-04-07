@@ -266,6 +266,11 @@ const MonthlyBudget: React.FC = () => {
                   </div>
                 )
               )}
+
+              {/* Affiliate recommendations right below calculators */}
+              <div className="md:col-span-2">
+                <AffiliateRecommendations className="mt-2" />
+              </div>
             </div>
 
             {/* Right column - charts */}
