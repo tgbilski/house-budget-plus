@@ -22,6 +22,7 @@ import Footer from "@/components/Footer";
 import { JazzBackground } from "@/components/JazzBackground";
 import { MobileSignupBar } from "@/components/MobileSignupBar";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { EmailCaptureModal } from "@/components/EmailCaptureModal";
 import { PageSkeleton } from "@/components/LoadingSkeletons";
 import { useState, createContext } from "react";
 import { isNativeApp } from "@/utils/capacitor";
