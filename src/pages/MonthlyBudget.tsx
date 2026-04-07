@@ -29,6 +29,7 @@ import { BadgeDisplay } from '@/components/BadgeDisplay';
 import GuestHero from '@/components/GuestHero';
 import CalculatorSignupNudge from '@/components/CalculatorSignupNudge';
 import { AffiliateRecommendations } from '@/components/AffiliateRecommendations';
+import ContextualProductPopup from '@/components/ContextualProductPopup';
 import calculatorMascot from '@/assets/calculator-mascot.png';
 import { useIsMobile } from '@/hooks/use-mobile';
 
