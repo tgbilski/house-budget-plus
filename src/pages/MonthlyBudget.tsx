@@ -241,7 +241,6 @@ const MonthlyBudget: React.FC = () => {
               ))}
               
               {getNextCalculatorNumber() && (
-                subscribed || visibleCalculators.size < 2 ? (
                   <div className="animate-fade-in flex items-start">
                     <button
                       onClick={revealNextCalculator}
@@ -256,22 +255,7 @@ const MonthlyBudget: React.FC = () => {
                       </div>
                     </button>
                   </div>
-                ) : (
-                  <div className="animate-fade-in flex items-start">
-                    <PremiumLimitBanner 
-                      featureName="calculators" 
-                      freeLimit={1} 
-                      className="min-h-[200px] flex flex-col items-center justify-center"
-                      savingsAmount={totalExpenses > 100 ? new Intl.NumberFormat('en-US', { style: 'currency', currency: currency.code }).format(Math.round(totalExpenses * (0.08 + 0.04))) : undefined}
-                    />
-                  </div>
-                )
               )}
-
-              {/* Affiliate recommendations right below calculators */}
-              <div className="md:col-span-2">
-                <AffiliateRecommendations className="mt-2" />
-              </div>
             </div>
 
             {/* Right column - charts */}
@@ -346,10 +330,11 @@ const MonthlyBudget: React.FC = () => {
             {/* Contextual signup nudge - appears after calculator interaction */}
             <CalculatorSignupNudge />
             <ContextualProductPopup />
-
-            <AffiliateRecommendations className="mt-4" />
           </div>
         )}
+
+        {/* Affiliate recommendations - below calculators, above feedback */}
+        <AffiliateRecommendations className="mt-6" />
 
         <div className="mt-8">
           <FeedbackForm pageSource="budget" />
