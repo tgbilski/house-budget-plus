@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { ExternalLink, ChevronDown, ChevronUp } from 'lucide-react';
-import { trackEvent } from '@/utils/analytics';
+import { trackAffiliateClick } from '@/utils/analytics';
 import { Button } from '@/components/ui/button';
 
 const AMAZON_TAG = 'housebudgetca-20';
