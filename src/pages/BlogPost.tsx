@@ -102,7 +102,7 @@ const BlogPost: React.FC = () => {
           ))}
         </div>
 
-        <div className="prose prose-sm sm:prose max-w-none text-foreground">
+        <div className="prose prose-sm sm:prose lg:prose-lg max-w-none text-foreground prose-headings:text-foreground prose-headings:font-bold prose-h2:text-xl prose-h2:sm:text-2xl prose-h2:mt-8 prose-h2:mb-4 prose-h3:text-lg prose-h3:mt-6 prose-h3:mb-3 prose-p:leading-relaxed prose-p:mb-4 prose-li:mb-1 prose-ul:my-4 prose-ol:my-4 prose-strong:text-foreground prose-a:text-primary prose-blockquote:border-primary/50 prose-blockquote:text-muted-foreground">
           <ReactMarkdown>{post.content}</ReactMarkdown>
         </div>
 
