@@ -203,6 +203,7 @@ const AppLayout = () => {
         <AppRoutes />
       </main>
       <MobileSignupBar />
+      <EmailCaptureModal />
       <FooterWrapper />
     </div>
   );
