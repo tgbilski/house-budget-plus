@@ -245,7 +245,7 @@ export const AffiliateRecommendations: React.FC<AffiliateRecommendationsProps> =
               <Card
                 key={rec.tag}
                 className="border-2 border-border/50 bg-card cursor-pointer transition-all duration-200 hover:border-primary/50 hover:shadow-md group overflow-hidden"
-                onClick={() => handleClick(rec.tag, rec.asin)}
+                onClick={() => handleClick(rec.tag, rec.asin, rec.title)}
               >
                 <CardContent className="p-3 flex items-center gap-3">
                   <div className="w-16 h-16 flex-shrink-0 rounded-lg overflow-hidden bg-white flex items-center justify-center border border-border/30">

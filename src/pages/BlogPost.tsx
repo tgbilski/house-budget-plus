@@ -106,6 +106,9 @@ const BlogPost: React.FC = () => {
           <ReactMarkdown>{post.content}</ReactMarkdown>
         </div>
 
+        {/* Affiliate products mid-article */}
+        <BlogAffiliateSection />
+
         {/* CTA after article */}
         {!user && (
           <div className="mt-10 border-t-2 border-border pt-8">
