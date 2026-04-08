@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
-import { ExternalLink, ChevronDown, ChevronUp } from 'lucide-react';
+import { ExternalLink, ChevronDown, ChevronUp, ShoppingCart } from 'lucide-react';
 import { trackAffiliateClick } from '@/utils/analytics';
 import { Button } from '@/components/ui/button';
 
@@ -259,11 +259,8 @@ export const AffiliateRecommendations: React.FC<AffiliateRecommendationsProps> =
                 <CardContent className="p-4 flex items-start gap-4">
                   <div className="w-20 h-20 sm:w-24 sm:h-24 flex-shrink-0 rounded-xl overflow-hidden bg-white flex items-center justify-center border-2 border-border/20 shadow-sm">
                     {failedImages[rec.tag] ? (
-                      <div className="w-full h-full bg-muted text-foreground flex flex-col items-center justify-center px-1 text-center">
-                        <span className="text-2xl leading-none">{fallbackCategoryIcon[rec.category]}</span>
-                        <span className="mt-1 text-[10px] font-medium leading-tight line-clamp-2">
-                          {rec.title}
-                        </span>
+                      <div className="w-full h-full bg-muted/50 text-primary flex items-center justify-center">
+                        <ShoppingCart className="h-8 w-8" />
                       </div>
                     ) : (
                       <img
