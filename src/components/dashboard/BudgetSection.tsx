@@ -80,7 +80,7 @@ const BudgetSection: React.FC = () => {
   }, [calculatorVisibility, user, currentHousehold]);
 
   const revealNextCalculator = () => {
-    const allIds = ['1', '2', '3', '4'];
+    const allIds = ['1', '2'];
     const next = allIds.find(id => !visibleCalculators.has(id));
     if (next) setVisibleCalculators(prev => new Set([...prev, next]));
   };
@@ -97,7 +97,7 @@ const BudgetSection: React.FC = () => {
   };
 
   const getNextCalculatorNumber = () => {
-    const allIds = ['1', '2', '3', '4'];
+    const allIds = ['1', '2'];
     const next = allIds.find(id => !visibleCalculators.has(id));
     return next ? parseInt(next) : null;
   };
@@ -144,7 +144,7 @@ const BudgetSection: React.FC = () => {
 
         {expanded && (
           <div className="mt-3 space-y-4 animate-fade-in">
-            {['1', '2', '3', '4'].filter(id => visibleCalculators.has(id)).map((id) => (
+            {['1', '2'].filter(id => visibleCalculators.has(id)).map((id) => (
               <BudgetCalculator
                 key={id}
                 id={id}
@@ -158,17 +158,13 @@ const BudgetSection: React.FC = () => {
             ))}
 
             {getNextCalculatorNumber() && (
-              subscribed || visibleCalculators.size < 2 ? (
-                <button
-                  onClick={revealNextCalculator}
-                  className="w-full min-h-[120px] rounded-xl border-[3px] border-dashed border-border/50 bg-muted/20 touch-manipulation flex flex-col items-center justify-center gap-2"
-                >
-                  <Plus className="h-6 w-6 text-primary" />
-                  <p className="text-sm font-semibold text-foreground">Add Calculator {getNextCalculatorNumber()}</p>
-                </button>
-              ) : (
-                <PremiumLimitBanner featureName="calculators" freeLimit={1} />
-              )
+              <button
+                onClick={revealNextCalculator}
+                className="w-full min-h-[120px] rounded-xl border-[3px] border-dashed border-border/50 bg-muted/20 touch-manipulation flex flex-col items-center justify-center gap-2"
+              >
+                <Plus className="h-6 w-6 text-primary" />
+                <p className="text-sm font-semibold text-foreground">Add Calculator {getNextCalculatorNumber()}</p>
+              </button>
             )}
 
             {/* Mortgage Preapproval on mobile */}
@@ -207,7 +203,7 @@ const BudgetSection: React.FC = () => {
         /* Authenticated: 3-column layout */
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-6">
-            {['1', '2', '3', '4'].filter(id => visibleCalculators.has(id)).map((id, index) => (
+            {['1', '2'].filter(id => visibleCalculators.has(id)).map((id, index) => (
               <div key={id} className="animate-fade-in" style={{ animationDelay: `${index * 0.1}s`, animationFillMode: 'both' }}>
                 <BudgetCalculator
                   id={id}
@@ -222,30 +218,20 @@ const BudgetSection: React.FC = () => {
             ))}
 
             {getNextCalculatorNumber() && (
-              subscribed || visibleCalculators.size < 2 ? (
-                <div className="animate-fade-in flex items-start">
-                  <button
-                    onClick={revealNextCalculator}
-                    className="w-full max-w-md min-h-[200px] rounded-xl border-[4px] border-dashed border-border/50 bg-muted/20 touch-manipulation [@media(hover:hover)]:hover:bg-muted/40 [@media(hover:hover)]:hover:border-primary/50 transition-all duration-200 flex flex-col items-center justify-center gap-3 group"
-                  >
-                    <div className="p-3 rounded-full bg-primary/10 [@media(hover:hover)]:group-hover:bg-primary/20 transition-colors">
-                      <Plus className="h-8 w-8 text-primary" />
-                    </div>
-                    <div className="text-center">
-                      <p className="font-semibold text-foreground">Add Calculator {getNextCalculatorNumber()}</p>
-                      <p className="text-sm text-muted-foreground">Track another income source</p>
-                    </div>
-                  </button>
-                </div>
-              ) : (
-                <div className="animate-fade-in flex items-start">
-                  <PremiumLimitBanner 
-                    featureName="calculators" 
-                    freeLimit={1} 
-                    className="min-h-[200px] flex flex-col items-center justify-center"
-                  />
-                </div>
-              )
+              <div className="animate-fade-in flex items-start">
+                <button
+                  onClick={revealNextCalculator}
+                  className="w-full max-w-md min-h-[200px] rounded-xl border-[4px] border-dashed border-border/50 bg-muted/20 touch-manipulation [@media(hover:hover)]:hover:bg-muted/40 [@media(hover:hover)]:hover:border-primary/50 transition-all duration-200 flex flex-col items-center justify-center gap-3 group"
+                >
+                  <div className="p-3 rounded-full bg-primary/10 [@media(hover:hover)]:group-hover:bg-primary/20 transition-colors">
+                    <Plus className="h-8 w-8 text-primary" />
+                  </div>
+                  <div className="text-center">
+                    <p className="font-semibold text-foreground">Add Calculator {getNextCalculatorNumber()}</p>
+                    <p className="text-sm text-muted-foreground">Track another income source</p>
+                  </div>
+                </button>
+              </div>
             )}
           </div>
 
