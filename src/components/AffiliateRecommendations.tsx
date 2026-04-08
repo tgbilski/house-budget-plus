@@ -270,6 +270,12 @@ export const AffiliateRecommendations: React.FC<AffiliateRecommendationsProps> =
                         width={96}
                         height={96}
                         className="w-full h-full object-contain p-1.5"
+                        onLoad={(e) => {
+                          const img = e.target as HTMLImageElement;
+                          if (img.naturalWidth < 10 || img.naturalHeight < 10) {
+                            setFailedImages((prev) => ({ ...prev, [rec.tag]: true }));
+                          }
+                        }}
                         onError={() => {
                           setFailedImages((prev) => ({ ...prev, [rec.tag]: true }));
                         }}
