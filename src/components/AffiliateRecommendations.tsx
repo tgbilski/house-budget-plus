@@ -253,15 +253,15 @@ export const AffiliateRecommendations: React.FC<AffiliateRecommendationsProps> =
             {group.items.map((rec) => (
               <Card
                 key={rec.tag}
-                className="border-2 border-border/50 bg-card cursor-pointer transition-all duration-200 hover:border-primary/50 hover:shadow-md group overflow-hidden"
+                className="border-2 border-border/50 bg-card cursor-pointer transition-all duration-200 hover:border-primary/40 hover:shadow-lg hover:-translate-y-0.5 group overflow-hidden"
                 onClick={() => handleClick(rec.tag, rec.asin, rec.title)}
               >
-                <CardContent className="p-3 flex items-center gap-3">
-                  <div className="w-16 h-16 flex-shrink-0 rounded-lg overflow-hidden bg-white flex items-center justify-center border border-border/30">
+                <CardContent className="p-4 flex items-start gap-4">
+                  <div className="w-20 h-20 sm:w-24 sm:h-24 flex-shrink-0 rounded-xl overflow-hidden bg-white flex items-center justify-center border-2 border-border/20 shadow-sm">
                     {failedImages[rec.tag] ? (
                       <div className="w-full h-full bg-muted text-foreground flex flex-col items-center justify-center px-1 text-center">
-                        <span className="text-lg leading-none">{fallbackCategoryIcon[rec.category]}</span>
-                        <span className="mt-1 text-[9px] font-medium leading-tight line-clamp-2">
+                        <span className="text-2xl leading-none">{fallbackCategoryIcon[rec.category]}</span>
+                        <span className="mt-1 text-[10px] font-medium leading-tight line-clamp-2">
                           {rec.title}
                         </span>
                       </div>
@@ -270,21 +270,21 @@ export const AffiliateRecommendations: React.FC<AffiliateRecommendationsProps> =
                         src={amazonImg(rec.asin)}
                         alt={rec.title}
                         loading="lazy"
-                        width={80}
-                        height={80}
-                        className="w-full h-full object-contain p-1"
+                        width={96}
+                        height={96}
+                        className="w-full h-full object-contain p-1.5"
                         onError={() => {
                           setFailedImages((prev) => ({ ...prev, [rec.tag]: true }));
                         }}
                       />
                     )}
                   </div>
-                  <div className="min-w-0 flex-1">
-                    <h4 className="text-sm font-semibold text-foreground leading-tight">{rec.title}</h4>
-                    <p className="text-xs text-muted-foreground mt-0.5 leading-snug line-clamp-2">{rec.description}</p>
-                    <span className="text-xs font-medium text-primary mt-1 inline-flex items-center gap-1 group-hover:underline">
+                  <div className="min-w-0 flex-1 py-0.5">
+                    <h4 className="text-sm sm:text-base font-bold text-foreground leading-tight">{rec.title}</h4>
+                    <p className="text-xs sm:text-sm text-muted-foreground mt-1 leading-snug line-clamp-2">{rec.description}</p>
+                    <span className="mt-2 inline-flex items-center gap-1.5 text-xs sm:text-sm font-bold text-primary-foreground bg-primary rounded-full px-3 py-1 group-hover:opacity-90 transition-opacity">
                       {rec.cta}
-                      <ExternalLink className="h-3 w-3" />
+                      <ExternalLink className="h-3.5 w-3.5" />
                     </span>
                   </div>
                 </CardContent>
