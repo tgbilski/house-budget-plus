@@ -144,7 +144,7 @@ const BudgetSection: React.FC = () => {
 
         {expanded && (
           <div className="mt-3 space-y-4 animate-fade-in">
-            {['1', '2', '3', '4'].filter(id => visibleCalculators.has(id)).map((id) => (
+            {['1', '2'].filter(id => visibleCalculators.has(id)).map((id) => (
               <BudgetCalculator
                 key={id}
                 id={id}
@@ -158,17 +158,13 @@ const BudgetSection: React.FC = () => {
             ))}
 
             {getNextCalculatorNumber() && (
-              subscribed || visibleCalculators.size < 2 ? (
-                <button
-                  onClick={revealNextCalculator}
-                  className="w-full min-h-[120px] rounded-xl border-[3px] border-dashed border-border/50 bg-muted/20 touch-manipulation flex flex-col items-center justify-center gap-2"
-                >
-                  <Plus className="h-6 w-6 text-primary" />
-                  <p className="text-sm font-semibold text-foreground">Add Calculator {getNextCalculatorNumber()}</p>
-                </button>
-              ) : (
-                <PremiumLimitBanner featureName="calculators" freeLimit={1} />
-              )
+              <button
+                onClick={revealNextCalculator}
+                className="w-full min-h-[120px] rounded-xl border-[3px] border-dashed border-border/50 bg-muted/20 touch-manipulation flex flex-col items-center justify-center gap-2"
+              >
+                <Plus className="h-6 w-6 text-primary" />
+                <p className="text-sm font-semibold text-foreground">Add Calculator {getNextCalculatorNumber()}</p>
+              </button>
             )}
 
             {/* Mortgage Preapproval on mobile */}
