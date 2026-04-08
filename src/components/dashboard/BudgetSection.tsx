@@ -80,7 +80,7 @@ const BudgetSection: React.FC = () => {
   }, [calculatorVisibility, user, currentHousehold]);
 
   const revealNextCalculator = () => {
-    const allIds = ['1', '2', '3', '4'];
+    const allIds = ['1', '2'];
     const next = allIds.find(id => !visibleCalculators.has(id));
     if (next) setVisibleCalculators(prev => new Set([...prev, next]));
   };
@@ -97,7 +97,7 @@ const BudgetSection: React.FC = () => {
   };
 
   const getNextCalculatorNumber = () => {
-    const allIds = ['1', '2', '3', '4'];
+    const allIds = ['1', '2'];
     const next = allIds.find(id => !visibleCalculators.has(id));
     return next ? parseInt(next) : null;
   };
