@@ -58,7 +58,7 @@ const BlogAffiliateSection: React.FC = () => {
             <CardContent className="p-3 flex items-center gap-3">
               <div className="w-12 h-12 flex-shrink-0 rounded-lg overflow-hidden bg-white flex items-center justify-center border border-border/30">
                 <img
-                  src={`https://ws-na.amazon-adsystem.com/widgets/q?_encoding=UTF8&ASIN=${product.asin}&Format=_SL160_&ID=AsinImage&MarketPlace=US&ServiceVersion=20070822&WS=1&tag=${AMAZON_TAG}`}
+                  src={`https://images-na.ssl-images-amazon.com/images/P/${product.asin}.01._SCLZZZZZZZ_SX160_.jpg`}
                   alt={product.title}
                   loading="lazy"
                   className="w-full h-full object-contain p-0.5"
