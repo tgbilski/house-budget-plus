@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 const AMAZON_TAG = 'housebudgetca-20';
 
 const amazonImg = (asin: string) =>
-  `https://ws-na.amazon-adsystem.com/widgets/q?_encoding=UTF8&ASIN=${asin}&Format=_SL160_&ID=AsinImage&MarketPlace=US&ServiceVersion=20070822&WS=1&tag=${AMAZON_TAG}`;
+  `https://images-na.ssl-images-amazon.com/images/P/${asin}.01._SCLZZZZZZZ_SX160_.jpg`;
 
 const amazonUrl = (asin: string) =>
   `https://www.amazon.com/dp/${asin}?tag=${AMAZON_TAG}`;
