@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
-import { ExternalLink, ChevronDown, ChevronUp } from 'lucide-react';
+import { ExternalLink, ChevronDown, ChevronUp, ShoppingCart } from 'lucide-react';
 import { trackAffiliateClick } from '@/utils/analytics';
 import { Button } from '@/components/ui/button';
 
