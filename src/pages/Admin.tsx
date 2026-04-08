@@ -159,47 +159,32 @@ export default function Admin() {
                 ) : reviews.length === 0 ? (
                   <p className="text-muted-foreground text-center py-8">No feedback submitted yet</p>
                 ) : (
-                  <div className="overflow-x-auto">
-                    <Table>
-                      <TableHeader>
-                        <TableRow>
-                          <TableHead>Date</TableHead>
-                          <TableHead>Category</TableHead>
-                          <TableHead>Page</TableHead>
-                          <TableHead className="min-w-[300px]">Message</TableHead>
-                          <TableHead>User</TableHead>
-                        </TableRow>
-                      </TableHeader>
-                      <TableBody>
-                        {reviews.map((review) => (
-                          <TableRow key={review.id}>
-                            <TableCell className="whitespace-nowrap">
+                  <div className="space-y-4">
+                    {reviews.map((review) => (
+                      <Card key={review.id} className="border">
+                        <CardContent className="p-4 space-y-2">
+                          <div className="flex flex-wrap items-center gap-2">
+                            <Badge variant="outline" className="capitalize">
+                              {review.category === 'suggestion' && '💡 '}
+                              {review.category === 'bug' && '🐛 '}
+                              {review.category === 'praise' && '🎉 '}
+                              {review.category === 'question' && '❓ '}
+                              {review.category}
+                            </Badge>
+                            <span className="text-xs text-muted-foreground capitalize">{review.page_source}</span>
+                            <span className="text-xs text-muted-foreground ml-auto">
                               {format(new Date(review.created_at), 'MMM d, yyyy')}
-                            </TableCell>
-                            <TableCell>
-                              <Badge variant="outline" className="capitalize">
-                                {review.category === 'suggestion' && '💡 '}
-                                {review.category === 'bug' && '🐛 '}
-                                {review.category === 'praise' && '🎉 '}
-                                {review.category === 'question' && '❓ '}
-                                {review.category}
-                              </Badge>
-                            </TableCell>
-                            <TableCell className="capitalize">{review.page_source}</TableCell>
-                            <TableCell className="max-w-md">
-                              <p className="whitespace-pre-wrap">{review.message}</p>
-                            </TableCell>
-                            <TableCell>
-                              {review.user_id ? (
-                                <Badge variant="secondary">Logged in</Badge>
-                              ) : (
-                                <Badge variant="outline">Guest</Badge>
-                              )}
-                            </TableCell>
-                          </TableRow>
-                        ))}
-                      </TableBody>
-                    </Table>
+                            </span>
+                            {review.user_id ? (
+                              <Badge variant="secondary" className="text-xs">Logged in</Badge>
+                            ) : (
+                              <Badge variant="outline" className="text-xs">Guest</Badge>
+                            )}
+                          </div>
+                          <p className="whitespace-pre-wrap text-sm">{review.message}</p>
+                        </CardContent>
+                      </Card>
+                    ))}
                   </div>
                 )}
               </CardContent>
