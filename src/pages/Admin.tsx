@@ -187,7 +187,7 @@ export default function Admin() {
                             </TableCell>
                             <TableCell className="capitalize">{review.page_source}</TableCell>
                             <TableCell className="max-w-md">
-                              <p className="line-clamp-3">{review.message}</p>
+                              <p className="whitespace-pre-wrap">{review.message}</p>
                             </TableCell>
                             <TableCell>
                               {review.user_id ? (
