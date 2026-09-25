@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
-import { ShoppingCart, Check, Download } from "lucide-react";
+import { ShoppingCart, Check, Download, ChevronDown } from "lucide-react";
 import { trackEvent } from "@/utils/analytics";
 import mascot from "@/assets/calculator-mascot.png";
 
@@ -63,7 +63,7 @@ export default function GroceryBudgetCalculator() {
   };
 
   return (
-    <div className="container max-w-3xl mx-auto px-4 py-10 space-y-10 relative z-10">
+    <div className="container max-w-3xl mx-auto px-4 py-6 md:py-10 space-y-6 md:space-y-10 relative z-10">
       <Helmet>
         <title>Grocery Budget Calculator (2026) — How Much Should You Spend on Groceries?</title>
         <meta name="description" content="Free grocery budget calculator based on USDA Food Plans. Enter your household size and income to see how much you should spend on groceries per month and per week — no sign-up required." />
@@ -71,22 +71,31 @@ export default function GroceryBudgetCalculator() {
         <script type="application/ld+json">{JSON.stringify(faqSchema)}</script>
       </Helmet>
 
-      <header className="text-center space-y-4">
+      <header className="text-center space-y-3 md:space-y-4 pt-2 md:pt-0">
         <img
           src={mascot}
           alt="Grocery budget calculator mascot"
-          className="w-24 h-24 md:w-28 md:h-28 mx-auto rounded-full"
+          className="w-20 h-20 md:w-28 md:h-28 mx-auto rounded-full"
           width={112}
           height={112}
         />
-        <h1 className="text-3xl md:text-5xl font-bold text-foreground">Grocery Budget Calculator</h1>
-        <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto">
-          Find out how much your family should spend on groceries each month. Enter your household size and income to get a USDA-based grocery budget in seconds — free, no sign-up.
+        <h1 className="text-2xl md:text-5xl font-bold text-foreground leading-tight">Grocery Budget Calculator</h1>
+        <p className="text-base md:text-xl text-muted-foreground max-w-2xl mx-auto px-2">
+          Find out how much your family should spend on groceries each month — free, no sign-up.
         </p>
+        <a
+          href="#calculator"
+          className="inline-flex flex-col items-center gap-1 text-muted-foreground hover:text-primary transition-colors pt-1"
+          aria-label="Scroll down to the calculator"
+        >
+          <span className="text-xs font-medium tracking-wide uppercase">Start calculating</span>
+          <ChevronDown className="h-6 w-6 animate-scroll-bounce" />
+        </a>
       </header>
 
-      <Card className="p-6 space-y-6">
-        <div className="grid grid-cols-2 gap-4">
+      <Card id="calculator" className="p-4 md:p-6 space-y-5 md:space-y-6 scroll-mt-4">
+        <h2 className="text-lg md:text-xl font-bold text-foreground text-center">How much should you spend on groceries?</h2>
+        <div className="grid grid-cols-2 gap-3 md:gap-4">
           <div><Label htmlFor="adults">Adults</Label><Input id="adults" type="number" min={1} value={adults} onChange={e => setAdults(Math.max(0, +e.target.value))} /></div>
           <div><Label htmlFor="kids">Kids</Label><Input id="kids" type="number" min={0} value={kids} onChange={e => setKids(Math.max(0, +e.target.value))} /></div>
         </div>
@@ -103,10 +112,10 @@ export default function GroceryBudgetCalculator() {
           </div>
         </div>
 
-        <div className="rounded-xl bg-accent p-6 text-center space-y-1">
+        <div className="rounded-xl bg-accent p-4 md:p-6 text-center space-y-1">
           <p className="text-sm text-accent-foreground">Your monthly grocery budget</p>
-          <p className="text-5xl font-bold text-foreground">{fmt(total)}</p>
-          <p className="text-muted-foreground">{fmt(weekly)}/week · {pct.toFixed(1)}% of income · <strong>{verdict}</strong></p>
+          <p className="text-4xl md:text-5xl font-bold text-foreground">{fmt(total)}</p>
+          <p className="text-sm md:text-base text-muted-foreground">{fmt(weekly)}/week · {pct.toFixed(1)}% of income · <strong>{verdict}</strong></p>
         </div>
       </Card>
 
