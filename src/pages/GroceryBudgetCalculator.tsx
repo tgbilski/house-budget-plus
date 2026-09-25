@@ -1,6 +1,5 @@
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { Helmet } from "react-helmet-async";
-import { usePageReady } from "@/hooks/usePageReady";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -30,9 +29,6 @@ const faqs = [
 ];
 
 export default function GroceryBudgetCalculator() {
-  const { setPageReady } = usePageReady();
-  useEffect(() => { requestAnimationFrame(() => setPageReady()); }, [setPageReady]);
-
   const [adults, setAdults] = useState(2);
   const [kids, setKids] = useState(0);
   const [income, setIncome] = useState(5000);
