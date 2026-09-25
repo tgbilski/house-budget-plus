@@ -47,7 +47,7 @@ export default function GroceryBudgetCalculator() {
   const verdict = pct <= 10 ? "Right on track" : pct <= 15 ? "Typical range" : "Room to save";
 
   const buy = () => {
-    trackEvent?.("template_checkout_click", { price: 5 });
+    trackEvent("template_checkout_click", { price: 5 });
     if (CHECKOUT_URL) window.location.href = CHECKOUT_URL;
   };
 
