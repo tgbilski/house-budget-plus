@@ -10,6 +10,7 @@ import { HelmetProvider } from 'react-helmet-async';
 import { PageSkeleton } from "@/components/LoadingSkeletons";
 
 const GroceryBudgetCalculator = lazy(() => import("@/pages/GroceryBudgetCalculator"));
+const PurchaseSuccess = lazy(() => import("@/pages/PurchaseSuccess"));
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -31,6 +32,7 @@ const AppRoutes = () => {
     <Suspense fallback={<PageSkeleton />}>
       <Routes>
         <Route path="/" element={<GroceryBudgetCalculator />} />
+        <Route path="/purchase-success" element={<PurchaseSuccess />} />
         <Route path="/grocery-budget-calculator" element={<Navigate to="/" replace />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>

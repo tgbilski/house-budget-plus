@@ -17,8 +17,7 @@ const PLANS = {
 } as const;
 type PlanKey = keyof typeof PLANS;
 
-// Set this once the Stripe product exists. Until then the button shows "coming soon".
-const CHECKOUT_URL: string | null = null;
+import { supabase } from "@/integrations/supabase/client";
 
 const fmt = (n: number) => n.toLocaleString("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 });
 
@@ -42,9 +41,19 @@ export default function GroceryBudgetCalculator() {
 
   const verdict = pct <= 10 ? "Right on track" : pct <= 15 ? "Typical range" : "Room to save";
 
-  const buy = () => {
+  const [checkoutLoading, setCheckoutLoading] = useState(false);
+
+  const buy = async () => {
     trackEvent("template_checkout_click", { price: 5 });
-    if (CHECKOUT_URL) window.location.href = CHECKOUT_URL;
+    setCheckoutLoading(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("create-template-checkout");
+      if (error || !data?.url) throw new Error(data?.error || error?.message || "Checkout failed");
+      window.location.href = data.url;
+    } catch (e) {
+      console.error("Checkout error:", e);
+      setCheckoutLoading(false);
+    }
   };
 
   const faqSchema = {
@@ -102,9 +111,9 @@ export default function GroceryBudgetCalculator() {
             <li key={f} className="flex gap-2 text-foreground"><Check className="h-5 w-5 text-success shrink-0" />{f}</li>
           ))}
         </ul>
-        <Button size="lg" className="w-full text-lg" onClick={buy} disabled={!CHECKOUT_URL}>
+        <Button size="lg" className="w-full text-lg" onClick={buy} disabled={checkoutLoading}>
           <Download className="h-5 w-5 mr-2" />
-          {CHECKOUT_URL ? "Get the template — $5" : "Template coming soon — $5"}
+          {checkoutLoading ? "Redirecting to checkout…" : "Get the template — $5"}
         </Button>
         <p className="text-xs text-center text-muted-foreground">One-time payment. No subscription. Instant download.</p>
       </Card>

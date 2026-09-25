@@ -114,3 +114,11 @@ verify_jwt = true
 [[edge_functions.functions]]
 name = "get-street-view"
 verify_jwt = true
+
+[[edge_functions.functions]]
+name = "create-template-checkout"
+verify_jwt = false
+
+[[edge_functions.functions]]
+name = "verify-template-purchase"
+verify_jwt = false
