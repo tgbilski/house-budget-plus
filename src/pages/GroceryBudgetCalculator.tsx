@@ -70,9 +70,18 @@ export default function GroceryBudgetCalculator() {
         <script type="application/ld+json">{JSON.stringify(faqSchema)}</script>
       </Helmet>
 
-      <header className="text-center space-y-3">
+      <header className="text-center space-y-4">
+        <img
+          src={mascot}
+          alt="Grocery budget calculator mascot"
+          className="w-24 h-24 md:w-28 md:h-28 mx-auto rounded-full"
+          width={112}
+          height={112}
+        />
         <h1 className="text-3xl md:text-5xl font-bold text-foreground">Grocery Budget Calculator</h1>
-        <p className="text-lg text-muted-foreground">How much should your household spend on groceries? Get your number in 10 seconds.</p>
+        <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto">
+          Find out how much your family should spend on groceries each month. Enter your household size and income to get a USDA-based grocery budget in seconds — free, no sign-up.
+        </p>
       </header>
 
       <Card className="p-6 space-y-6">
