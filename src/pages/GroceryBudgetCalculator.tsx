@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
 import { ShoppingCart, Check, Download } from "lucide-react";
 import { trackEvent } from "@/utils/analytics";
+import mascot from "@/assets/calculator-mascot.png";
 
 // USDA Food Plans monthly cost per person (approx. 2026 averages, USD)
 const PLANS = {
