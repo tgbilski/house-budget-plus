@@ -42,6 +42,7 @@ const TermsAndConditions = lazy(() => import("@/pages/TermsAndConditions"));
 const Disclaimer = lazy(() => import("@/pages/Disclaimer"));
 const Blog = lazy(() => import("@/pages/Blog"));
 const BlogPost = lazy(() => import("@/pages/BlogPost"));
+const GroceryBudgetCalculator = lazy(() => import("@/pages/GroceryBudgetCalculator"));
 const SubscriptionGuard = lazy(() => import("@/components/SubscriptionGuard").then(m => ({ default: m.SubscriptionGuard })));
 
 interface Currency {
@@ -115,6 +116,7 @@ const AppRoutes = () => {
         <Route path="/disclaimer" element={<Disclaimer />} />
         <Route path="/blog" element={<Blog />} />
         <Route path="/blog/:slug" element={<BlogPost />} />
+        <Route path="/grocery-budget-calculator" element={<GroceryBudgetCalculator />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </Suspense>

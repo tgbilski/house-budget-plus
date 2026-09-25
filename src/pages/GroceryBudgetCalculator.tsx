@@ -1,0 +1,124 @@
+import { useEffect, useMemo, useState } from "react";
+import { Helmet } from "react-helmet-async";
+import { usePageReady } from "@/hooks/usePageReady";
+import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Slider } from "@/components/ui/slider";
+import { ShoppingCart, Check, Download } from "lucide-react";
+import { trackEvent } from "@/utils/analytics";
+
+// USDA Food Plans monthly cost per person (approx. 2026 averages, USD)
+const PLANS = {
+  thrifty: { label: "Thrifty", adult: 310, child: 230 },
+  low: { label: "Low-cost", adult: 360, child: 270 },
+  moderate: { label: "Moderate", adult: 450, child: 330 },
+  liberal: { label: "Liberal", adult: 560, child: 400 },
+} as const;
+type PlanKey = keyof typeof PLANS;
+
+// Set this once the Stripe product exists. Until then the button shows "coming soon".
+const CHECKOUT_URL: string | null = null;
+
+const fmt = (n: number) => n.toLocaleString("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 });
+
+const faqs = [
+  { q: "How much should I spend on groceries per month?", a: "Based on USDA food plans, one adult spends roughly $310–$560/month depending on how thrifty or generous the plan is. A family of four on a moderate plan spends about $1,500/month." },
+  { q: "What percentage of income should go to groceries?", a: "Most budgeting guides suggest 10–15% of take-home pay. If you're above 15%, meal planning and store brands are the fastest wins." },
+  { q: "How is this grocery budget calculated?", a: "We use USDA Food Plan cost estimates per adult and child, then compare the total to your monthly take-home income." },
+];
+
+export default function GroceryBudgetCalculator() {
+  const { setPageReady } = usePageReady();
+  useEffect(() => { requestAnimationFrame(() => setPageReady()); }, [setPageReady]);
+
+  const [adults, setAdults] = useState(2);
+  const [kids, setKids] = useState(0);
+  const [income, setIncome] = useState(5000);
+  const [plan, setPlan] = useState<PlanKey>("low");
+
+  const { total, pct, weekly } = useMemo(() => {
+    const p = PLANS[plan];
+    const total = adults * p.adult + kids * p.child;
+    return { total, weekly: total / 4.33, pct: income > 0 ? (total / income) * 100 : 0 };
+  }, [adults, kids, income, plan]);
+
+  const verdict = pct <= 10 ? "Right on track" : pct <= 15 ? "Typical range" : "Room to save";
+
+  const buy = () => {
+    trackEvent("template_checkout_click", { price: 5 });
+    if (CHECKOUT_URL) window.location.href = CHECKOUT_URL;
+  };
+
+  const faqSchema = {
+    "@context": "https://schema.org", "@type": "FAQPage",
+    mainEntity: faqs.map(f => ({ "@type": "Question", name: f.q, acceptedAnswer: { "@type": "Answer", text: f.a } })),
+  };
+
+  return (
+    <div className="container max-w-3xl mx-auto px-4 py-10 space-y-10 relative z-10">
+      <Helmet>
+        <title>Grocery Budget Calculator (2026) — How Much Should You Spend?</title>
+        <meta name="description" content="Free grocery budget calculator based on USDA food plans. Enter your household size and income to see your ideal monthly and weekly grocery budget." />
+        <link rel="canonical" href="https://housebudgetcalculator.com/grocery-budget-calculator" />
+        <script type="application/ld+json">{JSON.stringify(faqSchema)}</script>
+      </Helmet>
+
+      <header className="text-center space-y-3">
+        <h1 className="text-3xl md:text-5xl font-bold text-foreground">Grocery Budget Calculator</h1>
+        <p className="text-lg text-muted-foreground">How much should your household spend on groceries? Get your number in 10 seconds.</p>
+      </header>
+
+      <Card className="p-6 space-y-6">
+        <div className="grid grid-cols-2 gap-4">
+          <div><Label htmlFor="adults">Adults</Label><Input id="adults" type="number" min={1} value={adults} onChange={e => setAdults(Math.max(0, +e.target.value))} /></div>
+          <div><Label htmlFor="kids">Kids</Label><Input id="kids" type="number" min={0} value={kids} onChange={e => setKids(Math.max(0, +e.target.value))} /></div>
+        </div>
+        <div>
+          <Label htmlFor="income">Monthly take-home income</Label>
+          <Input id="income" type="number" min={0} value={income} onChange={e => setIncome(Math.max(0, +e.target.value))} />
+        </div>
+        <div className="space-y-2">
+          <Label>Spending style</Label>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+            {(Object.keys(PLANS) as PlanKey[]).map(k => (
+              <Button key={k} type="button" variant={plan === k ? "default" : "outline"} onClick={() => setPlan(k)}>{PLANS[k].label}</Button>
+            ))}
+          </div>
+        </div>
+
+        <div className="rounded-xl bg-accent p-6 text-center space-y-1">
+          <p className="text-sm text-accent-foreground">Your monthly grocery budget</p>
+          <p className="text-5xl font-bold text-foreground">{fmt(total)}</p>
+          <p className="text-muted-foreground">{fmt(weekly)}/week · {pct.toFixed(1)}% of income · <strong>{verdict}</strong></p>
+        </div>
+      </Card>
+
+      <Card className="p-6 md:p-8 border-2 border-primary space-y-4">
+        <div className="flex items-center gap-3">
+          <ShoppingCart className="h-8 w-8 text-primary" />
+          <h2 className="text-2xl font-bold text-foreground">Stick to {fmt(total)} every month</h2>
+        </div>
+        <p className="text-muted-foreground">The Grocery Budget Tracker spreadsheet does the tracking for you — one-time $5, yours forever.</p>
+        <ul className="space-y-2">
+          {["12-month tracker with auto totals", "Weekly meal planner + shopping list", "Price-per-unit comparison sheet", "Works in Google Sheets & Excel"].map(f => (
+            <li key={f} className="flex gap-2 text-foreground"><Check className="h-5 w-5 text-success shrink-0" />{f}</li>
+          ))}
+        </ul>
+        <Button size="lg" className="w-full text-lg" onClick={buy} disabled={!CHECKOUT_URL}>
+          <Download className="h-5 w-5 mr-2" />
+          {CHECKOUT_URL ? "Get the template — $5" : "Template coming soon — $5"}
+        </Button>
+        <p className="text-xs text-center text-muted-foreground">One-time payment. No subscription. Instant download.</p>
+      </Card>
+
+      <section className="space-y-4">
+        <h2 className="text-2xl font-bold text-foreground">Grocery budget FAQ</h2>
+        {faqs.map(f => (
+          <div key={f.q}><h3 className="font-semibold text-foreground">{f.q}</h3><p className="text-muted-foreground leading-relaxed">{f.a}</p></div>
+        ))}
+      </section>
+    </div>
+  );
+}
