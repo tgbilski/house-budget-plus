@@ -67,7 +67,7 @@ export default function GroceryBudgetCalculator() {
       <Helmet>
         <title>Grocery Budget Calculator (2026) — How Much Should You Spend on Groceries?</title>
         <meta name="description" content="Free grocery budget calculator based on USDA Food Plans. Enter your household size and income to see how much you should spend on groceries per month and per week — no sign-up required." />
-        <link rel="canonical" href="https://housebudgetcalculator.com/" />
+        <link rel="canonical" href="https://www.housebudgetcalculator.com/" />
         <script type="application/ld+json">{JSON.stringify(faqSchema)}</script>
       </Helmet>
 
