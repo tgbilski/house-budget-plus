@@ -17,8 +17,7 @@ const PLANS = {
 } as const;
 type PlanKey = keyof typeof PLANS;
 
-// Set this once the Stripe product exists. Until then the button shows "coming soon".
-const CHECKOUT_URL: string | null = null;
+import { supabase } from "@/integrations/supabase/client";
 
 const fmt = (n: number) => n.toLocaleString("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 });
 
