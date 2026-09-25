@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react";
 import { Helmet } from "react-helmet-async";
+import { Link } from "react-router-dom";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -135,6 +136,9 @@ export default function GroceryBudgetCalculator() {
           {checkoutLoading ? "Redirecting to checkout…" : "Get the template — $5"}
         </Button>
         <p className="text-xs text-center text-muted-foreground">One-time payment. No subscription. Instant download.</p>
+        <p className="text-xs text-center text-muted-foreground">
+          Already bought it? <Link to="/purchase-success" className="underline">Recover your download</Link>
+        </p>
       </Card>
 
       <section className="space-y-4">
