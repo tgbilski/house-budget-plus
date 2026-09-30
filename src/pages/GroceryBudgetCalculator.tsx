@@ -161,24 +161,24 @@ export default function GroceryBudgetCalculator() {
           American households actually spend on groceries. Here's what each plan costs per month in 2026:
         </p>
         <div className="overflow-x-auto rounded-xl border border-border">
-          <table className="w-full text-sm">
+          <table className="w-full text-xs md:text-sm">
             <thead>
               <tr className="bg-accent text-accent-foreground">
-                <th className="text-left p-3 font-semibold">Household</th>
-                <th className="text-right p-3 font-semibold">Thrifty</th>
-                <th className="text-right p-3 font-semibold">Low-cost</th>
-                <th className="text-right p-3 font-semibold">Moderate</th>
-                <th className="text-right p-3 font-semibold">Liberal</th>
+                <th className="text-left p-1.5 md:p-3 font-semibold">Household</th>
+                <th className="text-right p-1.5 md:p-3 font-semibold">Thrifty</th>
+                <th className="text-right p-1.5 md:p-3 font-semibold">Low-cost</th>
+                <th className="text-right p-1.5 md:p-3 font-semibold">Moderate</th>
+                <th className="text-right p-1.5 md:p-3 font-semibold">Liberal</th>
               </tr>
             </thead>
             <tbody>
               {householdTable.map((row, i) => (
                 <tr key={row.size} className={i % 2 === 0 ? "bg-card" : "bg-muted/50"}>
-                  <td className="p-3 font-medium text-foreground">{row.size}</td>
-                  <td className="p-3 text-right text-muted-foreground">{fmt(row.thrifty)}</td>
-                  <td className="p-3 text-right text-muted-foreground">{fmt(row.low)}</td>
-                  <td className="p-3 text-right text-muted-foreground">{fmt(row.moderate)}</td>
-                  <td className="p-3 text-right text-muted-foreground">{fmt(row.liberal)}</td>
+                  <td className="p-1.5 md:p-3 font-medium text-foreground whitespace-nowrap">{row.size}</td>
+                  <td className="p-1.5 md:p-3 text-right text-muted-foreground">{fmt(row.thrifty)}</td>
+                  <td className="p-1.5 md:p-3 text-right text-muted-foreground">{fmt(row.low)}</td>
+                  <td className="p-1.5 md:p-3 text-right text-muted-foreground">{fmt(row.moderate)}</td>
+                  <td className="p-1.5 md:p-3 text-right text-muted-foreground">{fmt(row.liberal)}</td>
                 </tr>
               ))}
             </tbody>
