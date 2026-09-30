@@ -144,9 +144,9 @@ export default function GroceryBudgetCalculator() {
             <li key={f} className="flex gap-2 text-foreground"><Check className="h-5 w-5 text-success shrink-0" />{f}</li>
           ))}
         </ul>
-        <Button size="lg" className="w-full text-lg" onClick={buy} disabled={checkoutLoading}>
-          <Download className="h-5 w-5 mr-2" />
-          {checkoutLoading ? "Redirecting to checkout…" : "Get the template — $5"}
+        <Button size="lg" className="w-full text-lg whitespace-nowrap" onClick={buy} disabled={checkoutLoading}>
+          <Download className="h-5 w-5 mr-2 shrink-0" />
+          {checkoutLoading ? "Opening checkout…" : "Get the template"}
         </Button>
         <p className="text-xs text-center text-muted-foreground">One-time payment. No subscription. Instant download.</p>
         <p className="text-xs text-center text-muted-foreground">
