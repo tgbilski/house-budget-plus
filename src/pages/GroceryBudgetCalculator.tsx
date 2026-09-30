@@ -138,7 +138,12 @@ export default function GroceryBudgetCalculator() {
           <ShoppingCart className="h-8 w-8 text-primary" />
           <h2 className="text-2xl font-bold text-foreground">Stick to {fmt(total)} every month</h2>
         </div>
-        <p className="text-muted-foreground">The Grocery Budget Tracker spreadsheet does the tracking for you — one-time $5, yours forever.</p>
+        <p className="text-muted-foreground">The Grocery Budget Tracker spreadsheet does the tracking for you — one-time payment, yours forever.</p>
+        <div className="flex items-center justify-center gap-3">
+          <span className="text-lg text-muted-foreground line-through">$10</span>
+          <span className="text-3xl font-bold text-foreground">$5</span>
+          <span className="rounded-full bg-success/15 text-success text-xs font-bold px-3 py-1 uppercase tracking-wide">50% off</span>
+        </div>
         <ul className="space-y-2">
           {["12-month tracker with auto totals", "Weekly meal planner + shopping list", "Price-per-unit comparison sheet", "Works in Google Sheets & Excel"].map(f => (
             <li key={f} className="flex gap-2 text-foreground"><Check className="h-5 w-5 text-success shrink-0" />{f}</li>
