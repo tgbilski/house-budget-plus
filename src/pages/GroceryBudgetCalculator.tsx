@@ -74,7 +74,16 @@ export default function GroceryBudgetCalculator() {
       setCopied(true);
       window.setTimeout(() => setCopied(false), 2500);
     } catch {
-      setCopied(false);
+      const field = document.createElement("textarea");
+      field.value = `${shareText} ${shareUrl}`;
+      field.style.position = "fixed";
+      field.style.opacity = "0";
+      document.body.appendChild(field);
+      field.select();
+      const success = document.execCommand("copy");
+      field.remove();
+      setCopied(success);
+      if (success) window.setTimeout(() => setCopied(false), 2500);
     }
   };
 
@@ -154,20 +163,13 @@ export default function GroceryBudgetCalculator() {
       <section aria-label="Share the grocery budget calculator" className="flex flex-wrap items-center justify-center gap-2 border-y border-border py-4">
         <span className="w-full text-center text-sm font-semibold text-foreground sm:w-auto sm:mr-2">Share this calculator</span>
         {shareLinks.map(({ name, icon, href }) => (
-          <a
-            key={name}
-            href={href}
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label={`Share on ${name}`}
-            title={`Share on ${name}`}
-            onClick={() => trackEvent("calculator_share_click", { platform: name })}
-            className="inline-flex h-10 w-10 items-center justify-center rounded-md border border-border bg-card transition-colors hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-          >
-            <img src={`/social/icons/${icon}.svg`} alt="" className="h-5 w-5 dark:invert" width={20} height={20} />
-          </a>
+          <Button key={name} asChild variant="outline" size="icon" className="h-10 w-10" title={`Share on ${name}`}>
+            <a href={href} target="_blank" rel="noopener noreferrer" aria-label={`Share on ${name}`} onClick={() => trackEvent("calculator_share_click", { platform: name })}>
+              <img src={`/social/icons/${icon}.svg`} alt="" className="h-5 w-5 dark:invert" width={20} height={20} />
+            </a>
+          </Button>
         ))}
-        <Button variant="outline" size="icon" onClick={copyShare} aria-label={copied ? "Post text and link copied" : "Copy post text and link"} title={copied ? "Copied!" : "Copy post text and link"}>
+        <Button variant="outline" size="icon" className="h-10 w-10" onClick={copyShare} aria-label={copied ? "Post text and link copied" : "Copy post text and link"} title={copied ? "Copied!" : "Copy post text and link"}>
           {copied ? <Check className="h-5 w-5" /> : <Link2 className="h-5 w-5" />}
         </Button>
         <span role="status" className="sr-only">{copied ? "Post text and link copied" : ""}</span>
