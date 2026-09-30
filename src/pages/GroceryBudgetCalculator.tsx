@@ -26,7 +26,20 @@ const fmt = (n: number) => n.toLocaleString("en-US", { style: "currency", curren
 const faqs = [
   { q: "How much should I spend on groceries per month?", a: "Based on USDA food plans, one adult spends roughly $310–$560/month depending on how thrifty or generous the plan is. A family of four on a moderate plan spends about $1,500/month." },
   { q: "What percentage of income should go to groceries?", a: "Most budgeting guides suggest 10–15% of take-home pay. If you're above 15%, meal planning and store brands are the fastest wins." },
+  { q: "Is $400 a month enough for groceries?", a: "For one adult, yes — $400 covers a low-cost to moderate USDA plan with room to spare. For a couple it's tight but doable on a thrifty plan with meal planning. For a family of four, $400 is well below even the thrifty USDA estimate, so it would require heavy reliance on bulk staples, sales, and cooking from scratch." },
+  { q: "How much should a family of 4 spend on groceries?", a: "Using 2026 USDA Food Plan estimates, a family of four (two adults, two kids) spends roughly $1,080/month on a thrifty plan, $1,260 on low-cost, $1,560 on moderate, and $1,920 on a liberal plan. Most families land in the low-cost to moderate range." },
+  { q: "How can I lower my grocery bill?", a: "The biggest wins: plan meals around weekly sales, buy store brands (typically 20–30% cheaper), cook from scratch instead of buying pre-made, shop with a list to avoid impulse buys, and compare price-per-unit rather than package price. Tracking your spending for one month usually reveals $50–$150 in easy savings." },
   { q: "How is this grocery budget calculated?", a: "We use USDA Food Plan cost estimates per adult and child, then compare the total to your monthly take-home income." },
+];
+
+// Average monthly grocery cost by household size (USDA 2026 estimates, low-cost plan)
+const householdTable = [
+  { size: "1 person", thrifty: 310, low: 360, moderate: 450, liberal: 560 },
+  { size: "2 people", thrifty: 620, low: 720, moderate: 900, liberal: 1120 },
+  { size: "3 people", thrifty: 850, low: 990, moderate: 1230, liberal: 1520 },
+  { size: "4 people", thrifty: 1080, low: 1260, moderate: 1560, liberal: 1920 },
+  { size: "5 people", thrifty: 1310, low: 1530, moderate: 1890, liberal: 2320 },
+  { size: "6 people", thrifty: 1540, low: 1800, moderate: 2220, liberal: 2720 },
 ];
 
 export default function GroceryBudgetCalculator() {
@@ -140,6 +153,64 @@ export default function GroceryBudgetCalculator() {
           Already bought it? <Link to="/purchase-success" className="underline">Recover your download</Link>
         </p>
       </Card>
+
+      <section className="space-y-4">
+        <h2 className="text-2xl font-bold text-foreground">Average grocery cost per month by household size</h2>
+        <p className="text-muted-foreground leading-relaxed">
+          The USDA publishes four official food plans — Thrifty, Low-cost, Moderate, and Liberal — based on what
+          American households actually spend on groceries. Here's what each plan costs per month in 2026:
+        </p>
+        <div className="overflow-x-auto rounded-xl border border-border">
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="bg-accent text-accent-foreground">
+                <th className="text-left p-3 font-semibold">Household</th>
+                <th className="text-right p-3 font-semibold">Thrifty</th>
+                <th className="text-right p-3 font-semibold">Low-cost</th>
+                <th className="text-right p-3 font-semibold">Moderate</th>
+                <th className="text-right p-3 font-semibold">Liberal</th>
+              </tr>
+            </thead>
+            <tbody>
+              {householdTable.map((row, i) => (
+                <tr key={row.size} className={i % 2 === 0 ? "bg-card" : "bg-muted/50"}>
+                  <td className="p-3 font-medium text-foreground">{row.size}</td>
+                  <td className="p-3 text-right text-muted-foreground">{fmt(row.thrifty)}</td>
+                  <td className="p-3 text-right text-muted-foreground">{fmt(row.low)}</td>
+                  <td className="p-3 text-right text-muted-foreground">{fmt(row.moderate)}</td>
+                  <td className="p-3 text-right text-muted-foreground">{fmt(row.liberal)}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <p className="text-sm text-muted-foreground leading-relaxed">
+          Estimates assume two adults plus children for households of 3+. The Thrifty plan is the basis for SNAP
+          benefit calculations; most families land between Low-cost and Moderate. Your actual spending will vary
+          by region, dietary needs, and where you shop.
+        </p>
+      </section>
+
+      <section className="space-y-4">
+        <h2 className="text-2xl font-bold text-foreground">How to calculate your grocery budget</h2>
+        <ol className="space-y-4">
+          {[
+            { title: "Start with your household size", body: "More people means more food, but the cost per person drops as your household grows — buying in bulk and cooking larger batches is more efficient. Use the table above or the calculator to get your baseline." },
+            { title: "Pick a spending style that matches your life", body: "Be honest here. If you cook most meals from scratch and shop sales, Thrifty or Low-cost is realistic. If you buy convenience foods, organic products, or name brands, plan for Moderate or Liberal." },
+            { title: "Check it against your income", body: "Your grocery budget should be roughly 10–15% of your take-home pay. If the number you calculated is higher, that's a signal to adjust your spending style — not to feel guilty." },
+            { title: "Track it for one month", body: "A budget only works if you compare it to reality. Save your receipts or use a tracker (like our $5 spreadsheet) to see where you actually land. Most people find $50–$150 in savings the first month just by paying attention." },
+            { title: "Adjust monthly, not daily", body: "Groceries fluctuate week to week. Judge yourself on the monthly total, not one expensive Costco run." },
+          ].map((step, i) => (
+            <li key={step.title} className="flex gap-3">
+              <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground text-sm font-bold">{i + 1}</span>
+              <div>
+                <h3 className="font-semibold text-foreground">{step.title}</h3>
+                <p className="text-muted-foreground leading-relaxed">{step.body}</p>
+              </div>
+            </li>
+          ))}
+        </ol>
+      </section>
 
       <section className="space-y-4">
         <h2 className="text-2xl font-bold text-foreground">Grocery budget FAQ</h2>
