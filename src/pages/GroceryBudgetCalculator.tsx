@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
-import { ShoppingCart, Check, Download, ChevronDown } from "lucide-react";
+import { ShoppingCart, Check, Download, ChevronDown, Link2 } from "lucide-react";
 import { trackEvent } from "@/utils/analytics";
 import mascot from "@/assets/calculator-mascot.png";
 
@@ -22,6 +22,15 @@ type PlanKey = keyof typeof PLANS;
 import { supabase } from "@/integrations/supabase/client";
 
 const fmt = (n: number) => n.toLocaleString("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 });
+
+const shareUrl = "https://www.housebudgetcalculator.com/";
+const shareText = "Grocery budgeting just got easier! 🛒 Find a monthly and weekly target for your household with this free USDA-based calculator. No sign-up needed.";
+const shareLinks = [
+  { name: "Facebook", icon: "facebook", href: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}` },
+  { name: "X", icon: "x", href: `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(shareUrl)}` },
+  { name: "Pinterest", icon: "pinterest", href: `https://www.pinterest.com/pin/create/button/?url=${encodeURIComponent(shareUrl)}&media=${encodeURIComponent("https://www.housebudgetcalculator.com/social/grocery-calculator-homepage.png")}&description=${encodeURIComponent(shareText)}` },
+  { name: "WhatsApp", icon: "whatsapp", href: `https://api.whatsapp.com/send?text=${encodeURIComponent(`${shareText} ${shareUrl}`)}` },
+];
 
 const faqs = [
   { q: "How much should I spend on groceries per month?", a: "Based on USDA food plans, one adult spends roughly $310–$560/month depending on how thrifty or generous the plan is. A family of four on a moderate plan spends about $1,500/month." },
@@ -57,6 +66,17 @@ export default function GroceryBudgetCalculator() {
   const verdict = pct <= 10 ? "Right on track" : pct <= 15 ? "Typical range" : "Room to save";
 
   const [checkoutLoading, setCheckoutLoading] = useState(false);
+  const [copied, setCopied] = useState(false);
+
+  const copyShare = async () => {
+    try {
+      await navigator.clipboard.writeText(`${shareText} ${shareUrl}`);
+      setCopied(true);
+      window.setTimeout(() => setCopied(false), 2500);
+    } catch {
+      setCopied(false);
+    }
+  };
 
   const buy = async () => {
     trackEvent("template_checkout_click", { price: 5 });
@@ -79,8 +99,8 @@ export default function GroceryBudgetCalculator() {
   return (
     <div className="container max-w-3xl mx-auto px-4 py-6 md:py-10 space-y-6 md:space-y-10 relative z-10">
       <Helmet>
-        <title>Grocery Budget Calculator (2026) — How Much Should You Spend on Groceries?</title>
-        <meta name="description" content="Free grocery budget calculator based on USDA Food Plans. Enter your household size and income to see how much you should spend on groceries per month and per week — no sign-up required." />
+        <title>Grocery Budget Calculator (2026) | House Budget Calculator</title>
+        <meta name="description" content="Find your monthly and weekly grocery budget with our free USDA-based grocery budget calculator. Set a target for your household and income in seconds—no sign-up needed." />
         <link rel="canonical" href="https://www.housebudgetcalculator.com/" />
         <script type="application/ld+json">{JSON.stringify(faqSchema)}</script>
       </Helmet>
@@ -132,6 +152,28 @@ export default function GroceryBudgetCalculator() {
           <p className="text-sm md:text-base text-muted-foreground">{fmt(weekly)}/week · {pct.toFixed(1)}% of income · <strong>{verdict}</strong></p>
         </div>
       </Card>
+
+      <section aria-label="Share the grocery budget calculator" className="flex flex-wrap items-center justify-center gap-2 border-y border-border py-4">
+        <span className="w-full text-center text-sm font-semibold text-foreground sm:w-auto sm:mr-2">Share this calculator</span>
+        {shareLinks.map(({ name, icon, href }) => (
+          <a
+            key={name}
+            href={href}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label={`Share on ${name}`}
+            title={`Share on ${name}`}
+            onClick={() => trackEvent("calculator_share_click", { platform: name })}
+            className="inline-flex h-10 w-10 items-center justify-center rounded-md border border-border bg-card transition-colors hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          >
+            <img src={`/social/icons/${icon}.svg`} alt="" className="h-5 w-5 dark:invert" width={20} height={20} />
+          </a>
+        ))}
+        <Button variant="outline" size="icon" onClick={copyShare} aria-label={copied ? "Post text and link copied" : "Copy post text and link"} title={copied ? "Copied!" : "Copy post text and link"}>
+          {copied ? <Check className="h-5 w-5" /> : <Link2 className="h-5 w-5" />}
+        </Button>
+        <span role="status" className="sr-only">{copied ? "Post text and link copied" : ""}</span>
+      </section>
 
       <Card className="p-6 md:p-8 border-2 border-primary space-y-4">
         <div className="flex items-center gap-3">
