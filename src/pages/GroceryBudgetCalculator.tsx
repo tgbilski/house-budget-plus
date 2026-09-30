@@ -99,8 +99,6 @@ export default function GroceryBudgetCalculator() {
   return (
     <div className="container max-w-3xl mx-auto px-4 py-6 md:py-10 space-y-6 md:space-y-10 relative z-10">
       <Helmet>
-        <title>Grocery Budget Calculator (2026) | House Budget Calculator</title>
-        <meta name="description" content="Find your monthly and weekly grocery budget with our free USDA-based grocery budget calculator. Set a target for your household and income in seconds—no sign-up needed." />
         <link rel="canonical" href="https://www.housebudgetcalculator.com/" />
         <script type="application/ld+json">{JSON.stringify(faqSchema)}</script>
       </Helmet>
