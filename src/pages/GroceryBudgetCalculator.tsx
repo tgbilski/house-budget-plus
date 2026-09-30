@@ -155,6 +155,64 @@ export default function GroceryBudgetCalculator() {
       </Card>
 
       <section className="space-y-4">
+        <h2 className="text-2xl font-bold text-foreground">Average grocery cost per month by household size</h2>
+        <p className="text-muted-foreground leading-relaxed">
+          The USDA publishes four official food plans — Thrifty, Low-cost, Moderate, and Liberal — based on what
+          American households actually spend on groceries. Here's what each plan costs per month in 2026:
+        </p>
+        <div className="overflow-x-auto rounded-xl border border-border">
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="bg-accent text-accent-foreground">
+                <th className="text-left p-3 font-semibold">Household</th>
+                <th className="text-right p-3 font-semibold">Thrifty</th>
+                <th className="text-right p-3 font-semibold">Low-cost</th>
+                <th className="text-right p-3 font-semibold">Moderate</th>
+                <th className="text-right p-3 font-semibold">Liberal</th>
+              </tr>
+            </thead>
+            <tbody>
+              {householdTable.map((row, i) => (
+                <tr key={row.size} className={i % 2 === 0 ? "bg-card" : "bg-muted/50"}>
+                  <td className="p-3 font-medium text-foreground">{row.size}</td>
+                  <td className="p-3 text-right text-muted-foreground">{fmt(row.thrifty)}</td>
+                  <td className="p-3 text-right text-muted-foreground">{fmt(row.low)}</td>
+                  <td className="p-3 text-right text-muted-foreground">{fmt(row.moderate)}</td>
+                  <td className="p-3 text-right text-muted-foreground">{fmt(row.liberal)}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <p className="text-sm text-muted-foreground leading-relaxed">
+          Estimates assume two adults plus children for households of 3+. The Thrifty plan is the basis for SNAP
+          benefit calculations; most families land between Low-cost and Moderate. Your actual spending will vary
+          by region, dietary needs, and where you shop.
+        </p>
+      </section>
+
+      <section className="space-y-4">
+        <h2 className="text-2xl font-bold text-foreground">How to calculate your grocery budget</h2>
+        <ol className="space-y-4">
+          {[
+            { title: "Start with your household size", body: "More people means more food, but the cost per person drops as your household grows — buying in bulk and cooking larger batches is more efficient. Use the table above or the calculator to get your baseline." },
+            { title: "Pick a spending style that matches your life", body: "Be honest here. If you cook most meals from scratch and shop sales, Thrifty or Low-cost is realistic. If you buy convenience foods, organic products, or name brands, plan for Moderate or Liberal." },
+            { title: "Check it against your income", body: "Your grocery budget should be roughly 10–15% of your take-home pay. If the number you calculated is higher, that's a signal to adjust your spending style — not to feel guilty." },
+            { title: "Track it for one month", body: "A budget only works if you compare it to reality. Save your receipts or use a tracker (like our $5 spreadsheet) to see where you actually land. Most people find $50–$150 in savings the first month just by paying attention." },
+            { title: "Adjust monthly, not daily", body: "Groceries fluctuate week to week. Judge yourself on the monthly total, not one expensive Costco run." },
+          ].map((step, i) => (
+            <li key={step.title} className="flex gap-3">
+              <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground text-sm font-bold">{i + 1}</span>
+              <div>
+                <h3 className="font-semibold text-foreground">{step.title}</h3>
+                <p className="text-muted-foreground leading-relaxed">{step.body}</p>
+              </div>
+            </li>
+          ))}
+        </ol>
+      </section>
+
+      <section className="space-y-4">
         <h2 className="text-2xl font-bold text-foreground">Grocery budget FAQ</h2>
         {faqs.map(f => (
           <div key={f.q}><h3 className="font-semibold text-foreground">{f.q}</h3><p className="text-muted-foreground leading-relaxed">{f.a}</p></div>
