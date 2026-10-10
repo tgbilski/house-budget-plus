@@ -253,7 +253,7 @@ export default function MealPlanner() {
           </div>
           <ul className="space-y-2 text-left max-w-sm mx-auto">
             {[
-              "45+ budget meals with real ingredient costs",
+              "45+ budget meals with estimated ingredient costs",
               "Add your own meals too",
               "Auto-combined grocery list by store section",
               "Live total vs. your weekly budget",
@@ -267,6 +267,9 @@ export default function MealPlanner() {
             {checkoutLoading ? "Opening checkout…" : "Unlock for $5"}
           </Button>
           <p className="text-xs text-muted-foreground">One-time payment. No subscription. Includes 90 days of access.</p>
+          <p className="text-xs text-muted-foreground">
+            Meal costs are estimates based on national average prices — what you actually pay varies by store and region.
+          </p>
         </Card>
 
         <Card className="p-6 space-y-3">
@@ -343,6 +346,9 @@ export default function MealPlanner() {
             : underBudget
               ? `${fmt2(state.weeklyBudget - totalCost)} under budget — nice!`
               : `${fmt2(totalCost - state.weeklyBudget)} over budget — swap a meal or two.`}
+        </p>
+        <p className="text-xs text-muted-foreground text-center">
+          Prices are estimates based on national averages — your actual bill will vary by store and region.
         </p>
       </Card>
 
