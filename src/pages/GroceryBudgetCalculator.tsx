@@ -180,7 +180,7 @@ export default function GroceryBudgetCalculator() {
           <ShoppingCart className="h-8 w-8 text-primary" />
           <h2 className="text-2xl font-bold text-foreground">Turn {fmt(total)} into a week of meals</h2>
         </div>
-        <p className="text-muted-foreground">The Meal Planner & Grocery List tool picks your meals, builds your shopping list, and keeps it inside your budget — one-time payment, yours forever.</p>
+        <p className="text-muted-foreground">The Meal Planner & Grocery List tool picks your meals, builds your shopping list, and keeps it inside your budget — one-time payment, 90 days of access.</p>
         <div className="flex items-center justify-center gap-3">
           <span className="text-lg text-muted-foreground line-through">$10</span>
           <span className="text-3xl font-bold text-foreground">$5</span>
@@ -195,7 +195,7 @@ export default function GroceryBudgetCalculator() {
           <Download className="h-5 w-5 mr-2 shrink-0" />
           {checkoutLoading ? "Opening checkout…" : "Get the meal planner"}
         </Button>
-        <p className="text-xs text-center text-muted-foreground">One-time payment. No subscription. No sign-up.</p>
+        <p className="text-xs text-center text-muted-foreground">One-time payment. No subscription. Includes 90 days of access.</p>
         <p className="text-xs text-center text-muted-foreground">
           Already bought it? <Link to="/planner" className="underline">Open your planner</Link>
         </p>
