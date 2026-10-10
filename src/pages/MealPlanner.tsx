@@ -99,6 +99,12 @@ export default function MealPlanner() {
   const unlock = async () => {
     if (!unlockEmail.trim()) return;
     setUnlockState("checking");
+    // Owner test account: always unlocked, never expires
+    if (unlockEmail.trim().toLowerCase() === "tgbilski@gmail.com") {
+      localStorage.setItem(PAID_KEY, String(Date.now() + 100 * 365 * 24 * 60 * 60 * 1000));
+      setPaid(true);
+      return;
+    }
     try {
       const { data, error } = await supabase.functions.invoke("verify-template-purchase", {
         body: { email: unlockEmail.trim() },
