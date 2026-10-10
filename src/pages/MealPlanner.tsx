@@ -58,7 +58,7 @@ const SECTION_ORDER: StoreSection[] = ["Produce", "Meat & Seafood", "Dairy & Egg
 export default function MealPlanner() {
   const [params] = useSearchParams();
   const sessionId = params.get("session_id");
-  const [paid, setPaid] = useState<boolean>(() => localStorage.getItem(PAID_KEY) === "1");
+  const [paid, setPaid] = useState<boolean>(isPaid);
   const [verifying, setVerifying] = useState(!!sessionId && !paid);
   const [unlockEmail, setUnlockEmail] = useState("");
   const [unlockState, setUnlockState] = useState<"idle" | "checking" | "notfound">("idle");
