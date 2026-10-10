@@ -99,7 +99,7 @@ export default function MealPlanner() {
         body: { email: unlockEmail.trim() },
       });
       if (!error && data?.paid) {
-        localStorage.setItem(PAID_KEY, "1");
+        markPaid();
         setPaid(true);
         trackEvent("planner_unlocked", { method: "email" });
       } else {
