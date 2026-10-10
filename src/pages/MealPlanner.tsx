@@ -512,7 +512,7 @@ export default function MealPlanner() {
                           </span>
                           <span className={`flex-1 ${isChecked ? "line-through text-muted-foreground" : "text-foreground"}`}>
                             {item.name}
-                            <span className="text-muted-foreground text-sm"> — {qty}{item.unit ? ` ${item.unit}` : ""}</span>
+                            {!isCustom && <span className="text-muted-foreground text-sm"> — {qty}{item.unit ? ` ${item.unit}` : ""}</span>}
                           </span>
                           <span className="shrink-0 text-sm text-muted-foreground">{fmt2(item.price)}</span>
                         </button>
