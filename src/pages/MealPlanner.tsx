@@ -41,6 +41,7 @@ const fmt2 = (n: number) => n.toLocaleString("en-US", { style: "currency", curre
 interface PlannerState {
   selected: string[]; // library meal ids
   customMeals: CustomMeal[];
+  customItems: { id: string; name: string; section: StoreSection; price: number }[];
   weeklyBudget: number;
   checked: string[]; // grocery list item keys
 }
@@ -48,9 +49,9 @@ interface PlannerState {
 const loadState = (): PlannerState => {
   try {
     const raw = localStorage.getItem(STATE_KEY);
-    if (raw) return { selected: [], customMeals: [], weeklyBudget: 166, checked: [], ...JSON.parse(raw) };
+    if (raw) return { selected: [], customMeals: [], customItems: [], weeklyBudget: 166, checked: [], ...JSON.parse(raw) };
   } catch { /* ignore */ }
-  return { selected: [], customMeals: [], weeklyBudget: 166, checked: [] };
+  return { selected: [], customMeals: [], customItems: [], weeklyBudget: 166, checked: [] };
 };
 
 const SECTION_ORDER: StoreSection[] = ["Produce", "Meat & Seafood", "Dairy & Eggs", "Bakery", "Pantry", "Frozen", "Household"];
@@ -70,6 +71,10 @@ export default function MealPlanner() {
   const [customCost, setCustomCost] = useState("");
   const [customIngredients, setCustomIngredients] = useState("");
   const [showCustomForm, setShowCustomForm] = useState(false);
+  const [showAddItem, setShowAddItem] = useState(false);
+  const [itemName, setItemName] = useState("");
+  const [itemPrice, setItemPrice] = useState("");
+  const [itemSection, setItemSection] = useState<StoreSection>(SECTION_ORDER[0]);
   const [copied, setCopied] = useState(false);
 
   useEffect(() => {
@@ -146,6 +151,21 @@ export default function MealPlanner() {
 
   const removeCustomMeal = (id: string) =>
     setState((s) => ({ ...s, customMeals: s.customMeals.filter((m) => m.id !== id) }));
+
+  const addItem = () => {
+    if (!itemName.trim()) return;
+    const item = {
+      id: `${Date.now()}`,
+      name: itemName.trim(),
+      section: itemSection,
+      price: Math.max(0, parseFloat(itemPrice) || 0),
+    };
+    setState((s) => ({ ...s, customItems: [...s.customItems, item] }));
+    setItemName(""); setItemPrice(""); setShowAddItem(false);
+  };
+
+  const removeItem = (id: string) =>
+    setState((s) => ({ ...s, customItems: s.customItems.filter((i) => i.id !== id) }));
 
   const selectedMeals = useMemo(
     () => MEALS.filter((m) => state.selected.includes(m.id)),
