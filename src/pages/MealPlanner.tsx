@@ -15,8 +15,25 @@ import {
   MEALS, MEAL_CATEGORIES, mealCost, type Meal, type CustomMeal, type StoreSection,
 } from "@/data/meals";
 
-const PAID_KEY = "grocery_planner_paid";
+const PAID_KEY = "grocery_planner_paid"; // stores unlock timestamp (ms), not "1"
 const STATE_KEY = "grocery_planner_state";
+const ACCESS_DAYS = 90;
+const ACCESS_MS = ACCESS_DAYS * 24 * 60 * 60 * 1000;
+
+const getPaidUntil = (): number | null => {
+  const raw = localStorage.getItem(PAID_KEY);
+  if (!raw) return null;
+  const ts = raw === "1" ? null : Number(raw); // legacy "1" values have no timestamp — treat as expired
+  if (!ts || Number.isNaN(ts)) return null;
+  return ts + ACCESS_MS;
+};
+
+const isPaid = (): boolean => {
+  const until = getPaidUntil();
+  return until !== null && until > Date.now();
+};
+
+const markPaid = () => localStorage.setItem(PAID_KEY, String(Date.now()));
 
 const fmt = (n: number) => n.toLocaleString("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 });
 const fmt2 = (n: number) => n.toLocaleString("en-US", { style: "currency", currency: "USD" });
@@ -41,7 +58,7 @@ const SECTION_ORDER: StoreSection[] = ["Produce", "Meat & Seafood", "Dairy & Egg
 export default function MealPlanner() {
   const [params] = useSearchParams();
   const sessionId = params.get("session_id");
-  const [paid, setPaid] = useState<boolean>(() => localStorage.getItem(PAID_KEY) === "1");
+  const [paid, setPaid] = useState<boolean>(isPaid);
   const [verifying, setVerifying] = useState(!!sessionId && !paid);
   const [unlockEmail, setUnlockEmail] = useState("");
   const [unlockState, setUnlockState] = useState<"idle" | "checking" | "notfound">("idle");
@@ -66,7 +83,7 @@ export default function MealPlanner() {
       .invoke("verify-template-purchase", { body: { session_id: sessionId } })
       .then(({ data, error }) => {
         if (!error && data?.paid) {
-          localStorage.setItem(PAID_KEY, "1");
+          markPaid();
           setPaid(true);
           trackEvent("purchase", { value: 5, currency: "USD", item: "meal_planner" });
         }
@@ -82,7 +99,7 @@ export default function MealPlanner() {
         body: { email: unlockEmail.trim() },
       });
       if (!error && data?.paid) {
-        localStorage.setItem(PAID_KEY, "1");
+        markPaid();
         setPaid(true);
         trackEvent("planner_unlocked", { method: "email" });
       } else {
@@ -227,7 +244,7 @@ export default function MealPlanner() {
           <h1 className="text-2xl md:text-3xl font-bold text-foreground">Meal Planner & Grocery List</h1>
           <p className="text-muted-foreground leading-relaxed">
             Pick your meals for the week from 45+ budget recipes (or add your own), and get a combined
-            grocery list that stays inside your budget. One-time payment, yours forever.
+            grocery list that stays inside your budget. One-time payment, 90 days of access.
           </p>
           <div className="flex items-center justify-center gap-3">
             <span className="text-lg text-muted-foreground line-through">$10</span>
@@ -249,7 +266,7 @@ export default function MealPlanner() {
           <Button size="lg" className="w-full text-lg whitespace-nowrap" onClick={buy} disabled={checkoutLoading}>
             {checkoutLoading ? "Opening checkout…" : "Unlock for $5"}
           </Button>
-          <p className="text-xs text-muted-foreground">One-time payment. No subscription. No sign-up.</p>
+          <p className="text-xs text-muted-foreground">One-time payment. No subscription. Includes 90 days of access.</p>
         </Card>
 
         <Card className="p-6 space-y-3">
@@ -289,6 +306,11 @@ export default function MealPlanner() {
       <header className="text-center space-y-2">
         <h1 className="text-2xl md:text-4xl font-bold text-foreground">Your Weekly Meal Planner</h1>
         <p className="text-muted-foreground">Pick your meals, and we'll build the grocery list — inside your budget.</p>
+        {getPaidUntil() && (
+          <p className="text-xs text-muted-foreground">
+            Your access runs through {new Date(getPaidUntil()!).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })}.
+          </p>
+        )}
       </header>
 
       {/* Budget bar */}
