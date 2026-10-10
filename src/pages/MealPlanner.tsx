@@ -280,7 +280,7 @@ export default function MealPlanner() {
           <ul className="space-y-2 text-left max-w-sm mx-auto">
             {[
               "45+ budget meals with estimated ingredient costs",
-              "Add your own meals too",
+              "Add your own meals and list items too",
               "Auto-combined grocery list by store section",
               "Live total vs. your weekly budget",
               "Copy or print your list for the store",
@@ -498,13 +498,14 @@ export default function MealPlanner() {
                 <ul className="divide-y divide-border">
                   {group.items.map((item) => {
                     const isChecked = state.checked.includes(item.key);
+                    const isCustom = item.key.startsWith("ci-");
                     const qty = item.qty % 1 === 0 ? item.qty : item.qty.toFixed(1);
                     return (
-                      <li key={item.key}>
+                      <li key={item.key} className="flex items-center gap-1">
                         <button
                           type="button"
                           onClick={() => toggleChecked(item.key)}
-                          className="flex w-full items-center gap-3 py-2 text-left"
+                          className="flex min-w-0 flex-1 items-center gap-3 py-2 text-left"
                         >
                           <span className={`flex h-5 w-5 shrink-0 items-center justify-center rounded border ${isChecked ? "bg-success border-success text-success-foreground" : "border-border"}`}>
                             {isChecked && <Check className="h-3.5 w-3.5" />}
@@ -513,8 +514,18 @@ export default function MealPlanner() {
                             {item.name}
                             <span className="text-muted-foreground text-sm"> — {qty}{item.unit ? ` ${item.unit}` : ""}</span>
                           </span>
-                          <span className="text-sm text-muted-foreground">{fmt2(item.price)}</span>
+                          <span className="shrink-0 text-sm text-muted-foreground">{fmt2(item.price)}</span>
                         </button>
+                        {isCustom && (
+                          <button
+                            type="button"
+                            onClick={() => removeItem(item.key.slice(3))}
+                            aria-label={`Remove ${item.name}`}
+                            className="shrink-0 px-1 text-muted-foreground hover:text-destructive"
+                          >
+                            <X className="h-4 w-4" />
+                          </button>
+                        )}
                       </li>
                     );
                   })}
