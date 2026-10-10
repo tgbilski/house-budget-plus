@@ -488,7 +488,7 @@ export default function MealPlanner() {
         {groceryList.length === 0 && state.customMeals.length === 0 ? (
           <p className="text-muted-foreground text-center py-6">
             <ShoppingCart className="h-8 w-8 mx-auto mb-2 opacity-50" />
-            Pick some meals above and your list will build itself here.
+            Pick some meals above, or add your own items below, and your list will build itself here.
           </p>
         ) : (
           <div className="space-y-4">
