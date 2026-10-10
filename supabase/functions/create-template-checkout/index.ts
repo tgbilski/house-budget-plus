@@ -25,16 +25,16 @@ serve(async (req) => {
             currency: "usd",
             unit_amount: 500,
             product_data: {
-              name: "Grocery Budget Tracker Template",
+              name: "Meal Planner & Grocery List Tool",
               description:
-                "12-month grocery budget spreadsheet with auto totals, weekly meal planner, shopping list, and price-per-unit comparison. Works in Google Sheets & Excel.",
+                "Plan a week of meals from 45+ budget recipes (or your own), get an auto-combined grocery list that fits your budget, plus a bonus 12-month budget spreadsheet. One-time payment, yours forever.",
             },
           },
           quantity: 1,
         },
       ],
       mode: "payment",
-      success_url: `${origin}/purchase-success?session_id={CHECKOUT_SESSION_ID}`,
+      success_url: `${origin}/planner?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${origin}/`,
     });
 
