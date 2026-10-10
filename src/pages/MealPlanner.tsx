@@ -178,7 +178,7 @@ export default function MealPlanner() {
     for (const group of groceryList) {
       lines.push(group.section.toUpperCase());
       for (const item of group.items) {
-        const qty = item.qty % 1 === 0 ? item.qty : item.qty.toFixed(1);
+        const qty = item.qty % 1 === 0 ? item.qty : Number(item.qty.toFixed(1));
         lines.push(`☐ ${item.name}${item.unit ? ` — ${qty} ${item.unit}` : qty > 1 ? ` ×${qty}` : ""}`);
       }
       lines.push("");
