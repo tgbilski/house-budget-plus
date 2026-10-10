@@ -15,8 +15,25 @@ import {
   MEALS, MEAL_CATEGORIES, mealCost, type Meal, type CustomMeal, type StoreSection,
 } from "@/data/meals";
 
-const PAID_KEY = "grocery_planner_paid";
+const PAID_KEY = "grocery_planner_paid"; // stores unlock timestamp (ms), not "1"
 const STATE_KEY = "grocery_planner_state";
+const ACCESS_DAYS = 90;
+const ACCESS_MS = ACCESS_DAYS * 24 * 60 * 60 * 1000;
+
+const getPaidUntil = (): number | null => {
+  const raw = localStorage.getItem(PAID_KEY);
+  if (!raw) return null;
+  const ts = raw === "1" ? null : Number(raw); // legacy "1" values have no timestamp — treat as expired
+  if (!ts || Number.isNaN(ts)) return null;
+  return ts + ACCESS_MS;
+};
+
+const isPaid = (): boolean => {
+  const until = getPaidUntil();
+  return until !== null && until > Date.now();
+};
+
+const markPaid = () => localStorage.setItem(PAID_KEY, String(Date.now()));
 
 const fmt = (n: number) => n.toLocaleString("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 });
 const fmt2 = (n: number) => n.toLocaleString("en-US", { style: "currency", currency: "USD" });
