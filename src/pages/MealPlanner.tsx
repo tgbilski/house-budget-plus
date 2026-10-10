@@ -173,8 +173,11 @@ export default function MealPlanner() {
   );
 
   const totalCost = useMemo(
-    () => selectedMeals.reduce((s, m) => s + mealCost(m), 0) + state.customMeals.reduce((s, m) => s + m.cost, 0),
-    [selectedMeals, state.customMeals]
+    () =>
+      selectedMeals.reduce((s, m) => s + mealCost(m), 0) +
+      state.customMeals.reduce((s, m) => s + m.cost, 0) +
+      state.customItems.reduce((s, i) => s + i.price, 0),
+    [selectedMeals, state.customMeals, state.customItems]
   );
 
   // Merge ingredients across selected library meals
@@ -192,6 +195,9 @@ export default function MealPlanner() {
         }
       }
     }
+    for (const item of state.customItems) {
+      merged.set(`ci-${item.id}`, { name: item.name, qty: 1, unit: "", price: item.price, section: item.section });
+    }
     const bySection = new Map<StoreSection, { key: string; name: string; qty: number; unit: string; price: number }[]>();
     for (const [key, item] of merged) {
       const list = bySection.get(item.section) || [];
@@ -202,7 +208,7 @@ export default function MealPlanner() {
       section: sec,
       items: bySection.get(sec)!.sort((a, b) => a.name.localeCompare(b.name)),
     }));
-  }, [selectedMeals]);
+  }, [selectedMeals, state.customItems]);
 
   const toggleChecked = (key: string) =>
     setState((s) => ({
