@@ -559,6 +559,46 @@ export default function MealPlanner() {
             </div>
           </div>
         )}
+
+        {/* Add your own items */}
+        <div className="border-t border-border pt-3 space-y-2">
+          {!showAddItem && (
+            <Button type="button" size="sm" variant="outline" onClick={() => setShowAddItem(true)}>
+              <Plus className="h-4 w-4 mr-1" /> Add an item
+            </Button>
+          )}
+          {showAddItem && (
+            <div className="rounded-xl border border-border p-3 space-y-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <Label htmlFor="item-name">Item</Label>
+                  <Input id="item-name" value={itemName} onChange={(e) => setItemName(e.target.value)} placeholder="Coffee" />
+                </div>
+                <div>
+                  <Label htmlFor="item-price">Estimated price ($)</Label>
+                  <Input id="item-price" type="number" min={0} step="0.01" value={itemPrice} onChange={(e) => setItemPrice(e.target.value)} placeholder="6.50" />
+                </div>
+              </div>
+              <div>
+                <Label htmlFor="item-section">Store section</Label>
+                <select
+                  id="item-section"
+                  value={itemSection}
+                  onChange={(e) => setItemSection(e.target.value as StoreSection)}
+                  className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground"
+                >
+                  {SECTION_ORDER.map((sec) => (
+                    <option key={sec} value={sec}>{sec}</option>
+                  ))}
+                </select>
+              </div>
+              <div className="flex gap-2">
+                <Button type="button" onClick={addItem} disabled={!itemName.trim()}>Add to my list</Button>
+                <Button type="button" variant="ghost" onClick={() => setShowAddItem(false)}>Cancel</Button>
+              </div>
+            </div>
+          )}
+        </div>
       </Card>
 
       {/* Bonus spreadsheet */}
