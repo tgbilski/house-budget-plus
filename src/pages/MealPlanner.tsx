@@ -306,6 +306,11 @@ export default function MealPlanner() {
       <header className="text-center space-y-2">
         <h1 className="text-2xl md:text-4xl font-bold text-foreground">Your Weekly Meal Planner</h1>
         <p className="text-muted-foreground">Pick your meals, and we'll build the grocery list — inside your budget.</p>
+        {getPaidUntil() && (
+          <p className="text-xs text-muted-foreground">
+            Your access runs through {new Date(getPaidUntil()!).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })}.
+          </p>
+        )}
       </header>
 
       {/* Budget bar */}
