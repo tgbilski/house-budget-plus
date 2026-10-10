@@ -51,6 +51,7 @@ export default function PurchaseSuccess() {
       });
       if (!error && data?.paid) {
         setRecoverState("found");
+        localStorage.setItem("grocery_planner_paid", "1");
         trackEvent("download_recovered", { item: "grocery_budget_template" });
         triggerDownload();
       } else {
@@ -113,8 +114,8 @@ export default function PurchaseSuccess() {
             </div>
             {recoverState === "found" && (
               <p className="text-sm text-success font-medium">
-                Purchase found — your download should have started.{" "}
-                <a href={DOWNLOAD_URL} download className="underline">Click here if it didn't.</a>
+                Purchase found — your planner is unlocked and your download should have started.{" "}
+                <Link to="/planner" className="underline">Open your meal planner</Link>
               </p>
             )}
             {recoverState === "notfound" && (
