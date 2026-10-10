@@ -83,7 +83,7 @@ export default function MealPlanner() {
       .invoke("verify-template-purchase", { body: { session_id: sessionId } })
       .then(({ data, error }) => {
         if (!error && data?.paid) {
-          localStorage.setItem(PAID_KEY, "1");
+          markPaid();
           setPaid(true);
           trackEvent("purchase", { value: 5, currency: "USD", item: "meal_planner" });
         }
