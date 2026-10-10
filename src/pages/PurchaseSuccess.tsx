@@ -51,7 +51,7 @@ export default function PurchaseSuccess() {
       });
       if (!error && data?.paid) {
         setRecoverState("found");
-        localStorage.setItem("grocery_planner_paid", "1");
+        localStorage.setItem("grocery_planner_paid", String(Date.now()));
         trackEvent("download_recovered", { item: "grocery_budget_template" });
         triggerDownload();
       } else {
