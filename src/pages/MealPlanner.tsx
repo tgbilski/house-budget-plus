@@ -41,6 +41,7 @@ const fmt2 = (n: number) => n.toLocaleString("en-US", { style: "currency", curre
 interface PlannerState {
   selected: string[]; // library meal ids
   customMeals: CustomMeal[];
+  customItems: { id: string; name: string; section: StoreSection; price: number }[];
   weeklyBudget: number;
   checked: string[]; // grocery list item keys
 }
@@ -48,9 +49,9 @@ interface PlannerState {
 const loadState = (): PlannerState => {
   try {
     const raw = localStorage.getItem(STATE_KEY);
-    if (raw) return { selected: [], customMeals: [], weeklyBudget: 166, checked: [], ...JSON.parse(raw) };
+    if (raw) return { selected: [], customMeals: [], customItems: [], weeklyBudget: 166, checked: [], ...JSON.parse(raw) };
   } catch { /* ignore */ }
-  return { selected: [], customMeals: [], weeklyBudget: 166, checked: [] };
+  return { selected: [], customMeals: [], customItems: [], weeklyBudget: 166, checked: [] };
 };
 
 const SECTION_ORDER: StoreSection[] = ["Produce", "Meat & Seafood", "Dairy & Eggs", "Bakery", "Pantry", "Frozen", "Household"];
@@ -70,6 +71,10 @@ export default function MealPlanner() {
   const [customCost, setCustomCost] = useState("");
   const [customIngredients, setCustomIngredients] = useState("");
   const [showCustomForm, setShowCustomForm] = useState(false);
+  const [showAddItem, setShowAddItem] = useState(false);
+  const [itemName, setItemName] = useState("");
+  const [itemPrice, setItemPrice] = useState("");
+  const [itemSection, setItemSection] = useState<StoreSection>(SECTION_ORDER[0]);
   const [copied, setCopied] = useState(false);
 
   useEffect(() => {
@@ -147,14 +152,32 @@ export default function MealPlanner() {
   const removeCustomMeal = (id: string) =>
     setState((s) => ({ ...s, customMeals: s.customMeals.filter((m) => m.id !== id) }));
 
+  const addItem = () => {
+    if (!itemName.trim()) return;
+    const item = {
+      id: `${Date.now()}`,
+      name: itemName.trim(),
+      section: itemSection,
+      price: Math.max(0, parseFloat(itemPrice) || 0),
+    };
+    setState((s) => ({ ...s, customItems: [...s.customItems, item] }));
+    setItemName(""); setItemPrice(""); setShowAddItem(false);
+  };
+
+  const removeItem = (id: string) =>
+    setState((s) => ({ ...s, customItems: s.customItems.filter((i) => i.id !== id) }));
+
   const selectedMeals = useMemo(
     () => MEALS.filter((m) => state.selected.includes(m.id)),
     [state.selected]
   );
 
   const totalCost = useMemo(
-    () => selectedMeals.reduce((s, m) => s + mealCost(m), 0) + state.customMeals.reduce((s, m) => s + m.cost, 0),
-    [selectedMeals, state.customMeals]
+    () =>
+      selectedMeals.reduce((s, m) => s + mealCost(m), 0) +
+      state.customMeals.reduce((s, m) => s + m.cost, 0) +
+      state.customItems.reduce((s, i) => s + i.price, 0),
+    [selectedMeals, state.customMeals, state.customItems]
   );
 
   // Merge ingredients across selected library meals
@@ -172,6 +195,9 @@ export default function MealPlanner() {
         }
       }
     }
+    for (const item of state.customItems) {
+      merged.set(`ci-${item.id}`, { name: item.name, qty: 1, unit: "", price: item.price, section: item.section });
+    }
     const bySection = new Map<StoreSection, { key: string; name: string; qty: number; unit: string; price: number }[]>();
     for (const [key, item] of merged) {
       const list = bySection.get(item.section) || [];
@@ -182,7 +208,7 @@ export default function MealPlanner() {
       section: sec,
       items: bySection.get(sec)!.sort((a, b) => a.name.localeCompare(b.name)),
     }));
-  }, [selectedMeals]);
+  }, [selectedMeals, state.customItems]);
 
   const toggleChecked = (key: string) =>
     setState((s) => ({
@@ -254,7 +280,7 @@ export default function MealPlanner() {
           <ul className="space-y-2 text-left max-w-sm mx-auto">
             {[
               "45+ budget meals with estimated ingredient costs",
-              "Add your own meals too",
+              "Add your own meals and list items too",
               "Auto-combined grocery list by store section",
               "Live total vs. your weekly budget",
               "Copy or print your list for the store",
@@ -462,7 +488,7 @@ export default function MealPlanner() {
         {groceryList.length === 0 && state.customMeals.length === 0 ? (
           <p className="text-muted-foreground text-center py-6">
             <ShoppingCart className="h-8 w-8 mx-auto mb-2 opacity-50" />
-            Pick some meals above and your list will build itself here.
+            Pick some meals above, or add your own items below, and your list will build itself here.
           </p>
         ) : (
           <div className="space-y-4">
@@ -472,23 +498,34 @@ export default function MealPlanner() {
                 <ul className="divide-y divide-border">
                   {group.items.map((item) => {
                     const isChecked = state.checked.includes(item.key);
+                    const isCustom = item.key.startsWith("ci-");
                     const qty = item.qty % 1 === 0 ? item.qty : item.qty.toFixed(1);
                     return (
-                      <li key={item.key}>
+                      <li key={item.key} className="flex items-center gap-1">
                         <button
                           type="button"
                           onClick={() => toggleChecked(item.key)}
-                          className="flex w-full items-center gap-3 py-2 text-left"
+                          className="flex min-w-0 flex-1 items-center gap-3 py-2 text-left"
                         >
                           <span className={`flex h-5 w-5 shrink-0 items-center justify-center rounded border ${isChecked ? "bg-success border-success text-success-foreground" : "border-border"}`}>
                             {isChecked && <Check className="h-3.5 w-3.5" />}
                           </span>
                           <span className={`flex-1 ${isChecked ? "line-through text-muted-foreground" : "text-foreground"}`}>
                             {item.name}
-                            <span className="text-muted-foreground text-sm"> — {qty}{item.unit ? ` ${item.unit}` : ""}</span>
+                            {!isCustom && <span className="text-muted-foreground text-sm"> — {qty}{item.unit ? ` ${item.unit}` : ""}</span>}
                           </span>
-                          <span className="text-sm text-muted-foreground">{fmt2(item.price)}</span>
+                          <span className="shrink-0 text-sm text-muted-foreground">{fmt2(item.price)}</span>
                         </button>
+                        {isCustom && (
+                          <button
+                            type="button"
+                            onClick={() => removeItem(item.key.slice(3))}
+                            aria-label={`Remove ${item.name}`}
+                            className="shrink-0 px-1 text-muted-foreground hover:text-destructive"
+                          >
+                            <X className="h-4 w-4" />
+                          </button>
+                        )}
                       </li>
                     );
                   })}
@@ -522,6 +559,46 @@ export default function MealPlanner() {
             </div>
           </div>
         )}
+
+        {/* Add your own items */}
+        <div className="border-t border-border pt-3 space-y-2">
+          {!showAddItem && (
+            <Button type="button" size="sm" variant="outline" onClick={() => setShowAddItem(true)}>
+              <Plus className="h-4 w-4 mr-1" /> Add an item
+            </Button>
+          )}
+          {showAddItem && (
+            <div className="rounded-xl border border-border p-3 space-y-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <Label htmlFor="item-name">Item</Label>
+                  <Input id="item-name" value={itemName} onChange={(e) => setItemName(e.target.value)} placeholder="Coffee" />
+                </div>
+                <div>
+                  <Label htmlFor="item-price">Estimated price ($)</Label>
+                  <Input id="item-price" type="number" min={0} step="0.01" value={itemPrice} onChange={(e) => setItemPrice(e.target.value)} placeholder="6.50" />
+                </div>
+              </div>
+              <div>
+                <Label htmlFor="item-section">Store section</Label>
+                <select
+                  id="item-section"
+                  value={itemSection}
+                  onChange={(e) => setItemSection(e.target.value as StoreSection)}
+                  className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground"
+                >
+                  {SECTION_ORDER.map((sec) => (
+                    <option key={sec} value={sec}>{sec}</option>
+                  ))}
+                </select>
+              </div>
+              <div className="flex gap-2">
+                <Button type="button" onClick={addItem} disabled={!itemName.trim()}>Add to my list</Button>
+                <Button type="button" variant="ghost" onClick={() => setShowAddItem(false)}>Cancel</Button>
+              </div>
+            </div>
+          )}
+        </div>
       </Card>
 
       {/* Bonus spreadsheet */}
