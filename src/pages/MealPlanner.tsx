@@ -244,7 +244,7 @@ export default function MealPlanner() {
           <h1 className="text-2xl md:text-3xl font-bold text-foreground">Meal Planner & Grocery List</h1>
           <p className="text-muted-foreground leading-relaxed">
             Pick your meals for the week from 45+ budget recipes (or add your own), and get a combined
-            grocery list that stays inside your budget. One-time payment, yours forever.
+            grocery list that stays inside your budget. One-time payment, 90 days of access.
           </p>
           <div className="flex items-center justify-center gap-3">
             <span className="text-lg text-muted-foreground line-through">$10</span>
@@ -266,7 +266,7 @@ export default function MealPlanner() {
           <Button size="lg" className="w-full text-lg whitespace-nowrap" onClick={buy} disabled={checkoutLoading}>
             {checkoutLoading ? "Opening checkout…" : "Unlock for $5"}
           </Button>
-          <p className="text-xs text-muted-foreground">One-time payment. No subscription. No sign-up.</p>
+          <p className="text-xs text-muted-foreground">One-time payment. No subscription. Includes 90 days of access.</p>
         </Card>
 
         <Card className="p-6 space-y-3">
