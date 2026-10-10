@@ -178,26 +178,26 @@ export default function GroceryBudgetCalculator() {
       <Card className="p-6 md:p-8 border-2 border-primary space-y-4">
         <div className="flex items-center gap-3">
           <ShoppingCart className="h-8 w-8 text-primary" />
-          <h2 className="text-2xl font-bold text-foreground">Stick to {fmt(total)} every month</h2>
+          <h2 className="text-2xl font-bold text-foreground">Turn {fmt(total)} into a week of meals</h2>
         </div>
-        <p className="text-muted-foreground">The Grocery Budget Tracker spreadsheet does the tracking for you — one-time payment, yours forever.</p>
+        <p className="text-muted-foreground">The Meal Planner & Grocery List tool picks your meals, builds your shopping list, and keeps it inside your budget — one-time payment, yours forever.</p>
         <div className="flex items-center justify-center gap-3">
           <span className="text-lg text-muted-foreground line-through">$10</span>
           <span className="text-3xl font-bold text-foreground">$5</span>
           <span className="rounded-full bg-success/15 text-success text-xs font-bold px-3 py-1 uppercase tracking-wide">50% off</span>
         </div>
         <ul className="space-y-2">
-          {["12-month tracker with auto totals", "Weekly meal planner + shopping list", "Price-per-unit comparison sheet", "Works in Google Sheets & Excel"].map(f => (
+          {["45+ budget meals with real ingredient costs", "Add your own meals too", "Auto grocery list, grouped by store section", "Live total vs. your weekly budget", "Bonus: 12-month budget spreadsheet"].map(f => (
             <li key={f} className="flex gap-2 text-foreground"><Check className="h-5 w-5 text-success shrink-0" />{f}</li>
           ))}
         </ul>
         <Button size="lg" className="w-full text-lg whitespace-nowrap" onClick={buy} disabled={checkoutLoading}>
           <Download className="h-5 w-5 mr-2 shrink-0" />
-          {checkoutLoading ? "Opening checkout…" : "Get the template"}
+          {checkoutLoading ? "Opening checkout…" : "Get the meal planner"}
         </Button>
-        <p className="text-xs text-center text-muted-foreground">One-time payment. No subscription. Instant download.</p>
+        <p className="text-xs text-center text-muted-foreground">One-time payment. No subscription. No sign-up.</p>
         <p className="text-xs text-center text-muted-foreground">
-          Already bought it? <Link to="/purchase-success" className="underline">Recover your download</Link>
+          Already bought it? <Link to="/planner" className="underline">Open your planner</Link>
         </p>
       </Card>
 

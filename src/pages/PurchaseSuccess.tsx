@@ -51,6 +51,7 @@ export default function PurchaseSuccess() {
       });
       if (!error && data?.paid) {
         setRecoverState("found");
+        localStorage.setItem("grocery_planner_paid", "1");
         trackEvent("download_recovered", { item: "grocery_budget_template" });
         triggerDownload();
       } else {
@@ -79,16 +80,16 @@ export default function PurchaseSuccess() {
             <CheckCircle2 className="h-12 w-12 text-success mx-auto" />
             <h1 className="text-2xl font-bold text-foreground">You're all set!</h1>
             <p className="text-muted-foreground">
-              Your download should have started automatically. If it didn't, use the button below.
+              Your Meal Planner is unlocked — start picking meals and building your grocery list.
             </p>
-            <a href="/downloads/grocery-budget-tracker-2026.xlsx" download>
+            <Link to="/planner">
               <Button size="lg" className="w-full text-lg">
-                <Download className="h-5 w-5 mr-2" />
-                Download your template
+                Open your meal planner
               </Button>
-            </a>
+            </Link>
             <p className="text-sm text-muted-foreground">
-              Opens in Excel and Google Sheets (File → Import → Upload).
+              Your bonus spreadsheet download should have started automatically.{" "}
+              <a href={DOWNLOAD_URL} download className="underline">Click here if it didn't.</a>
             </p>
           </>
         )}
@@ -113,8 +114,8 @@ export default function PurchaseSuccess() {
             </div>
             {recoverState === "found" && (
               <p className="text-sm text-success font-medium">
-                Purchase found — your download should have started.{" "}
-                <a href={DOWNLOAD_URL} download className="underline">Click here if it didn't.</a>
+                Purchase found — your planner is unlocked and your download should have started.{" "}
+                <Link to="/planner" className="underline">Open your meal planner</Link>
               </p>
             )}
             {recoverState === "notfound" && (
