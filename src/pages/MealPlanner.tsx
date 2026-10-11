@@ -35,8 +35,16 @@ const isPaid = (): boolean => {
 
 const markPaid = () => localStorage.setItem(PAID_KEY, String(Date.now()));
 
-const fmt = (n: number) => n.toLocaleString("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 });
 const fmt2 = (n: number) => n.toLocaleString("en-US", { style: "currency", currency: "USD" });
+
+function PlannerPrice({ paid, amount }: { paid: boolean; amount: number }) {
+  return paid ? <>{fmt2(amount)}</> : (
+    <span className="inline-flex items-center gap-1 text-muted-foreground" aria-label="Price locked">
+      <Lock className="h-3 w-3 shrink-0" aria-hidden="true" />
+      <span className="blur-sm select-none" aria-hidden="true">$••.••</span>
+    </span>
+  );
+}
 
 interface PlannerState {
   selected: string[]; // library meal ids
@@ -212,7 +220,7 @@ export default function MealPlanner() {
     }
     return SECTION_ORDER.filter((sec) => bySection.has(sec)).map((sec) => ({
       section: sec,
-      items: bySection.get(sec)!.sort((a, b) => a.name.localeCompare(b.name)),
+      items: (bySection.get(sec) ?? []).sort((a, b) => a.name.localeCompare(b.name)),
     }));
   }, [selectedMeals, state.customItems]);
 
@@ -239,9 +247,9 @@ export default function MealPlanner() {
         lines.push("");
       }
     }
-    lines.push(`Estimated total: ${fmt2(totalCost)}`);
+    if (paid) lines.push(`Estimated total: ${fmt2(totalCost)}`);
     return lines.join("\n");
-  }, [groceryList, state.customMeals, totalCost]);
+  }, [groceryList, state.customMeals, totalCost, paid]);
 
   const copyList = async () => {
     try {
@@ -264,73 +272,8 @@ export default function MealPlanner() {
     );
   }
 
-  if (!paid) {
-    return (
-      <div className="container max-w-xl mx-auto px-4 py-10 md:py-16 space-y-6 relative z-10">
-        <Helmet>
-          <title>Meal Planner & Grocery List — House Budget Calculator</title>
-          <meta name="robots" content="noindex" />
-        </Helmet>
-        <Card className="p-6 md:p-8 text-center space-y-5 border-2 border-primary">
-          <Lock className="h-12 w-12 text-primary mx-auto" />
-          <h1 className="text-2xl md:text-3xl font-bold text-foreground">Meal Planner & Grocery List</h1>
-          <p className="text-muted-foreground leading-relaxed">
-            Pick your meals for the week from 45+ budget recipes (or add your own), and get a combined
-            grocery list that stays inside your budget. One-time payment, 90 days of access.
-          </p>
-          <div className="flex items-center justify-center gap-3">
-            <span className="text-lg text-muted-foreground line-through">$10</span>
-            <span className="text-3xl font-bold text-foreground">$5</span>
-            <span className="rounded-full bg-success/15 text-success text-xs font-bold px-3 py-1 uppercase tracking-wide">50% off</span>
-          </div>
-          <ul className="space-y-2 text-left max-w-sm mx-auto">
-            {[
-              "45+ budget meals with estimated ingredient costs",
-              "Add your own meals and list items too",
-              "Auto-combined grocery list by store section",
-              "Live total vs. your weekly budget",
-              "Copy or print your list for the store",
-              "Bonus: 12-month budget spreadsheet included",
-            ].map((f) => (
-              <li key={f} className="flex gap-2 text-foreground"><Check className="h-5 w-5 text-success shrink-0" />{f}</li>
-            ))}
-          </ul>
-          <Button size="lg" className="w-full text-lg whitespace-nowrap" onClick={buy} disabled={checkoutLoading}>
-            {checkoutLoading ? "Opening checkout…" : "Unlock for $5"}
-          </Button>
-          <p className="text-xs text-muted-foreground">One-time payment. No subscription. Includes 90 days of access.</p>
-          <p className="text-xs text-muted-foreground">
-            Meal costs are estimates based on national average prices — what you actually pay varies by store and region.
-          </p>
-        </Card>
-
-        <Card className="p-6 space-y-3">
-          <h2 className="font-semibold text-foreground text-center">Already bought it?</h2>
-          <p className="text-sm text-muted-foreground text-center">Enter the email you used at checkout to unlock.</p>
-          <div className="flex gap-2">
-            <Input
-              type="email"
-              placeholder="you@example.com"
-              value={unlockEmail}
-              onChange={(e) => setUnlockEmail(e.target.value)}
-              onKeyDown={(e) => e.key === "Enter" && unlock()}
-            />
-            <Button onClick={unlock} disabled={unlockState === "checking"}>
-              {unlockState === "checking" ? <Loader2 className="h-4 w-4 animate-spin" /> : "Unlock"}
-            </Button>
-          </div>
-          {unlockState === "notfound" && (
-            <p className="text-sm text-muted-foreground text-center">
-              No purchase found for that email. Double-check the address you used at checkout.
-            </p>
-          )}
-          <p className="text-center"><Link to="/" className="text-sm text-muted-foreground underline">Back to the calculator</Link></p>
-        </Card>
-      </div>
-    );
-  }
-
-  // ---------- Paid planner ----------
+  // The planner is interactive for everyone; calculated prices require access.
+  const paidUntil = getPaidUntil();
   return (
     <div className="container max-w-3xl mx-auto px-4 py-6 md:py-10 space-y-6 md:space-y-8 relative z-10">
       <Helmet>
@@ -340,13 +283,40 @@ export default function MealPlanner() {
 
       <header className="text-center space-y-2">
         <h1 className="text-2xl md:text-4xl font-bold text-foreground">Your Weekly Meal Planner</h1>
-        <p className="text-muted-foreground">Pick your meals, and we'll build the grocery list — inside your budget.</p>
-        {getPaidUntil() && (
+        <p className="text-muted-foreground">Pick your meals for the week and build your grocery list.</p>
+        {paid && paidUntil && (
           <p className="text-xs text-muted-foreground">
-            Your access runs through {new Date(getPaidUntil()!).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })}.
+            Your access runs through {new Date(paidUntil).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })}.
           </p>
         )}
       </header>
+
+      {!paid && (
+        <section className="border-y border-border py-4 space-y-3 print:hidden" aria-label="Unlock planner prices">
+          <div className="flex flex-col sm:flex-row sm:items-center gap-3">
+            <div className="flex-1 min-w-0">
+              <h2 className="font-semibold text-foreground flex items-center gap-2"><Lock className="h-4 w-4 text-primary" /> Unlock costs & budget tracking</h2>
+              <p className="text-sm text-muted-foreground mt-1">$5 for 90 days of access. No subscription.</p>
+            </div>
+            <Button onClick={buy} disabled={checkoutLoading} className="shrink-0">
+              {checkoutLoading ? "Opening checkout…" : "Unlock prices — $5"}
+            </Button>
+          </div>
+          <details className="text-sm">
+            <summary className="cursor-pointer text-muted-foreground">Already bought it?</summary>
+            <form className="mt-3 space-y-2" onSubmit={(event) => { event.preventDefault(); void unlock(); }}>
+              <Label htmlFor="unlock-email">Email used at checkout</Label>
+              <div className="flex flex-col sm:flex-row gap-2">
+                <Input id="unlock-email" type="email" required placeholder="you@example.com" value={unlockEmail} onChange={(e) => setUnlockEmail(e.target.value)} className="min-w-0" />
+                <Button type="submit" disabled={unlockState === "checking"}>
+                  {unlockState === "checking" ? <Loader2 className="h-4 w-4 animate-spin" /> : "Unlock"}
+                </Button>
+              </div>
+              {unlockState === "notfound" && <p role="status" className="text-muted-foreground">No purchase found. Double-check your checkout email.</p>}
+            </form>
+          </details>
+        </section>
+      )}
 
       {/* Budget bar */}
       <Card className="p-4 md:p-6 space-y-3">
@@ -363,17 +333,17 @@ export default function MealPlanner() {
           </div>
           <div className="text-center sm:text-right">
             <p className="text-sm text-muted-foreground">Planned spend</p>
-            <p className={`text-2xl font-bold ${underBudget ? "text-success" : "text-destructive"}`}>{fmt2(totalCost)}</p>
+            <p className={`text-2xl font-bold ${paid ? underBudget ? "text-success" : "text-destructive" : "text-muted-foreground"}`}><PlannerPrice paid={paid} amount={totalCost} /></p>
           </div>
         </div>
-        <div className="h-3 rounded-full bg-muted overflow-hidden">
+        {paid && <div className="h-3 rounded-full bg-muted overflow-hidden">
           <div
             className={`h-full rounded-full transition-all ${underBudget ? "bg-success" : "bg-destructive"}`}
             style={{ width: `${Math.min(100, pct)}%` }}
           />
-        </div>
+        </div>}
         <p className="text-sm text-muted-foreground text-center">
-          {selectedMeals.length + state.customMeals.length === 0
+          {!paid ? "Costs & budget tracking locked" : selectedMeals.length + state.customMeals.length === 0
             ? "Pick meals below to start planning."
             : underBudget
               ? `${fmt2(state.weeklyBudget - totalCost)} under budget — nice!`
@@ -407,25 +377,26 @@ export default function MealPlanner() {
           {MEALS.filter((m) => m.category === category).map((m: Meal) => {
             const isSelected = state.selected.includes(m.id);
             return (
-              <button
+              <Button
+                variant="outline"
                 key={m.id}
                 type="button"
                 onClick={() => toggleMeal(m.id)}
-                className={`flex items-center justify-between gap-2 rounded-xl border p-3 text-left transition-colors ${
+                className={`h-auto w-full whitespace-normal flex items-center justify-between gap-2 rounded-lg border p-3 text-left transition-colors ${
                   isSelected ? "border-primary bg-accent" : "border-border bg-card hover:bg-muted/50"
                 }`}
               >
                 <div className="min-w-0">
-                  <p className="font-medium text-foreground truncate">{m.name}</p>
+                  <p className="font-medium text-foreground break-words">{m.name}</p>
                   <p className="text-xs text-muted-foreground">{m.servings} servings</p>
                 </div>
                 <div className="flex items-center gap-2 shrink-0">
-                  <span className="text-sm font-semibold text-foreground">{fmt2(mealCost(m))}</span>
+                  <span className="text-sm font-semibold text-foreground"><PlannerPrice paid={paid} amount={mealCost(m)} /></span>
                   <span className={`flex h-6 w-6 items-center justify-center rounded-full ${isSelected ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground"}`}>
                     {isSelected ? <Check className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
                   </span>
                 </div>
-              </button>
+              </Button>
             );
           })}
         </div>
@@ -441,11 +412,11 @@ export default function MealPlanner() {
           {state.customMeals.map((m) => (
             <div key={m.id} className="flex items-center justify-between gap-2 rounded-xl border border-primary bg-accent p-3">
               <div className="min-w-0">
-                <p className="font-medium text-foreground truncate">{m.name}</p>
+                <p className="font-medium text-foreground break-words">{m.name}</p>
                 {m.ingredients && <p className="text-xs text-muted-foreground truncate">{m.ingredients.split("\n").filter(Boolean).length} ingredients</p>}
               </div>
               <div className="flex items-center gap-2 shrink-0">
-                <span className="text-sm font-semibold text-foreground">{fmt2(m.cost)}</span>
+                <span className="text-sm font-semibold text-foreground"><PlannerPrice paid={paid} amount={m.cost} /></span>
                 <button type="button" onClick={() => removeCustomMeal(m.id)} aria-label={`Remove ${m.name}`} className="text-muted-foreground hover:text-destructive">
                   <X className="h-4 w-4" />
                 </button>
@@ -520,7 +491,7 @@ export default function MealPlanner() {
                             {item.name}
                             {!isCustom && <span className="text-muted-foreground text-sm"> — {qty}{item.unit ? ` ${item.unit}` : ""}</span>}
                           </span>
-                          <span className="shrink-0 text-sm text-muted-foreground">{fmt2(item.price)}</span>
+                          <span className="shrink-0 text-sm text-muted-foreground"><PlannerPrice paid={paid} amount={item.price} /></span>
                         </button>
                         {isCustom && (
                           <button
@@ -561,7 +532,7 @@ export default function MealPlanner() {
             ))}
             <div className="flex justify-between items-center border-t border-border pt-3">
               <span className="font-semibold text-foreground">Estimated total</span>
-              <span className={`text-xl font-bold ${underBudget ? "text-success" : "text-destructive"}`}>{fmt2(totalCost)}</span>
+              <span className={`text-xl font-bold ${paid ? underBudget ? "text-success" : "text-destructive" : "text-muted-foreground"}`}><PlannerPrice paid={paid} amount={totalCost} /></span>
             </div>
           </div>
         )}
@@ -608,7 +579,7 @@ export default function MealPlanner() {
       </Card>
 
       {/* Bonus spreadsheet */}
-      <Card className="p-4 md:p-6 flex flex-col sm:flex-row items-center gap-4">
+      {paid && <Card className="p-4 md:p-6 flex flex-col sm:flex-row items-center gap-4 print:hidden">
         <Download className="h-8 w-8 text-primary shrink-0" />
         <div className="flex-1 text-center sm:text-left">
           <h2 className="font-semibold text-foreground">Bonus: 12-month budget spreadsheet</h2>
@@ -617,7 +588,7 @@ export default function MealPlanner() {
         <a href="/downloads/grocery-budget-tracker-2026.xlsx" download>
           <Button variant="outline">Download</Button>
         </a>
-      </Card>
+      </Card>}
 
       <p className="text-center"><Link to="/" className="text-sm text-muted-foreground underline">Back to the calculator</Link></p>
     </div>
