@@ -187,7 +187,7 @@ export default function GroceryBudgetCalculator() {
           <span className="rounded-full bg-success/15 text-success text-xs font-bold px-3 py-1 uppercase tracking-wide">50% off</span>
         </div>
         <ul className="space-y-2">
-          {["45+ budget meals with real ingredient costs", "Add your own meals too", "Auto grocery list, grouped by store section", "Live total vs. your weekly budget", "Bonus: 12-month budget spreadsheet"].map(f => (
+          {["45+ budget meals with estimated ingredient costs", "Add your own meals too", "Auto grocery list, grouped by store section", "Live total vs. your weekly budget", "Bonus: 12-month budget spreadsheet"].map(f => (
             <li key={f} className="flex gap-2 text-foreground"><Check className="h-5 w-5 text-success shrink-0" />{f}</li>
           ))}
         </ul>
@@ -195,7 +195,10 @@ export default function GroceryBudgetCalculator() {
           <Download className="h-5 w-5 mr-2 shrink-0" />
           {checkoutLoading ? "Opening checkout…" : "Get the meal planner"}
         </Button>
-        <p className="text-xs text-center text-muted-foreground">One-time payment. No subscription. Includes 90 days of access.</p>
+        <Button asChild variant="outline" size="lg" className="w-full">
+          <Link to="/planner">Try the planner free</Link>
+        </Button>
+        <p className="text-xs text-center text-muted-foreground">Plan meals free. Unlock costs and budget tracking for $5 / 90 days.</p>
         <p className="text-xs text-center text-muted-foreground">
           Already bought it? <Link to="/planner" className="underline">Open your planner</Link>
         </p>
