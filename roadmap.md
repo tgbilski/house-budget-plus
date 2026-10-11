@@ -8,3 +8,4 @@
 - [x] Re-download recovery: buyers retrieve the template by email without paying again
 - [x] Confirm GA tag + Buy-click tracking present on calculator page
 - [ ] Backlink outreach for "grocery budget calculator" (manual: guest posts, Reddit, Pinterest, directories)
+- [ ] Let visitors try the planner with costs and budget calculations locked until purchase
