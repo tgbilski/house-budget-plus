@@ -312,7 +312,7 @@ export function PlannerCore({ config }: { config: PlannerConfig }) {
         <section className="border-y border-border py-4 space-y-3 print:hidden" aria-label="Unlock planner prices">
           <div className="flex flex-col sm:flex-row sm:items-center gap-3">
             <div className="flex-1 min-w-0">
-              <h2 className="font-semibold text-foreground flex items-center gap-2"><Lock className="h-4 w-4 text-primary" /> Unlock costs & budget tracking</h2>
+              <h2 className="font-semibold text-foreground flex items-center gap-2"><Lock className="h-4 w-4 shrink-0 text-primary" /> Unlock costs & budget tracking</h2>
               <p className="text-sm text-muted-foreground mt-1">$5 for 90 days of access. No subscription.</p>
             </div>
             <Button onClick={buy} disabled={checkoutLoading} className="shrink-0">
@@ -320,7 +320,7 @@ export function PlannerCore({ config }: { config: PlannerConfig }) {
             </Button>
           </div>
           <details className="text-sm">
-            <summary className="cursor-pointer text-muted-foreground">Already bought it?</summary>
+            <summary className="min-h-11 content-center cursor-pointer text-muted-foreground">Already bought it?</summary>
             <form className="mt-3 space-y-2" onSubmit={(event) => { event.preventDefault(); void unlock(); }}>
               <Label htmlFor="unlock-email">Email used at checkout</Label>
               <div className="flex flex-col sm:flex-row gap-2">
@@ -376,14 +376,14 @@ export function PlannerCore({ config }: { config: PlannerConfig }) {
         <h2 className="text-lg md:text-xl font-bold text-foreground flex items-center gap-2">
           <UtensilsCrossed className="h-5 w-5 text-primary" /> Pick your meals
         </h2>
-        <div className="flex gap-2 overflow-x-auto pb-1 -mx-1 px-1">
+        <div className="flex flex-wrap gap-2">
           {config.categories.map((c) => (
             <Button
               key={c}
               type="button"
               size="sm"
               variant={category === c ? "default" : "outline"}
-              className="whitespace-nowrap shrink-0"
+              className="max-w-full whitespace-normal px-3"
               onClick={() => setCategory(c)}
             >
               {c}
@@ -420,7 +420,7 @@ export function PlannerCore({ config }: { config: PlannerConfig }) {
 
         {/* Custom meals */}
         <div className="border-t border-border pt-4 space-y-3">
-          <div className="flex items-center justify-between">
+          <div className="flex flex-wrap items-center justify-between gap-2">
             <h3 className="font-semibold text-foreground">Your own meals</h3>
             <Button type="button" size="sm" variant="outline" onClick={() => setShowCustomForm((v) => !v)}>
               <Plus className="h-4 w-4 mr-1" /> Add a meal
@@ -429,14 +429,14 @@ export function PlannerCore({ config }: { config: PlannerConfig }) {
           {state.customMeals.map((m) => (
             <div key={m.id} className="flex items-center justify-between gap-2 rounded-xl border border-primary bg-accent p-3">
               <div className="min-w-0">
-                <p className="font-medium text-foreground break-words">{m.name}</p>
+                <p className="font-medium text-foreground [overflow-wrap:anywhere]">{m.name}</p>
                 {m.ingredients && <p className="text-xs text-muted-foreground truncate">{m.ingredients.split("\n").filter(Boolean).length} ingredients</p>}
               </div>
               <div className="flex items-center gap-2 shrink-0">
                 <span className="text-sm font-semibold text-foreground"><PlannerPrice paid={paid} amount={m.cost} /></span>
-                <button type="button" onClick={() => removeCustomMeal(m.id)} aria-label={`Remove ${m.name}`} className="text-muted-foreground hover:text-destructive">
+                <Button variant="ghost" size="icon" type="button" onClick={() => removeCustomMeal(m.id)} aria-label={`Remove ${m.name}`} title={`Remove ${m.name}`} className="shrink-0 text-muted-foreground hover:text-destructive">
                   <X className="h-4 w-4" />
-                </button>
+                </Button>
               </div>
             </div>
           ))}
@@ -496,29 +496,31 @@ export function PlannerCore({ config }: { config: PlannerConfig }) {
                     const qty = item.qty % 1 === 0 ? item.qty : item.qty.toFixed(1);
                     return (
                       <li key={item.key} className="flex items-center gap-1">
-                        <button
+                        <Button variant="ghost"
                           type="button"
                           onClick={() => toggleChecked(item.key)}
-                          className="flex min-w-0 flex-1 items-center gap-3 py-2 text-left"
+                          aria-pressed={isChecked}
+                          className="h-auto min-h-11 min-w-0 flex-1 justify-start gap-2 whitespace-normal rounded-none border-0 px-0 py-2 text-left font-normal"
                         >
                           <span className={`flex h-5 w-5 shrink-0 items-center justify-center rounded border ${isChecked ? "bg-success border-success text-success-foreground" : "border-border"}`}>
                             {isChecked && <Check className="h-3.5 w-3.5" />}
                           </span>
-                          <span className={`flex-1 ${isChecked ? "line-through text-muted-foreground" : "text-foreground"}`}>
+                          <span className={`min-w-0 flex-1 [overflow-wrap:anywhere] ${isChecked ? "line-through text-muted-foreground" : "text-foreground"}`}>
                             {item.name}
                             {!isCustom && <span className="text-muted-foreground text-sm"> — {qty}{item.unit ? ` ${item.unit}` : ""}</span>}
                           </span>
                           <span className="shrink-0 text-sm text-muted-foreground"><PlannerPrice paid={paid} amount={item.price} /></span>
-                        </button>
+                        </Button>
                         {isCustom && (
-                          <button
+                          <Button variant="ghost" size="icon"
                             type="button"
                             onClick={() => removeItem(item.key.slice(3))}
                             aria-label={`Remove ${item.name}`}
-                            className="shrink-0 px-1 text-muted-foreground hover:text-destructive"
+                            title={`Remove ${item.name}`}
+                            className="shrink-0 text-muted-foreground hover:text-destructive"
                           >
                             <X className="h-4 w-4" />
-                          </button>
+                          </Button>
                         )}
                       </li>
                     );
@@ -528,19 +530,19 @@ export function PlannerCore({ config }: { config: PlannerConfig }) {
             ))}
             {state.customMeals.filter((m) => m.ingredients).map((m) => (
               <div key={m.id}>
-                <h3 className="text-sm font-bold uppercase tracking-wide text-muted-foreground mb-1">{m.name}</h3>
+                <h3 className="text-sm font-bold uppercase tracking-wide text-muted-foreground mb-1 [overflow-wrap:anywhere]">{m.name}</h3>
                 <ul className="divide-y divide-border">
                   {m.ingredients.split("\n").filter(Boolean).map((line, i) => {
                     const key = `${m.id}-${i}`;
                     const isChecked = state.checked.includes(key);
                     return (
                       <li key={key}>
-                        <button type="button" onClick={() => toggleChecked(key)} className="flex w-full items-center gap-3 py-2 text-left">
+                        <Button variant="ghost" type="button" aria-pressed={isChecked} onClick={() => toggleChecked(key)} className="h-auto min-h-11 w-full justify-start gap-3 whitespace-normal rounded-none border-0 px-0 py-2 text-left font-normal">
                           <span className={`flex h-5 w-5 shrink-0 items-center justify-center rounded border ${isChecked ? "bg-success border-success text-success-foreground" : "border-border"}`}>
                             {isChecked && <Check className="h-3.5 w-3.5" />}
                           </span>
-                          <span className={`flex-1 ${isChecked ? "line-through text-muted-foreground" : "text-foreground"}`}>{line.trim()}</span>
-                        </button>
+                          <span className={`min-w-0 flex-1 [overflow-wrap:anywhere] ${isChecked ? "line-through text-muted-foreground" : "text-foreground"}`}>{line.trim()}</span>
+                        </Button>
                       </li>
                     );
                   })}
@@ -579,14 +581,14 @@ export function PlannerCore({ config }: { config: PlannerConfig }) {
                   id="item-section"
                   value={itemSection}
                   onChange={(e) => setItemSection(e.target.value as StoreSection)}
-                  className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground"
+                  className="flex h-11 w-full min-w-0 rounded-md border border-input bg-background px-3 py-2 text-base md:text-sm text-foreground"
                 >
                   {SECTION_ORDER.map((sec) => (
                     <option key={sec} value={sec}>{sec}</option>
                   ))}
                 </select>
               </div>
-              <div className="flex gap-2">
+              <div className="flex flex-col sm:flex-row gap-2">
                 <Button type="button" onClick={addItem} disabled={!itemName.trim()}>Add to my list</Button>
                 <Button type="button" variant="ghost" onClick={() => setShowAddItem(false)}>Cancel</Button>
               </div>
