@@ -3,6 +3,7 @@ import { Helmet } from "react-helmet-async";
 import { Link, useSearchParams } from "react-router-dom";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { PlannerModeSwitch } from "@/components/PlannerModeSwitch";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -294,6 +295,8 @@ export function PlannerCore({ config }: { config: PlannerConfig }) {
         {config.helmetDescription && <meta name="description" content={config.helmetDescription} />}
         {config.noindex && <meta name="robots" content="noindex" />}
       </Helmet>
+
+      <PlannerModeSwitch mode={config.product === "fodmap" ? "fodmap" : "grocery"} />
 
       <header className="text-center space-y-2">
         <h1 className="text-2xl md:text-4xl font-bold text-foreground">{config.title}</h1>

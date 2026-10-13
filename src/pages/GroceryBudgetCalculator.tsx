@@ -3,6 +3,7 @@ import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { PlannerModeSwitch } from "@/components/PlannerModeSwitch";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
@@ -111,6 +112,8 @@ export default function GroceryBudgetCalculator() {
         <link rel="canonical" href="https://www.housebudgetcalculator.com/" />
         <script type="application/ld+json">{JSON.stringify(faqSchema)}</script>
       </Helmet>
+
+      <PlannerModeSwitch mode="grocery" />
 
       <header className="text-center space-y-3 md:space-y-4 pt-2 md:pt-0">
         <img

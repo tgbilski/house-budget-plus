@@ -9,3 +9,4 @@
 - [x] Confirm GA tag + Buy-click tracking present on calculator page
 - [ ] Backlink outreach for "grocery budget calculator" (manual: guest posts, Reddit, Pinterest, directories)
 - [x] Let visitors try the planner with costs and budget calculations locked until purchase
+- [x] Add a top-right Regular / Low-FODMAP switch on the homepage and both planners
