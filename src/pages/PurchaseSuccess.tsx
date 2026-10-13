@@ -68,7 +68,7 @@ export default function PurchaseSuccess() {
         <title>Thank You — Grocery Budget Tracker</title>
         <meta name="robots" content="noindex" />
       </Helmet>
-      <Card className="p-8 text-center space-y-4">
+      <Card className="p-4 sm:p-8 text-center space-y-4">
         {status === "loading" && (
           <>
             <Loader2 className="h-12 w-12 animate-spin text-primary mx-auto" />
@@ -82,8 +82,8 @@ export default function PurchaseSuccess() {
             <p className="text-muted-foreground">
               Your Meal Planner is unlocked — start picking meals and building your grocery list.
             </p>
-            <Link to="/planner">
-              <Button size="lg" className="w-full text-lg">
+            <Link to="/planner" className="block">
+              <Button size="lg" className="h-auto min-h-12 w-full px-3 py-3 text-base sm:text-lg whitespace-normal">
                 Open your meal planner
               </Button>
             </Link>
@@ -100,7 +100,7 @@ export default function PurchaseSuccess() {
             <p className="text-muted-foreground">
               Enter the email you used at checkout and we'll find your purchase — no need to pay again.
             </p>
-            <div className="flex gap-2">
+            <div className="flex flex-col sm:flex-row gap-2">
               <Input
                 type="email"
                 placeholder="you@example.com"

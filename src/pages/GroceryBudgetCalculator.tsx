@@ -198,21 +198,21 @@ export default function GroceryBudgetCalculator({ variant = "grocery" }: { varia
       <section aria-label="Share the grocery budget calculator" className="flex flex-wrap items-center justify-center gap-2 border-y border-border py-4">
         <span className="w-full text-center text-sm font-semibold text-foreground sm:w-auto sm:mr-2">Share this calculator</span>
         {shareLinks.map(({ name, icon, href }) => (
-          <Button key={name} asChild variant="outline" size="icon" className="h-10 w-10" title={`Share on ${name}`}>
+          <Button key={name} asChild variant="outline" size="icon" title={`Share on ${name}`}>
             <a href={href} target="_blank" rel="noopener noreferrer" aria-label={`Share on ${name}`} onClick={() => trackEvent("calculator_share_click", { platform: name })}>
               <img src={`/social/icons/${icon}.svg`} alt="" className="h-5 w-5 dark:invert" width={20} height={20} />
             </a>
           </Button>
         ))}
-        <Button variant="outline" size="icon" className="h-10 w-10" onClick={copyShare} aria-label={copied ? "Post text and link copied" : "Copy post text and link"} title={copied ? "Copied!" : "Copy post text and link"}>
+        <Button variant="outline" size="icon" onClick={copyShare} aria-label={copied ? "Post text and link copied" : "Copy post text and link"} title={copied ? "Copied!" : "Copy post text and link"}>
           {copied ? <Check className="h-5 w-5" /> : <Link2 className="h-5 w-5" />}
         </Button>
         <span role="status" className="sr-only">{copied ? "Post text and link copied" : ""}</span>
       </section>
 
-      <Card className="p-6 md:p-8 border-2 border-primary space-y-4">
+      <Card className="p-4 sm:p-6 md:p-8 border-2 border-primary space-y-4">
         <div className="flex items-center gap-3">
-          <ShoppingCart className="h-8 w-8 text-primary" />
+          <ShoppingCart className="h-8 w-8 shrink-0 text-primary" />
           <h2 className="text-2xl font-bold text-foreground">{v.offerTitle.replace("{total}", fmt(total))}</h2>
         </div>
         <p className="text-muted-foreground">{v.offer}</p>
@@ -226,9 +226,9 @@ export default function GroceryBudgetCalculator({ variant = "grocery" }: { varia
             <li key={f} className="flex gap-2 text-foreground"><Check className="h-5 w-5 text-success shrink-0" />{f}</li>
           ))}
         </ul>
-        <Button size="lg" className="w-full text-lg whitespace-nowrap" onClick={buy} disabled={checkoutLoading}>
-          <Download className="h-5 w-5 mr-2 shrink-0" />
-          {checkoutLoading ? "Opening checkout…" : v.cta}
+        <Button size="lg" className="h-auto min-h-12 w-full px-3 py-3 text-base sm:text-lg whitespace-normal" onClick={buy} disabled={checkoutLoading}>
+          <Download className="h-5 w-5 shrink-0" />
+          <span>{checkoutLoading ? "Opening checkout…" : v.cta}</span>
         </Button>
         <Button asChild variant="outline" size="lg" className="w-full">
           <Link to={v.planner}>Try the planner free</Link>
