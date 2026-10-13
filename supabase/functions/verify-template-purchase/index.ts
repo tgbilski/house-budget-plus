@@ -9,6 +9,11 @@ const corsHeaders = {
 const DOWNLOAD_PATH = "/downloads/grocery-budget-tracker-2026.xlsx";
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
+// A session counts for a product if its metadata matches. Sessions created
+// before product metadata existed have no metadata — treat them as "grocery".
+const sessionMatchesProduct = (s: Stripe.Checkout.Session, product: string) =>
+  (s.metadata?.product || "grocery") === product;
+
 serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
@@ -19,12 +24,13 @@ serve(async (req) => {
     if (!stripeKey) throw new Error("Stripe secret key not configured");
 
     const body = await req.json();
+    const product = typeof body.product === "string" && body.product ? body.product : "grocery";
     const stripe = new Stripe(stripeKey, { apiVersion: "2023-10-16" });
 
     // Path 1: verify a specific checkout session (post-purchase redirect)
     if (body.session_id && typeof body.session_id === "string") {
       const session = await stripe.checkout.sessions.retrieve(body.session_id);
-      if (session.payment_status !== "paid") {
+      if (session.payment_status !== "paid" || !sessionMatchesProduct(session, product)) {
         return new Response(JSON.stringify({ paid: false }), {
           headers: { ...corsHeaders, "Content-Type": "application/json" },
           status: 200,
@@ -52,7 +58,9 @@ serve(async (req) => {
           customer: customer.id,
           limit: 20,
         });
-        const paid = sessions.data.some((s) => s.payment_status === "paid");
+        const paid = sessions.data.some(
+          (s) => s.payment_status === "paid" && sessionMatchesProduct(s, product)
+        );
         if (paid) {
           return new Response(JSON.stringify({ paid: true, download: DOWNLOAD_PATH }), {
             headers: { ...corsHeaders, "Content-Type": "application/json" },
