@@ -52,7 +52,33 @@ const householdTable = [
   { size: "6 people", thrifty: 1540, low: 1800, moderate: 2220, liberal: 2720 },
 ];
 
-export default function GroceryBudgetCalculator() {
+type Variant = "grocery" | "fodmap";
+const VARIANTS = {
+  grocery: {
+    path: "/", planner: "/planner", canonical: "https://www.housebudgetcalculator.com/",
+    helmetTitle: "", helmetDescription: "",
+    kicker: "Grocery adulting, made easy", h1: "Grocery Budget Calculator",
+    sub: "Other calculators give you a number. Ours gives you the number, the meal plan, and the grocery list to match — free, no sign-up.",
+    offerTitle: "Turn {total} into a week of meals",
+    offer: "The Meal Planner & Grocery List tool picks your meals, builds your shopping list, and keeps it inside your budget — one-time payment, 90 days of access.",
+    features: ["45+ budget meals with estimated ingredient costs", "Add your own meals too", "Auto grocery list, grouped by store section", "Live total vs. your weekly budget", "Bonus: 12-month budget spreadsheet"],
+    cta: "Get the meal planner",
+  },
+  fodmap: {
+    path: "/low-fodmap-grocery-budget-calculator", planner: "/low-fodmap-planner", canonical: "https://www.housebudgetcalculator.com/low-fodmap-grocery-budget-calculator",
+    helmetTitle: "Low-FODMAP Grocery Budget Calculator (2026) | House Budget Calculator",
+    helmetDescription: "Find your monthly grocery budget, then plan low-FODMAP meals and get a gut-friendly grocery list that fits it. No onion, no garlic, no guesswork. Free, no sign-up.",
+    kicker: "Gut-friendly grocery adulting", h1: "Low-FODMAP Grocery Budget Calculator",
+    sub: "Find your grocery number, then get a low-FODMAP meal plan and grocery list to match — no onion, no garlic, no guesswork. Free, no sign-up.",
+    offerTitle: "Turn {total} into a week of low-FODMAP meals",
+    offer: "The Low-FODMAP Meal Planner picks gut-friendly meals, builds your shopping list, and keeps it inside your budget — one-time payment, 90 days of access.",
+    features: ["30+ FODMAP-safe meals with estimated ingredient costs", "Add your own safe meals too", "Auto grocery list, grouped by store section", "Live total vs. your weekly budget", "No onion, no garlic, lactose-smart"],
+    cta: "Get the low-FODMAP planner",
+  },
+} as const;
+
+export default function GroceryBudgetCalculator({ variant = "grocery" }: { variant?: Variant }) {
+  const v = VARIANTS[variant];
   const [adults, setAdults] = useState(2);
   const [kids, setKids] = useState(0);
   const [income, setIncome] = useState(5000);
@@ -89,10 +115,10 @@ export default function GroceryBudgetCalculator() {
   };
 
   const buy = async () => {
-    trackEvent("template_checkout_click", { price: 5 });
+    trackEvent("template_checkout_click", { price: 5, product: variant });
     setCheckoutLoading(true);
     try {
-      const { data, error } = await supabase.functions.invoke("create-template-checkout");
+      const { data, error } = await supabase.functions.invoke("create-template-checkout", { body: { product: variant } });
       if (error || !data?.url) throw new Error(data?.error || error?.message || "Checkout failed");
       window.location.href = data.url;
     } catch (e) {
@@ -109,11 +135,16 @@ export default function GroceryBudgetCalculator() {
   return (
     <div className="container max-w-3xl mx-auto px-4 py-6 md:py-10 space-y-6 md:space-y-10 relative z-10">
       <Helmet>
-        <link rel="canonical" href="https://www.housebudgetcalculator.com/" />
+        <link rel="canonical" href={v.canonical} />
+        {v.helmetTitle && <title>{v.helmetTitle}</title>}
+        {v.helmetDescription && <meta name="description" content={v.helmetDescription} />}
+        {v.helmetTitle && <meta property="og:title" content={v.helmetTitle} />}
+        {v.helmetDescription && <meta property="og:description" content={v.helmetDescription} />}
+        {variant === "fodmap" && <meta property="og:url" content={v.canonical} />}
         <script type="application/ld+json">{JSON.stringify(faqSchema)}</script>
       </Helmet>
 
-      <PlannerModeSwitch mode="grocery" />
+      <PlannerModeSwitch mode={variant} page="calculator" />
 
       <header className="text-center space-y-3 md:space-y-4 pt-2 md:pt-0">
         <img
@@ -123,10 +154,10 @@ export default function GroceryBudgetCalculator() {
           width={112}
           height={112}
         />
-        <p className="text-xs md:text-sm font-semibold tracking-widest uppercase text-primary">Grocery adulting, made easy</p>
-        <h1 className="text-2xl md:text-5xl font-bold text-foreground leading-tight">Grocery Budget Calculator</h1>
+        <p className="text-xs md:text-sm font-semibold tracking-widest uppercase text-primary">{v.kicker}</p>
+        <h1 className="text-2xl md:text-5xl font-bold text-foreground leading-tight">{v.h1}</h1>
         <p className="text-base md:text-xl text-muted-foreground max-w-2xl mx-auto px-2">
-          Other calculators give you a number. Ours gives you the number, the meal plan, and the grocery list to match — free, no sign-up.
+          {v.sub}
         </p>
         <a
           href="#calculator"
@@ -182,29 +213,29 @@ export default function GroceryBudgetCalculator() {
       <Card className="p-6 md:p-8 border-2 border-primary space-y-4">
         <div className="flex items-center gap-3">
           <ShoppingCart className="h-8 w-8 text-primary" />
-          <h2 className="text-2xl font-bold text-foreground">Turn {fmt(total)} into a week of meals</h2>
+          <h2 className="text-2xl font-bold text-foreground">{v.offerTitle.replace("{total}", fmt(total))}</h2>
         </div>
-        <p className="text-muted-foreground">The Meal Planner & Grocery List tool picks your meals, builds your shopping list, and keeps it inside your budget — one-time payment, 90 days of access.</p>
+        <p className="text-muted-foreground">{v.offer}</p>
         <div className="flex items-center justify-center gap-3">
           <span className="text-lg text-muted-foreground line-through">$10</span>
           <span className="text-3xl font-bold text-foreground">$5</span>
           <span className="rounded-full bg-success/15 text-success text-xs font-bold px-3 py-1 uppercase tracking-wide">50% off</span>
         </div>
         <ul className="space-y-2">
-          {["45+ budget meals with estimated ingredient costs", "Add your own meals too", "Auto grocery list, grouped by store section", "Live total vs. your weekly budget", "Bonus: 12-month budget spreadsheet"].map(f => (
+          {v.features.map(f => (
             <li key={f} className="flex gap-2 text-foreground"><Check className="h-5 w-5 text-success shrink-0" />{f}</li>
           ))}
         </ul>
         <Button size="lg" className="w-full text-lg whitespace-nowrap" onClick={buy} disabled={checkoutLoading}>
           <Download className="h-5 w-5 mr-2 shrink-0" />
-          {checkoutLoading ? "Opening checkout…" : "Get the meal planner"}
+          {checkoutLoading ? "Opening checkout…" : v.cta}
         </Button>
         <Button asChild variant="outline" size="lg" className="w-full">
-          <Link to="/planner">Try the planner free</Link>
+          <Link to={v.planner}>Try the planner free</Link>
         </Button>
         <p className="text-xs text-center text-muted-foreground">Plan meals free. Unlock costs and budget tracking for $5 / 90 days.</p>
         <p className="text-xs text-center text-muted-foreground">
-          Already bought it? <Link to="/planner" className="underline">Open your planner</Link>
+          Already bought it? <Link to={v.planner} className="underline">Open your planner</Link>
         </p>
       </Card>
 

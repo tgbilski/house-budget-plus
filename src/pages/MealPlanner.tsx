@@ -296,7 +296,7 @@ export function PlannerCore({ config }: { config: PlannerConfig }) {
         {config.noindex && <meta name="robots" content="noindex" />}
       </Helmet>
 
-      <PlannerModeSwitch mode={config.product === "fodmap" ? "fodmap" : "grocery"} />
+      <PlannerModeSwitch mode={config.product === "fodmap" ? "fodmap" : "grocery"} page="planner" />
 
       <header className="text-center space-y-2">
         <h1 className="text-2xl md:text-4xl font-bold text-foreground">{config.title}</h1>

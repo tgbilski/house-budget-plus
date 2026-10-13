@@ -12,6 +12,7 @@ import { PageSkeleton } from "@/components/LoadingSkeletons";
 const GroceryBudgetCalculator = lazy(() => import("@/pages/GroceryBudgetCalculator"));
 const PurchaseSuccess = lazy(() => import("@/pages/PurchaseSuccess"));
 const MealPlanner = lazy(() => import("@/pages/MealPlanner"));
+const FodmapCalculator = lazy(() => import("@/pages/FodmapCalculator"));
 const FodmapPlanner = lazy(() => import("@/pages/FodmapPlanner"));
 
 const queryClient = new QueryClient({
@@ -34,6 +35,7 @@ const AppRoutes = () => {
     <Suspense fallback={<PageSkeleton />}>
       <Routes>
         <Route path="/" element={<GroceryBudgetCalculator />} />
+        <Route path="/low-fodmap-grocery-budget-calculator" element={<FodmapCalculator />} />
         <Route path="/purchase-success" element={<PurchaseSuccess />} />
         <Route path="/planner" element={<MealPlanner />} />
         <Route path="/low-fodmap-planner" element={<FodmapPlanner />} />

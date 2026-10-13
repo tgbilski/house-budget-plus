@@ -14,8 +14,8 @@ const fodmapConfig: PlannerConfig = {
     "Plan a week of low-FODMAP meals and get an auto-built grocery list with estimated costs. 30+ FODMAP-safe recipes — no onion, no garlic, lactose-smart. Free to try, no sign-up.",
   noindex: false,
   showSpreadsheet: false,
-  backLinkTo: "/",
-  backLinkLabel: "Back to the grocery budget calculator",
+  backLinkTo: "/low-fodmap-grocery-budget-calculator",
+  backLinkLabel: "Back to the low-FODMAP calculator",
   seoContent: (
     <section className="space-y-6 border-t border-border pt-8" aria-label="About low-FODMAP meal planning">
       <div className="space-y-3">
