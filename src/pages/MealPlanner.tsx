@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, type ReactNode } from "react";
 import { Helmet } from "react-helmet-async";
 import { Link, useSearchParams } from "react-router-dom";
 import { Card } from "@/components/ui/card";
@@ -15,25 +15,33 @@ import {
   MEALS, MEAL_CATEGORIES, mealCost, type Meal, type CustomMeal, type StoreSection,
 } from "@/data/meals";
 
-const PAID_KEY = "grocery_planner_paid"; // stores unlock timestamp (ms), not "1"
-const STATE_KEY = "grocery_planner_state";
+export interface PlannerConfig {
+  product: string; // "grocery" | "fodmap" — must match Stripe session metadata
+  paidKey: string;
+  stateKey: string;
+  meals: Meal[];
+  categories: readonly string[];
+  title: string;
+  subtitle: string;
+  helmetTitle: string;
+  helmetDescription?: string;
+  noindex: boolean;
+  showSpreadsheet: boolean;
+  backLinkTo: string;
+  backLinkLabel: string;
+  seoContent?: ReactNode; // extra indexable content below the planner
+}
+
 const ACCESS_DAYS = 90;
 const ACCESS_MS = ACCESS_DAYS * 24 * 60 * 60 * 1000;
 
-const getPaidUntil = (): number | null => {
-  const raw = localStorage.getItem(PAID_KEY);
+const getPaidUntil = (paidKey: string): number | null => {
+  const raw = localStorage.getItem(paidKey);
   if (!raw) return null;
   const ts = raw === "1" ? null : Number(raw); // legacy "1" values have no timestamp — treat as expired
   if (!ts || Number.isNaN(ts)) return null;
   return ts + ACCESS_MS;
 };
-
-const isPaid = (): boolean => {
-  const until = getPaidUntil();
-  return until !== null && until > Date.now();
-};
-
-const markPaid = () => localStorage.setItem(PAID_KEY, String(Date.now()));
 
 const fmt2 = (n: number) => n.toLocaleString("en-US", { style: "currency", currency: "USD" });
 
@@ -54,27 +62,30 @@ interface PlannerState {
   checked: string[]; // grocery list item keys
 }
 
-const loadState = (): PlannerState => {
-  try {
-    const raw = localStorage.getItem(STATE_KEY);
-    if (raw) return { selected: [], customMeals: [], customItems: [], weeklyBudget: 166, checked: [], ...JSON.parse(raw) };
-  } catch { /* ignore */ }
-  return { selected: [], customMeals: [], customItems: [], weeklyBudget: 166, checked: [] };
-};
+const emptyState = (): PlannerState => ({ selected: [], customMeals: [], customItems: [], weeklyBudget: 166, checked: [] });
 
 const SECTION_ORDER: StoreSection[] = ["Produce", "Meat & Seafood", "Dairy & Eggs", "Bakery", "Pantry", "Frozen", "Household"];
 
-export default function MealPlanner() {
+export function PlannerCore({ config }: { config: PlannerConfig }) {
   const [params] = useSearchParams();
   const sessionId = params.get("session_id");
-  const [paid, setPaid] = useState<boolean>(isPaid);
+  const [paid, setPaid] = useState<boolean>(() => {
+    const until = getPaidUntil(config.paidKey);
+    return until !== null && until > Date.now();
+  });
   const [verifying, setVerifying] = useState(!!sessionId && !paid);
   const [unlockEmail, setUnlockEmail] = useState("");
   const [unlockState, setUnlockState] = useState<"idle" | "checking" | "notfound">("idle");
   const [checkoutLoading, setCheckoutLoading] = useState(false);
 
-  const [state, setState] = useState<PlannerState>(loadState);
-  const [category, setCategory] = useState<string>(MEAL_CATEGORIES[0]);
+  const [state, setState] = useState<PlannerState>(() => {
+    try {
+      const raw = localStorage.getItem(config.stateKey);
+      if (raw) return { ...emptyState(), ...JSON.parse(raw) };
+    } catch { /* ignore */ }
+    return emptyState();
+  });
+  const [category, setCategory] = useState<string>(config.categories[0]);
   const [customName, setCustomName] = useState("");
   const [customCost, setCustomCost] = useState("");
   const [customIngredients, setCustomIngredients] = useState("");
@@ -86,41 +97,41 @@ export default function MealPlanner() {
   const [copied, setCopied] = useState(false);
 
   useEffect(() => {
-    localStorage.setItem(STATE_KEY, JSON.stringify(state));
-  }, [state]);
+    localStorage.setItem(config.stateKey, JSON.stringify(state));
+  }, [state, config.stateKey]);
 
   // Verify Stripe session after checkout redirect
   useEffect(() => {
     if (!sessionId || paid) return;
     supabase.functions
-      .invoke("verify-template-purchase", { body: { session_id: sessionId } })
+      .invoke("verify-template-purchase", { body: { session_id: sessionId, product: config.product } })
       .then(({ data, error }) => {
         if (!error && data?.paid) {
-          markPaid();
+          localStorage.setItem(config.paidKey, String(Date.now()));
           setPaid(true);
-          trackEvent("purchase", { value: 5, currency: "USD", item: "meal_planner" });
+          trackEvent("purchase", { value: 5, currency: "USD", item: config.product });
         }
       })
       .finally(() => setVerifying(false));
-  }, [sessionId, paid]);
+  }, [sessionId, paid, config.paidKey, config.product]);
 
   const unlock = async () => {
     if (!unlockEmail.trim()) return;
     setUnlockState("checking");
     // Owner test account: always unlocked, never expires
     if (unlockEmail.trim().toLowerCase() === "tgbilski@gmail.com") {
-      localStorage.setItem(PAID_KEY, String(Date.now() + 100 * 365 * 24 * 60 * 60 * 1000));
+      localStorage.setItem(config.paidKey, String(Date.now() + 100 * 365 * 24 * 60 * 60 * 1000));
       setPaid(true);
       return;
     }
     try {
       const { data, error } = await supabase.functions.invoke("verify-template-purchase", {
-        body: { email: unlockEmail.trim() },
+        body: { email: unlockEmail.trim(), product: config.product },
       });
       if (!error && data?.paid) {
-        markPaid();
+        localStorage.setItem(config.paidKey, String(Date.now()));
         setPaid(true);
-        trackEvent("planner_unlocked", { method: "email" });
+        trackEvent("planner_unlocked", { method: "email", product: config.product });
       } else {
         setUnlockState("notfound");
       }
@@ -130,10 +141,12 @@ export default function MealPlanner() {
   };
 
   const buy = async () => {
-    trackEvent("template_checkout_click", { price: 5, source: "planner" });
+    trackEvent("template_checkout_click", { price: 5, source: "planner", product: config.product });
     setCheckoutLoading(true);
     try {
-      const { data, error } = await supabase.functions.invoke("create-template-checkout");
+      const { data, error } = await supabase.functions.invoke("create-template-checkout", {
+        body: { product: config.product },
+      });
       if (error || !data?.url) throw new Error(data?.error || error?.message || "Checkout failed");
       window.location.href = data.url;
     } catch (e) {
@@ -182,8 +195,8 @@ export default function MealPlanner() {
     setState((s) => ({ ...s, customItems: s.customItems.filter((i) => i.id !== id) }));
 
   const selectedMeals = useMemo(
-    () => MEALS.filter((m) => state.selected.includes(m.id)),
-    [state.selected]
+    () => config.meals.filter((m) => state.selected.includes(m.id)),
+    [state.selected, config.meals]
   );
 
   const totalCost = useMemo(
@@ -262,7 +275,7 @@ export default function MealPlanner() {
   const pct = state.weeklyBudget > 0 ? (totalCost / state.weeklyBudget) * 100 : 0;
   const underBudget = totalCost <= state.weeklyBudget;
 
-  // ---------- Locked / verifying states ----------
+  // ---------- Verifying state ----------
   if (verifying) {
     return (
       <div className="container max-w-xl mx-auto px-4 py-16 text-center relative z-10">
@@ -273,17 +286,18 @@ export default function MealPlanner() {
   }
 
   // The planner is interactive for everyone; calculated prices require access.
-  const paidUntil = getPaidUntil();
+  const paidUntil = getPaidUntil(config.paidKey);
   return (
     <div className="container max-w-3xl mx-auto px-4 py-6 md:py-10 space-y-6 md:space-y-8 relative z-10">
       <Helmet>
-        <title>Your Meal Planner — House Budget Calculator</title>
-        <meta name="robots" content="noindex" />
+        <title>{config.helmetTitle}</title>
+        {config.helmetDescription && <meta name="description" content={config.helmetDescription} />}
+        {config.noindex && <meta name="robots" content="noindex" />}
       </Helmet>
 
       <header className="text-center space-y-2">
-        <h1 className="text-2xl md:text-4xl font-bold text-foreground">Your Weekly Meal Planner</h1>
-        <p className="text-muted-foreground">Pick your meals for the week and build your grocery list.</p>
+        <h1 className="text-2xl md:text-4xl font-bold text-foreground">{config.title}</h1>
+        <p className="text-muted-foreground">{config.subtitle}</p>
         {paid && paidUntil && (
           <p className="text-xs text-muted-foreground">
             Your access runs through {new Date(paidUntil).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })}.
@@ -360,7 +374,7 @@ export default function MealPlanner() {
           <UtensilsCrossed className="h-5 w-5 text-primary" /> Pick your meals
         </h2>
         <div className="flex gap-2 overflow-x-auto pb-1 -mx-1 px-1">
-          {MEAL_CATEGORIES.map((c) => (
+          {config.categories.map((c) => (
             <Button
               key={c}
               type="button"
@@ -374,7 +388,7 @@ export default function MealPlanner() {
           ))}
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-          {MEALS.filter((m) => m.category === category).map((m: Meal) => {
+          {config.meals.filter((m) => m.category === category).map((m: Meal) => {
             const isSelected = state.selected.includes(m.id);
             return (
               <Button
@@ -579,7 +593,7 @@ export default function MealPlanner() {
       </Card>
 
       {/* Bonus spreadsheet */}
-      {paid && <Card className="p-4 md:p-6 flex flex-col sm:flex-row items-center gap-4 print:hidden">
+      {paid && config.showSpreadsheet && <Card className="p-4 md:p-6 flex flex-col sm:flex-row items-center gap-4 print:hidden">
         <Download className="h-8 w-8 text-primary shrink-0" />
         <div className="flex-1 text-center sm:text-left">
           <h2 className="font-semibold text-foreground">Bonus: 12-month budget spreadsheet</h2>
@@ -590,7 +604,28 @@ export default function MealPlanner() {
         </a>
       </Card>}
 
-      <p className="text-center"><Link to="/" className="text-sm text-muted-foreground underline">Back to the calculator</Link></p>
+      {config.seoContent}
+
+      <p className="text-center"><Link to={config.backLinkTo} className="text-sm text-muted-foreground underline">{config.backLinkLabel}</Link></p>
     </div>
   );
+}
+
+const groceryConfig: PlannerConfig = {
+  product: "grocery",
+  paidKey: "grocery_planner_paid",
+  stateKey: "grocery_planner_state",
+  meals: MEALS,
+  categories: MEAL_CATEGORIES,
+  title: "Your Weekly Meal Planner",
+  subtitle: "Pick your meals for the week and build your grocery list.",
+  helmetTitle: "Your Meal Planner — House Budget Calculator",
+  noindex: true,
+  showSpreadsheet: true,
+  backLinkTo: "/",
+  backLinkLabel: "Back to the calculator",
+};
+
+export default function MealPlanner() {
+  return <PlannerCore config={groceryConfig} />;
 }
