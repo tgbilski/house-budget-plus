@@ -120,9 +120,10 @@ export default function GroceryBudgetCalculator() {
           width={112}
           height={112}
         />
+        <p className="text-xs md:text-sm font-semibold tracking-widest uppercase text-primary">Grocery adulting, made easy</p>
         <h1 className="text-2xl md:text-5xl font-bold text-foreground leading-tight">Grocery Budget Calculator</h1>
         <p className="text-base md:text-xl text-muted-foreground max-w-2xl mx-auto px-2">
-          Find out how much your family should spend on groceries each month — free, no sign-up.
+          Other calculators give you a number. Ours gives you the number, the meal plan, and the grocery list to match — free, no sign-up.
         </p>
         <a
           href="#calculator"
